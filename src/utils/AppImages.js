@@ -39,4 +39,9 @@ export class AppImages {
   static EYE_ICON=require('../assets/images/eye_icon.png');
   static ICON_UNCHECK=require('../assets/images/icon_uncheck.png');
   static NAME_SMALL_ICON=require('../assets/images/name_small_icon.png');
+  static WHATSAPP_ICON=require('../assets/images/whatsapp_icon.png');
+  static CIRCLE_CALL_ICON=require('../assets/images/circle_call_icon.png');
+  static IMP_LINKS_ICON=require('../assets/images/imp_link.png');
+  static SOCIAL_HELP_ICON=require('../assets/images/social_help.png');
+  static FEEDBACK_ICON=require('../assets/images/feedback.png');
 }

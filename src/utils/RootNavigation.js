@@ -39,6 +39,12 @@ import AddBusinessScreen from '../screens/MenuScreen/business/AddBusinessScreen'
 import BusinessListScreen from '../screens/MenuScreen/business/BusinessListScreen';
 import AppSponcerScreen from '../screens/MenuScreen/sponcer/AppSponcerScreen';
 import ProfileScreen from '../screens/MenuScreen/profile/ProfileScreen';
+import ImPLINKS from '../screens/MenuScreen/imp_links/ImpLinks';
+import SocialService from '../screens/MenuScreen/social_service/SocialService';
+import PaymentScreen from '../screens/MenuScreen/social_service/PaymentScreen';
+import LinkDetails from '../screens/MenuScreen/imp_links/LinkDetails';
+import ServiceDetails from '../screens/MenuScreen/imp_links/ServiceDetails';
+import PrivacyPolicy from '../screens/MenuScreen/privacy_policy/PrivacyPolicy';
 
 const RootNavigation = () => {
   return (
@@ -95,11 +101,11 @@ const RootNavigation = () => {
           name={AppScreens.ABOUT_US_DETAIL_SCREEN}
           component={AboutUsDetailScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.STATISTIC_SCREEN}
           component={StatisticScreen}
         />
-          <Stack.Screen
+        <Stack.Screen
           name={AppScreens.SEARCH_SCREEN}
           component={SearchScreen}
         />
@@ -111,7 +117,7 @@ const RootNavigation = () => {
           name={AppScreens.FAMILY_MEMBER_SCREEN}
           component={FamilyMembersScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.FAMILY_MEMBER_DETAIL_SCREEN}
           component={FamilyMemberDetailScreen}
         />
@@ -119,59 +125,73 @@ const RootNavigation = () => {
           name={AppScreens.FAMILY_DETAIL_SCREEN}
           component={FamilyDetailScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.BUSINESS_SCREEN}
           component={BusinessScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.BUSINESS_DETAIL_SCREEN}
           component={BusinessDetaiLScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.VILLAGE_SCREEN}
           component={VillageScreen}
         />
-         <Stack.Screen
-          name={AppScreens.NEWS_SCREEN}
-          component={NewsScreen}
-        />
-         <Stack.Screen
+        <Stack.Screen name={AppScreens.NEWS_SCREEN} component={NewsScreen} />
+        <Stack.Screen
           name={AppScreens.PARICHAY_FILE_SCREEN}
           component={ParichayFileScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.CONTACT_US_SCREEN}
           component={ContactUsScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.FEEDBACK_SCREEN}
           component={FeedBackScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.NEWS_DETAIL_SCREEN}
           component={NewsDetailScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.ADD_MEMBER_SCREEN}
           component={AddMemberScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.ADD_BUSINESS_SCREEN}
           component={AddBusinessScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.BUSINESS_LIST_SCREEN}
           component={BusinessListScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.APP_SPONCER_SCREEN}
           component={AppSponcerScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.PROFILE_SCREEN}
           component={ProfileScreen}
         />
-        
+        <Stack.Screen name={AppScreens.IMP_LINKS} component={ImPLINKS} />
+        <Stack.Screen
+          name={AppScreens.SOCIAL_SERVICE}
+          component={SocialService}
+        />
+        <Stack.Screen
+          name={AppScreens.PAYMENT_SCREEN}
+          component={PaymentScreen}
+        />
+        <Stack.Screen name={AppScreens.LINK_DETAILS} component={LinkDetails} />
+        <Stack.Screen
+          name={AppScreens.SERVICE_DETAILS}
+          component={ServiceDetails}
+        />
+         <Stack.Screen
+          name={AppScreens.PRIVACY_POLICY}
+          component={PrivacyPolicy}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

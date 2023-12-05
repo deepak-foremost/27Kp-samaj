@@ -17,7 +17,7 @@ const TextInputView = props => {
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-          color: AppColors.DarkText,
+          color: AppColors.extraDark,
         }}>
         {props?.text}
       </Text>
@@ -25,9 +25,11 @@ const TextInputView = props => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          paddingBottom: 5,
+          // paddingBottom: 5,
           borderBottomWidth: 1,
           borderBottomColor: '#EAEAFF',
+          height:45,
+          flex:1
         }}>
         <Image
           source={props?.src}
@@ -39,10 +41,12 @@ const TextInputView = props => {
             fontFamily: AppFonts.regular,
             marginLeft: 20,
             flex: 1,
+            color:AppColors.extraDark
           }}
           onChangeText={props?.onChangeText}
           placeholderTextColor={'#38385E'}
           placeholder={props?.placeholder}
+          
         />
         <TouchableOpacity>
           <Image style={{tintColor:'#303590'}} source={props?.rightImage} />

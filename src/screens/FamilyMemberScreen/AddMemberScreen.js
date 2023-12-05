@@ -11,6 +11,7 @@ import {
 import AppButton from '../../components/AppButton';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 import {
+  BoxTextInput,
   HorizontalSelection,
   HorizontalTextInput,
   MyMobileNumber,
@@ -33,11 +34,16 @@ import {AsyncStorageConst, getString} from '../../utils/AsyncStorageHelper';
 import DatePicker from 'react-native-date-picker';
 import ScreenToolbar from '../../components/ScreenToolbar';
 // import LoaderView from '../../../../utils/LoaderView';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import BorderView from '../../components/BorderView';
+import LoaderView from '../../utils/LoaderView';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const AddMemberScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   var memberItem = props?.route?.params?.item;
-  
+
   const [loading, setLoading] = useState(false);
 
   const [cities, setCities] = useState([]);
@@ -55,16 +61,20 @@ const AddMemberScreen = props => {
   const [status, setStatus] = useState(null);
   const [study, setStudy] = useState('');
   const [business, setBusiness] = useState('');
+  const [course, setCourse] = useState('');
   const [businessAddress, setBusinessAddress] = useState('');
   const [homeAddress, setHomeAddress] = useState('');
+  const [presentAddress, setPresentAddress] = useState('');
   const [country_code, setCountryCode] = useState('+91');
   const [phone, setPhone] = useState('');
   const [mosal, setMosal] = useState('');
   const [hobby, setHobby] = useState('');
   const [fatherinlaw, setFatherinLaw] = useState('');
   const [email, setEmail] = useState('');
+  const [lifeSupportNo, setLifeSupportNo] = useState('');
+  const [bhumiNo, setBhumiNo] = useState('');
   const [image, setImage] = useState('');
-  const [age,setAge]=useState('');
+  const [age, setAge] = useState('');
   const [dob, setDOB] = useState(null);
   const [openDatePicker, setDatePicker] = useState(false);
   var payload = new FormData();
@@ -165,6 +175,12 @@ const AddMemberScreen = props => {
   //   }, []);
 
   const [isAdding, setAdding] = useState(false);
+
+  useEffect(() => {
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
   //   const addMembers = async () => {
   //     let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
 
@@ -240,12 +256,32 @@ const AddMemberScreen = props => {
   //       });
   //   };
 
+  // React.useLayoutEffect(() => {
+  //   props.navigation.setOptions({
+  //     headerShown: true,
+  //     headerTitleAlign: 'center',
+  //     headerStyle: {
+  //       height: 60,
+  //       borderBottomColor: '#D9D9D9',
+  //       borderBottomWidth: 0,
+  //       elevation: 0,
+  //       shadowOpacity: 0,
+  //       borderBottomWidth: 0,
+  //     },
+  //     headerTitle: () => <View style={{alignItems: 'center'}}></View>,
+  //     headerLeft: () => (
+  //       <View style={{paddingStart: 20}}>{/* <BackButton /> */}</View>
+  //     ),
+  //   });
+  // }, [props.navigation]);
+
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
         {
           backgroundColor: AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
 
           //   paddingBottom: safeAreaBottomHeight(),
         },
@@ -258,202 +294,197 @@ const AddMemberScreen = props => {
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
       <View style={{backgroundColor: AppColors.fadeBackground, flex: 1}}>
-        <ScreenToolbar text={ memberItem == undefined ? 'Add Family Member' : 'Edit Family Member'} />
+        <ScreenToolbar
+          text={
+            memberItem == undefined ? 'Add Family Member' : 'Edit Family Member'
+          }
+        />
         <AppButton
           text={'Mobile Number : 9999999999'}
+          textStyle={{marginHorizontal: 5}}
           buttonStyle={{
-            width: '60%',
+            width: '85%',
             alignSelf: 'center',
             marginTop: 15,
             borderRadius: 20,
             height: 40,
           }}
         />
-        <ScrollView
-          nestedScrollEnabled
-          style={{
-            flex: 1,
-            backgroundColor: AppColors.backgroundSecondColor,
-            width: '100%',
-          }}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
-       
-            <KeyboardAwareScrollView
-            enableOnAndroid={true}
-            extraScrollHeight={10}
+
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
+        extraScrollHeight={40}>
+          {/* Form */}
+          <View
+            style={{
+              marginVertical: '5%',
+              width: '90%',
+              alignSelf: 'center',
+              backgroundColor: AppColors.backgroundColor,
+              paddingVertical: 10,
+              paddingHorizontal: 15,
+              borderRadius: 10,
+              backgroundColor: '#fff',
+              flex: 1,
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#D5D5D5',
+                  shadowOffset: {width: 0, height: -1},
+                  shadowOpacity: 0.9,
+                  shadowRadius: 3,
+                },
+                android: {
+                  elevation: 5,
+                },
+              }),
+            }}>
+            <HorizontalTextInput
+              label={`નામ:`}
+              defaultText={name}
+              onChangeText={setName}
+            />
+
+            <View
               style={{
-                marginTop: '5%',
-                width: '90%',
-                alignSelf: 'center',
-                backgroundColor: AppColors.backgroundColor,
-                paddingVertical: 10,
-                paddingHorizontal: 15,
-                borderRadius: 10,
-                backgroundColor: 'white',
-                ...Platform.select({
-                  ios: {
-                    shadowColor: '#D5D5D5',
-                    shadowOffset: {width: 0, height: -1},
-                    shadowOpacity: 0.9,
-                    shadowRadius: 3,
-                  },
-                  android: {
-                    elevation: 5,
-                  },
-                }),
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
               }}>
-              <HorizontalTextInput
-               
-                label={`નામ:`}
-                defaultText={name}
-                onChangeText={setName}
-              />
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{width: '49%'}}>
-                  <HorizontalSelection
-                    label={`ગામ`}
-                    placeholder={`ગામ`}
-                    data={cities == null ? [] : cities}
-                    value={city}
-                    onItemSelect={item => {
-                      printLog(JSON.stringify(item?.item));
-                      setCity(item?.name);
-                    }}
-                  />
-                </View>
-                <View style={{width: '49%'}}>
-                  <HorizontalTextInput
-                    label={`સાસરું`}
-                    defaultText={fatherinlaw}
-                    onChangeText={setFatherinLaw}
-                  />
-                </View>
+              <View style={{width: '49%'}}>
+                <HorizontalSelection
+                  label={`ગામ`}
+                  placeholder={`ગામ`}
+                  data={cities == null ? [] : cities}
+                  value={city}
+                  onItemSelect={item => {
+                    printLog(JSON.stringify(item?.item));
+                    setCity(item?.name);
+                  }}
+                />
               </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{width: '49%'}}>
-                  <HorizontalTextInput
-                    label={`મોસાળ`}
-                    defaultText={mosal}
-                    onChangeText={setMosal}
-                  />
-                </View>
-                <View style={{width: '49%'}}>
-                  <HorizontalTextInput
-                    label={`શાખ `}
-                    defaultText={hobby}
-                    onChangeText={setHobby}
-                  />
-                </View>
+              <View style={{width: '49%'}}>
+                <HorizontalTextInput
+                  label={`સાસરું`}
+                  defaultText={fatherinlaw}
+                  onChangeText={setFatherinLaw}
+                />
               </View>
+            </View>
 
-              <View
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{width: '49%'}}>
+                <HorizontalTextInput
+                  label={`મોસાળ`}
+                  defaultText={mosal}
+                  onChangeText={setMosal}
+                />
+              </View>
+              <View style={{width: '49%'}}>
+                <HorizontalTextInput
+                  label={`શાખ `}
+                  defaultText={hobby}
+                  onChangeText={setHobby}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+                marginTop: 20,
+                height: 25,
+                alignItems: 'center',
+              }}>
+              <Text
                 style={{
-                  width: '100%',
+                  fontFamily: AppFonts.semiBold,
+                  color: AppColors.extraDark,
+                  fontSize: 13,
+                  textAlignVertical: 'center',
+                }}>
+                જન્મ તારીખ :
+              </Text>
+
+              <TouchableOpacity
+                activeOpacity={AppConstValue.ButtonOpacity}
+                onPress={() => {
+                  setDatePicker(true);
+                }}
+                style={{
+                  flex: 1,
                   flexDirection: 'row',
-                  marginTop: 20,
-                  height: 25,
-                  alignItems: 'center',
+                  borderBottomColor: AppColors.line_color,
+                  borderBottomWidth: 1,
+                  height: '100%',
+                  marginStart: 5,
                 }}>
                 <Text
                   style={{
-                    fontFamily: AppFonts.semiBold,
-                    color: AppColors.extraDark,
+                    fontFamily: AppFonts.regular,
+                    color: dob == null ? AppColors?.lineColor : AppColors.black,
                     fontSize: 13,
-                    textAlignVertical: 'center',
-                  }}>
-                  જન્મ તારીખ :
-                </Text>
-
-                <TouchableOpacity
-                  activeOpacity={AppConstValue.ButtonOpacity}
-                  onPress={() => {
-                    setDatePicker(true);
-                  }}
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    borderBottomColor: AppColors.line_color,
-                    borderBottomWidth: 1,
-                    height: '100%',
                     marginStart: 5,
                   }}>
-                  <Text
-                    style={{
-                      fontFamily: AppFonts.regular,
-                      color:
-                        dob == null ? AppColors?.lineColor : AppColors.black,
-                      fontSize: 13,
-                      marginStart: 5,
-                    }}>
-                    {dob == null
-                      ? 'DD-MM-YYYY'
-                      : moment(dob).format('DD-MM-YYYY')}
-                  </Text>
-                  <Image
-                    style={{
-                      width: 1.5,
-                      height: '80%',
-                      marginHorizontal: 5,
-                      backgroundColor: AppColors.backgroundSecondColor,
-                    }}
-                  />
-                
-                </TouchableOpacity>
-              </View>
+                  {dob == null
+                    ? 'DD-MM-YYYY'
+                    : moment(dob).format('DD-MM-YYYY')}
+                </Text>
+                <Image
+                  style={{
+                    width: 1.5,
+                    height: '80%',
+                    marginHorizontal: 5,
+                    backgroundColor: AppColors.backgroundSecondColor,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{width: '49%'}}>
-                  <HorizontalTextInput
-                    label={`ઊંચાઈ`}
-                    placeholder={`CM`}
-                    defaultText={height}
-                    type="phone-pad"
-                    onChangeText={setHeight}
-                  />
-                </View>
-                <View style={{width: '49%'}}>
-                  <HorizontalTextInput
-                    label={`વજન`}
-                    placeholder={`KG`}
-                    type="phone-pad"
-                    defaultText={weigth}
-                    onChangeText={setWeight}
-                  />
-                </View>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{width: '49%'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{width: '49%'}}>
                 <HorizontalTextInput
-                    label={`ઉંમર`}
-                    placeholder={``}
-                    defaultText={age}
-                    type="phone-pad"
-                    onChangeText={setAge}
-                  />
+                  label={`ઊંચાઈ`}
+                  placeholder={`CM`}
+                  defaultText={height}
+                  type="phone-pad"
+                  onChangeText={setHeight}
+                />
+              </View>
+              <View style={{width: '49%'}}>
+                <HorizontalTextInput
+                  label={`વજન`}
+                  placeholder={`KG`}
+                  type="phone-pad"
+                  defaultText={weigth}
+                  onChangeText={setWeight}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{width: '49%'}}>
+                <HorizontalTextInput
+                  label={`ઉંમર`}
+                  placeholder={``}
+                  defaultText={age}
+                  type="phone-pad"
+                  onChangeText={setAge}
+                />
                 {/* <Text
                     style={{
                       fontFamily: AppFonts.regular,
@@ -472,222 +503,387 @@ const AddMemberScreen = props => {
                     }}>
                     {dob == null ? '' : getAge(dob)}
                   </Text> */}
-
-                </View>
-                <View style={{width: '49%'}}>
-                <HorizontalSelection
-                label={`બ્લડ ગ્રુપ`}
-                defaultText={blood}
-                data={[
-                  {name: 'A+'},
-                  {name: 'A-'},
-                  {name: 'B+'},
-                  {name: 'B-'},
-                  {name: 'O+'},
-                  {name: 'O-'},
-                  {name: 'AB+'},
-                  {name: 'AB-'},
-                ]}
-                value={blood}
-                onItemSelect={item => {
-                  printLog(JSON.stringify(item?.item));
-                  setBlood(item?.name);
-                }}
-              />
-                </View>
               </View>
-
-              <HorizontalTextInput
-               
-                label={`Family ID`}
-                defaultText={familyId}
-                onChangeText={setFamilyId}
-              />
-              <HorizontalTextInput
-                label={`કુટુંબ ના વ્યકિતનું નામ`}
-                defaultText={familyMember}
-                onChangeText={setFamilyMember}
-              />
-              <HorizontalSelection
-                label={`લિંગ`}
-                placeholder={`લિંગ`}
-                data={[{name: 'Male'}, {name: 'Female'}]}
-                value={gender}
-                onItemSelect={item => {
-                  printLog(JSON.stringify(item?.item));
-                  setGender(item?.name);
-                }}
-              />
-
-              <DatePicker
-                modal
-                mode="date"
-                open={openDatePicker}
-                maximumDate={new Date()}
-                date={dob == null ? new Date() : dob}
-                onConfirm={date => {
-                  setDatePicker(false);
-                  setDOB(date);
-                }}
-                onCancel={() => {
-                  setDatePicker(false);
-                }}
-              />
-
-             
-              <HorizontalSelection
-                label={`કુટુંબ ના વડા સાથે નો સંબંધ`}
-                defaultText={``}
-                data={relationships}
-                value={relation}
-                onItemSelect={item => {
-                  printLog(JSON.stringify(item?.item));
-                  setRelation(item?.name);
-                }}
-              />
-              <HorizontalSelection
-                label={`લગ્ન સ્થિતિ`}
-                defaultText={``}
-                data={[
-                  {name: 'Single'},
-                  {name: 'Married'},
-                  {name: 'Widowed'},
-                  {name: 'Divorced'},
-                  {name: 'Separated'},
-                ]}
-                value={status}
-                onItemSelect={item => {
-                  printLog(JSON.stringify(item?.item));
-                  setStatus(item?.name);
-                }}
-              />
-              <HorizontalTextInput
-                label={`અભ્યાસ`}
-                defaultText={study}
-                onChangeText={setStudy}
-              />
-              <HorizontalTextInput
-                label={`હાલ નો વ્યવસાય`}
-                defaultText={business}
-                onChangeText={setBusiness}
-              />
-              <HorizontalTextInput
-                label={`વ્યવસાયનું સરનામું`}
-                defaultText={businessAddress}
-                onChangeText={setBusinessAddress}
-              />
-              <HorizontalTextInput
-                label={`હાલ ના રહેઠાણ નુ સરનામું`}
-                defaultText={homeAddress}
-                onChangeText={setHomeAddress}
-              />
-
-              <MyMobileNumber
-                label={`મોબાઇલ નંબર`}
-                countryCode={country_code}
-                phone={phone}
-                setCountryCode={item => {
-                  setCountryCode(item?.name);
-                }}
-                onChangeText={setPhone}
-              />
-
-              <HorizontalTextInput
-                label={`Email ID`}
-                defaultText={email}
-                type="email-address"
-                onChangeText={setEmail}
-              />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  height: 35,
-                  marginTop: 10,
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: AppFonts.regular,
-                    color: AppColors.black,
-                    fontSize: 13,
-                    marginRight: 10,
-                    textAlignVertical: 'center',
-                  }}>
-                  Photo :
-                </Text>
-
-                <ButtonCell
-                  title={`Browse`}
-                  onClick={() => {
-                    getMyImage();
+              <View style={{width: '49%'}}>
+                <HorizontalSelection
+                  label={`બ્લડ ગ્રુપ`}
+                  defaultText={blood}
+                  data={[
+                    {name: 'A+'},
+                    {name: 'A-'},
+                    {name: 'B+'},
+                    {name: 'B-'},
+                    {name: 'O+'},
+                    {name: 'O-'},
+                    {name: 'AB+'},
+                    {name: 'AB-'},
+                  ]}
+                  value={blood}
+                  onItemSelect={item => {
+                    printLog(JSON.stringify(item?.item));
+                    setBlood(item?.name);
                   }}
                 />
+              </View>
+            </View>
 
-                {image == '' ? (
-                  <></>
-                ) : (
-                  <View
+            <HorizontalTextInput
+              label={`Family ID`}
+              defaultText={familyId}
+              onChangeText={setFamilyId}
+            />
+            <HorizontalTextInput
+              label={`કુટુંબ ના વ્યકિતનું નામ`}
+              defaultText={familyMember}
+              onChangeText={setFamilyMember}
+            />
+            <HorizontalSelection
+              label={`લિંગ`}
+              placeholder={`લિંગ`}
+              data={[{name: 'Male'}, {name: 'Female'}]}
+              value={gender}
+              onItemSelect={item => {
+                printLog(JSON.stringify(item?.item));
+                setGender(item?.name);
+              }}
+            />
+
+            <DatePicker
+              modal
+              mode="date"
+              open={openDatePicker}
+              maximumDate={new Date()}
+              date={dob == null ? new Date() : dob}
+              onConfirm={date => {
+                setDatePicker(false);
+                setDOB(date);
+              }}
+              onCancel={() => {
+                setDatePicker(false);
+              }}
+            />
+
+            <HorizontalSelection
+              label={`કુટુંબ ના વડા સાથે નો સંબંધ`}
+              defaultText={``}
+              data={staticArray.relationWithHead}
+              value={relation}
+              onItemSelect={item => {
+                printLog(JSON.stringify(item?.item));
+                setRelation(item?.name);
+              }}
+            />
+            <HorizontalSelection
+              label={`લગ્ન સ્થિતિ`}
+              defaultText={``}
+              data={[
+                {name: 'Single'},
+                {name: 'Married'},
+                {name: 'Widowed'},
+                {name: 'Divorced'},
+                {name: 'Separated'},
+              ]}
+              value={status}
+              onItemSelect={item => {
+                printLog(JSON.stringify(item?.item));
+                setStatus(item?.name);
+              }}
+            />
+            <HorizontalSelection
+              label={`અભ્યાસ:`}
+              defaultText={`અભ્યાસ:`}
+              data={staticArray.studies}
+              value={study}
+              onItemSelect={item => {
+                printLog(JSON.stringify(item?.item));
+                setStudy(item?.name);
+              }}
+            />
+            <HorizontalTextInput
+              label={`Course Name : `}
+              defaultText={course}
+              onChangeText={setCourse}
+            />
+            <HorizontalTextInput
+              label={`વ્યવસાય`}
+              defaultText={business}
+              onChangeText={setBusiness}
+            />
+            <BoxTextInput
+              styles={{flexDirection: 'coloum'}}
+              textStyle={{marginBottom: 10}}
+              label={`વ્યવસાયનું સરનામું`}
+              defaultText={businessAddress}
+              onChangeText={setBusinessAddress}
+            />
+
+            <HorizontalSelection
+              label={`ફોરેન Country Name`}
+              defaultText={``}
+              data={staticArray.foriegnCountry}
+              value={homeAddress}
+              onItemSelect={item => {
+                // printLog(JSON.stringify(item?.item));
+                setHomeAddress(item?.name);
+              }}
+            />
+
+            {/* <HorizontalTextInput
+              label={`ફોરેન Country Name`}
+              defaultText={homeAddress}
+              onChangeText={setHomeAddress}
+            /> */}
+
+            <BoxTextInput
+              styles={{flexDirection: 'coloum', minHeight: 120}}
+              textStyle={{marginBottom: 10}}
+              label={`હાલ ના રહેઠાણ નુ સરનામું`}
+              defaultText={presentAddress}
+              onChangeText={setPresentAddress}
+            />
+
+            <MyMobileNumber
+              label={`મોબાઇલ નંબર`}
+              countryCode={country_code}
+              phone={phone}
+              setCountryCode={item => {
+                setCountryCode(item?.name);
+              }}
+              onChangeText={setPhone}
+            />
+            <HorizontalTextInput
+              label={`Email ID`}
+              defaultText={email}
+              type="email-address"
+              onChangeText={setEmail}
+            />
+            <HorizontalTextInput
+              label={`જીવન સહાય સભાસદ નં:`}
+              defaultText={lifeSupportNo}
+              // type="email-address"
+              onChangeText={setLifeSupportNo}
+            />
+            <HorizontalTextInput
+              label={`ભુમિ સભાસદ નં:`}
+              defaultText={bhumiNo}
+              // type="email-address"
+              onChangeText={setBhumiNo}
+            />
+            {/* <View
+              style={{
+                flexDirection: 'row',
+                height: 35,
+                marginTop: 10,
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.regular,
+                  color: AppColors.black,
+                  fontSize: 13,
+                  marginRight: 10,
+                  textAlignVertical: 'center',
+                }}>
+                Photo :
+              </Text>
+
+              <ButtonCell
+                title={`Browse`}
+                onClick={() => {
+                  getMyImage();
+                }}
+              />
+
+              {image == '' ? (
+                <></>
+              ) : (
+                <View
+                  style={{
+                    width: '100%',
+                    resizeMode: 'center',
+                    borderRadius: 5,
+                    marginVertical: 10,
+                    backgroundColor: AppColors?.backgroundSecondColor,
+                  }}>
+                  <Image
+                    source={
+                      typeof image == 'object'
+                        ? image
+                        : {uri: memberItem?.image}
+                    }
                     style={{
+                      height: 160,
                       width: '100%',
                       resizeMode: 'center',
-                      borderRadius: 5,
-                      marginVertical: 10,
-                      backgroundColor: AppColors?.backgroundSecondColor,
-                    }}>
-                    <Image
-                      source={
-                        typeof image == 'object'
-                          ? image
-                          : {uri: memberItem?.image}
-                      }
-                      style={{
-                        height: 160,
-                        width: '100%',
-                        resizeMode: 'center',
-                      }}
-                    />
-                  </View>
-                )}
-              </View>
-              {loading ? (
-                <LoaderView
-                  style={{width: '50%', height: 35, marginVertical: 20}}
-                />
-              ) : (
-                <AppButton
-                  width={'50%'}
-                  text={`Submit`}
-                  buttonStyle={{
-                    width: '50%',
-                    height: 40,
-                    borderRadius: 20,
-                    alignSelf: 'center',
-                    marginVertical: 20,
-                  }}
-                  onClick={() => {
-                    if (city == null) {
-                      ShowMessage('Please Select City');
-                    } else if (familyMember?.trim() == '') {
-                      ShowMessage('Please enter name');
-                    } else if (gender == null) {
-                      ShowMessage('Please select gender');
-                    } else if (dob == null) {
-                      ShowMessage('Please select Date of Birth');
-                    } else if (image == undefined || image == null) {
-                      ShowMessage('Please selcet photo');
-                    } else {
-                      setAdding(true);
-                      addMembers();
-                    }
-                  }}
-                  isLoading={loading}
-                />
+                    }}
+                  />
+                </View>
               )}
-            </KeyboardAwareScrollView>
-         
-        </ScrollView>
+            </View> */}
+
+            <View style={{flexDirection: 'row'}}>
+              <View>
+                <View style={{flexDirection: 'row', paddingTop: 20}}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: AppFonts.semiBold,
+                      color: AppColors.extraDark,
+                    }}>
+                    ફોટો :{' '}
+                  </Text>
+                  <AppButton
+                    text={'Browse'}
+                    textStyle={{marginLeft: 0}}
+                    buttonStyle={{
+                      width: 100,
+                      height: 25,
+                      backgroundColor: '#9A9A9A',
+                      borderRadius: 30,
+                      marginLeft: 15,
+                    }}
+                  />
+                </View>
+
+                <View style={{flexDirection: 'row', paddingVertical: 10}}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: AppFonts.semiBold,
+                      color: AppColors.extraDark,
+                    }}>
+                    ફોટો :{' '}
+                  </Text>
+                  <AppButton
+                    text={'Browse'}
+                    textStyle={{marginLeft: 0}}
+                    buttonStyle={{
+                      width: 100,
+                      height: 25,
+                      backgroundColor: '#9A9A9A',
+                      borderRadius: 30,
+                      marginLeft: 15,
+                    }}
+                  />
+                </View>
+              </View>
+
+              <View
+                style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+                <Image
+                  style={{
+                    flex: 0.5,
+                    borderRadius: 15,
+                    
+                    marginHorizontal: 5,
+                  }}
+                  source={require('../../assets/images/visiting_card.png')}
+                />
+
+                <Image
+                  style={{
+                    flex: 0.5,
+                    borderRadius: 15,
+                  }}
+                  source={require('../../assets/images/visiting_card.png')}
+                />
+              </View>
+            </View>
+
+            {loading ? (
+              <LoaderView
+                style={{width: '50%', height: 35, marginVertical: 20}}
+              />
+            ) : (
+              <AppButton
+                width={'50%'}
+                text={`Submit`}
+                buttonStyle={{
+                  width: '50%',
+                  height: 40,
+                  borderRadius: 20,
+                  alignSelf: 'center',
+                  marginVertical: 20,
+                }}
+                onClick={() => {
+                  if (city == null) {
+                    ShowMessage('Please Select City');
+                  } else if (familyMember?.trim() == '') {
+                    ShowMessage('Please enter name');
+                  } else if (gender == null) {
+                    ShowMessage('Please select gender');
+                  } else if (dob == null) {
+                    ShowMessage('Please select Date of Birth');
+                  } else if (image == undefined || image == null) {
+                    ShowMessage('Please selcet photo');
+                  } else {
+                    setAdding(true);
+                    addMembers();
+                  }
+                }}
+                isLoading={loading}
+              />
+            )}
+          </View>
+
+          {/* Footer */}
+          <AddBorder />
+        </KeyboardAwareScrollView>
+
+        {/* <KeyboardAwareScrollView
+          enableOnAndroid={true}
+          extraScrollHeight={40}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps={'handled'}
+          contentContainerStyle={{paddingBottom: 150}}>
+          <ScrollView>
+            
+          </ScrollView>
+        </KeyboardAwareScrollView> */}
+
+        {/* <View style={{height:100}}>
+          <BorderView text={'gv'}/>
+        </View> */}
       </View>
-    </SafeAreaView>
+    </View>
+  );
+};
+
+export const AddBorder = () => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 30,
+        width: '100%',
+      }}>
+      <View
+        style={{
+          backgroundColor: AppColors.BackgroundSecondColor,
+          height: 5,
+          borderTopRightRadius: 5,
+          borderBottomRightRadius: 5,
+          width: '10%',
+        }}></View>
+      <Text
+        style={{
+          fontSize: 16,
+          fontFamily: AppFonts.regular,
+          color: '#78789D',
+        }}>
+        સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ
+      </Text>
+      <View
+        style={{
+          backgroundColor: AppColors.BackgroundSecondColor,
+          height: 5,
+          borderTopLeftRadius: 5,
+          borderBottomLeftRadius: 5,
+          width: '10%',
+        }}></View>
+    </View>
   );
 };
 
@@ -704,8 +900,8 @@ export const ButtonCell = props => {
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingHorizontal: 15,
         ...props?.styles,
-        paddingHorizontal:15
       }}>
       <Text
         style={{

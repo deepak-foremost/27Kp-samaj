@@ -68,7 +68,7 @@ const AppPasswordView = props => {
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-          color: AppColors.DarkText,
+          color: AppColors.extraDark,
         }}>
         {props?.text}
       </Text>
@@ -76,11 +76,12 @@ const AppPasswordView = props => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          paddingBottom: 5,
+          // paddingBottom: 5,
+          height:45,
           borderBottomWidth: 1,
           borderBottomColor: '#EAEAFF',
         }}>
-        <Image source={AppImages.PHONE_SMALL_ICON} style={{}} />
+        <Image source={AppImages.KEY_SMALL_ICON} style={{}} />
         <View style={{flexDirection: 'row'}}>
           <TextInput
           secureTextEntry={open ? false : true}
@@ -89,15 +90,15 @@ const AppPasswordView = props => {
               fontFamily: AppFonts.regular,
               marginLeft: 20,
               flex: 1,
-              color: AppColors.DarkText,
+              color: AppColors.extraDark,
             }}
-            keyboardType="numeric"
+           
             placeholderTextColor={'#38385E'}
             placeholder={props?.placeholder}
             onChangeText={props?.onChangeText}
           />
           <TouchableOpacity
-            style={{justifyContent: 'center'}}
+            style={{justifyContent: 'center',marginRight:15}}
             activeOpacity={1}
             onPress={() => setOpen(!open)}>
             <Image source={open ? AppImages.EYE_OPEN : AppImages.EYE_CLOSE} />

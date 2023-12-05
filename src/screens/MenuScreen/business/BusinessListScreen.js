@@ -29,6 +29,7 @@ import {ListMember} from '../advisour_member/AdvicerMember';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const list = [
   {
@@ -37,7 +38,7 @@ const list = [
     category_name: 'Visa Consultants',
     address: ' Nikol, Ahmedabad',
     phone: '+919999999999',
-    is_family_id:1
+    is_family_id: 1,
   },
   {
     firm: 'Pramukh International',
@@ -45,21 +46,22 @@ const list = [
     category_name: 'Visa Consultants',
     address: ' Nikol, Ahmedabad',
     phone: '+919999999999',
-    is_family_id:1
+    is_family_id: 1,
   },
 ];
 
-const user=[
-    {
-        is_family_id:1
-    }
-
-]
+const user = [
+  {
+    is_family_id: 1,
+  },
+];
 
 const BusinessListScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [modelOpen, setModelOpen] = useState(false);
   const [businesses, setBusiness] = useState(null);
-//   const [user, setUser] = useState(null);
+  //   const [user, setUser] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -121,11 +123,12 @@ const BusinessListScreen = props => {
   //   };
 
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
         {
           backgroundColor: AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
 
           //   paddingBottom: safeAreaBottomHeight(),
         },
@@ -152,84 +155,84 @@ const BusinessListScreen = props => {
         <AppButton
           text={'Mobile Number : 9999999999'}
           buttonStyle={{
-            width: '60%',
+            width: '90%',
             alignSelf: 'center',
             marginTop: 15,
             borderRadius: 20,
             height: 40,
           }}
         />
-         <View style={{flex:0.8}}>
-        {businesses == null ? (
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: AppColors.backgroundColor,
-              alignItems: 'center',
-              paddingHorizontal: 10,
-              paddingTop: 15,
-            }}>
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-            <ListMember styles={{height: 100}} />
-          </View>
-        ) : businesses?.length == 0 ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text
+        <View style={{flex: 1}}>
+          {businesses == null ? (
+            <View
               style={{
-                fontFamily: AppFonts.semiBold,
-                fontSize: 15,
-                color: AppColors?.lineColor,
+                flex: 1,
+                backgroundColor: AppColors.backgroundColor,
+                alignItems: 'center',
+                paddingHorizontal: 10,
+                paddingTop: 15,
               }}>
-              No List Found
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{paddingTop: 10, marginBottom: 20}}
-            data={businesses == null ? [] : businesses}
-            // refreshControl={
-            //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            // }
-            renderItem={({item, index}) => (
-              <BusinessDirectoryCell
-                index={index}
-                item={item}
-                user={user}
-                onClicked={type => {
-                  if (type == 'view' || type == 'edit') {
-                    RootNavigation.push(
-                      props?.navigation,
-                      type == 'view'
-                        ? AppScreens.BUSINESS_DETAIL_SCREEN
-                        : AppScreens.ADD_BUSINESS_SCREEN,
-                      {item: item},
-                    );
-                  } else if (type == 'delete') {
-                    setDeleteItem(item);
-                    setModelOpen(true);
-                  }
-                }}
-              />
-            )}
-          />
-        )}
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+              <ListMember styles={{height: 100}} />
+            </View>
+          ) : businesses?.length == 0 ? (
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.semiBold,
+                  fontSize: 15,
+                  color: AppColors?.lineColor,
+                }}>
+                No List Found
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingTop: 10, marginBottom: 20}}
+              data={businesses == null ? [] : businesses}
+              // refreshControl={
+              //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              // }
+              renderItem={({item, index}) => (
+                <BusinessDirectoryCell
+                  index={index}
+                  item={item}
+                  user={user}
+                  onClicked={type => {
+                    if (type == 'view' || type == 'edit') {
+                      RootNavigation.push(
+                        props?.navigation,
+                        type == 'view'
+                          ? AppScreens.BUSINESS_DETAIL_SCREEN
+                          : AppScreens.ADD_BUSINESS_SCREEN,
+                        {item: item, show: true},
+                      );
+                    } else if (type == 'delete') {
+                      setDeleteItem(item);
+                      setModelOpen(true);
+                    }
+                  }}
+                />
+              )}
+            />
+          )}
+        </View>
+        <BorderView
+          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          backgroundColor={AppColors.BackgroundSecondColor}
+        />
       </View>
-      <BorderView text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
-      backgroundColor={AppColors.BackgroundSecondColor}/>
-      </View>
-
-     
 
       <ModalView
         open={modelOpen}
@@ -240,13 +243,13 @@ const BusinessListScreen = props => {
           setModelOpen(false);
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default BusinessListScreen;
 
-const ModalView = props => {
+export const ModalView = props => {
   const [deleteLoader, setDeleteLoader] = useState(false);
   return (
     <Modal
@@ -265,10 +268,11 @@ const ModalView = props => {
           backgroundColor: 'rgba(0,0,0,0.5)',
         }}>
         <View style={styles.modal}>
-          <Text style={styles.modelTextTitle}>Delete Business</Text>
+          <Text style={styles.modelTextTitle}>{props?.title}</Text>
 
           <Text style={styles.modelTextSubTitle}>
-            Are you sure you want to delete Business?
+            {props?.message}
+            {/* Are you sure you want to delete Business? */}
           </Text>
           {deleteLoader ? (
             // <LoaderView />
@@ -283,29 +287,29 @@ const ModalView = props => {
                 marginBottom: Platform.OS == 'ios' ? 30 : 20,
                 justifyContent: 'center',
                 borderRadius: 20,
-                backgroundColor: AppColors.purple,
+                backgroundColor: AppColors.BackgroundSecondColor,
                 marginTop: 40,
               }}
-              onPress={() => {
-                setDeleteLoader(true);
-
-                deleteMyBusiness(
-                  {business_id: props?.item?.id},
-                  response => {
-                    printLog('onSuccess', JSON.stringify(response));
-                    ShowMessage(response?.message);
-                    setDeleteLoader(false);
-                    if (response?.status) {
-                      props?.onDelete();
-                    }
-                  },
-                  error => {
-                    // setDeleteLoader(false);
-                    printLog('onFailure', JSON.stringify(error));
-                    props?.onCancel();
-                  },
-                );
-              }}>
+              onPress={
+                // setDeleteLoader(true);
+                props?.press
+                // deleteMyBusiness(
+                //   {business_id: props?.item?.id},
+                //   response => {
+                //     printLog('onSuccess', JSON.stringify(response));
+                //     ShowMessage(response?.message);
+                //     setDeleteLoader(false);
+                //     if (response?.status) {
+                //       props?.onDelete();
+                //     }
+                //   },
+                //   error => {
+                //     // setDeleteLoader(false);
+                //     printLog('onFailure', JSON.stringify(error));
+                //     props?.onCancel();
+                //   },
+                // );
+              }>
               <Text
                 style={{
                   width: '100%',
@@ -314,7 +318,8 @@ const ModalView = props => {
                   color: 'white',
                   textAlign: 'center',
                 }}>
-                Yes, Delete
+                {props?.first}
+                {/* Yes, Delete */}
               </Text>
             </TouchableOpacity>
           )}

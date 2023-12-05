@@ -7,12 +7,18 @@ import {AppFonts} from '../../../utils/AppFonts';
 import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
 import * as RootNavigation from '../../../utils/RootNavigation';
-import { AppScreens } from '../../../utils/AppScreens';
+import {AppScreens} from '../../../utils/AppScreens';
+import {setString} from '../../../utils/AsyncStorageHelper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const UserLogInDetail = ({route}) => {
   const screen = route.params.screen;
+  const show = route.params.status;
+  const returnScreen = route?.params?.return;
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
         {
@@ -20,11 +26,12 @@ const UserLogInDetail = ({route}) => {
             screen == 'User Signin'
               ? AppColors.Red
               : AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
-          text={'User Login Details'}
+          text={'Sign In Details'}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -32,85 +39,60 @@ const UserLogInDetail = ({route}) => {
                 : AppColors.BackgroundSecondColor,
           }}
         />
-
-        <View style={{flex: 0.55, justifyContent: 'center'}}>
-          <View style={[AppStyles.OutlineBackground]}>
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: AppFonts.semiBold,
-                color: AppColors.Red,
-                alignSelf: 'flex-start',
-                marginVertical: 25,
-              }}>
-              User Login Details
-            </Text>
-
-            <View
-              style={{
-                height: 45,
-                alignSelf: 'flex-start',
-                justifyContent: 'space-between',
-              }}>
+        <View style={{flex: 1}}>
+          <View style={{marginVertical: 50}}>
+            <View style={[AppStyles.OutlineBackground, {paddingBottom: 20}]}>
               <Text
                 style={{
-                  color: AppColors.DarkText,
-                  fontSize: 12,
-                  fontFamily: AppFonts.semiBold,
-                }}>
-                Mobile Number
-              </Text>
-              <Text
-                style={{
-                  fontFamily: AppFonts.regular,
                   fontSize: 14,
-                  color: AppColors.LightText,
-                }}>
-                8733075256
-              </Text>
-            </View>
-
-            <View
-              style={{
-                height: 45,
-                alignSelf: 'flex-start',
-                justifyContent: 'space-between',
-                marginVertical: 25,
-              }}>
-              <Text
-                style={{
-                  color: AppColors.DarkText,
-                  fontSize: 12,
                   fontFamily: AppFonts.semiBold,
+                  color:
+                    screen == 'User Signin'
+                      ? AppColors.Red
+                      : AppColors.BackgroundSecondColor,
+                  alignSelf: 'flex-start',
+                  marginTop: 25,
                 }}>
-                Password
+                {screen == 'User Signin'
+                  ? 'Guest Signin Details'
+                  : 'Register Mobile Number Login Details'}
               </Text>
-              <Text
-                style={{
-                  fontFamily: AppFonts.regular,
-                  fontSize: 14,
-                  color: AppColors.LightText,
-                }}>
-                Admin@234E34
-              </Text>
+
+              {screen == 'User Signin' && show && (
+                <DetailsItem first={'Name'} second={'Dhaval Patel'} />
+              )}
+
+              {screen == 'User Signin' && show && (
+                <DetailsItem first={'Village'} second={'amrapue'} />
+              )}
+
+              <DetailsItem first={'Mobile Number'} second={'+91 8733075256'} />
+
+              <DetailsItem first={'Password'} second={'Admin@234E34'} />
             </View>
           </View>
+
+          <AppButton
+            text={'Thanks'}
+            buttonPress={() => {
+              setString('flag', JSON.stringify('enter'));
+              RootNavigation.navigate(
+                returnScreen == 'profile'
+                  ? AppScreens.HOME_SCREEN
+                  : AppScreens.FirstScreen,
+              );
+            }}
+            buttonStyle={{
+              width: '85%',
+
+              alignSelf: 'center',
+              backgroundColor:
+                screen == 'User Signin'
+                  ? AppColors.Red
+                  : AppColors.BackgroundSecondColor,
+            }}
+          />
         </View>
-
-        <AppButton
-          text={'Thanks'}
-          buttonPress={()=> RootNavigation.navigate(AppScreens.FirstScreen)}
-          buttonStyle={{
-            width: '85%',
-          
-            alignSelf: 'center',
-            backgroundColor:
-              screen == 'User Signin'
-                ? AppColors.Red
-                : AppColors.BackgroundSecondColor,
-          }}
-        />
-
         <BorderView
           text={'સમાજ એજ મારો પરિવાર'}
           backgroundColor={
@@ -120,8 +102,37 @@ const UserLogInDetail = ({route}) => {
           }
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default UserLogInDetail;
+
+export const DetailsItem = props => {
+  return (
+    <View
+      style={{
+        height: 40,
+        alignSelf: 'flex-start',
+        justifyContent: 'space-between',
+        marginTop: 20,
+      }}>
+      <Text
+        style={{
+          color: AppColors.extraDark,
+          fontSize: 12,
+          fontFamily: AppFonts.semiBold,
+        }}>
+        {props?.first}
+      </Text>
+      <Text
+        style={{
+          fontFamily: AppFonts.regular,
+          fontSize: 14,
+          color: AppColors.LightText,
+        }}>
+        {props?.second}
+      </Text>
+    </View>
+  );
+};

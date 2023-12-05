@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Modal,
   Dimensions,
+  Platform,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {getNews} from '../../../../networking/CallApi';
@@ -23,47 +24,63 @@ import {ListMember} from '../advisour_member/AdvicerMember';
 import moment from 'moment';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import BorderView from '../../../components/BorderView';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const list = [
   {
     id: 0,
-    title:
-      'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પ',
+    title: 'ગરબાની વિશેષ રમઝટ',
     news_date: '22/05/2023',
     src: AppImages.ICON_TEST_VILLAGE,
     content:
       'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં .',
   },
   {
-    id: 1,
-    title:
-      'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પ',
+    id: 0,
+    title: 'ગરબાની વિશેષ રમઝટ',
     news_date: '22/05/2023',
-    // src:require(''),
+    src: null,
     content:
       'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં .',
   },
   {
-    id: 2,
-    title:
-      'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પ',
+    id: 0,
+    title: 'ગરબાની વિશેષ રમઝટ',
     news_date: '22/05/2023',
-    // src:require(''),
+    src: null,
     content:
       'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં .',
   },
   {
-    id: 3,
-    title:
-      'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પ',
+    id: 0,
+    title: 'ગરબાની વિશેષ રમઝટ',
     news_date: '22/05/2023',
-    src: AppImages.ICON_TEST_VILLAGE,
+    src: null,
+    content:
+      'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં .',
+  },
+  {
+    id: 0,
+    title: 'ગરબાની વિશેષ રમઝટ',
+    news_date: '22/05/2023',
+    src: null,
+    content:
+      'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં .',
+  },
+  {
+    id: 0,
+    title: 'ગરબાની વિશેષ રમઝટ',
+    news_date: '22/05/2023',
+    src: null,
     content:
       'પૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં ઉત્સવનું વાતાવરણ.. ગરબાની વિશેષ રમઝટ, એટલ જ શરદ પપૌરાણિક માન્યતાઓ અને શરદ ઋતુ, પૂર્ણાકાર ચંદ્રમાં, સંસાર ભરમાં .',
   },
 ];
 
 const NewsScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [visible, setVisible] = useState(-1);
   const [showModal, setShowModal] = useState(false);
   const [news, setNews] = useState(null);
@@ -133,10 +150,11 @@ const NewsScreen = props => {
   //     );
   //   }, []);
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: AppColors.BackgroundSecondColor,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <Modal
         visible={showModal}
@@ -199,17 +217,15 @@ const NewsScreen = props => {
         </TouchableOpacity>
         <ImageViewer
           renderImage={props => (
-          
             <Image
               style={{
-                height: Dimensions.get('screen').height-100,
-                width: Dimensions.get('window').width-25,
-                alignSelf:'center',
-                borderRadius:15
+                height: Dimensions.get('screen').height - 100,
+                width: Dimensions.get('window').width - 25,
+                alignSelf: 'center',
+                borderRadius: 15,
               }}
               source={props.source}
             />
-           
           )}
           transparent={true}
           backgroundColor="rgba(0,0,0,0.7)"
@@ -245,7 +261,7 @@ const NewsScreen = props => {
         {news == null ? (
           <View
             style={{
-              flex: 1,
+              flex: 0.8,
               backgroundColor: AppColors.BackgroundColor,
               alignItems: 'center',
             }}>
@@ -258,7 +274,7 @@ const NewsScreen = props => {
         ) : news?.length == 0 ? (
           <View
             style={{
-              flex: 1,
+              flex: 0.8,
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: AppColors.BackgroundColor,
@@ -273,68 +289,74 @@ const NewsScreen = props => {
             </Text>
           </View>
         ) : (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: 20}}
-            //   refreshControl={
-            //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            //   }
-            data={news == null ? [] : news}
-            renderItem={({item, index}) => (
-              <View>
-                <NotificationCell
-                  item={item}
-                  index={index}
-                  visible={visible}
-                  imagePress={() => setShowModal(true)}
-                  onNewsClick={() =>
-                    RootNavigation.push(
-                      props?.navigation,
-                      AppScreens.NEWS_DETAIL_SCREEN,
-                      {
-                        item: item,
-                      },
-                    )
-                  }
-                />
-                {visible == item.id ? (
-                  <View
-                    style={{
-                      marginTop: -10,
-                      marginHorizontal: 20,
-                      backgroundColor: '#fff',
-                      borderBottomLeftRadius: 10,
-                      borderBottomRightRadius: 10,
-                      ...Platform.select({
-                        ios: {
-                          shadowColor: '#D5D5D5',
-                          shadowOffset: {width: 0, height: 5},
-                          shadowOpacity: 0.9,
-                          shadowRadius: 3,
+          <View style={{flex: 1}}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 20}}
+              //   refreshControl={
+              //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              //   }
+              data={news == null ? [] : news}
+              renderItem={({item, index}) => (
+                <View>
+                  <NotificationCell
+                    item={item}
+                    index={index}
+                    visible={visible}
+                    imagePress={() => setShowModal(true)}
+                    onNewsClick={() =>
+                      RootNavigation.push(
+                        props?.navigation,
+                        AppScreens.NEWS_DETAIL_SCREEN,
+                        {
+                          item: item,
                         },
-                        android: {
-                          elevation: 15,
-                        },
-                      }),
-                      padding: 10,
-                    }}>
-                    <Text
+                      )
+                    }
+                  />
+                  {visible == item.id ? (
+                    <View
                       style={{
-                        fontSize: 10,
-                        lineHeight: 20,
-                        color: AppColors.DarkText,
+                        marginTop: -10,
+                        marginHorizontal: 20,
+                        backgroundColor: '#fff',
+                        borderBottomLeftRadius: 10,
+                        borderBottomRightRadius: 10,
+                        ...Platform.select({
+                          ios: {
+                            shadowColor: '#D5D5D5',
+                            shadowOffset: {width: 0, height: 5},
+                            shadowOpacity: 0.9,
+                            shadowRadius: 3,
+                          },
+                          android: {
+                            elevation: 15,
+                          },
+                        }),
+                        padding: 10,
                       }}>
-                      {item.content}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            )}
-          />
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          lineHeight: 20,
+                          color: AppColors.DarkText,
+                        }}>
+                        {item.content}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              )}
+            />
+          </View>
         )}
+        <BorderView
+          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          backgroundColor={AppColors.BackgroundSecondColor}
+        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -347,11 +369,12 @@ const NotificationCell = props => {
       onPress={() => props?.onNewsClick()}
       style={{
         flexDirection: 'row',
-        flex: 1,
         backgroundColor: AppColors.BackgroundColor,
+        alignItems: 'center',
         marginTop: 15,
         marginHorizontal: 20,
         borderRadius: 10,
+        paddingVertical: 5,
         ...Platform.select({
           ios: {
             shadowColor: '#D5D5D5',
@@ -366,7 +389,7 @@ const NotificationCell = props => {
       }}>
       <TouchableOpacity
         activeOpacity={1}
-        style={{margin: 15}}
+        style={{margin: 5}}
         onPress={props?.item.src == null ? null : props?.imagePress}>
         <Image
           source={
@@ -374,16 +397,17 @@ const NotificationCell = props => {
           }
           style={{
             alignSelf: 'center',
-
-            height: 63,
-            width: 44,
+            height: props?.item.src == null ? 20 : 20,
+            width: props?.item.src != null ? 20 : 15,
             borderRadius: 5,
-            resizeMode: props?.item.src == null ? 'contain' : null,
+            resizeMode: props?.item.src == null ? 'stretch' : null,
+            BackgroundColor: '#fff',
+            marginLeft: 10,
           }}
         />
       </TouchableOpacity>
 
-      <View style={{paddingVertical: 17, marginRight: 17, flex: 1}}>
+      <View style={{marginHorizontal: 15, flex: 1}}>
         <Text
           numberOfLines={3}
           style={{
@@ -397,10 +421,13 @@ const NotificationCell = props => {
       </View>
       <View
         style={{
-          paddingRight: 15,
-          justifyContent: 'flex-end',
+          justifyContent: 'center',
           alignItems: 'center',
-          paddingBottom: 20,
+          backgroundColor: AppColors.DarkText,
+          padding: 3,
+          borderRadius: 15,
+          margin: 5,
+          paddingHorizontal: 10,
         }}>
         {/* <Image
           source={
@@ -419,10 +446,9 @@ const NotificationCell = props => {
         <Text
           numberOfLines={1}
           style={{
-            marginTop: 3,
             fontFamily: AppFonts.medium,
             fontSize: 7,
-            color: AppColors.DarkText,
+            color: '#fff',
           }}>
           {moment(props?.item?.news_date, `yyyy-MM-DD`).format('DD/MM/yyyy')}
         </Text>

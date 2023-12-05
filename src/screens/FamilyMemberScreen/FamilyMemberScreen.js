@@ -10,6 +10,7 @@ import {
   Modal,
   RefreshControl,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {FooterTextCell} from '../../../../components/LineCell';
@@ -28,6 +29,8 @@ import ScreenToolbar from '../../components/ScreenToolbar';
 import BorderView from '../../components/BorderView';
 
 import {MemberDetail} from '../MenuScreen/about_us/AboutUsDetailScreen';
+import {MemberDetailCell} from '../MenuScreen/memberDetail/FamilyDetailScreen';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const list = [
   {
@@ -69,6 +72,8 @@ const list = [
 ];
 
 const FamilyMembersScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [isVisible, setVisible] = useState(-1);
   const [families, setFamilies] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
@@ -132,10 +137,13 @@ const FamilyMembersScreen = props => {
   // }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
-        {backgroundColor: AppColors.BackgroundSecondColor},
+        {
+          backgroundColor: AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+        },
       ]}>
       {/* <AppDrawerHeader
         title={'Edit Family Member'}
@@ -239,7 +247,7 @@ const FamilyMembersScreen = props => {
           }}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -255,7 +263,7 @@ const FamilyMermberCell = props => {
         paddingVertical: 5,
         marginHorizontal: 17,
         justifyContent: 'center',
-        
+
         backgroundColor: AppColors.BackgroundColor,
         marginTop: 15,
         borderRadius: 10,
@@ -328,7 +336,9 @@ const FamilyMermberCell = props => {
           onClick={() => props?.onClick('delete')}
         />
       </View>
-      {props?.isVisible == props?.item?.index ? <MemberDetailCell /> : null}
+      {props?.isVisible == props?.item?.index ? (
+        <MemberDetailCell item={props?.item} notShow={true} />
+      ) : null}
     </TouchableOpacity>
   );
 };
@@ -484,185 +494,185 @@ const styles = StyleSheet.create({
   },
 });
 
-const MemberDetailCell = props => {
-  return (
-    <View
-      style={{
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8,
-        backgroundColor: '#fff',
-        padding: 15,
-        marginHorizontal:15,
-        marginTop:-10,
-        ...Platform.select({
-          ios: {
-            shadowColor: '#D5D5D5',
-            shadowOffset: {width: 0, height: 5},
-            shadowOpacity: 0.9,
-            shadowRadius: 3,
-          },
-          android: {},
-        }),
-      }}>
-      <View style={{alignItems: 'center'}}>
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            alignSelf: 'flex-start',
-          }}>
-          <Text
-            style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 11,
-              color: AppColors.DarkText,
-            }}>
-            {props?.item?.family_main_member_with_relation}
-            {' | '}
-          </Text>
-          <Text
-            style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 11,
-              color: AppColors.DarkText,
-            }}>
-            {props?.item?.name}
-          </Text>
-        </View> */}
+// const MemberDetailCell = props => {
+//   return (
+//     <View
+//       style={{
+//         borderBottomLeftRadius: 8,
+//         borderBottomRightRadius: 8,
+//         backgroundColor: '#fff',
+//         padding: 15,
 
-        <View
-          style={{
-            height: 65,
-            width: 65,
-            borderRadius: 54,
-            backgroundColor: AppColors.BackgroundSecondColor,
-          }}>
-          {/* <Image
-                  source={AppImages.placeholder_user}
-                  style={{
-                    height: 109,
-                    width: 109,
-                    borderRadius: 10,
-                  }}
-                /> */}
+//         marginTop:-10,
+//         // ...Platform.select({
+//         //   ios: {
+//         //     shadowColor: '#D5D5D5',
+//         //     shadowOffset: {width: 0, height: 5},
+//         //     shadowOpacity: 0.9,
+//         //     shadowRadius: 3,
+//         //   },
+//         //   android: {},
+//         // }),
+//       }}>
+//       <View style={{alignItems: 'center'}}>
+//         {/* <View
+//           style={{
+//             flexDirection: 'row',
+//             alignSelf: 'flex-start',
+//           }}>
+//           <Text
+//             style={{
+//               fontFamily: AppFonts.semiBold,
+//               fontSize: 11,
+//               color: AppColors.DarkText,
+//             }}>
+//             {props?.item?.family_main_member_with_relation}
+//             {' | '}
+//           </Text>
+//           <Text
+//             style={{
+//               fontFamily: AppFonts.semiBold,
+//               fontSize: 11,
+//               color: AppColors.DarkText,
+//             }}>
+//             {props?.item?.name}
+//           </Text>
+//         </View> */}
 
-          <Image
-            //   source={{uri: item?.image}}
-            source={AppImages.MEMBER_IMAGE}
-            style={{
-              height: 65,
-              width: 65,
-              resizeMode: 'stretch',
-              borderRadius: 10,
-            }}
-          />
-        </View>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            RootNavigation.push(
-              props?.navigation,
-              AppScreens.FamilyDetailScreen,
-              {
-                item: {...item, id: item?.user_id},
-              },
-            );
-          }}>
-          <Text
-            style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 14,
-              color: AppColors.BackgroundSecondColor,
-              marginVertical: 5,
-            }}>
-            {props?.item?.phone}
-          </Text>
-          {/* <MemberDetail
-                    title={'Family Id :'}
-                    detailText={item?.family_id}
-                    textStyle={{
-                      textDecorationLine: 'underline',
-                      color: 'blue',
-                    }}
-                  /> */}
-        </TouchableOpacity>
+//         <View
+//           style={{
+//             height: 65,
+//             width: 65,
+//             borderRadius: 54,
+//             backgroundColor: AppColors.BackgroundSecondColor,
+//           }}>
+//           {/* <Image
+//                   source={AppImages.placeholder_user}
+//                   style={{
+//                     height: 109,
+//                     width: 109,
+//                     borderRadius: 10,
+//                   }}
+//                 /> */}
 
-        <MemberDetail
-          style={{marginTop: 0}}
-          title={'ગામ :'}
-          detailText={props?.item?.city}
-          textStyle={{color: AppColors.BackgroundSecondColor}}
-        />
-        <MemberDetail
-          style={{marginBottom: 10}}
-          title={'શાખ :'}
-          detailText={props?.item?.shakh}
-          textStyle={{color: AppColors.BackgroundSecondColor}}
-        />
+//           <Image
+//             //   source={{uri: item?.image}}
+//             source={AppImages.MEMBER_IMAGE}
+//             style={{
+//               height: 65,
+//               width: 65,
+//               resizeMode: 'stretch',
+//               borderRadius: 10,
+//             }}
+//           />
+//         </View>
+//         <TouchableOpacity
+//           activeOpacity={1}
+//           onPress={() => {
+//             RootNavigation.push(
+//               props?.navigation,
+//               AppScreens.FamilyDetailScreen,
+//               {
+//                 item: {...item, id: item?.user_id},
+//               },
+//             );
+//           }}>
+//           <Text
+//             style={{
+//               fontFamily: AppFonts.semiBold,
+//               fontSize: 14,
+//               color: AppColors.BackgroundSecondColor,
+//               marginVertical: 5,
+//             }}>
+//             {props?.item?.phone}
+//           </Text>
+//           {/* <MemberDetail
+//                     title={'Family Id :'}
+//                     detailText={item?.family_id}
+//                     textStyle={{
+//                       textDecorationLine: 'underline',
+//                       color: 'blue',
+//                     }}
+//                   /> */}
+//         </TouchableOpacity>
 
-        <MemberDetail title={'મોસાળ :'} detailText={props?.item?.mosal} />
-        <MemberDetail title={'સાસરું: '} detailText={props?.item?.mosal} />
+//         <MemberDetail
+//           style={{marginTop: 0}}
+//           title={'ગામ :'}
+//           detailText={props?.item?.city}
+//           textStyle={{color: AppColors.BackgroundSecondColor}}
+//         />
+//         <MemberDetail
+//           style={{marginBottom: 10}}
+//           title={'શાખ :'}
+//           detailText={props?.item?.shakh}
+//           textStyle={{color: AppColors.BackgroundSecondColor}}
+//         />
 
-        <View style={{flexDirection: 'row'}}>
-          <MemberDetail
-            title={'જન્મ તારીખ :'}
-            style={{width: '35%'}}
-            detailText={
-              props?.item?.dob != '' && props?.item?.dob != undefined
-                ? moment(props?.item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
-                : ''
-            }
-          />
-          <MemberDetail
-            style={{width: '35%'}}
-            title={'|   Age :'}
-            detailText={props?.item?.age}
-          />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <MemberDetail
-            style={{width: '30%'}}
-            title={'ઊંચાઈ :'}
-            detailText={props?.item?.height}
-          />
-          <MemberDetail
-            style={{width: '30%'}}
-            title={'વજન :'}
-            detailText={props?.item?.weight}
-          />
-        </View>
-        <MemberDetail
-          title={'બ્લડ ગ્રુપ :'}
-          detailText={props?.item?.blood_group}
-        />
-        <MemberDetail
-          title={'કુટુંબ ના વડા સાથે નો સંબંધ :'}
-          detailText={props?.item?.family_main_member_with_relation}
-        />
-        <MemberDetail
-          title={'લગ્ન સ્થિતિ :'}
-          detailText={props?.item?.marital_status}
-        />
-        <MemberDetail title={'અભ્યાસ :'} detailText={props?.item?.study} />
-        <MemberDetail
-          title={'હાલ નો વ્યવસાય :'}
-          detailText={props?.item?.business}
-        />
-        <MemberDetail
-          title={'વ્યવસાયનું સરનામું :'}
-          detailText={props?.item?.business_address}
-        />
-        <MemberDetail
-          title={'હાલ ના રહેઠાણ નુ સરનામું :'}
-          detailText={props?.item?.current_address}
-        />
-        <MemberDetail
-          title={'મોબાઇલ નંબર :'}
-          detailText={props?.item?.phone}
-          contact
-        />
+//         <MemberDetail title={'મોસાળ :'} detailText={props?.item?.mosal} />
+//         <MemberDetail title={'સાસરું: '} detailText={props?.item?.mosal} />
 
-        <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
-      </View>
-    </View>
-  );
-};
+//         <View style={{flexDirection: 'row'}}>
+//           <MemberDetail
+//             title={'જન્મ તારીખ :'}
+//             style={{width: '35%'}}
+//             detailText={
+//               props?.item?.dob != '' && props?.item?.dob != undefined
+//                 ? moment(props?.item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
+//                 : ''
+//             }
+//           />
+//           <MemberDetail
+//             style={{width: '35%'}}
+//             title={'|   Age :'}
+//             detailText={props?.item?.age}
+//           />
+//         </View>
+//         <View style={{flexDirection: 'row'}}>
+//           <MemberDetail
+//             style={{width: '30%'}}
+//             title={'ઊંચાઈ :'}
+//             detailText={props?.item?.height}
+//           />
+//           <MemberDetail
+//             style={{width: '30%'}}
+//             title={'વજન :'}
+//             detailText={props?.item?.weight}
+//           />
+//         </View>
+//         <MemberDetail
+//           title={'બ્લડ ગ્રુપ :'}
+//           detailText={props?.item?.blood_group}
+//         />
+//         <MemberDetail
+//           title={'કુટુંબ ના વડા સાથે નો સંબંધ :'}
+//           detailText={props?.item?.family_main_member_with_relation}
+//         />
+//         <MemberDetail
+//           title={'લગ્ન સ્થિતિ :'}
+//           detailText={props?.item?.marital_status}
+//         />
+//         <MemberDetail title={'અભ્યાસ :'} detailText={props?.item?.study} />
+//         <MemberDetail
+//           title={'હાલ નો વ્યવસાય :'}
+//           detailText={props?.item?.business}
+//         />
+//         <MemberDetail
+//           title={'વ્યવસાયનું સરનામું :'}
+//           detailText={props?.item?.business_address}
+//         />
+//         <MemberDetail
+//           title={'હાલ ના રહેઠાણ નુ સરનામું :'}
+//           detailText={props?.item?.current_address}
+//         />
+//         <MemberDetail
+//           title={'મોબાઇલ નંબર :'}
+//           detailText={props?.item?.phone}
+//           contact
+//         />
+
+//         <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
+//       </View>
+//     </View>
+//   );
+// };

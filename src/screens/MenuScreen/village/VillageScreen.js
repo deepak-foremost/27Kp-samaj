@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Linking,
   SafeAreaView,
+  ScrollView,
+  Platform,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {FooterTextCell} from '../../../../components/LineCell';
@@ -25,6 +27,8 @@ import {ListMember} from '../advisour_member/AdvicerMember';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
+import {getString} from '../../../utils/AsyncStorageHelper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const list = [
   {
@@ -50,15 +54,23 @@ const list = [
 ];
 
 const VillageScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [cities, setCities] = useState([]);
   const [value, setValue] = useState('');
   const [cityId, setCityId] = useState('');
   const [member, setMember] = useState(null);
+  const [city, setCity] = useState('');
 
   useEffect(() => {
     setMember(list);
   });
 
+  useEffect(() => {
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
   //   useEffect(() => {
   //     getCities(
   //       response => {
@@ -106,10 +118,11 @@ const VillageScreen = props => {
   //   }, [cityId]);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <View
@@ -167,8 +180,8 @@ const VillageScreen = props => {
                 fontFamily: AppFonts.medium,
                 fontSize: 12,
                 color: AppColors.DarkText,
-                marginLeft:12,
-                alignSelf:'flex-start'
+                marginLeft: 12,
+                alignSelf: 'flex-start',
               }}>
               Please Select Village
             </Text>
@@ -187,6 +200,16 @@ const VillageScreen = props => {
                   alignItems: 'center',
                 },
               ]}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.medium,
+                  fontSize: 13,
+                  color: AppColors.DarkText,
+                  textAlign: 'right',
+                  padding: 10,
+                }}>
+                ગામ :
+              </Text>
               <MySelection
                 label={`Select Village`}
                 placeholder={`Select Village`}
@@ -200,45 +223,32 @@ const VillageScreen = props => {
             </View>
           </View>
 
-          <View
-            style={{
-              marginTop: '5%',
-              width: '90%',
-              flex: 0.8,
-              alignItems: 'center',
+          <ScrollView
+            contentContainerStyle={{
+              paddingHorizontal: 10,
+              paddingTop: 20,
               alignSelf: 'center',
-              backgroundColor: AppColors.backgroundColor,
-              borderRadius: 10,
-              backgroundColor: 'white',
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#D5D5D5',
-                  shadowOffset: {width: 0, height: -1},
-                  shadowOpacity: 0.9,
-                  shadowRadius: 3,
-                },
-                android: {
-                  elevation: 15,
-                },
-              }),
-            }}>
-            <View style={{flex: 1, width: '95%', alignItems: 'center'}}>
-              <Image
-                source={AppImages.ICON_TEST_VILLAGE}
-                style={{
-                  marginVertical:10,
-                  
-                  resizeMode: 'contain',
-                  width: '97%',
-                }}
-              />
+            }}
+            showsVerticalScrollIndicator={false}>
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <View style={{width: '100%', alignItems: 'center'}}>
+                <Image
+                  source={require('../../../assets/images/villageimage.png')}
+                  style={{
+                    // marginVertical: 10,
+                    // resizeMode: 'contain',
+                    width: '90%',
+                    borderRadius: 15,
+                    backgroundColor: '#F2F2F2',
+                  }}
+                />
+              </View>
 
               <View
                 style={{
                   flexDirection: 'row',
-                  marginVertical: 10,
-                  width: '95%',
-                 
+                  marginTop: 15,
+                  width: '90%',
                 }}>
                 <Text
                   style={{
@@ -251,16 +261,17 @@ const VillageScreen = props => {
                 </Text>
                 <Text
                   style={{
-                    flex: 1,
+                    flex: 0.9,
                     color: AppColors.DarkText,
                     fontFamily: AppFonts.semiBold,
                     fontSize: 10,
+                    paddingLeft: 10,
                   }}>
                   નામ
                 </Text>
                 <Text
                   style={{
-                    flex: 0.5,
+                    flex: 0.6,
                     color: AppColors.DarkText,
                     fontFamily: AppFonts.semiBold,
                     fontSize: 10,
@@ -269,11 +280,11 @@ const VillageScreen = props => {
                 </Text>
                 <Text
                   style={{
-                    flex: 1,
+                    flex: 0.8,
                     color: AppColors.DarkText,
                     fontFamily: AppFonts.semiBold,
                     fontSize: 10,
-                    textAlign: 'center',
+                    textAlign: 'left',
                   }}>
                   મોબાઈલ નંબર
                 </Text>
@@ -309,7 +320,7 @@ const VillageScreen = props => {
                   showsVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{
-                    paddingHorizontal: 15,
+                    paddingHorizontal: 10,
                     paddingBottom: 20,
                   }}
                   data={member == null ? [] : member}
@@ -330,7 +341,30 @@ const VillageScreen = props => {
                 />
               )}
             </View>
-          </View>
+          </ScrollView>
+
+          {/* <View
+            style={{
+              marginTop: '5%',
+              width: '90%',
+              flex: 0.8,
+              alignItems: 'center',
+              alignSelf: 'center',
+              backgroundColor: AppColors.fadeBackground,
+              borderRadius: 10,
+
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#D5D5D5',
+                  shadowOffset: {width: 0, height: -1},
+                  shadowOpacity: 0.9,
+                  shadowRadius: 3,
+                },
+                android: {
+                  elevation: 15,
+                },
+              }),
+            }}></View> */}
         </View>
 
         <BorderView
@@ -340,7 +374,7 @@ const VillageScreen = props => {
 
         {/* <FooterTextCell title={`સમાજ ના પ્રેમ માટે અમુક કામ તો કરી જ શકીએ...`} /> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -353,16 +387,17 @@ const AboutCell = props => {
       onPress={props?.onClick}
       style={{
         flexDirection: 'row',
-        backgroundColor: AppColors.backgroundColor,
-       
+        backgroundColor: 'white',
+        paddingHorizontal: 10,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        height:30
+        height: 30,
+        marginTop: 10,
         // borderBottomColor: AppColors.light_grey,
         // borderBottomWidth: 1,
       }}>
-      <View style={{flexDirection: 'row', alignItems: 'center',}}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Text
           style={{
             width: 15,
@@ -374,11 +409,12 @@ const AboutCell = props => {
         </Text>
         <Text
           style={{
-            flex: 1,
+            flex: 0.9,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
             textTransform: 'capitalize',
+            paddingLeft: 10,
           }}>
           {props?.item?.name}
         </Text>
@@ -412,13 +448,9 @@ const AboutCell = props => {
           }}
         />
         <TouchableOpacity
-          style={{flexDirection: 'row', flex: 1}}
+          style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}
           activeOpacity={0.9}
           onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
-          {/* <Image
-            source={AppImages.ICON_CALL}
-            style={{height: 15, width: 15, marginRight: 5}}
-          /> */}
           <Text
             style={{
               color: AppColors.DarkText,
@@ -429,6 +461,8 @@ const AboutCell = props => {
             }}>
             {props?.item?.phone}
           </Text>
+          <Image source={AppImages.CIRCLE_CALL_ICON} style={{marginRight: 5}} />
+          <Image source={AppImages.WHATSAPP_ICON} style={{marginRight: 5}} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

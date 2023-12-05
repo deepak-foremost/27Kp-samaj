@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   FlatList,
+  Platform,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {AppColors} from '../utils/AppColors';
@@ -14,9 +15,13 @@ import {AppConstValue} from '../utils/AppConstValue';
 import {AppFonts} from '../utils/AppFonts';
 import {AppImages} from '../utils/AppImages';
 import {PhoneWithCountry} from './PhoneWithCountry';
+import DatePicker from 'react-native-date-picker';
+import moment from 'moment';
+import CountryPicker from 'react-native-country-picker-modal';
 
 export const MySelection = props => {
   const ref = useRef();
+
   return (
     <View
       style={{
@@ -185,7 +190,7 @@ export const HorizontalSelection = props => {
         width: '100%',
         flexDirection: 'row',
         marginTop: 10,
-        height: 35,
+        height: 45,
         alignItems: 'center',
       }}>
       <Text
@@ -205,7 +210,7 @@ export const HorizontalSelection = props => {
         }}
         style={{
           flexDirection: 'row',
-          height: 35,
+          height: 45,
           flex: 1,
           alignItems: 'center',
           borderBottomWidth: 1,
@@ -222,7 +227,7 @@ export const HorizontalSelection = props => {
           {props?.value ? props?.value : props?.placeholder}
         </Text>
         <Image
-          style={{ resizeMode: 'contain'}}
+          style={{resizeMode: 'contain'}}
           source={AppImages.DROP_DOWN_ICON}
         />
       </TouchableOpacity>
@@ -321,6 +326,7 @@ export const HorizontalTextInput = props => {
         alignItems: 'center',
         marginTop: 10,
         justifyContent: 'center',
+
         ...props?.styles,
       }}>
       <Text
@@ -338,6 +344,14 @@ export const HorizontalTextInput = props => {
           flex: 1,
           borderBottomColor: AppColors.line_color,
           borderBottomWidth: 1,
+          ...Platform.select({
+            ios: {
+              paddingBottom: 10,
+            },
+            android: {
+              height: 45,
+            },
+          }),
         }}>
         <TextInput
           placeholder={props?.placeholder}
@@ -348,7 +362,7 @@ export const HorizontalTextInput = props => {
             color: AppColors.black,
             fontSize: 12,
             marginStart: 5,
-            height: 35,
+            minheight: 40,
           }}
           numberOfLines={1}
           maxLength={props?.contact ? 10 : 1000}
@@ -364,35 +378,96 @@ export const HorizontalTextInput = props => {
 };
 
 export const MyMobileNumber = props => {
+  const [Visible, setVisible] = useState(false);
+  const [country, setCountry] = useState('+91');
   return (
-    <View style={{ flexDirection: 'row', marginTop: 20}}>
+    <View
+      style={{
+        flexDirection: 'row',
+        marginTop: 20,
+        alignItems: 'center',
+      }}>
       <Text
         style={{
-          fontFamily: AppFonts.regular,
-          color: AppColors.black,
-          fontSize: 13,
-          alignItems: 'center',
-          textAlignVertical: 'center',
-        }}>
-        {props?.label} :{' '}
-      </Text>
-      <PhoneWithCountry
-        containerStyle={{width: '74%', height: 35, alignItems: 'center',borderBottomColor:AppColors.line_color}}
-        placeholder={'Mobile No'}
-        textStyle={{
           fontFamily: AppFonts.semiBold,
           color: AppColors.extraDark,
           fontSize: 12,
-          marginStart: 5,
-          height: 35,
+          alignItems: 'center',
+          textAlignVertical: 'center',
+          marginBottom:10
+        }}>
+        {props?.label} :{' '}
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          borderBottomColor: AppColors.line_color,
+          borderBottomWidth: 1,
+          paddingBottom: 10,
+        }}>
+        <TouchableOpacity
+          // onPressIn={onPressIn}
+          // onPressOut={onPressOut}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: 15,
+          }}
+          onPress={() => setVisible(!Visible)}
+          activeOpacity={0.9}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: AppFonts.semiBold,
+              color: AppColors.DarkText,
+            }}>
+            {country}
+          </Text>
+          <Image
+            style={[{marginLeft: 10}, props?.icon]}
+            source={AppImages.DROP_DOWN_ICON}
+          />
+        </TouchableOpacity>
+
+        <TextInput
+          placeholder={props?.placeholder}
+          placeholderTextColor={AppColors.lineColor}
+          multiline={true}
+          style={{
+            fontFamily: AppFonts.regular,
+            color: AppColors.black,
+            fontSize: 12,
+            marginStart: 5,
+            minheight: 40,
+            flex:1
+          }}
+          numberOfLines={1}
+          maxLength={props?.contact ? 10 : 1000}
+          value={props?.defaultText}
+          onChangeText={props?.onChangeText}
+          editable={props?.diseble == undefined}
+          selectTextOnFocus={props?.diseble == undefined}
+          keyboardType={props?.type ? props?.type : 'default'}
+        />
+      </View>
+
+      <CountryPicker
+        visible={Visible}
+        containerButtonStyle={{width: '0%', height: 0}}
+        withFilter
+        withAlphaFilter
+        withCallingCode={true}
+        theme={{
+          fontSize: 14,
+          color: 'white',
+          fontFamily: 'Nunito-SemiBold',
         }}
-        defaultText={props?.phone}
-        onChangeText={props?.onChangeText}
-        countryCode={props?.countryCode}
-        onCountry={item => {
-          printLog('PhoneWithCountry', JSON.stringify(item?.name));
-          props?.setCountryCode(item);
+        onSelect={cod => {
+          setCountry('+' + cod.callingCode);
+          setVisible(false);
         }}
+        onClose={() => setVisible(false)}
       />
     </View>
   );
@@ -403,19 +478,19 @@ export const DaySelection = props => {
     <View
       style={{
         flexDirection: 'row',
-        width:'30%',
+        width: '30%',
         alignItems: 'center',
-        marginHorizontal:5,
-        justifyContent:'space-between'
+        marginHorizontal: 5,
+        justifyContent: 'space-between',
       }}>
       <Text
         style={{
-         
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
           color: AppColors.extraDark,
         }}>
-       {props?.text}{':'}
+        {props?.text}
+        {':'}
       </Text>
       <View
         style={{
@@ -435,6 +510,133 @@ export const DaySelection = props => {
           ✓
         </Text>
       </View>
+    </View>
+  );
+};
+
+export const BoxTextInput = props => {
+  return (
+    <View
+      style={{
+        width: '100%',
+        flexDirection: 'row',
+        marginTop: 10,
+        // justifyContent: 'center',
+        minHeight: 80,
+        paddingVertical: 10,
+        ...props?.styles,
+
+        // alignItems:'center'
+      }}>
+      <Text
+        style={{
+          fontFamily: AppFonts.semiBold,
+          color: AppColors.extraDark,
+          fontSize: 12,
+          ...props.textStyle,
+          // alignItems: 'center',
+          // textAlignVertical: 'center',
+        }}>
+        {props?.label} :{' '}
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          borderColor: AppColors.line_color,
+          borderWidth: 1,
+        }}>
+        <TextInput
+          placeholder={props?.placeholder}
+          placeholderTextColor={AppColors.lineColor}
+          multiline={true}
+          style={{
+            fontFamily: AppFonts.regular,
+            color: AppColors.black,
+            fontSize: 12,
+            marginStart: 5,
+            minHeight: 45,
+          }}
+          numberOfLines={1}
+          maxLength={props?.contact ? 10 : 1000}
+          value={props?.defaultText}
+          onChangeText={props?.onChangeText}
+          editable={props?.diseble == undefined}
+          selectTextOnFocus={props?.diseble == undefined}
+          keyboardType={props?.type ? props?.type : 'default'}
+        />
+      </View>
+    </View>
+  );
+};
+
+export const DateSelection = props => {
+  const [openDatePicker, setDatePicker] = useState(false);
+  const [dob, setDOB] = useState(null);
+  return (
+    <View
+      style={{
+        width: '100%',
+        flexDirection: 'row',
+        marginTop: 20,
+        height: 25,
+        alignItems: 'center',
+      }}>
+      <Text
+        style={{
+          fontFamily: AppFonts.semiBold,
+          color: AppColors.extraDark,
+          fontSize: 12,
+          textAlignVertical: 'center',
+        }}>
+        {props.text}
+      </Text>
+
+      <TouchableOpacity
+        activeOpacity={AppConstValue.ButtonOpacity}
+        onPress={() => {
+          setDatePicker(true);
+        }}
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          borderBottomColor: AppColors.line_color,
+          borderBottomWidth: 1,
+          height: '100%',
+          marginStart: 5,
+        }}>
+        <Text
+          style={{
+            fontFamily: AppFonts.regular,
+            color: dob == null ? AppColors?.lineColor : AppColors.black,
+            fontSize: 13,
+            marginStart: 5,
+          }}>
+          {dob == null ? 'DD-MM-YYYY' : moment(dob).format('DD-MM-YYYY')}
+        </Text>
+        <Image
+          style={{
+            width: 1.5,
+            height: '80%',
+            marginHorizontal: 5,
+            backgroundColor: AppColors.backgroundSecondColor,
+          }}
+        />
+      </TouchableOpacity>
+
+      <DatePicker
+        modal
+        mode="date"
+        open={openDatePicker}
+        maximumDate={new Date()}
+        date={dob == null ? new Date() : dob}
+        onConfirm={date => {
+          setDatePicker(false);
+          setDOB(date);
+        }}
+        onCancel={() => {
+          setDatePicker(false);
+        }}
+      />
     </View>
   );
 };

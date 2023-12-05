@@ -10,9 +10,9 @@ const BorderView = props => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        position:'absolute',
-        bottom:40,
         width:'100%',
+        paddingBottom:30,
+        
         ...props.style
       }}>
       <View

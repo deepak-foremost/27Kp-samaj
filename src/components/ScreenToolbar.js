@@ -16,6 +16,7 @@ const ScreenToolbar = props => {
         alignItems: 'center',
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
+       
         ...props.styles,
       }}>
       <TouchableOpacity
@@ -37,7 +38,7 @@ const ScreenToolbar = props => {
         style={{fontSize: 16, color: '#fff', fontFamily: AppFonts.semiBold}}>
         {props?.text}
       </Text>
-      <TouchableOpacity style={{position:'absolute',right:10}}
+      <TouchableOpacity style={{position:'absolute',right:15}}
       activeOpacity={1}
       onPress={props?.secondPress}>
         <Text

@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -26,6 +27,8 @@ import * as RootNavigation from '../../../utils/RootNavigation';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
+import {getString} from '../../../utils/AsyncStorageHelper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const family = [
   {
@@ -51,9 +54,19 @@ const family = [
 ];
 
 const FamilyMemberDetailScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [cities, setCities] = useState([]);
   const [value, setValue] = useState('');
   const [cityId, setCityId] = useState('');
+  const [city, setCity] = useState('');
+
+  useEffect(() => {
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
+
   //   const [family, setFamily] = useState([]);
 
   //   useEffect(() => {
@@ -100,10 +113,11 @@ const FamilyMemberDetailScreen = props => {
   //   };
 
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <Image
         source={AppImages.APP_SPONCER_LINE}
@@ -200,7 +214,7 @@ const FamilyMemberDetailScreen = props => {
                 printLog(JSON.stringify(item?.name + '---' + item?.id));
                 setValue(item?.name);
                 setCityId(item?.id);
-                getList(item?.id);
+                // getList(item?.id);
               }}
             />
           </View>
@@ -216,13 +230,9 @@ const FamilyMemberDetailScreen = props => {
               index={index}
               item={item}
               onClick={() =>
-                RootNavigation.push(
-                  props?.navigation,
-                  AppScreens.FAMILY_DETAIL_SCREEN,
-                  {
-                    item: item,
-                  },
-                )
+                RootNavigation.navigate(AppScreens.FAMILY_DETAIL_SCREEN, {
+                  item: item,
+                })
               }
             />
           )}
@@ -233,7 +243,7 @@ const FamilyMemberDetailScreen = props => {
         />
         {/* <FooterTextCell title={`પરિવાર નુ ખુબ ખુબ સ્વાગત છે`} /> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

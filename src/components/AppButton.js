@@ -1,8 +1,8 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {AppConstValue} from '../utils/AppConstValue';
 import {AppFonts} from '../utils/AppFonts';
-import { AppColors } from '../utils/AppColors';
+import {AppColors} from '../utils/AppColors';
 
 const AppButton = props => {
   return (
@@ -16,14 +16,20 @@ const AppButton = props => {
         backgroundColor: AppColors.BackgroundSecondColor,
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'row',
         ...props.buttonStyle,
       }}>
+      <Image style={{position:'absolute',left:30,...props.imgStyle}} source={props?.src} />
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 14,
           color: '#fff',
+          width:'70%',
+          marginLeft:15,
+          textAlign:'center',
           ...props.textStyle,
+          
         }}>
         {props.text}
       </Text>

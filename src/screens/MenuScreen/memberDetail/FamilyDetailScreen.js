@@ -8,6 +8,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {FooterTextCell} from '../../../../components/LineCell';
@@ -23,10 +24,12 @@ import {ListMember} from '../advisour_member/AdvicerMember';
 import BorderView from '../../../components/BorderView';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {MemberDetail} from '../about_us/AboutUsDetailScreen';
+import LinearGradient from 'react-native-linear-gradient';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const members = [
   {
-    id:0,
+    id: 0,
     name: 'પટેલ ધવલ વિષ્ણુભાઈ',
     city: 'શંકરપુરા',
     phone: '99999 99999',
@@ -47,7 +50,7 @@ const members = [
     current_address: 'નિકોલ અમદાવાદ',
   },
   {
-    id:1,
+    id: 1,
     name: 'પટેલ ધવલ વિષ્ણુભાઈ',
     city: 'શંકરપુરા',
     phone: '99999 99999',
@@ -68,7 +71,7 @@ const members = [
     current_address: 'નિકોલ અમદાવાદ',
   },
   {
-    id:2,
+    id: 2,
     name: 'પટેલ ધવલ વિષ્ણુભાઈ',
     city: 'શંકરપુરા',
     phone: '99999 99999',
@@ -91,8 +94,10 @@ const members = [
 ];
 
 const FamilyDetailScreen = props => {
-  const [visible,setVisible]=useState(-1);
-  
+  const [visible, setVisible] = useState(-1);
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
+
   var item = props?.route?.params?.item;
   // MyLog('FamilyDetailScreen', JSON.stringify(props?.route?.params?.item));
   // const [members, setMembers] = useState(null);
@@ -115,10 +120,11 @@ const FamilyDetailScreen = props => {
   //   }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <AppDrawerHeader
         title={`${item?.family_id} : ${item?.name}`}
@@ -202,9 +208,11 @@ const FamilyDetailScreen = props => {
                     index={index}
                     item={item?.item}
                     visible={visible}
-                    onClick={() =>
-                     
-                      visible==item?.index ? setVisible(-1) : setVisible(item?.index)
+                    onClick={
+                      () =>
+                        visible == item?.index
+                          ? setVisible(-1)
+                          : setVisible(item?.index)
                       // RootNavigation.push(
                       //   props?.navigation,
                       //   AppScreens.MEMBER_DETAIL_SCREEN,
@@ -216,7 +224,6 @@ const FamilyDetailScreen = props => {
                     item?.item.id==visible ? ( <MemberDetailCell item={item?.item} />):
                     null
                   } */}
-                 
                 </View>
               );
             }}
@@ -228,7 +235,7 @@ const FamilyDetailScreen = props => {
         /> */}
         {/* <FooterTextCell title={`પરિવાર નુ ખુબ ખુબ અભિનંદન`} /> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -272,73 +279,87 @@ const FamilyMermberCell = props => {
           tintColor: '#BDBDBD',
         }}
       /> */}
-      <View style={{flexDirection:'row',flex:1}}> 
-      <Text
+      <View
         style={{
-          fontFamily: AppFonts.semiBold,
-          fontSize: 11,
-          color: AppColors.DarkText,
-          paddingVertical: 10,
-          marginRight: 10,
-        }}>
-        {props?.item?.family_main_member_with_relation}
-      </Text>
-      <Image
-        style={{
-          height: '40%',
-          width: 2,
-          backgroundColor: AppColors.LightText,
-          alignSelf: 'center',
-          marginRight: 10,
-          resizeMode: 'contain',
-        }}
-      />
-      <Text
-        numberOfLines={1}
-        style={{
+          flexDirection: 'row',
           flex: 1,
-          fontFamily: AppFonts.semiBold,
-          fontSize: 11,
-          color:
-            props?.item?.index % 2 == 1 ? AppColors.Red : AppColors.DarkText,
-          paddingVertical: 10,
-        }}>{`${props?.item?.name}`}</Text>
-      <Image
-        style={{alignSelf: 'center', tintColor: '#C5C5C5'}}
-        source={props?.visible==props?.item?.id ?  AppImages.DROP_UP_ICON :AppImages.DROP_DOWN_GRAY }
-      />
+          justifyContent:
+            props.visible == props?.item?.id ? 'center' : 'flex-start',
+          alignItems: 'center',
+        }}>
+        <Text
+          style={{
+            fontFamily: AppFonts.semiBold,
+            fontSize: 11,
+            color: AppColors.DarkText,
+            paddingVertical: 10,
+            marginRight: 10,
+          }}>
+          {props?.item?.family_main_member_with_relation}
+        </Text>
+        <Image
+          style={{
+            height: '40%',
+            width: 2,
+            backgroundColor: AppColors.LightText,
+            alignSelf: 'center',
+            marginRight: 10,
+            resizeMode: 'contain',
+          }}
+        />
+        <Text
+          numberOfLines={1}
+          style={{
+            fontFamily: AppFonts.semiBold,
+            fontSize: 11,
+            color:
+              props?.item?.index % 2 == 1 ? AppColors.Red : AppColors.DarkText,
+            paddingVertical: 10,
+          }}>{`${props?.item?.name}`}</Text>
+        <Image
+          style={{
+            alignSelf: 'center',
+            tintColor: '#C5C5C5',
+            position: 'absolute',
+            right: 10,
+          }}
+          source={
+            props?.visible == props?.item?.id
+              ? AppImages.DROP_UP_ICON
+              : AppImages.DROP_DOWN_GRAY
+          }
+        />
       </View>
-      {
-        props?.visible==props?.item?.id ? ( <MemberDetailCell />): null
-      }
-     
+      {props?.visible == props?.item?.id ? (
+        <MemberDetailCell item={props?.item} />
+      ) : null}
     </TouchableOpacity>
   );
 };
 
-const MemberDetailCell = props => {
+export const MemberDetailCell = props => {
   return (
     <View
       style={{
         marginHorizontal: 17,
         borderBottomLeftRadius: 8,
-        borderBottomRightRadius:8,
+        borderBottomRightRadius: 8,
         backgroundColor: '#fff',
         padding: 15,
-        marginTop:-7,
+        marginTop: -2,
         ...Platform.select({
           ios: {
-            shadowColor: '#D5D5D5',
-            shadowOffset: {width: 0, height: 5},
-            shadowOpacity: 0.9,
-            shadowRadius: 3,
+            // shadowColor: '#D5D5D5',
+            // shadowOffset: {width: 0, height: 5},
+            // shadowOpacity: 0.9,
+            // shadowRadius: 3,
           },
           android: {
             elevation: 0,
           },
         }),
       }}>
-      <View style={{alignItems: 'center'}}>
+      <View style={{alignItems: 'center', flex: 1}}>
         {/* <View
           style={{
             flexDirection: 'row',
@@ -365,10 +386,10 @@ const MemberDetailCell = props => {
 
         <View
           style={{
-            height: 65,
-            width: 65,
+            width: 140,
             borderRadius: 54,
-            backgroundColor: AppColors.BackgroundSecondColor,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
           }}>
           {/* <Image
                   source={AppImages.placeholder_user}
@@ -379,6 +400,16 @@ const MemberDetailCell = props => {
                   }}
                 /> */}
 
+          <Image
+            //   source={{uri: item?.image}}
+            source={AppImages.MEMBER_IMAGE}
+            style={{
+              height: 65,
+              width: 65,
+              resizeMode: 'stretch',
+              borderRadius: 10,
+            }}
+          />
           <Image
             //   source={{uri: item?.image}}
             source={AppImages.MEMBER_IMAGE}
@@ -439,28 +470,28 @@ const MemberDetailCell = props => {
         <View style={{flexDirection: 'row'}}>
           <MemberDetail
             title={'જન્મ તારીખ :'}
-            style={{width: '35%'}}
+            style={{width: '60%'}}
             detailText={
               props?.item?.dob != '' && props?.item?.dob != undefined
                 ? moment(props?.item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
-                : ''
+                : ' '
             }
           />
           <MemberDetail
-            style={{width: '35%'}}
-            title={'|   Age :'}
+            style={{width: '30%'}}
+            title={'|Age :'}
             detailText={props?.item?.age}
           />
         </View>
         <View style={{flexDirection: 'row'}}>
           <MemberDetail
-            style={{width: '30%'}}
+            style={{width: '45%'}}
             title={'ઊંચાઈ :'}
             detailText={props?.item?.height}
           />
           <MemberDetail
             style={{width: '30%'}}
-            title={'વજન :'}
+            title={'  |વજન :'}
             detailText={props?.item?.weight}
           />
         </View>
@@ -489,14 +520,100 @@ const MemberDetailCell = props => {
           title={'હાલ ના રહેઠાણ નુ સરનામું :'}
           detailText={props?.item?.current_address}
         />
-        <MemberDetail
-          title={'મોબાઇલ નંબર :'}
-          detailText={props?.item?.phone}
-          contact
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MemberDetail
+            title={'મોબાઇલ નંબર :'}
+            detailText={props?.item?.phone}
+            contact
+            style={{width: '60%', justifyContent: 'flex-end'}}
+          />
+          <Image style={{marginHorizontal: 10}} source={AppImages.CALL_ICON} />
+          <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+        </View>
 
         <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MemberDetail
+            title={'જીવન સહાય સભાસદ નં :'}
+            detailText={1234}
+            style={{width: '60%'}}
+          />
+          <TouchableOpacity
+            activeOpacity={AppConstValue.ButtonOpacity}
+            // onPress={() =>
+            //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+            //     status: 'main',
+            //   })
+            // }
+            style={{
+              marginHorizontal: 15,
+              backgroundColor: '#FFFFFF',
+              justifyContent: 'center',
+              borderRadius: 8,
+              alignItems: 'center',
+            }}>
+            <LinearGradient
+              colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
+              style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.bold,
+                  fontSize: 6,
+                  color: 'white',
+                }}>
+                Click Here
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MemberDetail
+            title={'જીવન સહાય સભાસદ નં :'}
+            detailText={1234}
+            style={{width: '60%'}}
+          />
+          <TouchableOpacity
+            activeOpacity={AppConstValue.ButtonOpacity}
+            // onPress={() =>
+            //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+            //     status: 'main',
+            //   })
+            // }
+            style={{
+              marginHorizontal: 15,
+              backgroundColor: '#FFFFFF',
+              justifyContent: 'center',
+              borderRadius: 8,
+              alignItems: 'center',
+            }}>
+            <LinearGradient
+              colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
+              style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.bold,
+                  fontSize: 6,
+                  color: 'white',
+                }}>
+                Click Here
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
       </View>
+      {!props?.notShow && (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{
+            alignSelf: 'flex-end',
+            marginRight: -40,
+            marginTop: 10,
+          }}>
+          <Image source={require('../../../assets/images/save_icon.png')} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

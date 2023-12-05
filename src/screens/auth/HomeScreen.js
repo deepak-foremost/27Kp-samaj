@@ -31,6 +31,7 @@ import HomeMenuButton from '../../components/HomeMenu';
 import * as RootNavigation from '../../utils/RootNavigation';
 import Swiper from 'react-native-swiper';
 import Carousel from 'react-native-snap-carousel';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const images = [
   {
@@ -110,6 +111,8 @@ const Pager = props => {
 };
 
 const HomeScreen = () => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [select, setSelect] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [color, setColor] = useState(AppColors.BackgroundSecondColor);
@@ -118,14 +121,16 @@ const HomeScreen = () => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef(null);
   const width = Dimensions.get('window').width;
+  const [number, setNumber] = useState(-1);
+  const [active, setActive] = useState(0);
 
   // console.warn(select)
   // const [images, setImages] = useState([]);
 
   const fadebackground = () => {
     setTimeout(() => {
-      isVisible
-       setColor('rgba(0,0,0,0.5)')
+      isVisible;
+      setColor('rgba(0,0,0,0.5)');
     }, 100);
   };
 
@@ -144,6 +149,7 @@ const HomeScreen = () => {
         useNativeDriver: true,
       }).start();
     }
+    // console.warn(number)
   }, [isVisible, slideAnim]);
 
   const screenWidth = Dimensions.get('window').width;
@@ -214,120 +220,150 @@ const HomeScreen = () => {
   //   }
   // };
 
-  const Navigate=((item)=>{
-    setTimeout(()=>{
-      RootNavigation.navigate(item?.item.screen, {
-        status: 'drawer',
-        detail: item?.item.detail,
-      },100);
-    })
-    setSelect(item.index)
-  })
+  const Navigate = item => {
+    setTimeout(() => {
+      RootNavigation.navigate(
+        item?.item.screen,
+        {
+          status: 'drawer',
+          detail: item?.item.detail,
+          menu: item?.item?.menu,
+        },
+        100,
+      ),
+        setVisible(false);
+    });
+    setSelect(item.index);
+  };
 
   return (
-    <SafeAreaView
-      style={{flex: 1, backgroundColor: AppColors.BackgroundSecondColor}}>
-        <StatusBar backgroundColor={AppColors.BackgroundSecondColor}/>
-      <Animated.View
-        style={[
-          styles.modal,
-          {
-            transform: [{translateX: slideAnim}],
-            backgroundColor:'rgba(0,0,0,0.7)',
-          },
-        ]}>
-        <View
-          style={{
-            height: '100%',
-            width: '80%',
-            backgroundColor: AppColors.BackgroundSecondColor,
-            alignItems: 'center',
-          }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: AppColors.BackgroundSecondColor,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+      }}>
+      <StatusBar backgroundColor={AppColors.BackgroundSecondColor} />
+      <Modal
+        visible={isVisible}
+        animationType="fade"
+        transparent={true}
+        style={{flex: 1}}
+
+        // style={[
+        //   styles.modal,
+        //   {
+        //     // transform: [{translateX: slideAnim}],
+        //     backgroundColor: 'rgba(0,0,0,0.7)',
+        //     width:'100%'
+        //   },
+        // ]}
+      >
+        <View style={{flex: 1, flexDirection: 'row'}}>
           <View
             style={{
-              flex: 0.35,
-              justifyContent: 'center',
+              // height: '100%',
+              // width: '85%',
+              flex: 0.8,
+              backgroundColor: AppColors.BackgroundSecondColor,
               alignItems: 'center',
             }}>
-            <View style={[AppStyles.AppLogoStyle, {}]}>
-              <Image
-                style={{height: 100, width: 100}}
-                source={AppImages.APP_MAIN_ICON}
-              />
-            </View>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 15,
+                right: 10,
+              }}
+              onPress={() => setVisible(false)}
+              activeOpacity={1}>
+              <Image source={require('../../assets/images/cancel_icon.png')} />
+            </TouchableOpacity>
             <View
-              style={[
-                {
-                  backgroundColor: '#0A4DBB',
-                  width: 120,
-                  height: 35,
-                  justifyContent: 'center',
-                  marginTop: 20,
-                  borderRadius: 15,
-                  borderTopLeftRadius: 0,
-                  alignItems: 'center',
-                  borderColor: '#F7F7F7',
-                  borderWidth: 1,
-                },
-              ]}>
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontFamily: AppFonts.medium,
-                  color: '#F7F7F7',
-                }}>
-                27 KP SAMAJ
-              </Text>
-            </View>
-          </View>
+              style={{
+                flex: 0.35,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <View style={[AppStyles.AppLogoStyle, {}]}>
+                <Image
+                  style={{height: 100, width: 100}}
+                  source={AppImages.APP_MAIN_ICON}
+                />
+              </View>
 
-          <View style={{flex: 0.65, width: '100%', marginTop: -20}}>
-            <View style={{flex: 0.85}}>
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                // scrollEnabled={false}
-                contentContainerStyle={{width: '100%'}}
-                data={staticArray.DrawerMenu}
-                renderItem={(item, index) => (
-                  <DrawerButtons
-                    item={item}
-                    // index={index}
-                    // pressIn={() => setSelect(item.index)}
-                    show={select}
-                    // selected={currentMenu}
-                    onChange={() => {
-                      // RootNavigation.navigate(item?.item.screen, {
-                      //   status: 'drawer',
-                      //   detail: item?.item.detail,
-                      // },);
-                      Navigate(item);
-                      // setMenu(index);
-                      // props?.onClose(currentMenu);
-                      // if (item?.screen != '' && item?.index != 6) {
-                      //   RootNavigation.navigate(item?.screen, {});
-                      // } else if (item?.index == 6) {
-                      //   props?.onLogout();
-                      // } else if (item?.index == 7) {
-                      //   Linking.openURL(Apis.SAMAJ_POLICY);
-                      // }
-                    }}
-                  />
-                )}
-              />
+              <View
+                style={[
+                  {
+                    backgroundColor: '#0A4DBB',
+                    width: 120,
+                    height: 35,
+                    justifyContent: 'center',
+                    marginTop: 20,
+                    borderRadius: 15,
+                    borderTopLeftRadius: 0,
+                    alignItems: 'center',
+                    borderColor: '#F7F7F7',
+                    borderWidth: 1,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontFamily: AppFonts.medium,
+                    color: '#F7F7F7',
+                  }}>
+                  27 KP SAMAJ
+                </Text>
+              </View>
             </View>
 
-            {/* <DrawerButtons text={'Support Member'} />
+            <View style={{flex: 0.65, width: '100%', marginTop: -20}}>
+              <View style={{flex: 1}}>
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
+                  // scrollEnabled={false}
+                  contentContainerStyle={{width: '100%', paddingBottom: 20}}
+                  data={staticArray.DrawerMenu}
+                  renderItem={(item, index) => (
+                    <DrawerButtons
+                      item={item}
+                      // index={index}
+                      // pressIn={() => setSelect(item.index)}
+                      show={select}
+                      // selected={currentMenu}
+                      onChange={() => {
+                        // RootNavigation.navigate(item?.item.screen, {
+                        //   status: 'drawer',
+                        //   detail: item?.item.detail,
+                        // },);
+                        Navigate(item);
+                        // setMenu(index);
+                        // props?.onClose(currentMenu);
+                        // if (item?.screen != '' && item?.index != 6) {
+                        //   RootNavigation.navigate(item?.screen, {});
+                        // } else if (item?.index == 6) {
+                        //   props?.onLogout();
+                        // } else if (item?.index == 7) {
+                        //   Linking.openURL(Apis.SAMAJ_POLICY);
+                        // }
+                      }}
+                    />
+                  )}
+                />
+              </View>
+
+              {/* <DrawerButtons text={'Support Member'} />
             <DrawerButtons text={'Edit Family Member'} />
             <DrawerButtons text={'Edit Business'} />
             <DrawerButtons text={'ભૂમિ'} />
             <DrawerButtons text={'કેળવણી મંડળ'} />
             <DrawerButtons text={'Privacy Policy'} />
             <DrawerButtons text={'Contact Us'} /> */}
-            <TouchableOpacity
+              {/* <TouchableOpacity
               style={{
                 width: '100%',
-                paddingLeft: 30,
+                paddingLeft: 50,
                 flex: 0.2,
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -343,14 +379,19 @@ const HomeScreen = () => {
                 }}>
                 Logout
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            </View>
           </View>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              flex: 0.2,
+              height: '100%',
+              backgroundColor: 'rgba(0,0,0,0.7)',
+            }}
+            onPress={() => setVisible(false)}></TouchableOpacity>
         </View>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{width: '20%', height: '100%'}}
-          onPress={() => setVisible(false)}></TouchableOpacity>
-      </Animated.View>
+      </Modal>
 
       <View style={{flex: 1, backgroundColor: '#fff', opacity: 1}}>
         <MainToolbar
@@ -359,9 +400,9 @@ const HomeScreen = () => {
           text={'27 KP SAMAJ'}
           leftPress={() => setVisible(true)}
         />
-
-        <View style={{flex: 0.3, justifyContent: 'center', paddingTop: 10}}>
-          {/* <ScrollView
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{flex: 0.3, justifyContent: 'center', paddingTop: 15}}>
+            {/* <ScrollView
             ref={scrollViewRef}
             horizontal
             pagingEnabled
@@ -387,7 +428,7 @@ const HomeScreen = () => {
             </View>
           </ScrollView> */}
 
-          {/* <SliderBox
+            {/* <SliderBox
           
             images={images}
             sliderBoxHeight={200}
@@ -403,7 +444,7 @@ const HomeScreen = () => {
             circleLoop
           /> */}
 
-          {/* <Swiper
+            {/* <Swiper
             containerStyle={{}}
             // renderPagination={renderPagination}
             // pagingEnabled={true}
@@ -424,151 +465,84 @@ const HomeScreen = () => {
                 flex: 1,
               }}></View>
           </Swiper> */}
-          <View style={{}}>
-            <Carousel
-              // ref={c => {
-              //   this._carousel = c;
-              // }}
-              data={images}
-              renderItem={({item}) => (
-                <Image
-                  style={{width: '102%', alignSelf: 'center', borderRadius: 10}}
-                  source={item.src}
-                />
-              )}
-              sliderWidth={Dimensions.get('window').width}
-              itemWidth={Dimensions.get('window').width - 50}
-              layout="default"
-              layoutCardOffset={`18`}
-              loop
-            />
-          </View>
-
-          {/* <ScrollView
-            style={{flex: 1}}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            <SliderBox
-              disableOnPress
-              // ImageComponent={FastImage}
-              images={[
-                require('../../assets/images/tab_image.png'),
-                require('../../assets/images/tab_image.png'),
-              ]}
-              // dotColor={AppColors.backgroundColor}
-              // inactiveDotColor={AppColors.lineColor}
-              style={{height: 260}}
-              dotStyle={{
-                width: 5,
-                height: 5,
-                borderRadius: 5,
-                marginHorizontal: 0,
-                padding: 0,
-                margin: 0,
-              }}
-            />
-          </ScrollView> */}
-          {/* <TabView
-            style={{}}
-            renderTabBar={props => (
+            <View style={{flex: 1}}>
+              <Carousel
+                // ref={c => {
+                //   this._carousel = c;
+                // }}
+                data={images}
+                renderItem={({item, index}) => (
+                  <Image
+                    style={{
+                      width: '102%',
+                      alignSelf: 'center',
+                      borderRadius: 10,
+                      flex: 1,
+                    }}
+                    source={item.src}
+                  />
+                )}
+                sliderWidth={Dimensions.get('window').width}
+                itemWidth={Dimensions.get('window').width - 50}
+                layout="default"
+                layoutCardOffset={`20`}
+                inactiveSlideOpacity={1}
+                inactiveSlideScale={0.9}
+                disableIntervalMomentum={true}
+                // enableMomentum={true}
+                // decelerationRate={0.9}
+                onSnapToItem={index => setActive(index)}
+                loop
+              />
               <View
                 style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: 'red',
+                  flexDirection: 'row',
+                  width: 45,
+                  alignSelf: 'center',
+                  marginTop: 10,
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
                 }}>
-                <TabBar
-                  {...props}
-                  // indicatorStyle={styles.tabBarIndicatorStyle}
-
-                  indicatorStyle={{
-                    backgroundColor: '#CBA328',
-                    borderColor: '#CBA328',
-                    height: 0,
-                    borderRadius: 5,
-                  }}
-                  pressColor="white"
-                  style={{
-                    backgroundColor: 'black',
-                    height: 0,
-                    marginHorizontal: 5,
-                    alignSelf: 'center',
-                    borderRadius: 10,
-                    width: '85%',
-                  }}
-                  tabStyle={{}}
-                  // labelStyle={styles.tabBarLabelStyle}
-                  inactiveColor="#BDBCBC"
-                  activeColor="#CBA328"
-                />
+                <DotIndicator opacity={{opacity: active == 0 ? 1 : 0.49}} />
+                <DotIndicator opacity={{opacity: active == 1 ? 1 : 0.49}} />
+                <DotIndicator opacity={{opacity: active == 2 ? 1 : 0.49}} />
               </View>
-            )}
-            navigationState={{index, routes}}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{width: layout.width, backgroundColor: 'red'}}
-            accessibilityIgnoresInvertColors={false}
-          /> */}
-
-          {/* <ScrollView horizontal={true} pagingEnabled={true}>
-            <View style={{padding: 10, width: '90%'}}>
-              <Image source={require('../../assets/images/tab_image.png')} />
             </View>
-            <View style={{padding: 10, width: '90%'}}>
-              <Image source={require('../../assets/images/tab_image.png')} />
-            </View>
-            <View style={{padding: 10}}>
-              <Image source={require('../../assets/images/tab_image.png')} />
-            </View>
-          </ScrollView> */}
+          </View>
 
-          {/* <SliderBox
-            disableOnPress
-            ImageComponent={FastImage}
-            images={images}
-            dotColor={AppColors.backgroundColor}
-            inactiveDotColor={AppColors.lineColor}
-            style={{height: 260}}
-            dotStyle={{
-              width: 5,
-              height: 5,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              padding: 0,
-              margin: 0,
-            }}
-          /> */}
-        </View>
+          <View style={{flex: 0.7}}>
+            <FlatList
+              numColumns={3}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+              }}
+              data={staticArray.HomeMenu}
+              renderItem={(item, index) => (
+                <HomeMenuButton
+                  item={item}
+                  index={index}
+                  // press={() => {
+                  //   MyLog('ContactUsScreen', item?.item?.index);
 
-        <View style={{flex: 0.58,}}>
-          <FlatList
-            numColumns={3}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingHorizontal: 15,
-              paddingVertical: 10,
-            }}
-            data={staticArray.HomeMenu}
-            renderItem={(item, index) => (
-              <HomeMenuButton
-                item={item}
-                index={index}
-                // press={() => {
-                //   MyLog('ContactUsScreen', item?.item?.index);
-
-                //   RootNavigation.push(
-                //     props?.navigation,
-                //     item?.item?.screen,
-                //     NaN,
-                //   );
-                // }}
-              />
-            )}
+                  //   RootNavigation.push(
+                  //     props?.navigation,
+                  //     item?.item?.screen,
+                  //     NaN,
+                  //   );
+                  // }}
+                />
+              )}
+            />
+          </View>
+          <BorderView
+            style={{marginTop: 15}}
+            backgroundColor={AppColors.BackgroundSecondColor}
+            text={'સમાજ એજ મારો પરિવાર'}
           />
-        </View>
+        </ScrollView>
 
         {/* <View style={{flex: 0.55, justifyContent: 'space-evenly'}}>
           <View
@@ -632,13 +606,8 @@ const HomeScreen = () => {
             <HomeMenu src={AppImages.CONTACT_US_ICON} text={'Contact Us'} />
           </View>
         </View> */}
-
-        <BorderView
-          backgroundColor={AppColors.BackgroundSecondColor}
-          text={'સમાજ એજ મારો પરિવાર'}
-        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -646,7 +615,7 @@ const styles = StyleSheet.create({
   modal: {
     position: 'absolute',
     justifyContent: 'center',
-    zIndex: 100,
+
     height: Dimensions.get('window').height,
     width: '100%',
     flexDirection: 'row',
@@ -671,3 +640,18 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
+export const DotIndicator = props => {
+  return (
+    <View
+      style={[
+        {
+          height: 8,
+          width: 8,
+          borderRadius: 5,
+          backgroundColor: '#1C50FF',
+        },
+        props?.opacity,
+      ]}></View>
+  );
+};

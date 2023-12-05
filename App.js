@@ -1,5 +1,5 @@
 import {View, Text, SafeAreaView} from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import RootNavigation from './src/utils/RootNavigation';
 import {AppStyles} from './src/utils/AppStyles';
 import FlashMessage from 'react-native-flash-message';
@@ -12,10 +12,11 @@ const App = () => {
       <RootNavigation />
 
       <FlashMessage
+        ref={useRef('guest')}
         position={'bottom'}
         statusBarHeight={Platform.OS == 'android' ? 0 : 0}
         style={{
-          backgroundColor: AppColors.BackgroundSecondColor,
+          // backgroundColor: AppColors.BackgroundSecondColor,
           fontSize: 14,
           fontFamily: AppFonts.semiBold,
           color: '#000',

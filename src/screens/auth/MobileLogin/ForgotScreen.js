@@ -11,12 +11,15 @@ import AppInputView from '../../../components/AppInputView';
 import AppButton from '../../../components/AppButton';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ForgotScreen = ({route}) => {
   const screen = route.params.screen;
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
 
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.SafeAreabackground,
         {
@@ -24,6 +27,7 @@ const ForgotScreen = ({route}) => {
             screen == 'User Signin'
               ? AppColors.Red
               : AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -37,8 +41,10 @@ const ForgotScreen = ({route}) => {
           }}
         />
 
-        <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}
-        enableOnAndroid={true}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          enableOnAndroid={true}
+          showsVerticalScrollIndicator={false}>
           {/* TopView  */}
           <View
             style={{
@@ -130,7 +136,7 @@ const ForgotScreen = ({route}) => {
           />
         </KeyboardAwareScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

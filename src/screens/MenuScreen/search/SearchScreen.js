@@ -7,6 +7,9 @@ import {
   FlatList,
   Linking,
   SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Platform,
 } from 'react-native';
 import AppButton from '../../../components/AppButton';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -24,6 +27,8 @@ import {ListMember} from '../advisour_member/AdvicerMember';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
+import {getString} from '../../../utils/AsyncStorageHelper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const list = [
   {
@@ -41,43 +46,56 @@ const list = [
     business: 'નોકરી',
     current_address: 'અમદાવાદ',
     email: 'Test@gmail.com',
-    country_code:'+91',
-    shakh:'વડસ્મીયા',
-    mosal:'ગાંધીનગર',
-    current_address:'નિકોલ અમદાવાદ',
-    
+    country_code: '+91',
+    shakh: 'વડસ્મીયા',
+    mosal: 'ગાંધીનગર',
+    current_address: 'નિકોલ અમદાવાદ',
   },
   {
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
+    name: 'પટેલ ધવલ વિષ્ણુભાઈ',
     city: 'શંકરપુરા',
-    phone: '888888888',
-    country_code: '+91 ',
+    phone: '9999999999',
+    dob: '31/05/1991',
+    age: '32',
+    height: '165 CM',
+    weight: '75 Kg',
+    blood_group: 'A+',
+    family_main_member_with_relation: 'પોતે',
+    marital_status: ' Married',
+    study: ' B.Tech',
+    business: 'નોકરી',
+    current_address: 'અમદાવાદ',
+    email: 'Test@gmail.com',
+    country_code: '+91',
+    shakh: 'વડસ્મીયા',
+    mosal: 'ગાંધીનગર',
+    current_address: 'નિકોલ અમદાવાદ',
   },
   {
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
+    name: 'પટેલ ધવલ વિષ્ણુભાઈ',
     city: 'શંકરપુરા',
-    phone: '888888888',
-    country_code: '+91 ',
-  },
-  {
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
-    city: 'શંકરપુરા',
-    phone: '888888888',
-    country_code: '+91 ',
-  },{
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
-    city: 'શંકરપુરા',
-    phone: '888888888',
-    country_code: '+91 ',
-  },{
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
-    city: 'શંકરપુરા',
-    phone: '888888888',
-    country_code: '+91 ',
+    phone: '999999999',
+    dob: '31/05/1991',
+    age: '32',
+    height: '165 CM',
+    weight: '75 Kg',
+    blood_group: 'A+',
+    family_main_member_with_relation: 'પોતે',
+    marital_status: ' Married',
+    study: ' B.Tech',
+    business: 'નોકરી',
+    current_address: 'અમદાવાદ',
+    email: 'Test@gmail.com',
+    country_code: '+91',
+    shakh: 'વડસ્મીયા',
+    mosal: 'ગાંધીનગર',
+    current_address: 'નિકોલ અમદાવાદ',
   },
 ];
 
 const SearchScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState('');
   const [cityId, setCityId] = useState(0);
@@ -85,9 +103,17 @@ const SearchScreen = props => {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [status, setStatus] = useState('');
-  const [bloodGroup,setBloodGroup]=useState('');
+  const [bloodGroup, setBloodGroup] = useState('');
+  const [country, setCountry] = useState('Foreign Country');
+  const [study, setStudy] = useState('');
 
   const [result, setResult] = useState([]);
+
+  useEffect(() => {
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
 
   //   useEffect(() => {
   //     getCities(
@@ -115,10 +141,11 @@ const SearchScreen = props => {
   //   }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       <View style={{backgroundColor: AppColors.fadeBackground, flex: 1}}>
         <View
@@ -194,12 +221,15 @@ const SearchScreen = props => {
                 setTo('');
                 setStatus('');
                 setResult([]);
+                setBloodGroup('');
+                setStudy('');
+                setCountry('');
               }}>
               <Text
                 style={{
                   fontFamily: AppFonts.medium,
                   fontSize: 12,
-                  
+
                   color: AppColors.BackgroundSecondColor,
                 }}>
                 Clear
@@ -309,7 +339,7 @@ const SearchScreen = props => {
                 color: AppColors.DarkText,
                 width: '18%',
                 paddingStart: 10,
-                fontSize:12
+                fontSize: 12,
               }}>
               ઉંમર
             </Text>
@@ -328,9 +358,9 @@ const SearchScreen = props => {
                   fontFamily: AppFonts.medium,
                   color: AppColors.DarkText,
                   marginHorizontal: 5,
-                  fontSize:12
+                  fontSize: 12,
                 }}>
-                {`From : `}
+                {`FROM : `}
               </Text>
               <View style={{flex: 1}}>
                 <MySelection
@@ -365,7 +395,7 @@ const SearchScreen = props => {
                   width: '40%',
                   borderLeftWidth: 0,
                   borderRightWidth: 0,
-                  borderWidth:0
+                  borderWidth: 0,
                 },
               ]}>
               <Text
@@ -374,9 +404,9 @@ const SearchScreen = props => {
                   fontFamily: AppFonts.medium,
                   color: AppColors.DarkText,
                   marginHorizontal: 5,
-                  fontSize:12
+                  fontSize: 12,
                 }}>
-                {`To : `}
+                {`TO : `}
               </Text>
               <View style={{flex: 1}}>
                 <MySelection
@@ -457,12 +487,12 @@ const SearchScreen = props => {
               <MySelection
                 label={`અભ્યાસ :`}
                 placeholder={`અભ્યાસ`}
-                data={cities == null ? [] : cities}
-                value={city}
+                data={staticArray.studies}
+                value={study}
                 onItemSelect={item => {
                   printLog(JSON.stringify(item?.item));
-                  setCity(item?.name);
-                  setCityId(item?.id);
+                  setStudy(item?.name);
+                  // setCityId(item?.id);
                 }}
               />
             </View>
@@ -485,12 +515,12 @@ const SearchScreen = props => {
               <MySelection
                 label={`Foreign Country :`}
                 placeholder={`Foreign Country :`}
-                data={cities == null ? [] : cities}
+                data={staticArray.foriegnCountry}
                 textStyle={{fontSize: 8}}
-                value={city}
+                value={country}
                 onItemSelect={item => {
                   printLog(JSON.stringify(item?.item));
-                  setCity(item?.name);
+                  setCountry(item?.name);
                   setCityId(item?.id);
                 }}
               />
@@ -512,10 +542,10 @@ const SearchScreen = props => {
             width={'30%'}
             buttonStyle={{
               alignSelf: 'flex-end',
-              width: '50%',
+              width: '40%',
               borderRadius: 30,
-              marginVertical: 10,
-              height:40
+              marginBottom: 10,
+              height: 25,
             }}
             buttonPress={() => {
               setResult(list);
@@ -542,136 +572,147 @@ const SearchScreen = props => {
             }}
           />
         </View>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled>
+          {result?.length == 0 ? (
+            <></>
+          ) : (
+            <View
+              style={{
+                marginTop: '5%',
+                width: '100%',
+                flex: 1,
+                marginBottom: 20,
+                alignItems: 'center',
+                alignSelf: 'center',
+                backgroundColor: AppColors.BackgroundColor,
+                borderRadius: 10,
+                backgroundColor: AppColors.fadeBackground,
 
-        {result?.length == 0 ? (
-          <></>
-        ) : (
-          <View
-            style={{
-              marginTop: '5%',
-              width: '100%',
-              flex: 0.8,
-              marginBottom: 20,
-              alignItems: 'center',
-              alignSelf: 'center',
-              backgroundColor: AppColors.BackgroundColor,
-              borderRadius: 10,
-              backgroundColor: AppColors.fadeBackground,
-              
-              // ...Platform.select({
-              //   ios: {
-              //     shadowColor: '#D5D5D5',
-              //     shadowOffset: {width: 0, height: -1},
-              //     shadowOpacity: 0.9,
-              //     shadowRadius: 3,
-              //   },
-              //   android: {
-              //     elevation: 15,
-              //   },
-              // }),
-            }}>
-            {result == null ? (
-              <View style={{flex: 1, paddingTop: 10}}>
-                <ListMember styles={{height: 35}} />
-                <ListMember styles={{height: 35}} />
-                <ListMember styles={{height: 35}} />
-                <ListMember styles={{height: 35}} />
-                <ListMember styles={{height: 35}} />
-              </View>
-            ) : result.length == 0 ? (
-              <></>
-            ) : (
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                  paddingHorizontal: 15,
-                  paddingBottom: 20,
-                }}
-                data={result == null ? [] : result}
-                ListHeaderComponent={
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: 21,
-                      paddingVertical: 5,
-                      paddingLeft:10
-                    }}>
-                    <Text
+                // ...Platform.select({
+                //   ios: {
+                //     shadowColor: '#D5D5D5',
+                //     shadowOffset: {width: 0, height: -1},
+                //     shadowOpacity: 0.9,
+                //     shadowRadius: 3,
+                //   },
+                //   android: {
+                //     elevation: 15,
+                //   },
+                // }),
+              }}>
+              {result == null ? (
+                <View style={{flex: 1, paddingTop: 10}}>
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                </View>
+              ) : result.length == 0 ? (
+                <></>
+              ) : (
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 15,
+                    paddingBottom: 20,
+                  }}
+                  data={result == null ? [] : result}
+                  ListHeaderComponent={
+                    <View
                       style={{
-                        width: 15,
-                        color: AppColors.DarkText,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
+                        flexDirection: 'row',
+                        marginTop: 10,
+                        paddingVertical: 5,
+                        paddingLeft: 10,
                       }}>
-                      ક્રમ
-                    </Text>
-                    <Text
-                      style={{
-                        flex: 1.5,
-                        color: AppColors.DarkText,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
-                        marginLeft: 10,
-                      }}>
-                      નામ
-                    </Text>
-                    <Text
-                      style={{
-                        flex: 1,
-                        color: AppColors.DarkText,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
-                        marginLeft: 5,
-                      }}>
-                      ગામ
-                    </Text>
-                    <Text
-                      style={{
-                        flex: 1.2,
-                        color: AppColors.DarkText,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
-                      }}>
-                      મોબાઈલ નંબર
-                    </Text>
-                    <Text
-                      style={{
-                        flex: 0.8,
-                        color: AppColors.DarkText,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
-                        textAlign: 'center',
-                      }}>
-                      ફોટો
-                    </Text>
-                  </View>
-                }
-                renderItem={({item, index}) => (
-                  <AboutCell
-                    index={index}
-                    item={item}
-                    onClick={() =>
-                      RootNavigation.push(
-                        props?.navigation,
-                        AppScreens.MEMBER_DETAIL_SCREEN,
-                        item,
-                      )
-                    }
-                  />
-                )}
-              />
-            )}
-          </View>
-        )}
-        <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
-          backgroundColor={AppColors.BackgroundSecondColor}
-        />
+                      <Text
+                        style={{
+                          width: 15,
+                          color: AppColors.DarkText,
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 10,
+                        }}>
+                        ક્રમ
+                      </Text>
+                      <Text
+                        style={{
+                          flex: 1.4,
+                          color: AppColors.DarkText,
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 10,
+                          marginLeft: 10,
+                        }}>
+                        નામ
+                      </Text>
+                      <Text
+                        style={{
+                          flex: 1,
+                          color: AppColors.DarkText,
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 10,
+                        }}>
+                        ગામ
+                      </Text>
+                      <Text
+                        style={{
+                          flex: 1.3,
+                          color: AppColors.DarkText,
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 10,
+                        }}>
+                        મોબાઈલ નંબર
+                      </Text>
+                      <Text
+                        style={{
+                          flex: 0.8,
+                          color: AppColors.DarkText,
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 10,
+                          textAlign: 'center',
+                        }}>
+                        ફોટો
+                      </Text>
+                    </View>
+                  }
+                  renderItem={({item, index}) => (
+                    <AboutCell
+                      index={index}
+                      item={item}
+                      onClick={() =>
+                        RootNavigation.push(
+                          props?.navigation,
+                          AppScreens.MEMBER_DETAIL_SCREEN,
+                          item,
+                        )
+                      }
+                    />
+                  )}
+                />
+              )}
+            </View>
+          )}
+          <BorderView
+            text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+            backgroundColor={AppColors.BackgroundSecondColor}
+            style={result.length == 0 && styles.last}
+          />
+        </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  last: {
+    position: 'absolute',
+    bottom: 20,
+  },
+});
 
 export default SearchScreen;
 
@@ -686,9 +727,9 @@ const AboutCell = props => {
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop:10,
-        width:'100%',
-        paddingLeft:10
+        marginTop: 10,
+        width: '100%',
+        paddingLeft: 10,
       }}>
       <View
         style={{
@@ -754,24 +795,44 @@ const AboutCell = props => {
                 )
               : NaN;
           }}> */}
-          {/* <Image
+        {/* <Image
             source={
               props?.item?.phone?.length < 8 == '-' ? NaN : AppImages.CALL_ICON
             }
             style={{height: 15, width: 15, resizeMode: 'cover'}}
           /> */}
         {/* </TouchableOpacity> */}
-        <Text
-          style={{
-            flex: 1.2,
-            color: AppColors.DarkText,
-            fontFamily: AppFonts.semiBold,
-            fontSize: 10,
-          }}>
-          {props?.item?.phone == '-'
-            ? ''
-            : props?.item?.country_code + props?.item?.phone}
-        </Text>
+        <TouchableOpacity
+          style={{flexDirection: 'row', alignItems: 'center'}}
+          activeOpacity={1}
+          onPress={() => Linking.openURL(`telprompt:${props?.item?.phone}`)}>
+          <Text
+            style={{
+              // flex: 1.2,
+              color: AppColors.DarkText,
+              fontFamily: AppFonts.semiBold,
+              fontSize: 10,
+            }}>
+            {props?.item?.phone == '-'
+              ? ''
+              : props?.item?.country_code + props?.item?.phone}
+          </Text>
+          <Image style={{marginHorizontal: 5}} source={AppImages.CALL_ICON} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() =>
+            Linking.openURL(
+              `whatsapp://send?text=hello&phone=${props?.item?.phone}`,
+            )
+          }>
+          <Image
+            style={{height: 10, width: 10}}
+            source={require('../../../assets/images/whatsapp_icon.png')}
+          />
+        </TouchableOpacity>
+
         <View
           style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
           <Image source={AppImages.SMALL_MAN_IMAGE} />

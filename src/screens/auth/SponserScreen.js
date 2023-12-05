@@ -7,9 +7,18 @@ import AppButton from '../../components/AppButton';
 import {AppColors} from '../../utils/AppColors';
 import * as RootNavigation from '../../utils/RootNavigation';
 import {AppScreens} from '../../utils/AppScreens';
-import {AsyncStorageConst, getString} from '../../utils/AsyncStorageHelper';
+import {
+  AsyncStorageConst,
+  getString,
+  setString,
+} from '../../utils/AsyncStorageHelper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCities} from '../../networking/CallApi';
+import {printLog} from '../../utils/AppConstValue';
 
 const SponserScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   var screen_name = AppScreens.FirstScreen;
   // useEffect(() => {
   //   getString(AsyncStorageConst.user, user => {
@@ -20,15 +29,42 @@ const SponserScreen = props => {
   //     }
   //   });
   // });
+  useEffect(() => {
+    getCities(
+      response => {
+        printLog('NewUserScreen', response?.status);
+        setString('village', JSON.stringify(response?.data));
+        printLog('cities', JSON.stringify(response?.data));
+      },
+      error => {
+        printLog('NewUserScreen', error);
+      },
+    );
+  }, []);
   return (
-    <SafeAreaView style={AppStyles.SplashBackground}>
-      <StatusBar backgroundColor={AppColors.BackgroundSecondColor}/>
+    <View
+      style={[
+        AppStyles.SplashBackground,
+        {paddingTop: Platform.OS == 'ios' && StatusBarHeight, flex: 1},
+      ]}>
+      <StatusBar backgroundColor={AppColors.BackgroundSecondColor} />
       <View style={AppStyles.AppLogoStyle}>
         <Image
           style={{height: 100, width: 100}}
           source={AppImages.APP_MAIN_ICON}
         />
       </View>
+      <Text
+        style={{
+          fontSize: 19,
+          color: 'white',
+          fontFamily: AppFonts.semiBold,
+          textAlign: 'center',
+          marginTop: 30,
+          width: '65%',
+        }}>
+        શ્રી સત્વીસ કડવા પાટીદાર સમાજ ઊંઝા
+      </Text>
       <Text
         style={{
           fontSize: 22,
@@ -53,7 +89,7 @@ const SponserScreen = props => {
           RootNavigation.push(props?.navigation, screen_name, '')
         }
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

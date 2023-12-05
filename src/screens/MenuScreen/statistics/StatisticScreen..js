@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
+  ScrollView,
+  Platform,
 } from 'react-native';
 // import {Dropdown} from 'react-native-element-dropdown';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -24,33 +26,35 @@ import {AppScreens} from '../../../utils/AppScreens';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
+import {getString} from '../../../utils/AsyncStorageHelper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 // import {staticArray} from '../../../../utils/staticArray';
 
 const count = [
   {
     id: 0,
     count: '354',
-    name: 'કુલ ગામ',
+    name: 'ટોટલ ગામ',
   },
   {
     id: 1,
     count: '354',
-    name: 'કુલ કુટુંબ',
+    name: 'ટોટલ રજીસ્ટર ફૅમિલી ',
   },
   {
     id: 2,
     count: '354',
-    name: 'કુલ સભ્યો',
+    name: 'ટોટલ સભ્યો',
   },
   {
     id: 3,
     count: '354',
-    name: 'કુલ પુરૂષ',
+    name: 'ટોટલ પુરૂષ',
   },
   {
     id: 4,
     count: '354',
-    name: 'કુલ સ્ત્રી',
+    name: 'ટોટલ સ્ત્રી',
   },
   {
     id: 5,
@@ -60,24 +64,43 @@ const count = [
   {
     id: 6,
     count: '354',
-    name: 'અપરિણીત સ્ત્રી'+"\n"+'(20 વર્ષથી ઉપર)',
+    name: 'અપરિણીત સ્ત્રી' + '\n' + '(20 વર્ષથી ઉપર)',
   },
   {
     id: 7,
     count: '354',
-    name: 'પરિણીત પુરુષ ',
+    name: 'પુરૂષ (60 વર્ષથી ઉપર)',
   },
   {
     id: 8,
     count: '354',
-    name: 'પરિણીત સ્ત્રી',
+    name: 'સ્ત્રી (60 વર્ષથી ઉપર)',
+  },
+  {
+    id: 9,
+    count: '354',
+    name: 'અપરિણીત સ્ત્રી' + '\n' + '(20 વર્ષથી ઉપર)',
+  },
+  {
+    id: 10,
+    count: '354',
+    name: 'પરિણીત પુરુષ ',
   },
 ];
 
 const StatisticScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [cities, setCities] = useState([]);
   const [value, setValue] = useState('All');
   const [cityId, setCityId] = useState('0');
+  const [counts, getCounts] = useState(0);
+
+  useEffect(() => {
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
   // const [count, setCount] = useState(null);
 
   //   useEffect(() => {
@@ -144,10 +167,11 @@ const StatisticScreen = props => {
   //   };
 
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       <View style={{backgroundColor: AppColors.fadeBackground, flex: 1}}>
         <View
@@ -205,10 +229,10 @@ const StatisticScreen = props => {
               fontFamily: AppFonts.medium,
               fontSize: 12,
               color: AppColors.DarkText,
-              alignSelf:'flex-start',
-              marginLeft:10
+              alignSelf: 'flex-start',
+              marginLeft: 10,
             }}>
-            Please select village below
+            Please Select Village Below
           </Text>
 
           <View
@@ -236,28 +260,35 @@ const StatisticScreen = props => {
             />
           </View>
         </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <FlatList
+              numColumns={3}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingBottom: 20,
+                // paddingStart: 15,
+                paddingTop: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              data={count == null ? [] : count}
+              renderItem={(item, index) => (
+                <MenuComponent index={index} item={item} onClick={() => {}} />
+              )}
+            />
+          </View>
 
-        <FlatList
-          numColumns={3}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 20,
-            paddingStart: 15,
-            paddingTop: 20,
-          }}
-          data={count == null ? [] : count}
-          renderItem={(item, index) => (
-            <MenuComponent index={index} item={item} onClick={() => {}} />
-          )}
-        />
-
-        <BorderView text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
-        backgroundColor={AppColors.BackgroundSecondColor}/>
+          <BorderView
+            text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+            backgroundColor={AppColors.BackgroundSecondColor}
+          />
+        </ScrollView>
 
         {/* <FooterTextCell title={`સમાજ એજ મારુ પરિવાર છે`} /> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -276,9 +307,7 @@ export const MenuComponent = props => {
       <View
         style={{
           alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: 10,
-          
+          justifyContent: 'center',
           borderColor: AppColors.Red,
           height: width / 3 - 26,
           borderRadius: 10,
@@ -301,9 +330,11 @@ export const MenuComponent = props => {
           style={{
             color: AppColors.DarkText,
             textAlign: 'center',
-            marginTop: 15,
+            textAlignVertical: 'center',
             fontFamily: AppFonts.semiBold,
             fontSize: 29,
+
+            alignSelf: 'center',
           }}>
           {props?.item?.item?.count}
         </Text>
@@ -313,6 +344,7 @@ export const MenuComponent = props => {
             textAlign: 'center',
             fontFamily: AppFonts.regular,
             fontSize: 10,
+            width: '70%',
           }}>
           {props?.item?.item?.name}
         </Text>

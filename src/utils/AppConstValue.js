@@ -3,8 +3,8 @@ export class AppConstValue {
   static ButtonOpacity = 1;
 }
 
-export const ShowMessage = message => {
-  showMessage({message: message});
+export const ShowMessage = (message,color) => {
+  showMessage({message: message,backgroundColor:color});
 };
 
 export const printLog = (tag, msg) => {

@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import React, {useState} from 'react';
 import {AppColors} from '../../../utils/AppColors';
@@ -13,57 +14,80 @@ import {AppFonts} from '../../../utils/AppFonts';
 import {MySelection} from '../../../components/SimpleTextInput';
 import {AppConstValue} from '../../../utils/AppConstValue';
 import BorderView from '../../../components/BorderView';
-import { AppScreens } from '../../../utils/AppScreens';
+import {AppScreens} from '../../../utils/AppScreens';
 import * as RootNavigation from '../../../utils/RootNavigation';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const members = [
   {
     id: 0,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:1
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 1,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:1
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 2,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:2
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 3,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:1
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 4,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:2
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 5,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:1
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 6,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:1
+    number: 1,
+    status: 0,
   },
   {
-    id: 0,
+    id: 7,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    number:2
+    number: 1,
+    status: 0,
+  },
+  {
+    id: 8,
+    title: 'પ્રમુખ શ્રી',
+    name: 'કારોબારી સભ્યશ્રી',
+    number: 1,
+    status: 1,
+  },
+  {
+    id: 8,
+    title: 'પ્રમુખ શ્રી',
+    name: 'કારોબારી સભ્યશ્રી',
+    number: 1,
+    status: 1,
   },
 ];
 
@@ -85,19 +109,22 @@ const range = [
   },
 ];
 
-const AboutUsScreen = (props) => {
+const AboutUsScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   // const [range, setRange] = useState([]);
   const [value, setValue] = useState('Select year');
   const [valueId, setValueId] = useState('');
   // const [members, setMembers] = useState(null);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: AppColors.BackgroundSecondColor,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
-      <View style={{flex: 1, backgroundColor:AppColors.fadeBackground}}>
+      <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <View
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
@@ -112,7 +139,7 @@ const AboutUsScreen = (props) => {
         <View
           style={{
             marginTop: -40,
-            marginHorizontal:15,
+            marginHorizontal: 15,
             alignItems: 'flex-start',
             alignSelf: 'center',
             backgroundColor: AppColors.backgroundColor,
@@ -138,7 +165,7 @@ const AboutUsScreen = (props) => {
               fontSize: 12,
               color: AppColors.DarkText,
             }}>
-            Please select year
+            Please Select Year
           </Text>
 
           <View
@@ -184,7 +211,7 @@ const AboutUsScreen = (props) => {
                   RootNavigation.push(
                     props?.navigation,
                     AppScreens.ABOUT_US_DETAIL_SCREEN,
-                    {item:item},
+                    {item: item},
                   );
                 }}
               />
@@ -192,9 +219,14 @@ const AboutUsScreen = (props) => {
           />
         </View>
 
-        <View style={{backgroundColor: AppColors.fadeBackground, paddingBottom: 30,paddingTop:15}}>
+        {/* <View
+          style={{
+            backgroundColor: AppColors.fadeBackground,
+            paddingBottom: 30,
+            paddingTop: 15,
+          }}>
           <TouchableOpacity
-          activeOpacity={AppConstValue.ButtonOpacity}
+            activeOpacity={AppConstValue.ButtonOpacity}
             style={{
               backgroundColor: AppColors.BackgroundSecondColor,
               height: 45,
@@ -204,7 +236,6 @@ const AboutUsScreen = (props) => {
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 15,
-              
             }}>
             <Text
               style={{
@@ -216,14 +247,18 @@ const AboutUsScreen = (props) => {
               કારોબારી સભ્યશ્રી
             </Text>
             <TouchableOpacity
-            activeOpacity={AppConstValue.ButtonOpacity}
-            onPress={()=> RootNavigation.navigate(AppScreens.ADVICE_MEMBER,{status:'main'})}
+              activeOpacity={AppConstValue.ButtonOpacity}
+              onPress={() =>
+                RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                  status: 'main',
+                })
+              }
               style={{
                 position: 'absolute',
                 right: 15,
                 backgroundColor: '#FFFFFF',
-                padding:5,
-                borderRadius:8
+                padding: 5,
+                borderRadius: 8,
               }}>
               <Text
                 style={{
@@ -235,9 +270,9 @@ const AboutUsScreen = (props) => {
               </Text>
             </TouchableOpacity>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -259,8 +294,8 @@ const AboutCell = props => {
         alignItems: 'center',
         ...Platform.select({
           ios: {
-            shadowColor: '#D5D5D5',
-            shadowOffset: {width: 0, height: -1},
+            shadowColor: 'gray',
+            shadowOffset: {width: 0, height: 0},
             shadowOpacity: 0.9,
             shadowRadius: 3,
           },
@@ -269,53 +304,173 @@ const AboutCell = props => {
           },
         }),
       }}>
+      {props?.item?.status == 0 ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 45,
+            flex: 1,
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontFamily: AppFonts.bold,
+              fontSize: 12,
+              flex: 0.25,
+              color: '#F3F3F3',
+              textAlign: 'center',
+              justifyContent: 'center',
+              height: 15,
+            }}>
+            {props?.item?.title}
+          </Text>
+
+          <TouchableOpacity
+            onPress={props?.onClick}
+            activeOpacity={AppConstValue.ButtonOpacity}
+            style={{
+              backgroundColor: '#F3F3F3',
+              height: '100%',
+              flex: 0.75,
+              paddingHorizontal: 10,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+              flexDirection: 'row',
+            }}>
+            <Text
+              style={{
+                color: AppColors.DarkText,
+                fontFamily: AppFonts.bold,
+                fontSize: 12,
+                marginLeft: 15,
+              }}>
+              {props?.item?.name}
+            </Text>
+            <Text
+              style={{
+                color: AppColors.DarkText,
+                fontFamily: AppFonts.bold,
+                fontSize: 12,
+                marginLeft: 15,
+              }}>
+              {props?.item?.name}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={{flex: 1}}>
+          <View
+            style={{
+              backgroundColor: AppColors.fadeBackground,
+              borderRadius: 10,
+              // paddingBottom: 30,
+              // paddingTop: 15,
+            }}>
+            <TouchableOpacity
+              activeOpacity={AppConstValue.ButtonOpacity}
+              style={{
+                backgroundColor: AppColors.BackgroundSecondColor,
+                height: 45,
+                borderRadius: 10,
+
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: 15,
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.bold,
+                  fontSize: 10,
+                  color: '#fff',
+                  alignSelf: 'center',
+                }}>
+                {props?.item.name}
+              </Text>
+              <TouchableOpacity
+                activeOpacity={AppConstValue.ButtonOpacity}
+                onPress={() =>
+                  RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                    status: 'main',
+                  })
+                }
+                style={{
+                  position: 'absolute',
+                  right: 15,
+                  backgroundColor: '#FFFFFF',
+                  padding: 5,
+                  borderRadius: 8,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.bold,
+                    fontSize: 10,
+                    color: '#EB7E01',
+                  }}>
+                  Click Here
+                </Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+};
+
+const DifferentAboutCell = props => {
+  <View
+    style={{
+      backgroundColor: AppColors.fadeBackground,
+      paddingBottom: 30,
+      paddingTop: 15,
+    }}>
+    <TouchableOpacity
+      activeOpacity={AppConstValue.ButtonOpacity}
+      style={{
+        backgroundColor: AppColors.BackgroundSecondColor,
+        height: 45,
+        borderRadius: 10,
+        marginHorizontal: 15,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+      }}>
       <Text
         style={{
           fontFamily: AppFonts.bold,
-          fontSize: 12,
-          flex: 0.25,
-          color: '#F3F3F3',
-          textAlign: 'center',
-
-          justifyContent: 'center',
-          textAlignVertical: 'center',
+          fontSize: 10,
+          color: '#fff',
+          alignSelf: 'center',
         }}>
-        {props?.item?.title}
+        કારોબારી સભ્યશ્રી
       </Text>
-
       <TouchableOpacity
-        onPress={props?.onClick}
         activeOpacity={AppConstValue.ButtonOpacity}
+        onPress={() =>
+          RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+            status: 'main',
+          })
+        }
         style={{
-          backgroundColor: AppColors.BackgroundColor,
-          height: '100%',
-          flex: 0.75,
-          paddingHorizontal: 10,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderTopRightRadius: 10,
-          borderBottomRightRadius: 10,
-          flexDirection:'row'
+          position: 'absolute',
+          right: 15,
+          backgroundColor: '#FFFFFF',
+          padding: 5,
+          borderRadius: 8,
         }}>
         <Text
           style={{
-            color:AppColors.DarkText,
             fontFamily: AppFonts.bold,
-            fontSize: 12,
-            marginLeft: 15,
+            fontSize: 10,
+            color: '#EB7E01',
           }}>
-          {props?.item?.name}
-        </Text>
-        <Text
-          style={{
-            color:AppColors.DarkText,
-            fontFamily: AppFonts.bold,
-            fontSize: 12,
-            marginLeft: 15,
-          }}>
-          {props?.item?.name}
+          Click Here
         </Text>
       </TouchableOpacity>
     </TouchableOpacity>
-  );
+  </View>;
 };

@@ -1,14 +1,17 @@
 import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {AppStyles} from '../utils/AppStyles';
 import {AppImages} from '../utils/AppImages';
 import {AppColors} from '../utils/AppColors';
 import {AppFonts} from '../utils/AppFonts';
 import {AppConstValue} from '../utils/AppConstValue';
 import * as RootNavigation from '../utils/RootNavigation';
+import { getString } from '../utils/AsyncStorageHelper';
 
 const HomeMenuButton = props => {
   const width = Dimensions.get('window').width;
+
+ 
   return (
     <TouchableOpacity
       activeOpacity={AppConstValue.ButtonOpacity}

@@ -1,9 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AppButton from '../../../components/AppButton';
-
+import moment from 'moment';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 import {
+  BoxTextInput,
+  DaySelection,
   HorizontalDetailInput,
   HorizontalSelection,
   HorizontalTextInput,
@@ -14,25 +23,47 @@ import {
 //   postAddFeedback,
 // } from '../../../../networking/CallApi';
 import {AppColors} from '../../../utils/AppColors';
-import {printLog, ShowMessage} from '../../../utils/AppConstValue';
+import {
+  AppConstValue,
+  printLog,
+  ShowMessage,
+} from '../../../utils/AppConstValue';
 import {AppImages} from '../../../utils/AppImages';
 // import LoaderView from '../../../utils/LoaderView';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {AddBorder} from '../../FamilyMemberScreen/AddMemberScreen';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {AppFonts} from '../../../utils/AppFonts';
+import DatePicker from 'react-native-date-picker';
+import {getString} from '../../../utils/AsyncStorageHelper';
+import { staticArray } from '../../../utils/staticArray';
 
 const FeedBackScreen = props => {
+  const [openDatePicker, setDatePicker] = useState(false);
+  const [dob, setDOB] = useState(null);
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [suggestion, setSuggestion] = useState(null);
   const [suggestionID, setSuggestionID] = useState('0');
   const [suggestionList, setSuggestionList] = useState([]);
 
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState(null);
+  const[option,setOption]=useState('');
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [date, setDate] = useState('');
   const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
 
   //   useEffect(() => {
   //     getCities(
@@ -70,10 +101,11 @@ const FeedBackScreen = props => {
   //   }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <AppDrawerHeader
         title={'Feedback'}
@@ -84,11 +116,10 @@ const FeedBackScreen = props => {
         style={{
           flex: 1,
           backgroundColor: AppColors.fadeBackground,
-         
         }}>
         <ScreenToolbar text={'FEEDBACK'} />
 
-        <AppButton
+        {/* <AppButton
           text={'Mobile Number : 9999999999'}
           width={'85%'}
           buttonStyle={{
@@ -96,17 +127,27 @@ const FeedBackScreen = props => {
             width: '75%',
             borderRadius: 30,
             height: 40,
-            alignSelf:'center'
+            alignSelf: 'center',
           }}
-         
-        />
+        /> */}
 
-        
-       
-        
-          <KeyboardAwareScrollView
+        <KeyboardAwareScrollView
           enableOnAndroid={true}
-            contentContainerStyle={{
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}>
+          {/* <HorizontalSelection
+          label={`Choose Option`}
+          placeholder={`Choose Option`}
+          data={suggestionList == null ? [] : suggestionList}
+          value={suggestion}
+          onItemSelect={item => {
+            printLog(JSON.stringify(item?.item));
+            setSuggestion(item?.name);
+            setSuggestionID(item?.id);
+          }}
+        /> */}
+          <View
+            style={{
               marginVertical: '6%',
               width: '90%',
               alignItems: 'center',
@@ -115,8 +156,9 @@ const FeedBackScreen = props => {
               paddingHorizontal: 20,
               borderRadius: 10,
               backgroundColor: 'white',
-              alignSelf:'center',
+              alignSelf: 'center',
               paddingBottom: 30,
+
               ...Platform.select({
                 ios: {
                   shadowColor: '#D5D5D5',
@@ -129,26 +171,14 @@ const FeedBackScreen = props => {
                 },
               }),
             }}>
-            {/* <HorizontalSelection
-          label={`Choose Option`}
-          placeholder={`Choose Option`}
-          data={suggestionList == null ? [] : suggestionList}
-          value={suggestion}
-          onItemSelect={item => {
-            printLog(JSON.stringify(item?.item));
-            setSuggestion(item?.name);
-            setSuggestionID(item?.id);
-          }}
-        /> */}
-
             <HorizontalSelection
               label={`Choose Option`}
               placeholder={`Choose Option`}
-              data={cities == null ? [] : cities}
-              value={city}
+              data={staticArray.FeedbackOptions}
+              value={option}
               onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setCity(item?.name);
+                // printLog(JSON.stringify(item?.item));
+                setOption(item?.name);
               }}
             />
 
@@ -162,6 +192,75 @@ const FeedBackScreen = props => {
               defaultText={phone}
               onChangeText={setPhone}
             />
+
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+                marginTop: 20,
+                height: 25,
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.semiBold,
+                  color: AppColors.extraDark,
+                  fontSize: 12,
+                  textAlignVertical: 'center',
+                }}>
+                Date :
+              </Text>
+
+              <TouchableOpacity
+                activeOpacity={AppConstValue.ButtonOpacity}
+                onPress={() => {
+                  setDatePicker(true);
+                }}
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  borderBottomColor: AppColors.line_color,
+                  borderBottomWidth: 1,
+                  height: '100%',
+                  marginStart: 5,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.regular,
+                    color: dob == null ? 'gray' : AppColors.black,
+                    fontSize: 13,
+                    marginStart: 5,
+                  }}>
+                  {dob == null
+                    ? 'DD-MM-YYYY'
+                    : moment(dob).format('DD-MM-YYYY')}
+                </Text>
+                <Image
+                  style={{
+                    width: 1.5,
+                    height: '80%',
+                    marginHorizontal: 5,
+                    backgroundColor: AppColors.backgroundSecondColor,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <DatePicker
+              modal
+              mode="date"
+              open={openDatePicker}
+              maximumDate={new Date()}
+              date={dob == null ? new Date() : dob}
+              onConfirm={date => {
+                setDatePicker(false);
+                setDOB(date);
+              }}
+              onCancel={() => {
+                setDatePicker(false);
+              }}
+            />
+
             <HorizontalSelection
               label={`Village`}
               placeholder={`Village`}
@@ -172,7 +271,12 @@ const FeedBackScreen = props => {
                 setCity(item?.name);
               }}
             />
-            <HorizontalTextInput
+            {/* <HorizontalTextInput
+            label={`Message`}
+            defaultText={message}
+            onChangeText={setMessage}
+          /> */}
+            <BoxTextInput
               label={`Message`}
               defaultText={message}
               onChangeText={setMessage}
@@ -192,7 +296,7 @@ const FeedBackScreen = props => {
                 text={'Submit'}
                 width={'55%'}
                 buttonStyle={{
-                  marginTop: 70,
+                  marginTop: 15,
                   width: '50%',
                   borderRadius: 30,
                   height: 40,
@@ -234,12 +338,13 @@ const FeedBackScreen = props => {
                 }}
               />
             )}
-          </KeyboardAwareScrollView>
-
-          <BorderView backgroundColor={AppColors.BackgroundSecondColor} text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}/>
-       
+          </View>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <AddBorder />
+          </View>
+        </KeyboardAwareScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

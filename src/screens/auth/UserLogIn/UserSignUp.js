@@ -5,6 +5,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
@@ -29,10 +30,21 @@ import Header from '../../../components/Header';
 import TextInputView from '../../../components/TextInputView';
 import {getCities, register} from '../../../networking/CallApi';
 import {showMessage} from 'react-native-flash-message';
-import {AsyncStorageConst} from '../../../utils/AsyncStorageHelper';
+import {
+  AsyncStorageConst,
+  getString,
+  setString,
+} from '../../../utils/AsyncStorageHelper';
 import {Dropdown} from 'react-native-element-dropdown';
+import {
+  HorizontalSelection,
+  HorizontalTextInput,
+} from '../../../components/SimpleTextInput';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const UserSignUp = ({route}) => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const screen = route.params.screen;
   const [isLoading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState('');
@@ -43,21 +55,27 @@ const UserSignUp = ({route}) => {
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
-    getCities(
-      response => {
-        printLog('NewUserScreen', response?.status);
-        setCities(response?.data);
+    getString('village', response => {
+      setCities(response);
+    });
+  }, [cities, setCities]);
 
-        printLog('cities', JSON.stringify(response?.data));
-      },
-      error => {
-        printLog('NewUserScreen', error);
-      },
-    );
-  }, []);
+  // useEffect(() => {
+  //   getCities(
+  //     response => {
+  //       printLog('NewUserScreen', response?.status);
+  //       setCities(response?.data);
+  //       setString('village', JSON.stringify(response?.data));
+  //       printLog('cities', JSON.stringify(response?.data));
+  //     },
+  //     error => {
+  //       printLog('NewUserScreen', error);
+  //     },
+  //   );
+  // }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
         {
@@ -65,6 +83,7 @@ const UserSignUp = ({route}) => {
             screen == 'User Signin'
               ? AppColors.Red
               : AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
       {/* <KeyboardAwareScrollView contentContainerStyle={{flexGrow:0.8}}
@@ -80,101 +99,108 @@ const UserSignUp = ({route}) => {
                 : AppColors.BackgroundSecondColor,
           }}
         />
-
         <KeyboardAwareScrollView
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: Platform.OS == 'android' && -250,
+          }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps={'handled'}
           enableOnAndroid={true}
           extraScrollHeight={30}>
           <View
             style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '25%',
-              backgroundColor: '#fff',
-              justifyContent: 'space-evenly',
+              flex: 1,
+              paddingTop: 15,
             }}>
-            <Image
-              style={{}}
-              source={
-                screen == 'User Signin'
-                  ? AppImages.USER_LOGIN_ICON
-                  : AppImages.LOGIN_ICON
-              }
-            />
             <View
               style={{
-                justifyContent: 'space-around',
+                justifyContent: 'center',
                 alignItems: 'center',
+                height: Dimensions.get('window').height / 3.5,
+                backgroundColor: '#fff',
+                justifyContent: 'space-evenly',
               }}>
-              <Text
+              <Image
+                style={{}}
+                source={
+                  screen == 'User Signin'
+                    ? AppImages.USER_LOGIN_ICON
+                    : AppImages.LOGIN_ICON
+                }
+              />
+              <View
                 style={{
-                  fontFamily: AppFonts.semiBold,
-                  fontSize: 22,
-                  color: '#000',
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
                 }}>
-                {screen == 'User Signin' ? 'User Sign Up' : 'Log in'}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: AppFonts.regular,
-                  fontSize: 14,
-                  color: AppColors.LightText,
-                  marginTop: 15,
-                  textAlign: 'center',
-                }}>
-                Welcome!
-              </Text>
-              {screen == 'User Signin' ? (
-                <TouchableOpacity
-                  activeOpacity={AppConstValue.ButtonOpacity}
-                  onPress={() =>
-                    RootNavigation.navigate(AppScreens.MOILE_LOGIN_SCREEN, {
-                      screen: 'User Signin',
-                    })
-                  }
-                  style={{marginTop: 5}}>
-                  <Text
-                    style={{
-                      fontFamily: AppFonts.regular,
-                      fontSize: 14,
-                      color: AppColors.LightText,
-                    }}>
-                    If you already have an account?{' '}
-                    {
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontFamily: AppFonts.medium,
-                          color: AppColors.Red,
-                        }}>
-                        Log in
-                      </Text>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.semiBold,
+                    fontSize: 22,
+                    color: '#000',
+                  }}>
+                  {screen == 'User Signin' ? 'User Sign Up' : 'Sign in'}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.regular,
+                    fontSize: 14,
+                    color: AppColors.LightText,
+                    marginTop: 15,
+                    textAlign: 'center',
+                  }}>
+                  Welcome!
+                </Text>
+                {screen == 'User Signin' ? (
+                  <TouchableOpacity
+                    activeOpacity={AppConstValue.ButtonOpacity}
+                    onPress={() =>
+                      RootNavigation.navigate(AppScreens.MOILE_LOGIN_SCREEN, {
+                        screen: 'User Signin',
+                      })
                     }
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
+                    style={{marginTop: 5, marginBottom: 10}}>
+                    <Text
+                      style={{
+                        fontFamily: AppFonts.regular,
+                        fontSize: 14,
+                        color: AppColors.LightText,
+                      }}>
+                      Do you have an account?{' '}
+                      {
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontFamily: AppFonts.medium,
+                            color: AppColors.Red,
+                          }}>
+                          Login
+                        </Text>
+                      }
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
             </View>
-          </View>
 
-          {/* CenterView  */}
+            {/* CenterView  */}
 
-          <View
-            style={[
-              {
-                marginBottom: 30,
-              },
-              AppStyles.OutlineBackground,
-            ]}>
-            <TextInputView
-              text={'Name'}
-              placeholder={'Enter Full Name'}
-              src={AppImages.PHONE_SMALL_ICON}
-              onChangeText={i => setFirstName(i)}
-            />
+            <View
+              style={[
+                {
+                  marginBottom: 30,
+                },
+                AppStyles.OutlineBackground,
+              ]}>
+              <TextInputView
+                text={'Name'}
+                placeholder={'Enter Full Name'}
+                src={AppImages.PHONE_SMALL_ICON}
+                onChangeText={i => setFirstName(i)}
+              />
 
-            {/* <TextInputView
+              {/* <TextInputView
               text={'Village'}
               placeholder={'Village Name is Here'}
               src={AppImages.LOCATION_ICON}
@@ -182,81 +208,91 @@ const UserSignUp = ({route}) => {
               // onChangeText={i => setCities(i)}
             /> */}
 
-            <View
-              style={{
-                height: 65,
-                width: '100%',
-                justifyContent: 'space-between',
-                marginTop: 20,
-              }}>
-              <Text
-                style={{
-                  fontFamily: AppFonts.semiBold,
-                  fontSize: 12,
-                  color: AppColors.DarkText,
-                }}>
-                Village
-              </Text>
-
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  height: 65,
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  marginTop: 20,
                 }}>
-                <Dropdown
-                  iconColor={AppColors.Red}
-                  renderRightIcon={props => (
-                    <Image source={AppImages.DROP_DOWN_ICON} />
-                  )}
-                  renderLeftIcon={() => (
-                    <Image
-                      style={{marginRight: 20, tintColor: AppColors.Red}}
-                      source={AppImages.LOCATION_ICON}
-                    />
-                  )}
-                  data={cities}
-                  placeholder={'Village Name is Here'}
-                  maxHeight={300}
-                  placeholderStyle={{
-                    flex: 1,
-                    fontFamily: AppFonts.regular,
-                    fontSize: 15,
-                    color: '#38385E',
-                  }}
-                  selectedTextStyle={{
-                    fontFamily: AppFonts.regular,
-                    fontSize: 15,
-                    color: '#000',
-                  }}
-                  value={value?.name}
-                  labelField="name"
-                  valueField="name"
+                <Text
                   style={{
-                    flex: 1,
-                    borderBottomColor: '#EAEAFF',
+                    fontFamily: AppFonts.semiBold,
+                    fontSize: 12,
+                    color: AppColors.extraDark,
+                  }}>
+                  Village
+                </Text>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    borderBottomColor: AppColors.line_color,
                     borderBottomWidth: 1,
-                    height: 25,
-                  }}
-                  onChange={item => {
-                    setValue(item);
-                  }}
-                />
+                    
+                  }}>
+                  <Image
+                    style={{marginRight: 15,tintColor:AppColors.Red}}
+                    source={AppImages.LOCATION_ICON}
+                  />
+                  <Dropdown
+                  
+                    data={cities}
+                    placeholder={'Village Name is Here'}
+                    maxHeight={200}
+                    placeholderStyle={{
+                      fontFamily: AppFonts.regular,
+                      fontSize: 14,
+                      color: AppColors.extraDark,
+                    }}
+                    selectedTextStyle={{
+                      fontFamily: AppFonts.regular,
+                      fontSize: 12,
+                      color: AppColors.extraDark,
+                    }}
+                    value={value?.name}
+                    labelField="name"
+                    valueField="name"
+                    style={{
+                      flex: 1,
+                      borderBottomColor: AppColors.line_color,
+                      borderBottomWidth: 0,
+                      height: 45,
+                    }}
+                    onChange={item => {
+                      setValue(item);
+                    }}
+                    renderItem={item => (
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontFamily: AppFonts.regular,
+                          color: AppColors.extraDark,
+                          marginTop: 5,
+                          marginLeft:15
+                        }}>
+                        {item.name}
+                      </Text>
+                    )}
+                  />
+                </View>
               </View>
-            </View>
 
-            <AppInputView
-              text={'Mobile Number'}
-              placeholder={'Mobile Number'}
-              onChangeText={i => setPhone(i)}
-            />
+              <AppInputView
+                text={'Mobile Number'}
+                placeholder={'Mobile Number'}
+                onChangeText={i => setPhone(i)}
+                icon={{tintColor: screen == 'User Signin' && AppColors.Red}}
+              />
 
-            <AppPasswordView
-              text={'Password'}
-              placeholder={'Password'}
-              onChangeText={i => setPassword(i)}
-            />
+              <AppPasswordView
+                text={'Password'}
+                placeholder={'Password'}
+                onChangeText={i => setPassword(i)}
+              />
 
-            {/* <TouchableOpacity
+              {/* <TouchableOpacity
               style={{alignSelf: 'flex-start'}}
               activeOpacity={AppConstValue.ButtonOpacity}
               onPress={() =>
@@ -278,84 +314,90 @@ const UserSignUp = ({route}) => {
               </Text>
             </TouchableOpacity> */}
 
-            <AppButton
-              text={'Sign up'}
-              buttonPress={() =>
-                RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
-                  screen: screen,
-                })
-              }
-              buttonStyle={{
-                width: '100%',
-                marginTop: 30,
-                marginBottom: 20,
-                alignSelf: 'center',
-                backgroundColor:
-                  screen == 'User Signin'
-                    ? AppColors.Red
-                    : AppColors.BackgroundSecondColor,
-              }}
-              // buttonPress={
-              //   () => {
-              //     var params = {
-              //       country_code: countryCode,
-              //       phone: phone,
-              //       name: firstName,
-              //       city_id: cities,
-              //       password: password,
-              //     };
+              <AppButton
+                text={'Sign up'}
+                buttonPress={() =>
+                  RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
+                    screen: screen,
+                    show: true,
+                  })
+                }
+                buttonStyle={{
+                  width: '100%',
+                  marginTop: 30,
+                  marginBottom: 20,
+                  alignSelf: 'center',
+                  backgroundColor:
+                    screen == 'User Signin'
+                      ? AppColors.Red
+                      : AppColors.BackgroundSecondColor,
+                }}
+                // buttonPress={
+                //   () => {
+                //     var params = {
+                //       country_code: countryCode,
+                //       phone: phone,
+                //       name: firstName,
+                //       city_id: cities,
+                //       password: password,
+                //     };
 
-              //     countryCode == ''
-              //       ? ShowMessage('Please select country code')
-              //       : phone.trim().length < 9
-              //       ? ShowMessage('Please enter phone no.')
-              //       : firstName.trim().length == 0
-              //       ? ShowMessage('Please enter first name')
-              //       : // : cities == ''
-              //       // ? ShowMessage('Please select your village')
-              //       password.length < 6
-              //       ? ShowMessage('Password must be 6 latter long.')
-              //       : // setLoading(true),
-              //         register(
-              //           params,
-              //           response => {
-              //             printLog('register error', JSON.stringify(response));
-              //             if (!response?.status) {
-              //               showMessage(response?.message);
-              //               setLoading(false);
-              //             } else {
-              //               setLoading(false);
-              //               var token = response?.token;
-              //               printLog(typeof token);
-              //               setString(
-              //                 AsyncStorageConst.allDetails,
-              //                 JSON.stringify(response),
-              //               );
-              //               setString(AsyncStorageConst.token, token);
-              //               setString(
-              //                 AsyncStorageConst.user,
-              //                 JSON.stringify(response?.data),
-              //               );
-              //               RootNavigation.push(
-              //                 props?.navigation,
-              //                 AppScreens.VerifyMobileScreen,
-              //                 params,
-              //               );
-              //               setLoading(false);
-              //             }
-              //           },
-              //           error => {
-              //             printLog('register error', error);
-              //             setLoading(false);
-              //           },
-              //         );
-              //   }
+                //     countryCode == ''
+                //       ? ShowMessage('Please select country code')
+                //       : phone.trim().length < 9
+                //       ? ShowMessage('Please enter phone no.')
+                //       : firstName.trim().length == 0
+                //       ? ShowMessage('Please enter first name')
+                //       : // : cities == ''
+                //       // ? ShowMessage('Please select your village')
+                //       password.length < 6
+                //       ? ShowMessage('Password must be 6 latter long.')
+                //       : // setLoading(true),
+                //         register(
+                //           params,
+                //           response => {
+                //             printLog('register error', JSON.stringify(response));
+                //             if (!response?.status) {
+                //               showMessage(response?.message);
+                //               setLoading(false);
+                //             } else {
+                //               setLoading(false);
+                //               var token = response?.token;
+                //               printLog(typeof token);
+                //               setString(
+                //                 AsyncStorageConst.allDetails,
+                //                 JSON.stringify(response),
+                //               );
+                //               setString(AsyncStorageConst.token, token);
+                //               setString(
+                //                 AsyncStorageConst.user,
+                //                 JSON.stringify(response?.data),
+                //               );
+                //               RootNavigation.push(
+                //                 props?.navigation,
+                //                 AppScreens.VerifyMobileScreen,
+                //                 params,
+                //               );
+                //               setLoading(false);
+                //             }
+                //           },
+                //           error => {
+                //             printLog('register error', error);
+                //             setLoading(false);
+                //           },
+                //         );
+                //   }
 
-              // }
-            />
+                // }
+              />
+            </View>
           </View>
+          <BorderView
+            backgroundColor={AppColors.Red}
+            text={'સમાજ એજ મારો પરિવાર'}
+          />
 
-          <View
+          {/* <View
             style={{
               height: 110,
               flexDirection: 'row',
@@ -388,24 +430,12 @@ const UserSignUp = ({route}) => {
                 borderBottomLeftRadius: 5,
                 width: '10%',
               }}></View>
-          </View>
-
-          {/* <BorderView
-            text={
-              screen == 'User Signin'
-                ? 'સમાજ એજ મારો પરિવાર'
-                : 'Welcome to Application'
-            }
-            backgroundColor={
-              screen == 'User Signin'
-                ? AppColors.Red
-                : AppColors.BackgroundSecondColor
-            }
-          /> */}
+          </View> */}
         </KeyboardAwareScrollView>
+
         {/* </KeyboardAwareScrollView> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

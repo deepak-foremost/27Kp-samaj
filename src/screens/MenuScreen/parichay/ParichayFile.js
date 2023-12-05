@@ -8,145 +8,161 @@ import {
   Linking,
   RefreshControl,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {getParipatr} from '../../../../networking/CallApi';
 import {AppColors} from '../../../utils/AppColors';
 import {printLog} from '../../../utils/AppConstValue';
 import {AppConstValue} from '../../../utils/AppConstValue';
-import { AppFonts } from '../../../utils/AppFonts';
+import {AppFonts} from '../../../utils/AppFonts';
 import {AppImages} from '../../../utils/AppImages';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {staticArray} from '../../../utils/staticArray';
-import { ListMember } from '../advisour_member/AdvicerMember';
+import {ListMember} from '../advisour_member/AdvicerMember';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const list=[
-    {
-        title:'વાડી નું મુહુર્ત સમારોહ',
-        circular_date:'22/05/2023'
-    }, {
-        title:'વાડી નું મુહુર્ત સમારોહ',
-        circular_date:'22/05/2023'
-    }, {
-        title:'વાડી નું મુહુર્ત સમારોહ',
-        circular_date:'22/05/2023'
-    }, {
-        title:'વાડી નું મુહુર્ત સમારોહ',
-        circular_date:'22/05/2023'
-    }, {
-        title:'વાડી નું મુહુર્ત સમારોહ',
-        circular_date:'22/05/2023'
-    },
-]
+const list = [
+  {
+    title: 'વાડી નું મુહુર્ત સમારોહ',
+    circular_date: '22/05/2023',
+  },
+  {
+    title: 'વાડી નું મુહુર્ત સમારોહ',
+    circular_date: '22/05/2023',
+  },
+  {
+    title: 'વાડી નું મુહુર્ત સમારોહ',
+    circular_date: '22/05/2023',
+  },
+  {
+    title: 'વાડી નું મુહુર્ત સમારોહ',
+    circular_date: '22/05/2023',
+  },
+  {
+    title: 'વાડી નું મુહુર્ત સમારોહ',
+    circular_date: '22/05/2023',
+  },
+];
 
 const ParichayFileScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [files, setFiles] = useState(null);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
-  useEffect(()=>{
-    setFiles(list)
-  })
+  useEffect(() => {
+    setFiles(list);
+  });
 
-//   const onRefresh = React.useCallback(() => {
-//     setRefreshing(true);
-//     getParipatr(
-//       onSuccess => {
-//         printLog('getParipatr', JSON.stringify(onSuccess));
-//         if (onSuccess?.status) {
-//           setFiles(onSuccess?.data);
-//         } else {
-//           setFiles([]);
-//         }
-//         setRefreshing(false);
-//       },
-//       onFailure => {
-//         printLog('getParipatr', JSON.stringify(onFailure));
-//         setFiles([]);
-//         setRefreshing(false);
-//       },
-//     );
-//   }, []);
+  //   const onRefresh = React.useCallback(() => {
+  //     setRefreshing(true);
+  //     getParipatr(
+  //       onSuccess => {
+  //         printLog('getParipatr', JSON.stringify(onSuccess));
+  //         if (onSuccess?.status) {
+  //           setFiles(onSuccess?.data);
+  //         } else {
+  //           setFiles([]);
+  //         }
+  //         setRefreshing(false);
+  //       },
+  //       onFailure => {
+  //         printLog('getParipatr', JSON.stringify(onFailure));
+  //         setFiles([]);
+  //         setRefreshing(false);
+  //       },
+  //     );
+  //   }, []);
 
-//   useEffect(() => {
-//     getParipatr(
-//       onSuccess => {
-//         printLog('getParipatr', JSON.stringify(onSuccess));
-//         if (onSuccess?.status) {
-//           setFiles(onSuccess?.data);
-//         } else {
-//           setFiles([]);
-//         }
-//       },
-//       onFailure => {
-//         printLog('getParipatr', JSON.stringify(onFailure));
-//         setFiles([]);
-//       },
-//     );
-//   }, []);
+  //   useEffect(() => {
+  //     getParipatr(
+  //       onSuccess => {
+  //         printLog('getParipatr', JSON.stringify(onSuccess));
+  //         if (onSuccess?.status) {
+  //           setFiles(onSuccess?.data);
+  //         } else {
+  //           setFiles([]);
+  //         }
+  //       },
+  //       onFailure => {
+  //         printLog('getParipatr', JSON.stringify(onFailure));
+  //         setFiles([]);
+  //       },
+  //     );
+  //   }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: AppColors.BackgroundSecondColor,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <AppDrawerHeader
         title={'પરિપત્ર ફાઇલ'}
         leadIcon={AppImages.ICON_BACK}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-      <View style={{flex:1,backgroundColor:AppColors.fadeBackground}}>
-        <ScreenToolbar text={'પરિપત્ર ફાઈલ '}/>
-      {files == null ? (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: AppColors.backgroundColor,
-            alignItems: 'center',
-            paddingHorizontal: 10,
-            paddingTop: 15,
-          }}>
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-          <ListMember styles={{height: 45}} />
-        </View>
-      ) : files?.length == 0 ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text
+      <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
+        <ScreenToolbar text={'પરિપત્ર ફાઈલ '} />
+        {files == null ? (
+          <View
             style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 15,
-              color: AppColors?.lineColor,
+              flex: 1,
+              backgroundColor: AppColors.backgroundColor,
+              alignItems: 'center',
+              paddingHorizontal: 10,
+              paddingTop: 15,
             }}>
-            No List Found
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 20}}
-          data={files == null ? [] : files}
-          renderItem={({item, index}) => <FileCell item={item} index={index} />}
-        //   refreshControl={
-        //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        //   }
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+            <ListMember styles={{height: 45}} />
+          </View>
+        ) : files?.length == 0 ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text
+              style={{
+                fontFamily: AppFonts.semiBold,
+                fontSize: 15,
+                color: AppColors?.lineColor,
+              }}>
+              No List Found
+            </Text>
+          </View>
+        ) : (
+          <View style={{flex: 1}}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 20}}
+              data={files == null ? [] : files}
+              renderItem={({item, index}) => (
+                <FileCell item={item} index={index} />
+              )}
+              //   refreshControl={
+              //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              //   }
+            />
+          </View>
+        )}
+        <BorderView
+          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          backgroundColor={AppColors.BackgroundSecondColor}
         />
-      )}
-      <BorderView text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
-      backgroundColor={AppColors.BackgroundSecondColor}/>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -162,9 +178,10 @@ const FileCell = props => {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: AppColors.BackgroundColor,
-        marginTop: 15,
+        marginTop: 10,
         marginHorizontal: 20,
         borderRadius: 10,
+        paddingVertical: 10,
         ...Platform.select({
           ios: {
             shadowColor: '#D5D5D5',
@@ -177,34 +194,54 @@ const FileCell = props => {
           },
         }),
       }}>
-      <View style={{paddingVertical: 17, marginHorizontal: 17, flex: 1}}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          Linking.openURL(props?.item?.document);
+        }}>
+        <Image
+          source={AppImages.ICON_PDF_LIST}
+          style={{
+            marginHorizontal: 10,
+            resizeMode: 'contain',
+          }}
+        />
+      </TouchableOpacity>
+      <View
+        style={{
+          marginHorizontal: 0,
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
         <Text
           style={{
             fontFamily: AppFonts.medium,
             fontSize: 12,
-            lineHeight: 18,
+            textAlignVertical: 'center',
             color: AppColors.DarkText,
+            flex: 1,
+            alignContent: 'center',
           }}>
           {props?.item?.title}
         </Text>
 
-        <View style={{flexDirection: 'row', marginTop: 8}}>
-          {/* <Text
-            numberOfLines={1}
-            style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 13,
-              paddingEnd: 5,
-              color: AppColors.black,
-            }}>
-            Date :
-          </Text> */}
+        <View
+          style={{
+            backgroundColor: AppColors.DarkText,
+            borderRadius: 15,
+            padding: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginHorizontal: 10,
+            paddingHorizontal: 10,
+          }}>
           <Text
             numberOfLines={1}
             style={{
               fontFamily: AppFonts.medium,
-              fontSize: 10,
-              color:AppColors.DarkText,
+              fontSize: 7,
+              color: '#fff',
             }}>
             {props?.item?.circular_date}
           </Text>
@@ -219,20 +256,6 @@ const FileCell = props => {
           backgroundColor: '#EBEBEB',
         }}
       /> */}
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          Linking.openURL(props?.item?.document);
-        }}>
-        <Image
-          source={AppImages.ICON_PDF_LIST}
-          style={{
-          
-            marginHorizontal: 17,
-            resizeMode: 'contain',
-          }}
-        />
-      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

@@ -24,10 +24,11 @@ import BorderView from '../components/BorderView';
 
 const ContactUsScreen = props => {
   return (
-    <SafeAreaView
+    <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
+        paddingTop:Platform.OS=='ios' && 55
       }}>
       {/* <Image
         source={AppImages.APP_SPONCER_LINE}
@@ -58,58 +59,66 @@ const ContactUsScreen = props => {
         </View>
         <View
           style={{
-            marginTop: -40,
-            
-            alignItems: 'center',
-            width: '90%',
-            borderRadius: 10,
-            backgroundColor: 'white',
-            alignSelf:'center',
-            ...Platform.select({
-              ios: {
-                shadowColor: '#D5D5D5',
-                shadowOffset: {width: 0, height: 5},
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-              },
-              android: {
-                elevation: 5,
-              },
-            }),
+            flex: 1,
           }}>
-          <ScrollView
-            style={{width: '90%', borderRadius: 15}}
+          <View
+            style={{
+              width: '95%',
+              borderRadius: 15,
+              alignSelf: 'center',
+              marginTop: -30,
+              flex: 1,
+            }}
             showsVerticalScrollIndicator={false}>
             <View
               style={{
-                width: '100%',
-
-                alignSelf: 'center',
+                justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: AppColors.BackgroundColor,
-                paddingTop: 30,
+                width: '95%',
+                borderRadius: 10,
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                paddingTop: 15,
+                paddingHorizontal: 5,
+
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#D5D5D5',
+                    shadowOffset: {width: 0, height: 5},
+                    shadowOpacity: 0.9,
+                    shadowRadius: 3,
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
               }}>
               <Text
                 style={{
-                  paddingHorizontal: 24,
-                  fontSize: 12,
+                  paddingHorizontal: 10,
+                  fontSize: 11,
                   fontFamily: AppFonts.medium,
                   color: AppColors.DarkText,
+                  textAlign:'center',
+                  width:'100%',
+                  
                 }}>
                 એપ્લિકેશન માં ફર્સ્ટ પેજ પર જાહેરાત મૂકવા માટે અને "Sign in
                 Using Your Mobile" નીચે આપેલ નંબર પર સર્પક કરવો.
               </Text>
 
-              <Image
+              {/* <Image
                 style={{
                   height: 2,
                   backgroundColor: AppColors.line_color,
                   width: '90%',
                   marginTop: 30,
                 }}
-              />
+              /> */}
 
               <FlatList
+                scrollEnabled={false}
+                contentContainerStyle={{alignItems: 'center', marginTop: 10}}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
                 data={staticArray.ContactPerson}
@@ -159,9 +168,9 @@ const ContactUsScreen = props => {
             </View> */}
               <Image
                 style={{
-                  height: 2,
+                  height: 1,
                   backgroundColor: AppColors.line_color,
-                  width: '90%',
+                  width: '95%',
                   marginTop: 20,
                 }}
               />
@@ -172,58 +181,100 @@ const ContactUsScreen = props => {
                     height: 45,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    width: '90%',
+                    width: '95%',
                     marginTop: 10,
                   },
                 ]}>
                 <Text
                   style={[
                     {
-                      fontSize: 12,
+                      fontSize: 11,
                       fontFamily: AppFonts.bold,
                       color: AppColors.DarkText,
                       alignSelf: 'flex-start',
                       marginLeft: 10,
                     },
                   ]}>
-                  Office Address : Nikol, Ahmedabad
+                  Office Address: Full Address-Nikol, Ahmedabad
                 </Text>
               </View>
 
               <Image
                 style={{
-                  height: 2,
+                  height: 1,
                   backgroundColor: AppColors.line_color,
-                  width: '90%',
+                  width: '95%',
                   marginTop: 10,
                 }}
               />
+              <TouchableOpacity
+              activeOpacity={1}
+                style={{
+                  backgroundColor: AppColors.BackgroundSecondColor,
+                  width: '95%',
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingVertical: 10,
+                  marginTop:15,
+                  marginBottom:30
+                }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontFamily: AppFonts.semiBold,
+                    color: '#fff',
+                  }}>
+                  Website / Mobile Application Developer{' '}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontFamily: AppFonts.semiBold,
+                    color: '#fff',
+                    marginTop: 5,
+                  }}>
+                  {'Contact Number : Dhaval Patel : +91 : 9510135458   '}
+                  {<Image  source={AppImages.CIRCLE_CALL_ICON} />}
+                  {'   '}
+                  {<Image source={AppImages.WHATSAPP_ICON} />}
+                </Text>
+              </TouchableOpacity>
 
-              <AppButton
-                text={'Enter Your Application Feedback'}
+              {/* <AppButton
+                text={
+                  'Website / Mobile Application Developer Contact Number : Dhaval Patel : +91 : 9510135458'
+                }
                 buttonStyle={{
                   marginVertical: 15,
-                  backgroundColor: '#46ACD9',
+                  backgroundColor: AppColors.BackgroundSecondColor,
                   marginBottom: 30,
+                  width: '95%',
                 }}
-                width={'85%'}
-                buttonPress={() =>
-                  RootNavigation.push(
-                    props?.navigation,
-                    AppScreens.FEEDBACK_SCREEN,
-                    NaN,
-                  )
-                }
-              />
+                textStyle={{
+                  width: '95%',
+                  fontSize: 11,
+                  alignSelf: 'center',
+                  marginLeft: 0,
+                  lineHeight: 20,
+                }}
+                // buttonPress={() =>
+                //   RootNavigation.push(
+                //     props?.navigation,
+                //     AppScreens.FEEDBACK_SCREEN,
+                //     NaN,
+                //   )
+                // }
+              /> */}
             </View>
-          </ScrollView>
+          </View>
+          <BorderView
+            text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+            backgroundColor={AppColors.BackgroundSecondColor}
+          />
         </View>
-        <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
-          backgroundColor={AppColors.BackgroundSecondColor}
-        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -236,18 +287,21 @@ const ContactCell = props => {
         justifyContent: 'space-between',
         alignItems: 'center',
         height: 45,
-        width: '90%',
+        width:'92%',
         flexDirection: 'row',
-        borderBottomWidth: 1,
+        // borderBottomWidth: 1,
         borderColor: props?.item?.item?.id == 3 ? '#fff' : AppColors.line_color,
         ...props.styles,
 
-        marginHorizontal: 10,
+        backgroundColor: '#FF9C9C',
+        marginTop: 10,
+        borderRadius: 9,
+        
       }}>
       <Text
         style={{
           color: AppColors.DarkText,
-          fontSize: 13,
+          fontSize: 11,
           fontFamily: AppFonts.semiBold,
           marginLeft: 10,
         }}>
@@ -256,7 +310,7 @@ const ContactCell = props => {
       <Text
         style={{
           color: AppColors.DarkText,
-          fontSize: 13,
+          fontSize: 11,
           fontFamily: AppFonts.semiBold,
         }}>
         {props?.item?.item?.city}
@@ -264,7 +318,7 @@ const ContactCell = props => {
       <Text
         style={{
           color: AppColors.DarkText,
-          fontSize: 13,
+          fontSize: 11,
           fontFamily: AppFonts.semiBold,
         }}>
         {props?.item?.item?.designation}
@@ -273,13 +327,14 @@ const ContactCell = props => {
       <View
         style={{
           flexDirection: 'row',
-          marginTop: 3,
+
           paddingVertical: 5,
+          alignItems: 'center',
         }}>
         <Text
           style={{
             color: AppColors.DarkText,
-            fontSize: 13,
+            fontSize: 11,
             fontFamily: AppFonts.semiBold,
           }}>
           {`${props?.item?.item?.code} ${props?.item?.item?.phone}`}
@@ -305,7 +360,25 @@ const ContactCell = props => {
               `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
             )
           }>
-          {/* <Image source={AppImages.CALL_ICON} style={{height: 20, width: 20}} /> */}
+          <Image
+            source={AppImages.CIRCLE_CALL_ICON}
+            style={{height: 13, width: 13}}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={{marginStart: 5, }}
+          onPress={() =>
+            Linking.openURL(
+              `whatsapp://send?phone=${props?.item?.item?.phone}`,
+              // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+            )
+          }>
+          <Image
+            source={AppImages.WHATSAPP_ICON}
+            style={{height: 13, width: 13}}
+          />
         </TouchableOpacity>
       </View>
     </View>

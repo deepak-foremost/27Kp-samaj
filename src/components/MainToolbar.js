@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Linking} from 'react-native';
 import React from 'react';
 import {AppColors} from '../utils/AppColors';
 import {AppImages} from '../utils/AppImages';
@@ -55,7 +55,9 @@ const MainToolbar = props => {
         </Text>
       </View>
 
-      <View
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => Linking.openURL(`tel:${9955885522}`)}
         style={{
           // position: 'absolute',
           // right: 10,
@@ -71,7 +73,7 @@ const MainToolbar = props => {
           style={{fontSize: 14, fontFamily: AppFonts.semiBold, color: '#fff'}}>
           9955885522
         </Text>
-      </View>
+      </TouchableOpacity>
 
       {/* <TouchableOpacity
         activeOpacity={AppConstValue.ButtonOpacity}

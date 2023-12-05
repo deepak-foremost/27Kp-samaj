@@ -20,12 +20,16 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AppConstValue} from '../../../utils/AppConstValue';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const NewPasswordScreen = ({route}) => {
   const screen = route.params.screen;
+  const returnScreen= route.params.return;
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
 
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
         {
@@ -33,6 +37,7 @@ const NewPasswordScreen = ({route}) => {
             screen == 'User Signin'
               ? AppColors.Red
               : AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
       {/* <KeyboardAwareScrollView contentContainerStyle={{flexGrow:0.8}}
@@ -40,7 +45,7 @@ const NewPasswordScreen = ({route}) => {
       {/* TpoView  */}
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
-          text={'Log in'}
+          text={'Sign in'}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -48,104 +53,105 @@ const NewPasswordScreen = ({route}) => {
                 : AppColors.BackgroundSecondColor,
           }}
         />
-
         <KeyboardAwareScrollView
           contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps={'handled'}
           enableOnAndroid={true}
           scrollEnabled={true}
+          showsVerticalScrollIndicator={false}
           extraScrollHeight={30}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flex: 0.35,
-              backgroundColor: '#fff',
-              justifyContent: 'space-evenly',
-            }}>
-            <Image
-              style={{}}
-              source={
-                screen == 'User Signin'
-                  ? AppImages.USER_KEY_ICON
-                  : AppImages.KEY_ICON
-              }
-            />
+          <View style={{flex: 1}}>
             <View
               style={{
-                justifyContent: 'space-around',
+                justifyContent: 'center',
                 alignItems: 'center',
+                height: Dimensions.get('window').height / 3.5,
+                backgroundColor: '#fff',
+                justifyContent: 'space-evenly',
               }}>
-              <Text
+              <Image
+                style={{}}
+                source={
+                  screen == 'User Signin'
+                    ? AppImages.USER_KEY_ICON
+                    : AppImages.KEY_ICON
+                }
+              />
+              <View
                 style={{
-                  fontFamily: AppFonts.semiBold,
-                  fontSize: 22,
-                  color: '#000',
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
                 }}>
-                Create new password
-              </Text>
-              <Text
-                style={{
-                  fontFamily: AppFonts.regular,
-                  fontSize: 14,
-                  color: AppColors.LightText,
-                  marginTop: 10,
-                }}>
-                Please set a new and strong password
-              </Text>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.semiBold,
+                    fontSize: 22,
+                    color: AppColors.Red,
+                  }}>
+                  Create New Password
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.regular,
+                    fontSize: 14,
+                    color: AppColors.LightText,
+                    marginTop: 10,
+                  }}>
+                  Please set a new and strong password
+                </Text>
+              </View>
+            </View>
+
+            {/* CenterView  */}
+
+            <View
+              style={[
+                {
+                  marginBottom: 30,
+                },
+                AppStyles.OutlineBackground,
+              ]}>
+              <AppPasswordView text={'New Password'} placeholder={'Password'} />
+
+              <AppPasswordView
+                text={'Retype Your Password'}
+                placeholder={'Password'}
+              />
+
+              <AppButton
+                text={'Confirm'}
+                buttonPress={() =>
+                  RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
+                    screen: screen,
+                    return:returnScreen
+                  })
+                }
+                buttonStyle={{
+                  width: '100%',
+                  marginTop: 30,
+                  marginBottom: 20,
+                  alignSelf: 'center',
+                  backgroundColor:
+                    screen == 'User Signin'
+                      ? AppColors.Red
+                      : AppColors.BackgroundSecondColor,
+                }}
+              />
             </View>
           </View>
-
-          {/* CenterView  */}
-
-          <View
-            style={[
-              {
-                marginBottom: 30,
-              },
-              AppStyles.OutlineBackground,
-            ]}>
-            <AppPasswordView
-              text={'New password'}
-              placeholder={'New password'}
-            />
-
-            <AppPasswordView
-              text={'Retype your password'}
-              placeholder={'Retype your password'}
-            />
-
-            <AppButton
-              text={'Confirm'}
-              buttonPress={() =>
-                RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
-                  screen: screen,
-                })
-              }
-              buttonStyle={{
-                width: '100%',
-                marginTop: 30,
-                marginBottom: 20,
-                alignSelf: 'center',
-                backgroundColor:
-                  screen == 'User Signin'
-                    ? AppColors.Red
-                    : AppColors.BackgroundSecondColor,
-              }}
-            />
-          </View>
+          <BorderView
+            text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+            backgroundColor={
+              screen == 'User Signin'
+                ? AppColors.Red
+                : AppColors.BackgroundSecondColor
+            }
+          />
         </KeyboardAwareScrollView>
-        <BorderView
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
-          backgroundColor={
-            screen == 'User Signin'
-              ? AppColors.Red
-              : AppColors.BackgroundSecondColor
-          }
-        />
+
         {/* </KeyboardAwareScrollView> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

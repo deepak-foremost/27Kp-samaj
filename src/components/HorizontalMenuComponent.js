@@ -20,7 +20,7 @@ export const HorizontalMenuComponent = props => {
         alignSelf: 'center',
         marginTop: 20,
         justifyContent: 'space-between',
-        alignSelf:'center'
+        alignSelf: 'center',
       }}>
       <TouchableOpacity
         style={{
@@ -42,8 +42,9 @@ export const HorizontalMenuComponent = props => {
             fontFamily: AppFonts.semiBold,
             fontSize: 11,
             color: pos == 0 ? '#FFF' : AppColors.lineColor,
-            padding: 10,
+            
             textAlign: 'center',
+           
           }}>
           Search By Category
         </Text>
@@ -77,6 +78,7 @@ export const HorizontalMenuComponent = props => {
         }}
         activeOpacity={AppConstValue.ButtonOpacity}>
         <Text
+        
           style={{
             fontFamily: AppFonts.semiBold,
             fontSize: 11,
@@ -106,18 +108,22 @@ export const HorizontalMenuComponent = props => {
 export const GridListComponent = props => {
   return (
     <View
-      style={{width: '50%', justifyContent: 'center', alignItems: 'center'}}>
+      style={{
+        width: '33%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
       <TouchableOpacity
         activeOpacity={AppConstValue.ButtonOpacity}
         onPress={props?.onSelectItem}
         style={{
-          width: '90%',
-          height: 144,
+          width: '93%',
+          height: 100,
           justifyContent: 'center',
           alignItems: 'center',
-          marginBottom: 16,
+          marginBottom: 10,
           borderRadius: 10,
-          marginHorizontal: 8,
+
           backgroundColor: 'black',
           ...Platform.select({
             ios: {
@@ -144,8 +150,8 @@ export const GridListComponent = props => {
         <Text
           style={{
             fontFamily: AppFonts.semiBold,
-            fontSize: 11,
-            marginBottom: 14,
+            fontSize: 8,
+            marginBottom: 8,
             marginHorizontal: 14,
             color: '#FFF',
             position: 'absolute',
@@ -194,19 +200,23 @@ export const BusinessDirectoryCell = props => {
           source={require('../assets/images/directory_image.png')}
           style={{
             marginHorizontal: 16,
-            resizeMode: 'contain',
+            resizeMode: 'cover',
             borderRadius: 10,
             marginBottom: 15,
+            backgroundColor: '#F2F2F2',
+            height: 100,
           }}
         />
 
-        <View style={{paddingRight:5,flex:1}}>
+        <View style={{paddingRight: 5,flex:1 }}>
           <Text
+          numberOfLines={3}
             style={{
               fontFamily: AppFonts.semiBold,
               fontSize: 15,
               color: AppColors.black,
               textTransform: 'capitalize',
+              
             }}>
             {props?.item?.firm}
           </Text>
@@ -220,13 +230,14 @@ export const BusinessDirectoryCell = props => {
             value={props?.item?.category_name}
           />
           <SimpleDoubleLine title={'Address :'} value={props?.item?.address} />
+          <SimpleDoubleLine title={'Mobile No :'} value={props?.item?.phone} />
 
           {props?.is_family_id != 1 ? (
             <View
               style={{
                 flexDirection: 'row',
-                paddingBottom: 10,
-                marginTop: 10,
+                paddingBottom: 5,
+                marginTop: 5,
                 paddingHorizontal: 10,
                 alignItems: 'flex-end',
                 justifyContent: 'flex-end',
@@ -288,7 +299,7 @@ export const SimpleDoubleLine = props => {
       }}>
       <Text
         style={{
-          fontFamily: AppFonts.semiBold,
+          fontFamily: AppFonts.medium,
           fontSize: 13,
           marginRight: 5,
           color: AppColors.black,
@@ -298,11 +309,12 @@ export const SimpleDoubleLine = props => {
       </Text>
       <Text
         style={{
-          fontFamily: AppFonts.semiBold,
+          fontFamily: AppFonts.medium,
           fontSize: 13,
 
           color: '#B7B7B7',
           ...props?.textStyles,
+          maxWidth:'60%'
         }}>
         {props?.value}
       </Text>

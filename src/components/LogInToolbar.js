@@ -23,7 +23,7 @@ const LogInToolbar = props => {
         activeOpacity={AppConstValue.ButtonOpacity}
         style={{
           position: 'absolute',
-          left: 10,
+          left: 15,
           height: 40,
           width: 40,
           alignSelf: 'center',

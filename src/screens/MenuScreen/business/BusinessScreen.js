@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -30,6 +31,7 @@ import * as RootNavigation from '../../../utils/RootNavigation';
 import {staticArray} from '../../../utils/staticArray';
 import BorderView from '../../../components/BorderView';
 import ScreenToolbar from '../../../components/ScreenToolbar';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const categories = [
   {
@@ -52,27 +54,30 @@ const categories = [
   },
 ];
 
-const businsesses=[
-    {
-        firm:'Pramukh International',
-        owner_name_1:' Dhaval Patel',
-        category_name:'Visa Consultants',
-        address:' Nikol, Ahmedabad',
-        phone:'+919999999999',
-        is_family_id:1
-    }, {
-        firm:'Pramukh International',
-        owner_name_1:' Dhaval Patel',
-        category_name:'Visa Consultants',
-        address:' Nikol, Ahmedabad',
-        phone:'+919999999999'
-    },
-]
+const businsesses = [
+  {
+    firm: 'Pramukh International',
+    owner_name_1: ' Dhaval Patel',
+    category_name: 'Visa Consultants',
+    address: ' Nikol, Ahmedabad djb ,jfeugfw jkb',
+    phone: '+919999999999',
+    is_family_id: 1,
+  },
+  {
+    firm: 'Pramukh International',
+    owner_name_1: ' Dhaval Patel',
+    category_name: 'Visa Consultants',
+    address: ' Nikol, Ahmedabad',
+    phone: '+919999999999',
+  },
+];
 
 const BusinessScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   const [pos, setPos] = useState(0);
   const [catItem, setCatItem] = useState(null);
-//   const [businsesses, setBusinsesses] = useState(null);
+  //   const [businsesses, setBusinsesses] = useState(null);
   //   const [categories, setCategories] = useState(null);
 
   //   useEffect(() => {
@@ -108,10 +113,11 @@ const BusinessScreen = props => {
   //   }, [pos]);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: AppColors.BackgroundSecondColor,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <AppDrawerHeader
         title={'Business Details'}
@@ -119,7 +125,7 @@ const BusinessScreen = props => {
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
-        <ScreenToolbar text={'BUSINESS DETAILS'}/>
+        <ScreenToolbar text={'BUSINESS DETAILS'} />
         <HorizontalMenuComponent
           setValue={pos}
           onChange={value => {
@@ -127,64 +133,63 @@ const BusinessScreen = props => {
             setCatItem(null);
           }}
         />
-        <View style={{flex:0.85}}>
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              paddingTop: 17,
-              paddingHorizontal: 10,
-              paddingVertical: 20,
-            }}>
-            {pos == 0 ? (
-              categories?.map((item, index) => (
-                <GridListComponent
-                  item={item}
-                  index={index}
-                  onSelectItem={() => {
-                    setPos(1);
-                    setCatItem(item);
-                  }}
-                />
-              ))
-            ) : (
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                numColumns={1}
-                contentContainerStyle={{}}
-                data={businsesses == null ? [] : businsesses}
-                renderItem={({item, index}) => (
-                  <BusinessDirectoryCell
-                  is_family_id={1}
+        <View style={{flex: 1, paddingTop: 10}}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                paddingTop: 17,
+                paddingHorizontal: 10,
+                paddingVertical: 20,
+              }}>
+              {pos == 0 ? (
+                categories?.map((item, index) => (
+                  <GridListComponent
                     item={item}
                     index={index}
-                    onClicked={type =>
-                      RootNavigation.push(
-                        props?.navigation,
-                        AppScreens.BUSINESS_DETAIL_SCREEN,
-                        {
-                          item: item,
-                        },
-                      )
-                    }
+                    onSelectItem={() => {
+                      setPos(1);
+                      setCatItem(item);
+                    }}
                   />
-                )}
-              />
-            )}
-          </View>
-        </ScrollView>
+                ))
+              ) : (
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
+                  numColumns={1}
+                  contentContainerStyle={{}}
+                  data={businsesses == null ? [] : businsesses}
+                  renderItem={({item, index}) => (
+                    <BusinessDirectoryCell
+                      is_family_id={1}
+                      item={item}
+                      index={index}
+                      onClicked={type =>
+                        RootNavigation.push(
+                          props?.navigation,
+                          AppScreens.BUSINESS_DETAIL_SCREEN,
+                          {
+                            item: item,
+                          },
+                        )
+                      }
+                    />
+                  )}
+                />
+              )}
+            </View>
+          </ScrollView>
         </View>
         <BorderView
           text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

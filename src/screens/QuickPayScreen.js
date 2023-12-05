@@ -7,10 +7,20 @@ import {AppFonts} from '../utils/AppFonts';
 import {AppStyles} from '../utils/AppStyles';
 import AppButton from '../components/AppButton';
 import BorderView from '../components/BorderView';
+import * as RootNavigation from '../utils/RootNavigation';
+import {AppScreens} from '../utils/AppScreens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const QuickPayScreen = () => {
+const QuickPayScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: AppColors.Orange}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: AppColors.Orange,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+      }}>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Quick Pay'}
@@ -38,39 +48,47 @@ const QuickPayScreen = () => {
         </View>
 
         {/* BottomView  */}
-        <View style={[{flex: 0.5,backgroundColor:'green',justifyContent:'space-around',paddingVertical:10},AppStyles.OutlineBackground]}>
-         
-            <Text
-              style={{
-                color: AppColors.DarkText,
-                fontSize: 12,
-                fontFamily: AppFonts.semiBold,
-                
-              }}>
-              Scan and Pay
-            </Text>
+        <View
+          style={[
+            {
+              flex: 0.5,
+              backgroundColor: 'green',
+              justifyContent: 'space-around',
+              paddingVertical: 10,
+            },
+            AppStyles.OutlineBackground,
+          ]}>
+          <Text
+            style={{
+              color: AppColors.DarkText,
+              fontSize: 12,
+              fontFamily: AppFonts.semiBold,
+            }}>
+            Scan and Pay
+          </Text>
 
-            <Image source={require('../assets/images/scanner.png')}
-            style={{}}/>
+          <Image source={require('../assets/images/scanner.png')} style={{}} />
 
-            <AppButton
-              text={'Thank You'}
-              buttonStyle={{
-                width: '100%',
-                
-                alignSelf: 'center',
-                backgroundColor:AppColors.Orange
-              }}
-            />
-          </View>
-        </View>
+          <AppButton
+            text={'Thank You'}
+            buttonPress={() =>
+              RootNavigation.forcePush(props, AppScreens.FirstScreen, '')
+            }
+            buttonStyle={{
+              width: '100%',
 
-        <BorderView
-            text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
-            backgroundColor={AppColors.Orange}
+              alignSelf: 'center',
+              backgroundColor: AppColors.Orange,
+            }}
           />
-     
-    </SafeAreaView>
+        </View>
+      </View>
+
+      <BorderView
+        text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+        backgroundColor={AppColors.Orange}
+      />
+    </View>
   );
 };
 

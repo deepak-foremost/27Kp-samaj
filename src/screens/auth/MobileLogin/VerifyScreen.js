@@ -1,4 +1,11 @@
-import {View, Text, SafeAreaView, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import React from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
 import LogInToolbar from '../../../components/LogInToolbar';
@@ -13,12 +20,15 @@ import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import OtpTextInput from '../../../components/OtpTextInput';
 import {AppConstValue} from '../../../utils/AppConstValue';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const VerifyScreen = ({route}) => {
   const screen = route.params.screen;
- 
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
+
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
         {
@@ -26,11 +36,12 @@ const VerifyScreen = ({route}) => {
             screen == 'User Signin'
               ? AppColors.Red
               : AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
-          text={'Log in'}
+          text={'Sign in'}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -39,124 +50,128 @@ const VerifyScreen = ({route}) => {
           }}
         />
 
-        <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps={'always'}
-        enableOnAndroid={true}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps={'handled'}
+          enableOnAndroid={true}
+          showsVerticalScrollIndicator={false}>
           {/* TopView  */}
-          <View
-            style={{
-              flex: 0.35,
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-              paddingHorizontal: 25,
-            }}>
-            <Image
-              source={
-                screen == 'User Signin'
-                  ? AppImages.USER_PHONE_ICON
-                  : AppImages.PHONE_ICON
-              }
-            />
-
+          <View style={{flex: 1}}>
             <View
               style={{
-                justifyContent: 'center',
+                height: Dimensions.get('window').height / 3,
+                justifyContent: 'space-evenly',
                 alignItems: 'center',
+                paddingHorizontal: 25,
               }}>
-              <Text
-                style={{
-                  fontFamily: AppFonts.semiBold,
-                  fontSize: 22,
-                  color: '#000',
-                }}>
-                Verify
-              </Text>
-
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: AppFonts.regular,
-                  color: AppColors.LightText,
-                  textAlign: 'center',
-                  marginTop: 15,
-                }}>
-                Please enter the verification code sent to your phone number
-              </Text>
-            </View>
-          </View>
-
-          {/* CenterView  */}
-          <View style={{flex: 0.3}}>
-            <View
-              style={[
-                AppStyles.OutlineBackground,
-                {
-                  marginBottom: 30,
-                },
-              ]}>
-              <OtpTextInput text={'Your code'} />
+              <Image
+                source={
+                  screen == 'User Signin'
+                    ? AppImages.USER_PHONE_ICON
+                    : AppImages.PHONE_ICON
+                }
+              />
 
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  marginTop: 25,
-                  marginBottom: 10,
                   width: '100%',
                 }}>
-                <TouchableOpacity
-                  activeOpacity={AppConstValue.ButtonOpacity}
-                  // onPress={() =>
-                  //   RootNavigation.navigate(AppScreens.MOBILE_FORGOT_SCREEN)
-                  // }
-                  >
-                  <Text
-                    style={{
-                      fontFamily: AppFonts.semiBold,
-                      fontSize: 12,
-                      color:
-                        screen == 'User Signin'
-                          ? AppColors.Red
-                          : AppColors.BackgroundSecondColor,
-                    }}>
-                    Resend your code
-                  </Text>
-                </TouchableOpacity>
                 <Text
                   style={{
-                    fontSize: 11,
-                    color: AppColors.LightText,
-                    fontFamily: AppFonts.medium,
+                    fontFamily: AppFonts.semiBold,
+                    fontSize: 22,
+                    color: '#000',
                   }}>
-                  Expired after 23s
+                  Verify
+                </Text>
+
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: AppFonts.regular,
+                    color: AppColors.LightText,
+                    textAlign: 'center',
+                    marginTop: 15,
+                    lineHeight: 25,
+                    width: '90%',
+                  }}>
+                  Please enter the verification code sent to your phone number
                 </Text>
               </View>
+            </View>
 
-              <AppButton
-                buttonPress={() =>
-                  RootNavigation.navigate(AppScreens.NEW_PASSWORD_SCREEN, {
-                    screen: screen,
-                  })
-                }
-                text={'Confirm'}
-                buttonStyle={{
-                  width: '100%',
-                  alignSelf: 'center',
-                  marginTop: 20,
-                  marginBottom: 20,
-                  backgroundColor:
-                    screen == 'User Signin'
-                      ? AppColors.Red
-                      : AppColors.BackgroundSecondColor,
-                }}
-              />
+            {/* CenterView  */}
+            <View style={{flex: 0.3}}>
+              <View
+                style={[
+                  AppStyles.OutlineBackground,
+                  {
+                    marginBottom: 30,
+                  },
+                ]}>
+                <OtpTextInput text={'Your Code'} />
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: 25,
+                    marginBottom: 10,
+                    width: '100%',
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={AppConstValue.ButtonOpacity}
+                    // onPress={() =>
+                    //   RootNavigation.navigate(AppScreens.MOBILE_FORGOT_SCREEN)
+                    // }
+                  >
+                    <Text
+                      style={{
+                        fontFamily: AppFonts.semiBold,
+                        fontSize: 12,
+                        color:
+                          screen == 'User Signin'
+                            ? AppColors.Red
+                            : AppColors.Red,
+                      }}>
+                      Resend Your Code
+                    </Text>
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      color: AppColors.LightText,
+                      fontFamily: AppFonts.medium,
+                    }}>
+                    Expired after 23s
+                  </Text>
+                </View>
+
+                <AppButton
+                  buttonPress={() =>
+                    RootNavigation.navigate(AppScreens.NEW_PASSWORD_SCREEN, {
+                      screen: screen,
+                    })
+                  }
+                  text={'Confirm'}
+                  buttonStyle={{
+                    width: '100%',
+                    alignSelf: 'center',
+                    marginTop: 20,
+                    marginBottom: 20,
+                    backgroundColor:
+                      screen == 'User Signin'
+                        ? AppColors.Red
+                        : AppColors.BackgroundSecondColor,
+                  }}
+                />
+              </View>
             </View>
           </View>
-
-         
-        </KeyboardAwareScrollView>
-        <BorderView
+          <BorderView
             text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
             backgroundColor={
               screen == 'User Signin'
@@ -164,8 +179,9 @@ const VerifyScreen = ({route}) => {
                 : AppColors.BackgroundSecondColor
             }
           />
+        </KeyboardAwareScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

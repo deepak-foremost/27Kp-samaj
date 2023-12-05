@@ -8,12 +8,13 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {FooterTextCell} from '../../../../components/LineCell';
 // import {getSingleFamilies} from '../../../../networking/CallApi';
 import {AppColors} from '../../utils/AppColors';
-import {printLog} from '../../utils/AppConstValue';
+import {AppConstValue, printLog} from '../../utils/AppConstValue';
 import {AppFonts} from '../../utils/AppFonts';
 import {AppImages} from '../../utils/AppImages';
 import {AppScreens} from '../../utils/AppScreens';
@@ -23,6 +24,9 @@ import {MemberDetail} from '../MenuScreen/about_us/AboutUsDetailScreen';
 import {ListMember} from '../MenuScreen/advisour_member/AdvicerMember';
 import ScreenToolbar from '../../components/ScreenToolbar';
 import BorderView from '../../components/BorderView';
+import AppButton from '../../components/AppButton';
+import LinearGradient from 'react-native-linear-gradient';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const member = [
   {
@@ -45,9 +49,11 @@ const member = [
 ];
 
 const MembersDetailScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   var item = props?.route?.params;
   // printLog('MembersDetailScreen', JSON.stringify(item));
-    const [member, setMember] = useState(item);
+  const [member, setMember] = useState(item);
 
   //   useEffect(() => {
   //     const willFocusSubscription = props.navigation.addListener('focus', () => {
@@ -81,10 +87,13 @@ const MembersDetailScreen = props => {
   //   }, []);
 
   return (
-    <SafeAreaView
+    <View
       style={[
         AppStyles.AppMainBackground,
-        {backgroundColor: AppColors.BackgroundSecondColor},
+        {
+          backgroundColor: AppColors.BackgroundSecondColo,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+        },
       ]}>
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={'પટેલ ધવલ વિષ્ણુભાઈ'} />
@@ -101,7 +110,7 @@ const MembersDetailScreen = props => {
           style={{
             marginTop: '5%',
             width: '90%',
-            flex: 0.85,
+            flex: 1,
             marginBottom: 20,
             alignItems: 'center',
             alignSelf: 'center',
@@ -168,10 +177,11 @@ const MembersDetailScreen = props => {
 
                 <View
                   style={{
-                    height: 65,
-                    width: 65,
+                    width: 140,
                     borderRadius: 54,
-                    backgroundColor: AppColors.BackgroundSecondColor,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: 10,
                   }}>
                   {/* <Image
                   source={AppImages.placeholder_user}
@@ -182,6 +192,16 @@ const MembersDetailScreen = props => {
                   }}
                 /> */}
 
+                  <Image
+                    //   source={{uri: item?.image}}
+                    source={AppImages.MEMBER_IMAGE}
+                    style={{
+                      height: 65,
+                      width: 65,
+                      resizeMode: 'stretch',
+                      borderRadius: 10,
+                    }}
+                  />
                   <Image
                     //   source={{uri: item?.image}}
                     source={AppImages.MEMBER_IMAGE}
@@ -251,7 +271,7 @@ const MembersDetailScreen = props => {
                   />
                   <MemberDetail
                     style={{width: '35%'}}
-                    title={' Age :'}
+                    title={'ઉંમર :'}
                     detailText={item?.age}
                   />
                 </View>
@@ -292,13 +312,104 @@ const MembersDetailScreen = props => {
                   title={'હાલ ના રહેઠાણ નુ સરનામું :'}
                   detailText={item?.current_address}
                 />
-                <MemberDetail
-                  title={'મોબાઇલ નંબર :'}
-                  detailText={item?.phone}
-                  contact
-                />
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <MemberDetail
+                    title={'મોબાઇલ નંબર :'}
+                    detailText={item?.phone}
+                    contact
+                    style={{width: '60%', justifyContent: 'flex-end'}}
+                  />
+                  <Image
+                    style={{marginHorizontal: 10}}
+                    source={AppImages.CALL_ICON}
+                  />
+                  <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+                </View>
 
                 <MemberDetail title={'Email ID :'} detailText={item?.email} />
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <MemberDetail
+                    title={'જીવન સહાય સભાસદ નં :'}
+                    detailText={1234}
+                    style={{width: '70%', justifyContent: 'flex-end'}}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={AppConstValue.ButtonOpacity}
+                    // onPress={() =>
+                    //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                    //     status: 'main',
+                    //   })
+                    // }
+                    style={{
+                      width: '30%',
+                      backgroundColor: '#FFFFFF',
+                      justifyContent: 'center',
+                      borderRadius: 8,
+                      alignItems: 'center',
+                    }}>
+                    <LinearGradient
+                      colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
+                      style={{
+                        padding: 3,
+                        borderRadius: 8,
+                        paddingHorizontal: 10,
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: AppFonts.bold,
+                          fontSize: 6,
+                          color: 'white',
+                        }}>
+                        Click Here
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <MemberDetail
+                    title={'ભુમિ સભાસદ નં :'}
+                    detailText={1234}
+                    style={{width: '70%', justifyContent: 'flex-end'}}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={AppConstValue.ButtonOpacity}
+                    // onPress={() =>
+                    //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                    //     status: 'main',
+                    //   })
+                    // }
+                    style={{
+                      // position: 'absolute',
+                      // right: 5,
+                      width: '30%',
+
+                      justifyContent: 'center',
+                      borderRadius: 8,
+                      alignItems: 'center',
+                    }}>
+                    <LinearGradient
+                      colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
+                      style={{
+                        padding: 3,
+                        borderRadius: 8,
+                        paddingHorizontal: 10,
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: AppFonts.bold,
+                          fontSize: 6,
+                          color: 'white',
+                        }}>
+                        Click Here
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
               </View>
             </ScrollView>
           )}
@@ -309,7 +420,7 @@ const MembersDetailScreen = props => {
         />
         {/* <FooterTextCell title={`''સૌનો સાથ...27 સમાજ નો વિકાસ''`} /> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -26,15 +26,17 @@ const DrawerButtons = props => {
       props?.onChange
       }>
       {props?.item?.item?.index==props?.show ? (
-        <Image style={{left:20,position:'absolute',}} source={AppImages.BUTTON_ICON} />
+        <Image style={{left:25,position:'absolute',}} source={AppImages.BUTTON_ICON} />
       ) : null}
+
+      <Image style={{marginLeft:20}} source={props?.item?.item?.src}/>
 
       <Text
         style={{
           fontFamily: AppFonts.medium,
           fontSize: 14,
           color: '#F7F7F7',
-          marginLeft:10
+          marginLeft:20
         }}>
         {props?.item?.item?.menu}
       </Text>
