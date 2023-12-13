@@ -40,7 +40,7 @@ const list = [
     phone: '99999 99999',
     dob: '31/05/1991',
     age: '32',
-    height: '165 CM',
+    height: '5 ft.',
     weight: '75 Kg',
     blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
@@ -56,18 +56,45 @@ const list = [
   },
   {
     index: 1,
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
+    name: 'પટેલ ધવલ વિષ્ણુભાઈ',
+    city: 'શંકરપુરા',
+    phone: '99999 99999',
+    dob: '31/05/1991',
+    age: '32',
+    height: '5 ft.',
+    weight: '75 Kg',
+    blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
+    marital_status: ' Married',
+    study: ' B.Tech',
+    business: 'નોકરી',
+    current_address: 'અમદાવાદ',
+    email: 'Test@gmail.com',
+    country_code: '+91',
+    shakh: 'વડસ્મીયા',
+    mosal: 'ગાંધીનગર',
+    current_address: 'નિકોલ અમદાવાદ',
   },
   {
     index: 2,
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
+    name: 'પટેલ ધવલ વિષ્ણુભાઈ',
+    city: 'શંકરપુરા',
+    phone: '99999 99999',
+    dob: '31/05/1991',
+    age: '32',
+    height: '5 ft.',
+    weight: '75 Kg',
+    blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
-  },
-  {
-    index: 3,
-    name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
-    family_main_member_with_relation: 'પોતે',
+    marital_status: ' Married',
+    study: ' B.Tech',
+    business: 'નોકરી',
+    current_address: 'અમદાવાદ',
+    email: 'Test@gmail.com',
+    country_code: '+91',
+    shakh: 'વડસ્મીયા',
+    mosal: 'ગાંધીનગર',
+    current_address: 'નિકોલ અમદાવાદ',
   },
 ];
 
@@ -136,6 +163,10 @@ const FamilyMembersScreen = props => {
   //   getData();
   // }, []);
 
+  useEffect(() => {
+    console.log('change list----->', families);
+  }, [families]);
+
   return (
     <View
       style={[
@@ -162,7 +193,7 @@ const FamilyMembersScreen = props => {
             RootNavigation.navigate(AppScreens.ADD_MEMBER_SCREEN)
           }
         />
-        <View style={{flex: 1}}>
+        <View style={{flex: 0.9}}>
           {families == null ? (
             <View
               style={{
@@ -205,22 +236,38 @@ const FamilyMembersScreen = props => {
                     index={index}
                     item={item}
                     isVisible={isVisible}
-                    onClick={type => {
-                      if (type == 'edit' || type == 'view') {
-                        RootNavigation.push(
-                          props?.navigation,
-                          type == 'view'
-                            ? isVisible == item?.index
-                              ? setVisible(-1)
-                              : setVisible(item?.index)
-                            : AppScreens.ADD_MEMBER_SCREEN,
-                          {item: item},
-                        );
-                      } else {
-                        setDeleteItem(item);
-                        setModelOpen(true);
-                      }
+                    viewClick={() => {
+                      const newList = [...families];
+                      newList[index].is_selected = !newList[index].is_selected;
+                      setFamilies(newList);
                     }}
+                    deleteClick={() => {
+                      setDeleteItem(item);
+                      setModelOpen(true);
+                    }}
+                    editClick={() => {
+                      RootNavigation.push(
+                        props?.navigation,
+                        AppScreens.ADD_MEMBER_SCREEN,
+                        {item: item},
+                      );
+                    }}
+                    // onClick={type => {
+                    //   if (type == 'edit' || type == 'view') {
+                    //     RootNavigation.push(
+                    //       props?.navigation,
+                    //       type == 'view'
+                    //         ? isVisible == item?.index
+                    //           ? setVisible(-1)
+                    //           : setVisible(item?.index)
+                    //         : AppScreens.ADD_MEMBER_SCREEN,
+                    //       {item: item},
+                    //     );
+                    //   } else {
+                    //     setDeleteItem(item);
+                    //     setModelOpen(true);
+                    //   }
+                    // }}
                   />
                   {/* {isVisible == item?.index ? (
                     <MemberDetailCell item={item} />
@@ -230,10 +277,10 @@ const FamilyMembersScreen = props => {
             />
           )}
         </View>
-        {/* <BorderView
+        <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
-        /> */}
+        />
 
         {/* <FooterTextCell title={`સમાજ એજ મારું "Family" છે.`} /> */}
 
@@ -257,7 +304,7 @@ const FamilyMermberCell = props => {
   return (
     <TouchableOpacity
       activeOpacity={AppConstValue.ButtonOpacity}
-      onPress={() => props?.onClick('edit')}
+      onPress={() =>props?.item?.is_selected ? null : props?.editClick()}
       style={{
         paddingHorizontal: 14,
         paddingVertical: 5,
@@ -298,9 +345,9 @@ const FamilyMermberCell = props => {
         </Text>
         <Image
           style={{
-            height: '60%',
-            width: 1,
-            backgroundColor: AppColors.LightText,
+            height: '40%',
+            width: 2,
+            backgroundColor: AppColors.black,
             alignSelf: 'center',
             marginRight: 10,
             resizeMode: 'contain',
@@ -322,21 +369,30 @@ const FamilyMermberCell = props => {
         </Text>
         <OptionMenuCell
           icon={AppImages.EYE_ICON}
-          onClick={() => props?.onClick('view')}
+          onClick={() => props?.viewClick()}
           styles={{}}
         />
         <OptionMenuCell
           icon={AppImages.ICON_EDIT}
-          onClick={() => props?.onClick('edit')}
+          onClick={() => props?.editClick()}
           styles={{}}
         />
 
         <OptionMenuCell
           icon={AppImages.ICON_DELETE}
-          onClick={() => props?.onClick('delete')}
+          onClick={() => props?.deleteClick()}
         />
+        <TouchableOpacity activeOpacity={1} onPress={() => props?.viewClick()}>
+          <Image
+            source={
+              props?.item?.is_selected
+                ? AppImages.DROP_UP_ICON
+                : AppImages.DROP_DOWN_GRAY
+            }
+          />
+        </TouchableOpacity>
       </View>
-      {props?.isVisible == props?.item?.index ? (
+      {props?.item?.is_selected ? (
         <MemberDetailCell item={props?.item} notShow={true} />
       ) : null}
     </TouchableOpacity>

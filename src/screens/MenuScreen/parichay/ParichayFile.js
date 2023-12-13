@@ -23,6 +23,7 @@ import {ListMember} from '../advisour_member/AdvicerMember';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getParipatr} from '../../../networking/CallApi';
 
 const list = [
   {
@@ -51,49 +52,66 @@ const ParichayFileScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [files, setFiles] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [isLoading, setLoading] = useState(false);
+
+  const loadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
 
   const [refreshing, setRefreshing] = React.useState(false);
 
+  // useEffect(() => {
+  //   setFiles(list);
+  // });
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getParipatr(
+      onSuccess => {
+        printLog('getParipatr', JSON.stringify(onSuccess));
+        if (onSuccess?.status) {
+          setFiles(onSuccess?.data);
+        } else {
+          setFiles([]);
+        }
+        setRefreshing(false);
+      },
+      onFailure => {
+        printLog('getParipatr', JSON.stringify(onFailure));
+        setFiles([]);
+        setRefreshing(false);
+      },
+    );
+  }, []);
+
   useEffect(() => {
-    setFiles(list);
-  });
-
-  //   const onRefresh = React.useCallback(() => {
-  //     setRefreshing(true);
-  //     getParipatr(
-  //       onSuccess => {
-  //         printLog('getParipatr', JSON.stringify(onSuccess));
-  //         if (onSuccess?.status) {
-  //           setFiles(onSuccess?.data);
-  //         } else {
-  //           setFiles([]);
-  //         }
-  //         setRefreshing(false);
-  //       },
-  //       onFailure => {
-  //         printLog('getParipatr', JSON.stringify(onFailure));
-  //         setFiles([]);
-  //         setRefreshing(false);
-  //       },
-  //     );
-  //   }, []);
-
-  //   useEffect(() => {
-  //     getParipatr(
-  //       onSuccess => {
-  //         printLog('getParipatr', JSON.stringify(onSuccess));
-  //         if (onSuccess?.status) {
-  //           setFiles(onSuccess?.data);
-  //         } else {
-  //           setFiles([]);
-  //         }
-  //       },
-  //       onFailure => {
-  //         printLog('getParipatr', JSON.stringify(onFailure));
-  //         setFiles([]);
-  //       },
-  //     );
-  //   }, []);
+    setLoading(true);
+    getParipatr(
+      {page: page},
+      onSuccess => {
+        printLog('getParipatr', JSON.stringify(onSuccess));
+        if (onSuccess?.status) {
+          var list = files == null ? [] : [...files];
+          if (page == 1) {
+            setFiles(onSuccess?.data);
+          } else {
+            setFiles([...list, ...onSuccess?.data]);
+          }
+          setLoading(false);
+        } else {
+          setFiles([]);
+        }
+      },
+      onFailure => {
+        printLog('getParipatr', JSON.stringify(onFailure));
+        setFiles([]);
+      },
+    );
+  }, []);
 
   return (
     <View
@@ -109,6 +127,7 @@ const ParichayFileScreen = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={'પરિપત્ર ફાઈલ '} />
+        <View style={{flex:0.9}}>
         {files == null ? (
           <View
             style={{
@@ -124,10 +143,7 @@ const ParichayFileScreen = props => {
             <ListMember styles={{height: 45}} />
             <ListMember styles={{height: 45}} />
             <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
+           
           </View>
         ) : files?.length == 0 ? (
           <View
@@ -147,16 +163,20 @@ const ParichayFileScreen = props => {
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{paddingBottom: 20}}
+              onEndReached={() => {
+                loadMore();
+              }}
               data={files == null ? [] : files}
               renderItem={({item, index}) => (
                 <FileCell item={item} index={index} />
               )}
-              //   refreshControl={
-              //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              //   }
+                refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
             />
           </View>
         )}
+        </View>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
@@ -203,7 +223,7 @@ const FileCell = props => {
           source={AppImages.ICON_PDF_LIST}
           style={{
             marginHorizontal: 10,
-            resizeMode: 'contain',
+            // resizeMode: 'contain',
           }}
         />
       </TouchableOpacity>
@@ -230,7 +250,7 @@ const FileCell = props => {
           style={{
             backgroundColor: AppColors.DarkText,
             borderRadius: 15,
-            padding: 5,
+            padding: 3,
             justifyContent: 'center',
             alignItems: 'center',
             marginHorizontal: 10,
@@ -242,6 +262,7 @@ const FileCell = props => {
               fontFamily: AppFonts.medium,
               fontSize: 7,
               color: '#fff',
+              paddingTop:2.5
             }}>
             {props?.item?.circular_date}
           </Text>

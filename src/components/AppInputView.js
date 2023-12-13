@@ -20,7 +20,7 @@ const AppInputView = props => {
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-          color: AppColors.extraDark,
+          color: AppColors.black,
         }}>
         {props?.text}
       </Text>
@@ -39,7 +39,7 @@ const AppInputView = props => {
           // onPressIn={onPressIn}
           // onPressOut={onPressOut}
           style={{flexDirection: 'row', alignItems: 'center', marginLeft: 15}}
-          onPress={() => setVisible(!Visible)}
+          onPress={props?.open}
           activeOpacity={0.9}>
           <Text
             style={{
@@ -47,7 +47,7 @@ const AppInputView = props => {
               fontFamily: 'Nunito-SemiBold',
               color: '#383838',
             }}>
-            {country}
+            {props?.code}
           </Text>
           <Image
             style={[{marginLeft: 10},props?.icon]}
@@ -56,21 +56,23 @@ const AppInputView = props => {
         </TouchableOpacity>
 
         <CountryPicker
-          visible={Visible}
+          visible={props?.Visible}
           containerButtonStyle={{width: '0%', height: 0}}
           withFilter
           withAlphaFilter
+          withFlag
           withCallingCode={true}
           theme={{
             fontSize: 14,
             color: 'white',
             fontFamily: 'Nunito-SemiBold',
           }}
-          onSelect={cod => {
-            setCountry('+'+cod.callingCode);
-            setVisible(false);
-          }}
-          onClose={() => setVisible(false)}
+          // onSelect={cod => {
+          //   setCountry('+'+cod.callingCode);
+          //   setVisible(false);
+          // }}
+          onSelect={props?.selectCode}
+          onClose={props?.close}
         />
 
         <TextInput
@@ -79,7 +81,8 @@ const AppInputView = props => {
             fontFamily: AppFonts.regular,
             marginLeft: 20,
             flex: 1,
-            color: AppColors.extraDark,
+            color: AppColors.black,
+            marginTop:2.5
           }}
           keyboardType="numeric"
           placeholderTextColor={'#38385E'}

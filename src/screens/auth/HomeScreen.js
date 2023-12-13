@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   FlatList,
   StatusBar,
+  Platform,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {AppColors} from '../../utils/AppColors';
@@ -31,7 +32,8 @@ import HomeMenuButton from '../../components/HomeMenu';
 import * as RootNavigation from '../../utils/RootNavigation';
 import Swiper from 'react-native-swiper';
 import Carousel from 'react-native-snap-carousel';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useRoute} from '@react-navigation/native';
 
 const images = [
   {
@@ -110,7 +112,9 @@ const Pager = props => {
   );
 };
 
-const HomeScreen = () => {
+const HomeScreen = ({route}) => {
+  const screen = route?.params?.data?.screen;
+
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [select, setSelect] = useState(null);
@@ -271,12 +275,12 @@ const HomeScreen = () => {
             <TouchableOpacity
               style={{
                 position: 'absolute',
-                top: 15,
+                top: Platform.OS == 'ios' ? StatusBarHeight : 15,
                 right: 10,
               }}
               onPress={() => setVisible(false)}
               activeOpacity={1}>
-              <Image source={require('../../assets/images/cancel_icon.png')} />
+              <Image source={AppImages.BACK_ICON} />
             </TouchableOpacity>
             <View
               style={{
@@ -286,15 +290,15 @@ const HomeScreen = () => {
               }}>
               <View style={[AppStyles.AppLogoStyle, {}]}>
                 <Image
-                  style={{height: 100, width: 100}}
+                  style={{height: 140, width: 140}}
                   source={AppImages.APP_MAIN_ICON}
                 />
               </View>
 
-              <View
+              {/* <View
                 style={[
                   {
-                    backgroundColor: '#0A4DBB',
+                    backgroundColor: AppColors.BackgroundSecondColor,
                     width: 120,
                     height: 35,
                     justifyContent: 'center',
@@ -314,7 +318,17 @@ const HomeScreen = () => {
                   }}>
                   27 KP SAMAJ
                 </Text>
-              </View>
+              </View> */}
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: 'white',
+                  fontFamily: AppFonts.bold,
+                  marginTop: 15,
+                  textAlign:'center'
+                }}>
+                શ્રી સત્તાવીસ કડવા પાટીદાર સમાજ{"\n"} ઊંઝા
+              </Text>
             </View>
 
             <View style={{flex: 0.65, width: '100%', marginTop: -20}}>
@@ -323,8 +337,16 @@ const HomeScreen = () => {
                   showsVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}
                   // scrollEnabled={false}
-                  contentContainerStyle={{width: '100%', paddingBottom: 20}}
-                  data={staticArray.DrawerMenu}
+                  contentContainerStyle={{
+                    width: '100%',
+                    paddingBottom: 20,
+                    overflow: 'hidden',
+                  }}
+                  data={
+                    screen == 'User Signin'
+                      ? staticArray.GuestDrawerMenu
+                      : staticArray.DrawerMenu
+                  }
                   renderItem={(item, index) => (
                     <DrawerButtons
                       item={item}
@@ -397,7 +419,8 @@ const HomeScreen = () => {
         <MainToolbar
           leftSrc={require('../../assets/images/navigation_icon.png')}
           rightSrc={AppImages.LOGOUT_ICON}
-          text={'27 KP SAMAJ'}
+          text={'27 KP SAMAJ UNJHA'}
+          txtStyle={{fontSize:13}}
           leftPress={() => setVisible(true)}
         />
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -537,12 +560,13 @@ const HomeScreen = () => {
               )}
             />
           </View>
-          <BorderView
+         
+        </ScrollView>
+        <BorderView
             style={{marginTop: 15}}
             backgroundColor={AppColors.BackgroundSecondColor}
             text={'સમાજ એજ મારો પરિવાર'}
           />
-        </ScrollView>
 
         {/* <View style={{flex: 0.55, justifyContent: 'space-evenly'}}>
           <View
@@ -649,7 +673,7 @@ export const DotIndicator = props => {
           height: 8,
           width: 8,
           borderRadius: 5,
-          backgroundColor: '#1C50FF',
+          backgroundColor: AppColors.BackgroundSecondColor,
         },
         props?.opacity,
       ]}></View>

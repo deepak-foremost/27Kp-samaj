@@ -27,6 +27,7 @@ import {AppFonts} from '../../../utils/AppFonts';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getSalahkarMember} from '../../../networking/CallApi';
 
 const members = [
   {
@@ -73,26 +74,26 @@ const AdvicerMember = props => {
   const [isLoading, setLoading] = useState(true);
   const status = props?.route?.params.status;
 
-  // const [members, setMembers] = useState(null);
+  const [members, setMembers] = useState(null);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   getSalahkarMember(
-  //     response => {
-  //       printLog('AdvicerMember', JSON.stringify(response));
-  //       if (!response?.status) {
-  //         setMembers([]);
-  //       } else {
-  //         setMembers(response?.data);
-  //       }
-  //       setLoading(false);
-  //     },
-  //     error => {
-  //       setLoading(false);
-  //       setMembers([]);
-  //     },
-  //   );
-  // }, []);
+  useEffect(() => {
+    setLoading(true);
+    getSalahkarMember(
+      response => {
+        printLog('AdvicerMember', JSON.stringify(response));
+        if (!response?.status) {
+          setMembers([]);
+        } else {
+          setMembers(response?.data);
+        }
+        setLoading(false);
+      },
+      error => {
+        setLoading(false);
+        setMembers([]);
+      },
+    );
+  }, []);
 
   return (
     <View
@@ -114,12 +115,12 @@ const AdvicerMember = props => {
         <View
           style={{
             // marginTop: '5%',
-            width: '90%',
+            width: '100%',
             alignItems: 'center',
             alignSelf: 'center',
             borderRadius: 10,
             paddingBottom: 15,
-            flex: 1,
+            flex: 0.9,
 
             // backgroundColor: 'red',
             // ...Platform.select({
@@ -134,7 +135,7 @@ const AdvicerMember = props => {
             //   },
             // }),
           }}>
-          <View style={{width: '100%'}}>
+          <View style={{width: '100%', paddingHorizontal: 15}}>
             <MemberCell
               change={true}
               status={status}
@@ -150,7 +151,7 @@ const AdvicerMember = props => {
           /> */}
 
           {isLoading && members == null ? (
-            <View style={{marginTop: 15}}>
+            <View style={{marginTop: 15, paddingHorizontal: 15}}>
               <ListMember />
               <ListMember />
               <ListMember />
@@ -176,7 +177,7 @@ const AdvicerMember = props => {
             </View>
           ) : (
             <FlatList
-              contentContainerStyle={{paddingBottom: 10}}
+              contentContainerStyle={{paddingBottom: 10, paddingHorizontal: 15}}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               style={{width: '100%'}}
@@ -245,7 +246,7 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '30%',
+            width: '25%',
             color: AppColors.DarkText,
           },
         ]}>
@@ -255,16 +256,16 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '15%',
+            width: '20%',
             color: AppColors.DarkText,
 
             // marginLeft: 5,
           },
         ]}>
-        {props?.item ? `${props?.item?.address}` : 'ગામ'}
+        {props?.item ? `${props?.item?.city}` : 'ગામ'}
       </Text>
 
-      {props?.status != 'drawer' ? (
+      {/* {props?.status != 'drawer' ? (
         <Text
           style={[
             styles.heading,
@@ -280,11 +281,11 @@ export const MemberCell = props => {
               : 'હોદો'
             : null}
         </Text>
-      ) : null}
+      ) : null} */}
       <View
         style={{
           flexDirection: 'row',
-          width: '25%',
+          width: '30%',
           // marginLeft: 10,
           alignItems: 'center',
         }}>
@@ -292,32 +293,35 @@ export const MemberCell = props => {
           {props?.item ? `${props?.item?.phone}` : 'મોબાઈલ નંબર'}
         </Text>
         {!props?.change ? (
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingBottom: 2.5,
+            }}>
             <TouchableOpacity
-              style={{marginHorizontal: 5}}
-              onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
+              activeOpacity={1}
+              style={{paddingHorizontal: 2.5, marginLeft: 3}}
+              onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
               <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                padding: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              activeOpacity={1}
+              onPress={() =>
+                Linking.openURL(
+                  `whatsapp://send?phone=${'9510135458'}`,
+                  // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                )
+              }>
               <Image source={AppImages.WHATSAPP_ICON} />
             </TouchableOpacity>
           </View>
         ) : null}
-
-        {/* {props?.item && props?.item?.phone !== 'NA' ? (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => {
-              Linking.openURL(`tel:${props?.item?.phone}`);
-            }}>
-            <Image
-              source={AppImages.PHONE_ICON}
-              style={{height: 12, width: 12, marginStart: 5}}
-            />
-          </TouchableOpacity>
-        ) : (
-          <></>
-        )} */}
       </View>
       <View
         style={{
@@ -325,6 +329,7 @@ export const MemberCell = props => {
           justifyContent: 'center',
           alignItems: 'center',
           marginLeft: 10,
+          paddingBottom:2.5
         }}>
         {props?.item ? (
           <Image
@@ -374,6 +379,14 @@ export const ListMember = props => {
   return (
     <View
       style={{width: '95%', height: 30, marginVertical: 10, ...props?.styles}}>
+      <ShimmerCustomView />
+    </View>
+  );
+};
+
+export const BusinessBox = props => {
+  return (
+    <View style={{width: '30%', height: 100, margin: 5, ...props?.styles}}>
       <ShimmerCustomView />
     </View>
   );

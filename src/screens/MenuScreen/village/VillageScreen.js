@@ -16,7 +16,7 @@ import {
 import {MySelection} from '../../../components/SimpleTextInput';
 // import {getCities, getVillageMembers} from '../../../../networking/CallApi';
 import {AppColors} from '../../../utils/AppColors';
-import {printLog} from '../../../utils/AppConstFuncations';
+import {printLog} from '../../../utils/AppConstValue';
 import {AppConstValue} from '../../../utils/AppConstValue';
 import {AppFonts} from '../../../utils/AppFonts';
 import {fontProximaNova} from '../../../utils/AppFonts';
@@ -29,6 +29,7 @@ import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCities, getVillageMembers} from '../../../networking/CallApi';
 
 const list = [
   {
@@ -66,56 +67,57 @@ const VillageScreen = props => {
     setMember(list);
   });
 
-  useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
-  //   useEffect(() => {
-  //     getCities(
-  //       response => {
-  //         if (response?.status) {
-  //           var temp = [];
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
 
-  //           for (let i = 0; i < response?.data?.length; i++) {
-  //             temp.push({
-  //               name: response?.data[i]?.name,
-  //               id: response?.data[i]?.id,
-  //             });
-  //             if (i == 0) {
-  //               setValue(response?.data[i]?.name);
-  //               setCityId(response?.data[i]?.id);
-  //             }
-  //           }
-  //           setCities(temp);
+  useEffect(() => {
+    getCities(
+      response => {
+        if (response?.status) {
+          var temp = [];
+          for (let i = 0; i < response?.data?.length; i++) {
+            temp.push({
+              name: response?.data[i]?.name,
+              id: response?.data[i]?.id,
+            });
+            if (i == 0) {
+              setValue(response?.data[i]?.name);
+              setCityId(response?.data[i]?.id);
+            }
+          }
+          setCities(temp);
+        }
+      },
+      error => {
+        printLog('StatisticScreen', error);
+      },
+    );
+  }, []);
+
+  // useEffect(() => {
+  //   if (cityId != '') {
+  //     console.log('call--', value);
+  //     setMember(null);
+  //     getVillageMembers(
+  //       {city: value},
+  //       response => {
+  //         printLog('getVillageMembers', JSON.stringify(response?.data));
+  //         if (response?.status) {
+  //           setMember(response?.data);
+  //         } else {
+  //           setMember([]);
   //         }
   //       },
   //       error => {
-  //         printLog('StatisticScreen', error);
+  //         printLog('getVillageMembers', error);
+  //         setMember([]);
   //       },
   //     );
-  //   }, []);
-
-  //   useEffect(() => {
-  //     if (cityId != '') {
-  //       setMember(null);
-  //       getVillageMembers(
-  //         {city: value},
-  //         response => {
-  //           printLog('getVillageMembers', JSON.stringify(response));
-  //           if (response?.status) {
-  //             setMember(response?.data);
-  //           } else {
-  //             setMember([]);
-  //           }
-  //         },
-  //         error => {
-  //           printLog('getVillageMembers', error);
-  //           setMember([]);
-  //         },
-  //       );
-  //     }
-  //   }, [cityId]);
+  //   }
+  // }, [cityId]);
 
   return (
     <View
@@ -129,13 +131,12 @@ const VillageScreen = props => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
           <ScreenToolbar text={'VILLAGE MEMBER DETAILS'} />
         </View>
-        <View style={{flex: 1}}>
+        <View style={{flex: 0.9}}>
           {/* <Image
           source={AppImages.APP_SPONCER_LINE}
           style={{
@@ -162,6 +163,7 @@ const VillageScreen = props => {
               backgroundColor: AppColors.backgroundColor,
               padding: 22,
               borderRadius: 10,
+
               backgroundColor: 'white',
               ...Platform.select({
                 ios: {
@@ -230,17 +232,20 @@ const VillageScreen = props => {
               alignSelf: 'center',
             }}
             showsVerticalScrollIndicator={false}>
-            <View style={{flex: 1, alignItems: 'center'}}>
+            <View style={{flex: 1, alignItems: 'center', width: '100%'}}>
               <View style={{width: '100%', alignItems: 'center'}}>
                 <Image
                   source={require('../../../assets/images/villageimage.png')}
-                  style={{
-                    // marginVertical: 10,
-                    // resizeMode: 'contain',
-                    width: '90%',
-                    borderRadius: 15,
-                    backgroundColor: '#F2F2F2',
-                  }}
+                  style={
+                    {
+                      // marginVertical: 10,
+                      // // resizeMode: 'contain',
+                      // width: '90%',
+                      // borderRadius: 15,
+                      // backgroundColor: '#F2F2F2',
+                      // height:100
+                    }
+                  }
                 />
               </View>
 
@@ -249,6 +254,8 @@ const VillageScreen = props => {
                   flexDirection: 'row',
                   marginTop: 15,
                   width: '90%',
+
+                  justifyContent: 'space-between',
                 }}>
                 <Text
                   style={{
@@ -461,8 +468,24 @@ const AboutCell = props => {
             }}>
             {props?.item?.phone}
           </Text>
-          <Image source={AppImages.CIRCLE_CALL_ICON} style={{marginRight: 5}} />
-          <Image source={AppImages.WHATSAPP_ICON} style={{marginRight: 5}} />
+          <Image source={AppImages.CIRCLE_CALL_ICON} style={{marginRight: 5,marginBottom:2.5}} />
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              height: 20,
+              width: 15,
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingBottom:2.5
+            }}
+            onPress={() =>
+              Linking.openURL(
+                `whatsapp://send?phone=${'9510135458'}`,
+                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              )
+            }>
+            <Image source={AppImages.WHATSAPP_ICON} style={{}} />
+          </TouchableOpacity>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

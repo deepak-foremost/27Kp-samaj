@@ -16,14 +16,18 @@ import BorderView from '../../../components/BorderView';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {staticArray} from '../../../utils/staticArray';
+import LogInToolbar from '../../../components/LogInToolbar';
 
-const SocialService = () => {
+const SocialService = ({route}) => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [btnOpacity, setBtnOpacity] = useState('life');
   const [value, setValue] = useState('1234 - Dhaval Ahm');
   const [valueId, setValueId] = useState('');
   const [text, setText] = useState('જીવન સહાય સભાસદ સભ્ય');
+  const pay = route?.params?.pay;
+
   return (
     <View
       style={{
@@ -32,17 +36,25 @@ const SocialService = () => {
         paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       <StatusBar backgroundColor={AppColors.Orange} />
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
-        <ScreenToolbar
+      <View style={{flex: 1, backgroundColor: '#F3F3F3'}}>
+        <LogInToolbar
+          text={'Quick Pay'}
+          imgStyle={{tintColor: 'black'}}
+          textStyle={{color: 'black'}}
+          style={{
+            backgroundColor: AppColors.Orange,
+          }}
+        />
+        {/* <ScreenToolbar
           styles={{backgroundColor: AppColors.Orange}}
           text={'Quick Pay'}
-        />
-        <View style={{flex: 0.5, justifyContent: 'space-evenly'}}>
+          textStyle={{color:'black'}}
+        /> */}
+        <View style={{flex: 0.5, justifyContent: 'center'}}>
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
-
+              justifyContent: 'center',
               width: '90%',
               alignItems: 'center',
               marginHorizontal: 15,
@@ -53,11 +65,13 @@ const SocialService = () => {
               style={{
                 backgroundColor:
                   btnOpacity == 'life' ? AppColors.Orange : '#8E8E8E',
-                width: '45%',
+                width: '100%',
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: 30,
                 paddingVertical: 5,
+                alignSelf: 'center',
+                height: 40,
 
                 // opacity: btnOpacity == 'life' ? 1 : 0.5,
               }}
@@ -67,9 +81,9 @@ const SocialService = () => {
               }}>
               <Text
                 style={{
-                  fontFamily: AppFonts.medium,
+                  fontFamily: AppFonts.bold,
                   fontSize: 14,
-                  color: btnOpacity == 'life' ? '#fff' : '#F3F3F3',
+                  color: btnOpacity == 'life' ? 'black' : '#F3F3F3',
                   width: '60%',
                   textAlign: 'center',
                   lineHeight: 20,
@@ -78,7 +92,7 @@ const SocialService = () => {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               activeOpacity={1}
               style={{
                 backgroundColor:
@@ -106,7 +120,7 @@ const SocialService = () => {
                 }}>
                 ભુમિ સભાસદ સભ્ય
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <Text
             style={{
@@ -114,8 +128,10 @@ const SocialService = () => {
               fontSize: 14,
               fontFamily: AppFonts.semiBold,
               alignSelf: 'center',
+              marginTop:40,
+              marginBottom:20
             }}>
-            Enter the જીવન સહાય સભાસદ સભ્ય નંબર{' '}
+            Select જીવન સહાય સભાસદ સભ્ય નંબર{' '}
           </Text>
 
           <View
@@ -128,9 +144,7 @@ const SocialService = () => {
               paddingStart: 5,
               justifyContent: 'center',
               alignItems: 'center',
-
               marginHorizontal: 15,
-
               ...Platform.select({
                 ios: {
                   shadowColor: '#D5D5D5',
@@ -147,6 +161,7 @@ const SocialService = () => {
               label={value}
               placeholder={`Select Number`}
               //   data={range}
+              data={staticArray.lifeSupportNumbers}
               value={value}
               onItemSelect={item => {
                 // printLog(JSON.stringify(item?.item));
@@ -163,10 +178,10 @@ const SocialService = () => {
               marginHorizontal: 15,
               borderRadius: 30,
               height: 40,
-              marginTop: 20,
+              marginTop: 40,
               backgroundColor: AppColors.Orange,
             }}
-            textStyle={{fontSize: 24}}
+            textStyle={{fontSize: 24, color: 'black'}}
             buttonPress={() =>
               RootNavigation.navigate(AppScreens.PAYMENT_SCREEN, {
                 text: text,

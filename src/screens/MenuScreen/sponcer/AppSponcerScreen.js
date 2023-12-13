@@ -119,12 +119,12 @@ const AppSponcerScreen = props => {
         <View
           style={{
             // marginTop: '5%',
-            width: '90%',
+            width: '100%',
             alignItems: 'center',
             alignSelf: 'center',
             borderRadius: 10,
             paddingBottom: 15,
-            flex: 1,
+            flex: 0.9,
 
             // backgroundColor: 'red',
             // ...Platform.select({
@@ -147,7 +147,7 @@ const AppSponcerScreen = props => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               width: '100%',
-              paddingHorizontal: 10,
+              paddingHorizontal: 15,
               paddingTop: 15,
               paddingBottom: 5,
             }}>
@@ -202,7 +202,7 @@ const AppSponcerScreen = props => {
           /> */}
 
           {isLoading && members == null ? (
-            <View style={{marginTop: 15}}>
+            <View style={{marginTop: 15,paddingHorizontal:15}}>
               <ListMember />
               <ListMember />
               <ListMember />
@@ -228,7 +228,7 @@ const AppSponcerScreen = props => {
             </View>
           ) : (
             <FlatList
-              contentContainerStyle={{paddingBottom: 10}}
+              contentContainerStyle={{paddingBottom: 10,paddingHorizontal:15}}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               style={{width: '100%'}}
@@ -344,10 +344,19 @@ export const MemberCell = props => {
         </Text>
         {!props?.change ? (
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity style={{marginHorizontal: 5}}>
-              <Image source={AppImages.CALL_ICON} />
+            <TouchableOpacity activeOpacity={1} style={{paddingHorizontal: 2.5,paddingBottom:2.5}}
+            onPress={()=> Linking.openURL(`tel:${'9510135458'}`)}>
+              <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+            activeOpacity={1}
+            style={{justifyContent:'center',alignItems:'center',paddingHorizontal:2.5,paddingBottom:2.5}}
+              onPress={() =>
+                Linking.openURL(
+                  `whatsapp://send?phone=${'9510135458'}`,
+                  // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                )
+              }>
               <Image source={AppImages.WHATSAPP_ICON} />
             </TouchableOpacity>
           </View>

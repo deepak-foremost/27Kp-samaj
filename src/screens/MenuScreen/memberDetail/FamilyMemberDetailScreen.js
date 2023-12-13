@@ -29,6 +29,8 @@ import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCities, getFamilies} from '../../../networking/CallApi';
+import {ListMember} from '../advisour_member/AdvicerMember';
 
 const family = [
   {
@@ -60,57 +62,60 @@ const FamilyMemberDetailScreen = props => {
   const [value, setValue] = useState('');
   const [cityId, setCityId] = useState('');
   const [city, setCity] = useState('');
+  const [isloading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
+
+  const [family, setFamily] = useState([]);
 
   useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
+    setLoading(true);
+    getCities(
+      response => {
+        if (response?.status) {
+          var temp = [];
 
-  //   const [family, setFamily] = useState([]);
+          for (let i = 0; i < response?.data?.length; i++) {
+            temp.push({
+              name: response?.data[i]?.name,
+              id: response?.data[i]?.id,
+            });
+            if (i == 0) {
+              setValue(response?.data[i]?.name);
+              setCityId(response?.data[i]?.id);
+            }
+          }
+          setCities(temp);
+        }
+      },
+      error => {
+        printLog('StatisticScreen', error);
+      },
+    );
+  }, []);
 
-  //   useEffect(() => {
-  //     getCities(
-  //       response => {
-  //         if (response?.status) {
-  //           var temp = [];
+  useEffect(() => {
+    if (cityId != '') getList(cityId);
+  }, [cityId != '']);
 
-  //           for (let i = 0; i < response?.data?.length; i++) {
-  //             temp.push({
-  //               name: response?.data[i]?.name,
-  //               id: response?.data[i]?.id,
-  //             });
-  //             if (i == 0) {
-  //               setValue(response?.data[i]?.name);
-  //               setCityId(response?.data[i]?.id);
-  //             }
-  //           }
-  //           setCities(temp);
-  //         }
-  //       },
-  //       error => {
-  //         printLog('StatisticScreen', error);
-  //       },
-  //     );
-  //   }, []);
-
-  //   useEffect(() => {
-  //     if (cityId != '') getList(cityId);
-  //   }, [cityId != '']);
-
-  //   const getList = id => {
-  //     getFamilies(
-  //       {city_id: id},
-  //       response => {
-  //         printLog('getFamily', JSON.stringify(response));
-  //         if (response?.status) {
-  //           printLog('getFamily', JSON.stringify(response));
-  //           setFamily(response?.data);
-  //         }
-  //       },
-  //       error => {},
-  //     );
-  //   };
+  const getList = id => {
+    getFamilies(
+      {city_id: id},
+      response => {
+        printLog('getFamily', JSON.stringify(response));
+        if (response?.status) {
+          printLog('getFamily', JSON.stringify(response));
+          setFamily(response?.data);
+          setLoading(false);
+        }
+      },
+      error => {},
+    );
+  };
 
   return (
     <View
@@ -141,102 +146,113 @@ const FamilyMemberDetailScreen = props => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
+
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
           <ScreenToolbar text={'FAMILY MEMBER DETAILS'} />
         </View>
-
-        <View
-          style={{
-            marginTop: -40,
-            width: '90%',
-            alignItems: 'center',
-            alignSelf: 'center',
-            backgroundColor: AppColors.BackgroundColor,
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: 'white',
-            ...Platform.select({
-              ios: {
-                shadowColor: '#D5D5D5',
-                shadowOffset: {width: 0, height: -1},
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-              },
-              android: {
-                elevation: 15,
-              },
-            }),
-          }}>
-          <Text
-            style={{
-              fontFamily: AppFonts.medium,
-              fontSize: 12,
-              color: AppColors.DarkText,
-              alignSelf: 'flex-start',
-              marginLeft: 10,
-            }}>
-            Please Select Village
-          </Text>
-
+        <View style={{flex: 0.9}}>
           <View
-            style={[
-              AppStyles.boxStyle,
-              {
-                //   backgroundColor: AppColors.LightText,
-                width: '95%',
-                flexDirection: 'row',
-                marginVertical: 15,
-                borderRadius: 3,
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-            ]}>
+            style={{
+              marginTop: -40,
+              width: '90%',
+              alignItems: 'center',
+              alignSelf: 'center',
+              backgroundColor: AppColors.BackgroundColor,
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: 'white',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#D5D5D5',
+                  shadowOffset: {width: 0, height: -1},
+                  shadowOpacity: 0.9,
+                  shadowRadius: 3,
+                },
+                android: {
+                  elevation: 15,
+                },
+              }),
+            }}>
             <Text
               style={{
                 fontFamily: AppFonts.medium,
-                fontSize: 13,
+                fontSize: 12,
                 color: AppColors.DarkText,
-                textAlign: 'right',
-                padding: 10,
+                alignSelf: 'flex-start',
+                marginLeft: 10,
               }}>
-              ગામ :
+              Please Select Village
             </Text>
 
-            <MySelection
-              label={`Select Village`}
-              placeholder={`Select Village`}
-              data={cities}
-              value={value}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.name + '---' + item?.id));
-                setValue(item?.name);
-                setCityId(item?.id);
-                // getList(item?.id);
-              }}
-            />
-          </View>
-        </View>
+            <View
+              style={[
+                AppStyles.boxStyle,
+                {
+                  //   backgroundColor: AppColors.LightText,
+                  width: '95%',
+                  flexDirection: 'row',
+                  marginVertical: 15,
+                  borderRadius: 3,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.medium,
+                  fontSize: 13,
+                  color: AppColors.DarkText,
+                  textAlign: 'right',
+                  padding: 10,
+                }}>
+                ગામ :
+              </Text>
 
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 20}}
-          data={family == null ? [] : family}
-          renderItem={({item, index}) => (
-            <FamilyMermberCell
-              index={index}
-              item={item}
-              onClick={() =>
-                RootNavigation.navigate(AppScreens.FAMILY_DETAIL_SCREEN, {
-                  item: item,
-                })
-              }
+              <MySelection
+                label={`Select Village`}
+                placeholder={`Select Village`}
+                data={cities}
+                value={value}
+                onItemSelect={item => {
+                  printLog(JSON.stringify(item?.name + '---' + item?.id));
+                  setValue(item?.name);
+                  setCityId(item?.id);
+                  getList(item?.id);
+                }}
+              />
+            </View>
+          </View>
+
+          {isloading ? (
+            <View style={{justifyContent: 'center', marginHorizontal: 15}}>
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+            </View>
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 20}}
+              data={family == null ? [] : family}
+              renderItem={({item, index}) => (
+                <FamilyMermberCell
+                  index={index}
+                  item={item}
+                  onClick={() =>
+                    RootNavigation.navigate(AppScreens.FAMILY_DETAIL_SCREEN, {
+                      item: item,
+                    })
+                  }
+                />
+              )}
             />
           )}
-        />
+        </View>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}

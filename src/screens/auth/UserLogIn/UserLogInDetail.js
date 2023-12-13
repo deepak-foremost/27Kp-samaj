@@ -32,6 +32,8 @@ const UserLogInDetail = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Sign In Details'}
+          imgStyle={{tintColor: screen == 'User Signin' ? 'black' : 'white'}}
+          textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -48,7 +50,7 @@ const UserLogInDetail = ({route}) => {
                   fontFamily: AppFonts.semiBold,
                   color:
                     screen == 'User Signin'
-                      ? AppColors.Red
+                      ? 'black'
                       : AppColors.BackgroundSecondColor,
                   alignSelf: 'flex-start',
                   marginTop: 25,
@@ -74,8 +76,10 @@ const UserLogInDetail = ({route}) => {
 
           <AppButton
             text={'Thanks'}
+            textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
             buttonPress={() => {
-              setString('flag', JSON.stringify('enter'));
+              returnScreen != 'profile' &&
+                setString('flag', JSON.stringify('enter'));
               RootNavigation.navigate(
                 returnScreen == 'profile'
                   ? AppScreens.HOME_SCREEN
@@ -101,6 +105,14 @@ const UserLogInDetail = ({route}) => {
               : AppColors.BackgroundSecondColor
           }
         />
+        {/* <BorderView
+          text={'સમાજ એજ મારો પરિવાર'}
+          backgroundColor={
+            screen == 'User Signin'
+              ? AppColors.Red
+              : AppColors.BackgroundSecondColor
+          }
+        /> */}
       </View>
     </View>
   );
@@ -119,7 +131,7 @@ export const DetailsItem = props => {
       }}>
       <Text
         style={{
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
           fontFamily: AppFonts.semiBold,
         }}>

@@ -45,6 +45,7 @@ import PaymentScreen from '../screens/MenuScreen/social_service/PaymentScreen';
 import LinkDetails from '../screens/MenuScreen/imp_links/LinkDetails';
 import ServiceDetails from '../screens/MenuScreen/imp_links/ServiceDetails';
 import PrivacyPolicy from '../screens/MenuScreen/privacy_policy/PrivacyPolicy';
+import VariousBusiness from '../screens/MenuScreen/various_business/VariousBusiness';
 
 const RootNavigation = () => {
   return (
@@ -188,9 +189,13 @@ const RootNavigation = () => {
           name={AppScreens.SERVICE_DETAILS}
           component={ServiceDetails}
         />
-         <Stack.Screen
+        <Stack.Screen
           name={AppScreens.PRIVACY_POLICY}
           component={PrivacyPolicy}
+        />
+        <Stack.Screen
+          name={AppScreens.VARIOUS_BUSINESS}
+          component={VariousBusiness}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -206,8 +211,7 @@ const navigtionRef = React.createRef();
 export function forcePush(props, screenName, data) {
   props?.navigation?.reset({
     index: 0,
-    routes: [{name: screenName}],
-    params: data,
+    routes: [{name: screenName, params: {data}}],
   });
 }
 

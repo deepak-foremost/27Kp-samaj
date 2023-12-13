@@ -9,6 +9,8 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
+  PermissionsAndroid,
+  Linking,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {FooterTextCell} from '../../../../components/LineCell';
@@ -26,8 +28,11 @@ import ScreenToolbar from '../../../components/ScreenToolbar';
 import {MemberDetail} from '../about_us/AboutUsDetailScreen';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
+import {getFamilyMembersList} from '../../../networking/CallApi';
 
-const members = [
+const list = [
   {
     id: 0,
     name: 'પટેલ ધવલ વિષ્ણુભાઈ',
@@ -35,7 +40,7 @@ const members = [
     phone: '99999 99999',
     dob: '31/05/1991',
     age: '32',
-    height: '165 CM',
+    height: '5 ft.',
     weight: '75 Kg',
     blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
@@ -56,7 +61,7 @@ const members = [
     phone: '99999 99999',
     dob: '31/05/1991',
     age: '32',
-    height: '165 CM',
+    height: '5 ft.',
     weight: '75 Kg',
     blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
@@ -77,7 +82,7 @@ const members = [
     phone: '99999 99999',
     dob: '31/05/1991',
     age: '32',
-    height: '165 CM',
+    height: '5 ft.',
     weight: '75 Kg',
     blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
@@ -94,30 +99,81 @@ const members = [
 ];
 
 const FamilyDetailScreen = props => {
-  const [visible, setVisible] = useState(-1);
+  const [filePath, setFilePath] = useState('');
+  const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    setMembers(list);
+  }, [members]);
+
+  // const isPermitted = async () => {
+  //   if (Platform.OS === 'android') {
+  //     try {
+  //       const granted = await PermissionsAndroid.request(
+  //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  //         {
+  //           title: 'External Storage Write Permission',
+  //           message: 'App needs access to Storage data',
+  //         },
+  //       );
+  //       return granted === PermissionsAndroid.RESULTS.GRANTED;
+  //     } catch (err) {
+  //       alert('Write permission err', err);
+  //       return false;
+  //     }
+  //   } else {
+  //     return true;
+  //   }
+  // };
+
+  // const createPDF = async () => {
+  //   if (await isPermitted()) {
+  //     try {
+  //       let options = {
+  //         //Content to print
+  //         html: '<h1 style="text-align: center;"><strong>Hello Guys</strong></h1><p style="text-align: center;">Here is an example of pdf Print in React Native</p><p style="text-align: center;"><strong>Team About React</strong></p>',
+  //         //File Name
+  //         fileName: 'myPdf',
+  //         //File directory
+  //         directory: 'Documents',
+  //       };
+  //       let file = await RNHTMLtoPDF.convert(options);
+  //       console.log(file.filePath);
+  //       setFilePath(file.filePath);
+  //     } catch (error) {
+  //       console.log('error---in file', error);
+  //     }
+  //   }
+  // };
+
+  const [visible, setVisible] = useState([]);
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
 
   var item = props?.route?.params?.item;
   // MyLog('FamilyDetailScreen', JSON.stringify(props?.route?.params?.item));
   // const [members, setMembers] = useState(null);
-  //   useEffect(() => {
-  //     getFamilyMembersList(
-  //       {id: item?.id, flag: 'all'},
-  //       response => {
-  //         printLog('SUCCESS', JSON.stringify(response));
-  //         if (response?.status) {
-  //           setMembers(response?.data);
-  //         } else {
-  //           setMembers([]);
-  //         }
-  //       },
-  //       error => {
-  //         printLog('ERROR', JSON.stringify(error));
+  // useEffect(() => {
+  //   getString(AsyncStorageConst.allDetails,
+  //     response=>{
+  //     console.log('token-->',JSON.stringify(response))
+  //   })
+  //   getFamilyMembersList(
+  //     {id: item?.id, flag: 'all'},
+  //     response => {
+  //       printLog('SUCCESS', JSON.stringify(response));
+  //       if (response?.status) {
+  //         setMembers(response?.data);
+  //       } else {
   //         setMembers([]);
-  //       },
-  //     );
-  //   }, []);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('ERROR', JSON.stringify(error));
+  //       setMembers([]);
+  //     },
+  //   );
+  // }, []);
 
   return (
     <View
@@ -132,8 +188,8 @@ const FamilyDetailScreen = props => {
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
-        <ScreenToolbar text={item.name} />
-
+        <ScreenToolbar text={item.name.toUpperCase()} />
+        <View style={{flex:0.9}}>
         <View
           style={{
             alignItems: 'center',
@@ -158,7 +214,7 @@ const FamilyDetailScreen = props => {
               color: '#fff',
               fontFamily: AppFonts.semiBold,
               fontSize: 13,
-              marginTop: 10,
+              marginTop: 5,
             }}>
             {`ગામ : ${item?.city}`}
           </Text>
@@ -200,19 +256,24 @@ const FamilyDetailScreen = props => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{paddingVertical: 15}}
             data={members == null ? [] : members}
-            renderItem={(item, index) => {
+            renderItem={({item, index}) => {
               printLog(`ITEM$${index}`, JSON.stringify(item?.item));
               return (
                 <View style={{}}>
                   <FamilyMermberCell
+                    // saveButton={() => createPDF()}
                     index={index}
-                    item={item?.item}
-                    visible={visible}
+                    item={item}
+                    visible={[...visible]}
                     onClick={
                       () =>
-                        visible == item?.index
-                          ? setVisible(-1)
-                          : setVisible(item?.index)
+                        // setVisible([...index])
+                        {
+                          const newList = [...members];
+                          newList[index].is_selected =
+                            !newList[index].is_selected;
+                          setMembers(newList);
+                        }
                       // RootNavigation.push(
                       //   props?.navigation,
                       //   AppScreens.MEMBER_DETAIL_SCREEN,
@@ -229,10 +290,11 @@ const FamilyDetailScreen = props => {
             }}
           />
         )}
-        {/* <BorderView
+        </View>
+        <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
-        /> */}
+        />
         {/* <FooterTextCell title={`પરિવાર નુ ખુબ ખુબ અભિનંદન`} /> */}
       </View>
     </View>
@@ -248,7 +310,7 @@ const FamilyMermberCell = props => {
       onPress={props?.onClick}
       style={{
         // flexDirection: 'row',
-        paddingHorizontal: 14,
+        // paddingHorizontal: 14,
         paddingVertical: 5,
         marginHorizontal: 17,
         backgroundColor: AppColors.BackgroundColor,
@@ -284,14 +346,16 @@ const FamilyMermberCell = props => {
           flexDirection: 'row',
           flex: 1,
           justifyContent:
-            props.visible == props?.item?.id ? 'center' : 'flex-start',
+            // props?.visible == props?.item?.id ? 'center' : 'flex-start',
+            props?.visible.includes(props.index) ? 'center' : 'flex-start',
           alignItems: 'center',
+          paddingHorizontal: 15,
         }}>
         <Text
           style={{
             fontFamily: AppFonts.semiBold,
             fontSize: 11,
-            color: AppColors.DarkText,
+            color: AppColors.black,
             paddingVertical: 10,
             marginRight: 10,
           }}>
@@ -301,7 +365,7 @@ const FamilyMermberCell = props => {
           style={{
             height: '40%',
             width: 2,
-            backgroundColor: AppColors.LightText,
+            backgroundColor: AppColors.black,
             alignSelf: 'center',
             marginRight: 10,
             resizeMode: 'contain',
@@ -313,7 +377,7 @@ const FamilyMermberCell = props => {
             fontFamily: AppFonts.semiBold,
             fontSize: 11,
             color:
-              props?.item?.index % 2 == 1 ? AppColors.Red : AppColors.DarkText,
+              props?.item?.index % 2 == 1 ? AppColors.black : AppColors.black,
             paddingVertical: 10,
           }}>{`${props?.item?.name}`}</Text>
         <Image
@@ -324,14 +388,14 @@ const FamilyMermberCell = props => {
             right: 10,
           }}
           source={
-            props?.visible == props?.item?.id
+            props?.item?.is_selected
               ? AppImages.DROP_UP_ICON
               : AppImages.DROP_DOWN_GRAY
           }
         />
       </View>
-      {props?.visible == props?.item?.id ? (
-        <MemberDetailCell item={props?.item} />
+      {props?.item?.is_selected ? (
+        <MemberDetailCell item={props?.item} saveButton={props?.saveButton} />
       ) : null}
     </TouchableOpacity>
   );
@@ -341,11 +405,10 @@ export const MemberDetailCell = props => {
   return (
     <View
       style={{
-        marginHorizontal: 17,
+        marginHorizontal: 15,
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
-        backgroundColor: '#fff',
-        padding: 15,
+        paddingVertical: 15,
         marginTop: -2,
         ...Platform.select({
           ios: {
@@ -359,7 +422,7 @@ export const MemberDetailCell = props => {
           },
         }),
       }}>
-      <View style={{alignItems: 'center', flex: 1}}>
+      <View style={{alignItems: 'flex-start', flex: 1}}>
         {/* <View
           style={{
             flexDirection: 'row',
@@ -386,10 +449,10 @@ export const MemberDetailCell = props => {
 
         <View
           style={{
-            width: 140,
+            width: '100%',
             borderRadius: 54,
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
           }}>
           {/* <Image
                   source={AppImages.placeholder_user}
@@ -405,9 +468,10 @@ export const MemberDetailCell = props => {
             source={AppImages.MEMBER_IMAGE}
             style={{
               height: 65,
-              width: 65,
+              width: '30%',
               resizeMode: 'stretch',
               borderRadius: 10,
+              marginHorizontal: 5,
             }}
           />
           <Image
@@ -415,9 +479,21 @@ export const MemberDetailCell = props => {
             source={AppImages.MEMBER_IMAGE}
             style={{
               height: 65,
-              width: 65,
+              width: '30%',
               resizeMode: 'stretch',
               borderRadius: 10,
+              marginHorizontal: 5,
+            }}
+          />
+          <Image
+            //   source={{uri: item?.image}}
+            source={AppImages.MEMBER_IMAGE}
+            style={{
+              height: 65,
+              width: '30%',
+              resizeMode: 'stretch',
+              borderRadius: 10,
+              marginHorizontal: 5,
             }}
           />
         </View>
@@ -437,7 +513,8 @@ export const MemberDetailCell = props => {
               fontFamily: AppFonts.semiBold,
               fontSize: 14,
               color: AppColors.BackgroundSecondColor,
-              marginVertical: 5,
+              marginTop: 10,
+              // marginBottom:5
             }}>
             {props?.item?.phone}
           </Text>
@@ -458,7 +535,7 @@ export const MemberDetailCell = props => {
           textStyle={{color: AppColors.BackgroundSecondColor}}
         />
         <MemberDetail
-          style={{marginBottom: 10}}
+          style={{}}
           title={'શાખ :'}
           detailText={props?.item?.shakh}
           textStyle={{color: AppColors.BackgroundSecondColor}}
@@ -470,7 +547,7 @@ export const MemberDetailCell = props => {
         <View style={{flexDirection: 'row'}}>
           <MemberDetail
             title={'જન્મ તારીખ :'}
-            style={{width: '60%'}}
+            style={{}}
             detailText={
               props?.item?.dob != '' && props?.item?.dob != undefined
                 ? moment(props?.item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
@@ -478,20 +555,20 @@ export const MemberDetailCell = props => {
             }
           />
           <MemberDetail
-            style={{width: '30%'}}
-            title={'|Age :'}
+            style={{marginLeft: 10}}
+            title={' |  Age :'}
             detailText={props?.item?.age}
           />
         </View>
         <View style={{flexDirection: 'row'}}>
           <MemberDetail
-            style={{width: '45%'}}
+            style={{}}
             title={'ઊંચાઈ :'}
             detailText={props?.item?.height}
           />
           <MemberDetail
-            style={{width: '30%'}}
-            title={'  |વજન :'}
+            style={{}}
+            title={'  |  વજન :'}
             detailText={props?.item?.weight}
           />
         </View>
@@ -508,6 +585,7 @@ export const MemberDetailCell = props => {
           detailText={props?.item?.marital_status}
         />
         <MemberDetail title={'અભ્યાસ :'} detailText={props?.item?.study} />
+        <MemberDetail title={'વ્યવસાય :'} detailText={props?.item?.business} />
         <MemberDetail
           title={'હાલ નો વ્યવસાય :'}
           detailText={props?.item?.business}
@@ -520,15 +598,55 @@ export const MemberDetailCell = props => {
           title={'હાલ ના રહેઠાણ નુ સરનામું :'}
           detailText={props?.item?.current_address}
         />
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+          }}>
           <MemberDetail
             title={'મોબાઇલ નંબર :'}
             detailText={props?.item?.phone}
             contact
-            style={{width: '60%', justifyContent: 'flex-end'}}
           />
-          <Image style={{marginHorizontal: 10}} source={AppImages.CALL_ICON} />
-          <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              paddingBottom: 2.5,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 10,
+            }}
+            onPress={() =>
+              Linking.openURL(
+                `tel:${'9510135458'}`,
+                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              )
+            }>
+            <Image
+              style={{marginHorizontal: 5}}
+              source={AppImages.CIRCLE_CALL_ICON}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              height: 15,
+              width: 15,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 5,
+              paddingBottom: 2.5,
+            }}
+            onPress={() =>
+              Linking.openURL(
+                `whatsapp://send?phone=${'9510135458'}`,
+                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              )
+            }>
+            <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+          </TouchableOpacity>
         </View>
 
         <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
@@ -537,24 +655,25 @@ export const MemberDetailCell = props => {
           <MemberDetail
             title={'જીવન સહાય સભાસદ નં :'}
             detailText={1234}
-            style={{width: '60%'}}
+            style={{}}
           />
           <TouchableOpacity
             activeOpacity={AppConstValue.ButtonOpacity}
-            // onPress={() =>
-            //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-            //     status: 'main',
-            //   })
-            // }
+            onPress={() =>
+              RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
+                status: 'main',
+              })
+            }
             style={{
-              marginHorizontal: 15,
+              marginLeft: 10,
               backgroundColor: '#FFFFFF',
               justifyContent: 'center',
               borderRadius: 8,
               alignItems: 'center',
+              paddingBottom: 2.5,
             }}>
             <LinearGradient
-              colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
+              colors={['#FF56AE', '#FF56AE', '#FF56AE']}
               style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
               <Text
                 style={{
@@ -562,25 +681,21 @@ export const MemberDetailCell = props => {
                   fontSize: 6,
                   color: 'white',
                 }}>
-                Click Here
+                ePay Now
               </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
 
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <MemberDetail
-            title={'જીવન સહાય સભાસદ નં :'}
-            detailText={1234}
-            style={{width: '60%'}}
-          />
-          <TouchableOpacity
+          <MemberDetail title={'ભુમિ સભાસદ નં:'} detailText={1234} style={{}} />
+          {/* <TouchableOpacity
             activeOpacity={AppConstValue.ButtonOpacity}
-            // onPress={() =>
-            //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-            //     status: 'main',
-            //   })
-            // }
+            onPress={() =>
+              RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                status: 'main',
+              })
+            }
             style={{
               marginHorizontal: 15,
               backgroundColor: '#FFFFFF',
@@ -600,15 +715,15 @@ export const MemberDetailCell = props => {
                 Click Here
               </Text>
             </LinearGradient>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
       {!props?.notShow && (
         <TouchableOpacity
+          onPress={props?.saveButton}
           activeOpacity={1}
           style={{
             alignSelf: 'flex-end',
-            marginRight: -40,
             marginTop: 10,
           }}>
           <Image source={require('../../../assets/images/save_icon.png')} />

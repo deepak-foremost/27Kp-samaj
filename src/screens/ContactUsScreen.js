@@ -21,14 +21,17 @@ import * as RootNavigation from '../utils/RootNavigation';
 import {staticArray} from '../utils/staticArray';
 import ScreenToolbar from '../components/ScreenToolbar';
 import BorderView from '../components/BorderView';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ContactUsScreen = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.top;
   return (
     <View
       style={{
         backgroundColor: AppColors.BackgroundSecondColor,
         flex: 1,
-        paddingTop:Platform.OS=='ios' && 55
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
       {/* <Image
         source={AppImages.APP_SPONCER_LINE}
@@ -51,7 +54,6 @@ const ContactUsScreen = props => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
@@ -99,9 +101,8 @@ const ContactUsScreen = props => {
                   fontSize: 11,
                   fontFamily: AppFonts.medium,
                   color: AppColors.DarkText,
-                  textAlign:'center',
-                  width:'100%',
-                  
+                  textAlign: 'center',
+                  width: '100%',
                 }}>
                 એપ્લિકેશન માં ફર્સ્ટ પેજ પર જાહેરાત મૂકવા માટે અને "Sign in
                 Using Your Mobile" નીચે આપેલ નંબર પર સર્પક કરવો.
@@ -208,37 +209,57 @@ const ContactUsScreen = props => {
                 }}
               />
               <TouchableOpacity
-              activeOpacity={1}
+                activeOpacity={1}
                 style={{
                   backgroundColor: AppColors.BackgroundSecondColor,
                   width: '95%',
                   borderRadius: 10,
                   justifyContent: 'center',
-                  alignItems: 'center',
+                  alignItems: 'flex-end',
                   paddingVertical: 10,
-                  marginTop:15,
-                  marginBottom:30
+                  marginTop: 15,
+                  marginBottom: 30,
+                  flexDirection: 'row',
+                  
                 }}>
                 <Text
+                  numberOfLines={2}
                   style={{
                     fontSize: 11,
                     fontFamily: AppFonts.semiBold,
                     color: '#fff',
+                    width: '85%',
+                    textAlign:'center'
                   }}>
-                  Website / Mobile Application Developer{' '}
+                  Website / Mobile Application Developer Contact Number : Dhaval
+                  Patel : +91 : 9510135458{' '}
                 </Text>
-                <Text
+               
+                {
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={{marginLeft:5,marginBottom:5}}
+                    onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
+                    <Image source={AppImages.CIRCLE_CALL_ICON} />
+                  </TouchableOpacity>
+                }
+
+                <TouchableOpacity
+                  activeOpacity={1}
                   style={{
-                    fontSize: 10,
-                    fontFamily: AppFonts.semiBold,
-                    color: '#fff',
-                    marginTop: 5,
-                  }}>
-                  {'Contact Number : Dhaval Patel : +91 : 9510135458   '}
-                  {<Image  source={AppImages.CIRCLE_CALL_ICON} />}
-                  {'   '}
+                    paddingHorizontal: 2.5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft:5,
+                    marginBottom:5
+                  }}
+                  onPress={() =>
+                    Linking.openURL(
+                      `whatsapp://send?text=hello&phone=${'9510135458'}`,
+                    )
+                  }>
                   {<Image source={AppImages.WHATSAPP_ICON} />}
-                </Text>
+                </TouchableOpacity>
               </TouchableOpacity>
 
               {/* <AppButton
@@ -287,16 +308,14 @@ const ContactCell = props => {
         justifyContent: 'space-between',
         alignItems: 'center',
         height: 45,
-        width:'92%',
+        width: '92%',
         flexDirection: 'row',
         // borderBottomWidth: 1,
         borderColor: props?.item?.item?.id == 3 ? '#fff' : AppColors.line_color,
         ...props.styles,
-
         backgroundColor: '#FF9C9C',
         marginTop: 10,
         borderRadius: 9,
-        
       }}>
       <Text
         style={{
@@ -327,7 +346,6 @@ const ContactCell = props => {
       <View
         style={{
           flexDirection: 'row',
-
           paddingVertical: 5,
           alignItems: 'center',
         }}>
@@ -354,7 +372,7 @@ const ContactCell = props => {
 
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{marginStart: 10, marginEnd: 5}}
+          style={{paddingStart: 10, paddingEnd: 5,paddingBottom:2.5,}}
           onPress={() =>
             Linking.openURL(
               `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
@@ -362,22 +380,22 @@ const ContactCell = props => {
           }>
           <Image
             source={AppImages.CIRCLE_CALL_ICON}
-            style={{height: 13, width: 13}}
+            style={{}}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{marginStart: 5, }}
+          style={{paddingStart: 5,paddingBottom:2.5}}
           onPress={() =>
             Linking.openURL(
-              `whatsapp://send?phone=${props?.item?.item?.phone}`,
+              `whatsapp://send?phone=${'9510135458'}`,
               // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
             )
           }>
           <Image
             source={AppImages.WHATSAPP_ICON}
-            style={{height: 13, width: 13}}
+            style={{}}
           />
         </TouchableOpacity>
       </View>

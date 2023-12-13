@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Platform,
+  Linking,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {FooterTextCell} from '../../../../components/LineCell';
@@ -35,12 +36,14 @@ const member = [
     phone: '99999 99999',
     dob: '31/05/1991',
     age: '32',
-    height: '165 CM',
+    height: '5 ft.',
     weight: '75 Kg',
     blood_group: 'A+',
     family_main_member_with_relation: 'પોતે',
     marital_status: ' Married',
     study: ' B.Tech',
+    business_address: 'અમદાવાદ',
+    foreign_country: 'USA',
     business: 'નોકરી',
     current_address: 'અમદાવાદ',
     email: 'Test@gmail.com',
@@ -91,7 +94,7 @@ const MembersDetailScreen = props => {
       style={[
         AppStyles.AppMainBackground,
         {
-          backgroundColor: AppColors.BackgroundSecondColo,
+          backgroundColor: AppColors.BackgroundSecondColor,
           paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
@@ -108,14 +111,15 @@ const MembersDetailScreen = props => {
 
         <View
           style={{
-            marginTop: '5%',
+            marginTop: 20,
             width: '90%',
-            flex: 1,
+            // flex: 1,
             marginBottom: 20,
-            alignItems: 'center',
+            alignItems: 'flex-start',
             alignSelf: 'center',
             backgroundColor: AppColors.BackgroundColor,
-            padding: 22,
+            padding: 15,
+            paddingVertical:25,
             borderRadius: 10,
             backgroundColor: 'white',
             ...Platform.select({
@@ -149,8 +153,8 @@ const MembersDetailScreen = props => {
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={{width: '100%'}}>
-              <View style={{alignItems: 'center'}}>
-                <View
+              <View style={{alignItems: 'flex-start'}}>
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     alignSelf: 'flex-start',
@@ -160,7 +164,7 @@ const MembersDetailScreen = props => {
                     style={{
                       fontFamily: AppFonts.semiBold,
                       fontSize: 11,
-                      color: AppColors.DarkText,
+                      color: AppColors.black,
                     }}>
                     {item?.family_main_member_with_relation}
                     {' | '}
@@ -169,19 +173,19 @@ const MembersDetailScreen = props => {
                     style={{
                       fontFamily: AppFonts.semiBold,
                       fontSize: 11,
-                      color: AppColors.DarkText,
+                      color: AppColors.black,
                     }}>
                     {item?.name}
                   </Text>
-                </View>
+                </View> */}
 
                 <View
                   style={{
-                    width: 140,
+                    width: '100%',
                     borderRadius: 54,
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingTop: 10,
+                    justifyContent: 'center',
+                    // paddingTop: 10,
                   }}>
                   {/* <Image
                   source={AppImages.placeholder_user}
@@ -197,9 +201,10 @@ const MembersDetailScreen = props => {
                     source={AppImages.MEMBER_IMAGE}
                     style={{
                       height: 65,
-                      width: 65,
+                      width: '30%',
                       resizeMode: 'stretch',
                       borderRadius: 10,
+                      marginHorizontal: 5,
                     }}
                   />
                   <Image
@@ -207,9 +212,21 @@ const MembersDetailScreen = props => {
                     source={AppImages.MEMBER_IMAGE}
                     style={{
                       height: 65,
-                      width: 65,
+                      width: '30%',
                       resizeMode: 'stretch',
                       borderRadius: 10,
+                      marginHorizontal: 5,
+                    }}
+                  />
+                  <Image
+                    //   source={{uri: item?.image}}
+                    source={AppImages.MEMBER_IMAGE}
+                    style={{
+                      height: 65,
+                      width: '30%',
+                      resizeMode: 'stretch',
+                      borderRadius: 10,
+                      marginHorizontal: 5,
                     }}
                   />
                 </View>
@@ -229,7 +246,8 @@ const MembersDetailScreen = props => {
                       fontFamily: AppFonts.semiBold,
                       fontSize: 14,
                       color: AppColors.BackgroundSecondColor,
-                      marginVertical: 10,
+                      marginTop: 10,
+                      // marginBottom:5
                     }}>
                     {item?.phone}
                   </Text>
@@ -250,7 +268,7 @@ const MembersDetailScreen = props => {
                   textStyle={{color: AppColors.BackgroundSecondColor}}
                 />
                 <MemberDetail
-                  style={{marginBottom: 10}}
+                  style={{}}
                   title={'શાખ :'}
                   detailText={item?.shakh}
                   textStyle={{color: AppColors.BackgroundSecondColor}}
@@ -262,7 +280,7 @@ const MembersDetailScreen = props => {
                 <View style={{flexDirection: 'row'}}>
                   <MemberDetail
                     title={'જન્મ તારીખ :'}
-                    style={{width: '35%'}}
+                    style={{}}
                     detailText={
                       item?.dob != '' && item?.dob != undefined
                         ? moment(item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
@@ -270,19 +288,19 @@ const MembersDetailScreen = props => {
                     }
                   />
                   <MemberDetail
-                    style={{width: '35%'}}
+                    style={{marginLeft: 10}}
                     title={'ઉંમર :'}
                     detailText={item?.age}
                   />
                 </View>
                 <View style={{flexDirection: 'row'}}>
                   <MemberDetail
-                    style={{width: '30%'}}
+                    style={{}}
                     title={'ઊંચાઈ :'}
                     detailText={item?.height}
                   />
                   <MemberDetail
-                    style={{width: '30%'}}
+                    style={{marginLeft: 10}}
                     title={'વજન :'}
                     detailText={item?.weight}
                   />
@@ -300,13 +318,18 @@ const MembersDetailScreen = props => {
                   detailText={item?.marital_status}
                 />
                 <MemberDetail title={'અભ્યાસ :'} detailText={item?.study} />
-                <MemberDetail
+                <MemberDetail title={'વ્યવસાય :'} detailText={item?.business} />
+                {/* <MemberDetail
                   title={'હાલ નો વ્યવસાય :'}
                   detailText={item?.business}
-                />
+                /> */}
                 <MemberDetail
                   title={'વ્યવસાયનું સરનામું :'}
                   detailText={item?.business_address}
+                />
+                <MemberDetail
+                  title={'ફોરેન Country નામ:'}
+                  detailText={item?.foreign_country}
                 />
                 <MemberDetail
                   title={'હાલ ના રહેઠાણ નુ સરનામું :'}
@@ -317,13 +340,46 @@ const MembersDetailScreen = props => {
                     title={'મોબાઇલ નંબર :'}
                     detailText={item?.phone}
                     contact
-                    style={{width: '60%', justifyContent: 'flex-end'}}
+                    style={{justifyContent: 'flex-end'}}
                   />
-                  <Image
-                    style={{marginHorizontal: 10}}
-                    source={AppImages.CALL_ICON}
-                  />
-                  <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={{
+                      height: 20,
+                      width: 15,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginLeft: 10,
+                      paddingBottom: 2.5,
+                    }}
+                    onPress={() =>
+                      Linking.openURL(
+                        `tel:${props?.item?.phone}`,
+                        // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                      )
+                    }>
+                    <Image
+                      style={{marginHorizontal: 10}}
+                      source={AppImages.CIRCLE_CALL_ICON}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={{
+                      height: 20,
+                      width: 15,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingBottom: 3,
+                    }}
+                    onPress={() =>
+                      Linking.openURL(
+                        `whatsapp://send?phone=${'9510135458'}`,
+                        // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                      )
+                    }>
+                    <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+                  </TouchableOpacity>
                 </View>
 
                 <MemberDetail title={'Email ID :'} detailText={item?.email} />
@@ -331,24 +387,29 @@ const MembersDetailScreen = props => {
                   <MemberDetail
                     title={'જીવન સહાય સભાસદ નં :'}
                     detailText={1234}
-                    style={{width: '70%', justifyContent: 'flex-end'}}
+                    style={{justifyContent: 'center'}}
                   />
                   <TouchableOpacity
                     activeOpacity={AppConstValue.ButtonOpacity}
-                    // onPress={() =>
-                    //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-                    //     status: 'main',
-                    //   })
-                    // }
+                    onPress={() =>
+                      RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
+                        status: 'main',
+                      })
+                    }
                     style={{
-                      width: '30%',
                       backgroundColor: '#FFFFFF',
                       justifyContent: 'center',
                       borderRadius: 8,
                       alignItems: 'center',
+                      marginLeft: 10,
+                      paddingBottom: 2.5,
                     }}>
                     <LinearGradient
-                      colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
+                      colors={[
+                        AppColors.Orange,
+                        AppColors.Orange,
+                        AppColors.Orange,
+                      ]}
                       style={{
                         padding: 3,
                         borderRadius: 8,
@@ -360,7 +421,7 @@ const MembersDetailScreen = props => {
                           fontSize: 6,
                           color: 'white',
                         }}>
-                        Click Here
+                        ePay Now
                       </Text>
                     </LinearGradient>
                   </TouchableOpacity>
@@ -374,9 +435,9 @@ const MembersDetailScreen = props => {
                   <MemberDetail
                     title={'ભુમિ સભાસદ નં :'}
                     detailText={1234}
-                    style={{width: '70%', justifyContent: 'flex-end'}}
+                    style={{justifyContent: 'flex-end'}}
                   />
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     activeOpacity={AppConstValue.ButtonOpacity}
                     // onPress={() =>
                     //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
@@ -408,16 +469,18 @@ const MembersDetailScreen = props => {
                         Click Here
                       </Text>
                     </LinearGradient>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               </View>
             </ScrollView>
           )}
         </View>
+        <View style={{flex:1,justifyContent:'flex-end'}}>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
+        </View>
         {/* <FooterTextCell title={`''સૌનો સાથ...27 સમાજ નો વિકાસ''`} /> */}
       </View>
     </View>

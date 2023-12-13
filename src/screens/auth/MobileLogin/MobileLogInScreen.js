@@ -20,16 +20,26 @@ import {AppColors} from '../../../utils/AppColors';
 import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AppConstValue, ShowMessage} from '../../../utils/AppConstValue';
+import {
+  AppConstValue,
+  ShowMessage,
+  printLog,
+} from '../../../utils/AppConstValue';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import Header from '../../../components/Header';
 import {ScrollView} from 'react-native-gesture-handler';
 import CountryPicker from 'react-native-country-picker-modal';
-import FlashMessage from 'react-native-flash-message';
-import {getString, setString} from '../../../utils/AsyncStorageHelper';
+import FlashMessage, {showMessage} from 'react-native-flash-message';
+import {
+  AsyncStorageConst,
+  getString,
+  setString,
+} from '../../../utils/AsyncStorageHelper';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {login} from '../../../networking/CallApi';
+import {MyMobileNumber} from '../../../components/SimpleTextInput';
 
 const MobileLogInScreen = props => {
   const inset = useSafeAreaInsets();
@@ -39,9 +49,11 @@ const MobileLogInScreen = props => {
   var data;
 
   const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
   const [Visible, setVisible] = useState(false);
-  const [country, setCountry] = useState('CA +1');
+  const [country, setCountry] = useState('+91');
   const [check, setCheck] = useState(false);
+  const {code, setCode} = useState('+91');
 
   useEffect(async () => {
     data = await AsyncStorage.getItem('flag');
@@ -54,7 +66,9 @@ const MobileLogInScreen = props => {
         status: 'enter',
       });
     } else {
-      RootNavigation.forcePush(props, AppScreens.HOME_SCREEN);
+      RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, {
+        screen: screen,
+      });
     }
   };
 
@@ -96,6 +110,8 @@ const MobileLogInScreen = props => {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Sign in'}
+          imgStyle={{tintColor: screen == 'User Signin' ? 'black' : 'white'}}
+          textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -105,7 +121,7 @@ const MobileLogInScreen = props => {
         />
 
         <KeyboardAwareScrollView
-          contentContainerStyle={{flexGrow: 1, paddingBottom: -250}}
+          contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps={'handled'}
           extraScrollHeight={10}
           bounces={false}
@@ -181,7 +197,7 @@ const MobileLogInScreen = props => {
                         style={{
                           fontSize: 14,
                           fontFamily: AppFonts.medium,
-                          color: AppColors.Red,
+                          color: 'black',
                         }}>
                         Sign up
                       </Text>
@@ -197,18 +213,47 @@ const MobileLogInScreen = props => {
             <View
               style={[
                 {
-                  marginBottom: 30,
+                  // marginBottom: 30,
                 },
                 AppStyles.OutlineBackground,
               ]}>
               <AppInputView
+                close={() => setVisible(false)}
+                code={country}
+                selectCode={cod => {
+                  setCountry('+' + cod.callingCode);
+                  setVisible(false);
+                }}
+                Visible={Visible}
+                open={() => setVisible(true)}
                 text={'Mobile Number'}
                 placeholder={'Mobile Number'}
                 onChangeText={i => setMobile(i)}
-                icon={{tintColor: screen == 'User Signin' && AppColors.Red}}
+                icon={{
+                  tintColor:
+                    screen == 'User Signin'
+                      ? AppColors.Red
+                      : AppColors.BackgroundSecondColor,
+                }}
               />
 
-              <AppPasswordView text={'Password'} placeholder={'Password'} />
+              {/* <MyMobileNumber
+                // placeholder={'vjbrb'}
+                type={'numeric'}
+                label={`Mobile No`}
+                countryCode={code}
+                phone={mobile}
+                setCountryCode={item => {
+                  setCode(item?.name);
+                }}
+                onChangeText={setMobile}
+              /> */}
+
+              <AppPasswordView
+                text={'Password'}
+                placeholder={'Password'}
+                onChangeText={i => setPassword(i)}
+              />
 
               <View
                 style={{
@@ -222,7 +267,7 @@ const MobileLogInScreen = props => {
                   style={{
                     borderColor:
                       screen == 'User Signin'
-                        ? AppColors.Red
+                        ? 'black'
                         : AppColors.BackgroundSecondColor,
                     borderWidth: 1,
                     height: 15,
@@ -237,7 +282,7 @@ const MobileLogInScreen = props => {
                       style={{
                         color:
                           screen == 'User Signin'
-                            ? AppColors.Red
+                            ? 'black'
                             : AppColors.BackgroundSecondColor,
                         fontSize: 11,
                         fontFamily: AppFonts.semiBold,
@@ -252,7 +297,7 @@ const MobileLogInScreen = props => {
                     fontFamily: AppFonts.semiBold,
                     color:
                       screen == 'User Signin'
-                        ? AppColors.Red
+                        ? 'black'
                         : AppColors.BackgroundSecondColor,
                     marginLeft: 15,
                   }}>
@@ -264,16 +309,19 @@ const MobileLogInScreen = props => {
                 style={{alignSelf: 'flex-start'}}
                 activeOpacity={AppConstValue.ButtonOpacity}
                 onPress={() =>
-                  mobile != ''
-                    ? RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
-                        screen: screen,
-                      })
-                    : ShowMessage(
-                        'Please Enter Mobile Number',
-                        screen == 'User Signin'
-                          ? AppColors.Red
-                          : AppColors.BackgroundSecondColor,
-                      )
+                  // mobile != ''
+                  //   ? RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
+                  //       screen: screen,
+                  //     })
+                  //   : ShowMessage(
+                  //       'Please Enter Mobile Number',
+                  //       screen == 'User Signin'
+                  //         ? AppColors.Red
+                  //         : AppColors.BackgroundSecondColor,
+                  //     )
+                  RootNavigation.navigate(AppScreens.MOBILE_FORGOT_SCREEN, {
+                    screen: screen,
+                  })
                 }>
                 <Text
                   style={{
@@ -281,7 +329,7 @@ const MobileLogInScreen = props => {
                     fontSize: 12,
                     color:
                       screen == 'User Signin'
-                        ? AppColors.Red
+                        ? 'black'
                         : AppColors.BackgroundSecondColor,
                     marginTop: 20,
                   }}>
@@ -291,6 +339,7 @@ const MobileLogInScreen = props => {
 
               <AppButton
                 text={'Sign in'}
+                textStyle={{color: screen == 'User Signin' ? 'black' : '#fff'}}
                 buttonStyle={{
                   width: '100%',
                   marginTop: 30,
@@ -301,12 +350,54 @@ const MobileLogInScreen = props => {
                       ? AppColors.Red
                       : AppColors.BackgroundSecondColor,
                 }}
-                buttonPress={() =>
-                  // RootNavigation.navigate(AppScreens.HOME_SCREEN,)
-                  // RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '')
-                  // setString('first','enter')
-                  storeToken()
-                }
+                buttonPress={() => {
+                  // if (screen != 'User Signin') {
+                  //   if (mobile.length < 5) {
+                  //     ShowMessage('Please Enter a Valid Mobile Number');
+                  //   } else if (mobile == '' || mobile == null) {
+                  //     ShowMessage('Please Enter Your Mobile Number');
+                  //   } else if (password == '') {
+                  //     ShowMessage('Please Enter Your Password');
+                  //   } else {
+                  //     login(
+                  //       {
+                  //         login_with: 'FamilyId',
+                  //         family_id: mobile,
+                  //         password: password,
+                  //         // phone: defaultMenuPos == 1 ? phone : '',
+                  //         // country_code:
+                  //         //   defaultMenuPos == 1 ? countryCode : countryCode,
+                  //       },
+                  //       response => {
+                  //         if (!response?.status) {
+                  //           showMessage(response?.message);
+                  //         } else {
+                  //           // setLoading(false);
+                  //           var token = response?.token;
+                  //           printLog('token', JSON.stringify(response));
+                  //           printLog(typeof token);
+                  //           setString(
+                  //             AsyncStorageConst.allDetails,
+                  //             JSON.stringify(response),
+                  //           );
+                  //           setString(AsyncStorageConst.token, token);
+                  //           setString(
+                  //             AsyncStorageConst.user,
+                  //             JSON.stringify(response?.data),
+                  //           );
+                  //         }
+                  //       },
+                  //     );
+                  //   }
+                  // } else {
+                  //   RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
+                  //   setString('first', 'enter');
+                  // }
+                  RootNavigation.navigate(AppScreens.HOME_SCREEN);
+                  RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
+                  setString('first', 'enter');
+                  storeToken();
+                }}
               />
             </View>
           </View>

@@ -5,12 +5,128 @@ import {AsyncStorageConst} from '../utils/AsyncStorageHelper';
 import * as RootNavigation from '../utils/RootNavigation';
 import {printLog} from '../utils/AppConstValue';
 
+export const login = (params, onSuccess, onFailure) => {
+  CallApi(Api.POST_LOGIN, RequestType.post, params, onSuccess, onFailure);
+};
+
 export const register = (params, onSuccess, onFailure) => {
   CallApi(Api.POST_REGISTER, RequestType.post, params, onSuccess, onFailure);
 };
 
 export const getCities = (onSuccess, onFailure) => {
   CallApi(Api.GET_CITIES, RequestType.get, {}, onSuccess, onFailure);
+};
+
+export const getRelation = (onSuccess, onFailure) => {
+  CallApi(Api.GET_RELATION, RequestType.get, {}, onSuccess, onFailure);
+};
+
+export const getYearRange = (onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_ABOUT_US_RANGE}`,
+    RequestType.get,
+    NaN,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getAboutUsMember = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_ABOUT_US_MEMBER}?${params}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getStatistics = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_STATISTICS}?city_id=${params?.city_id}`,
+    RequestType.get,
+    NaN,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getSearch = (params, onSuccess, onFailure) => {
+  CallApi(`${Api.POST_SEARCH}`, RequestType.post, params, onSuccess, onFailure);
+};
+
+export const getNews = (params, onSuccess, onFailure) => {
+  CallApi(`${Api.GET_NEWS}`, RequestType.get, params, onSuccess, onFailure);
+};
+
+export const getParipatr = (params, onSuccess, onFailure) => {
+  CallApi(`${Api.GET_PARIPATR}`, RequestType.get, params, onSuccess, onFailure);
+};
+
+export const getFamilies = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_FAMILIES}?city_id=${params?.city_id}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getVillageMembers = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_VILLAGE_MEMBER}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getFamilyMembersList = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_FAMILY_MEMBER}?id=${params?.id}&flag=all`,
+    RequestType.get,
+    NaN,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getAboutUsListById = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_ABOUT_US_LIST}`,
+    RequestType.post,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getSalahkarMember = (onSuccess, onFailure) => {
+  CallApi(Api.GET_SALAHKAR_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
+};
+
+export const getMyFamilies = (onSuccess, onFailure) => {
+  CallApi(Api.GET_FAMILY_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
+};
+
+export const getMyBusinesses = (onSuccess, onFailure) => {
+  CallApi(`${Api.GET_BUSINESSES}`, RequestType.get, {}, onSuccess, onFailure);
+};
+
+export const getBusinessAllList = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_ALL_BUSINESSES}`,
+    RequestType.get,
+    NaN,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getCategories = (onSuccess, onFailure) => {
+  CallApi(Api.GET_CATEGORIES, RequestType.get, NaN, onSuccess, onFailure);
 };
 
 export const CallApi = async (url, method, params, onSuccess, onFailure) => {
@@ -42,6 +158,8 @@ export const CallApi = async (url, method, params, onSuccess, onFailure) => {
       myHeaders,
     )}`,
   );
+
+  url = method == RequestType.get ? getMethodUrl(url, params) : url;
 
   /*get url logic*/
   // if (method === RequestType.get) {
@@ -122,3 +240,26 @@ function buildFormData(formData, data, parentKey) {
     formData.append(parentKey, value);
   }
 }
+
+export const getMethodUrl = (url, body) => {
+  if (body == null || body == NaN || body == '' || body == undefined) {
+    return url;
+  } else {
+    var getUrl = '';
+
+    let arrayOfBody = Object.entries(body).map(
+      ([key, value]) => `${key}=${value}`,
+    );
+    var bodyUrl = '';
+    for (i in arrayOfBody) {
+      if (bodyUrl == '') {
+        bodyUrl = arrayOfBody[i];
+      } else {
+        bodyUrl = bodyUrl + '&' + arrayOfBody[i];
+      }
+    }
+    getUrl = url + '?' + bodyUrl;
+
+    return getUrl;
+  }
+};

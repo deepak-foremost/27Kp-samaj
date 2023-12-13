@@ -12,24 +12,26 @@ const AppButton = props => {
       style={{
         width: '85%',
         borderRadius: 10,
-        height: 50,
+        height: 52,
         backgroundColor: AppColors.BackgroundSecondColor,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
         ...props.buttonStyle,
       }}>
-      <Image style={{position:'absolute',left:30,...props.imgStyle}} source={props?.src} />
+      {/* <Image
+        style={{position: 'absolute', left: 30, ...props.imgStyle}}
+        source={props?.src}
+      /> */}
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 14,
           color: '#fff',
-          width:'70%',
-          marginLeft:15,
-          textAlign:'center',
+          width: '100%',
+          textAlign: 'center',
+          paddingTop:2.5,
           ...props.textStyle,
-          
         }}>
         {props.text}
       </Text>

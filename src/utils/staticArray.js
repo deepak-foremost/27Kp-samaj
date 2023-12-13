@@ -61,7 +61,7 @@ export class staticArray {
     {
       name: 'સમાજ સેવા \n સહાય',
       icon: AppImages.SOCIAL_HELP_ICON,
-      screen: '',
+      screen: AppScreens.SOCIAL_SERVICE,
       id: 7,
     },
     {
@@ -120,30 +120,79 @@ export class staticArray {
 
     {
       index: 6,
-      menu: 'ભૂમિ',
-      screen: AppScreens.APP_SPONCER_SCREEN,
+      menu: 'વિવિધ શહેર કારોબારી',
+      screen: AppScreens.VARIOUS_BUSINESS,
       src: require('../assets/images/bhumi_icon.png'),
     },
     {
       index: 7,
-      menu: 'કેળવણી મંડળ',
-      screen: AppScreens.APP_SPONCER_SCREEN,
-      src: require('../assets/images/bhumi_icon.png'),
-    },
-    {
-      index: 8,
       menu: 'Privacy Policy',
       screen: AppScreens.PRIVACY_POLICY,
       src: require('../assets/images/privacy_icon.png'),
     },
     {
-      index: 9,
+      index: 8,
       menu: 'Contact Us',
       screen: AppScreens.CONTACT_US_SCREEN,
       src: require('../assets/images/contact_icon.png'),
     },
     {
-      index: 10,
+      index: 9,
+      menu: 'Log out',
+      screen: '',
+      src: AppImages.LOGOUT_ICON,
+    },
+  ];
+
+  static GuestDrawerMenu = [
+    {
+      index: 0,
+      menu: 'Profile',
+      screen: AppScreens.PROFILE_SCREEN,
+      src: require('../assets/images/profile_icon.png'),
+    },
+    {
+      index: 1,
+      menu: 'Support Member',
+      screen: AppScreens.ADVICE_MEMBER,
+      src: require('../assets/images/support_member_icon.png'),
+    },
+    {
+      index: 2,
+      menu: 'જીવન સહાય સભાસદ સભ્ય',
+      screen: AppScreens.APP_SPONCER_SCREEN,
+      detail: 'sponcer',
+      src: require('../assets/images/support_member_icon.png'),
+    },
+    {
+      index: 3,
+      menu: 'ભુમિ સભાસદ સભ્ય',
+      screen: AppScreens.APP_SPONCER_SCREEN,
+      detail: 'bhumi',
+      src: require('../assets/images/support_member_icon.png'),
+    },
+
+    {
+      index: 4,
+      menu: 'વિવિધ શહેર કારોબારી',
+      screen: AppScreens.VARIOUS_BUSINESS,
+      src: require('../assets/images/bhumi_icon.png'),
+    },
+   
+    {
+      index: 5,
+      menu: 'Privacy Policy',
+      screen: AppScreens.PRIVACY_POLICY,
+      src: require('../assets/images/privacy_icon.png'),
+    },
+    {
+      index: 6,
+      menu: 'Contact Us',
+      screen: AppScreens.CONTACT_US_SCREEN,
+      src: require('../assets/images/contact_icon.png'),
+    },
+    {
+      index: 7,
       menu: 'Log out',
       screen: '',
       src: AppImages.LOGOUT_ICON,
@@ -155,7 +204,7 @@ export class staticArray {
     {label: 'Female', value: 'Female', name: 'Female'},
   ];
   static FeedbackOptions = [
-    {label: 'Complaint', value: 'Complaint', name: 'Complaint'},
+    {label: 'Complain', value: 'Complain', name: 'Complain'},
     {label: 'Suggestion', value: 'Suggestion', name: 'Suggestion'},
   ];
 
@@ -191,6 +240,11 @@ export class staticArray {
     {label: 'B.P.Ed.', value: 'B.P.Ed.', name: 'B.P.Ed.'},
     {label: 'B.E.', value: 'B.E.', name: 'B.E.'},
     {label: 'M.E.', value: 'M.E.', name: 'M.E.'},
+    {
+      label: 'Management in Eng',
+      value: 'Management in Eng',
+      name: 'Management in Eng',
+    },
   ];
 
   static foriegnCountry = [
@@ -198,6 +252,24 @@ export class staticArray {
     {label: 'Australia', value: 'Australia', name: 'Australia'},
     {label: 'China', value: 'China', name: 'China'},
     {label: 'New Zealand', value: 'New Zealand', name: 'New Zealand'},
+  ];
+
+  static lifeSupportNumbers = [
+    {
+      label: '1234 - Dhaval ahm',
+      value: '1234 - Dhaval ahm',
+      name: '1234 - Dhaval ahm',
+    },
+    {
+      label: '8799 - Dhaval ahm',
+      value: '9799 - Dhaval ahm',
+      name: '6782 - Dhaval ahm',
+    },
+    {
+      label: '1234 - Dhaval ahm',
+      value: '1234 - Dhaval ahm',
+      name: '1234 - Dhaval ahm',
+    },
   ];
 
   static relationWithHead = [
@@ -358,11 +430,18 @@ export class staticArray {
     {name: '24:00'},
     {name: '24:30'},
   ];
+
+  static businessCategory = [
+    {label: 'Jewellery', value: 'Jewellery', name: 'Jewellery'},
+    {label: 'Electronics', value: 'Electronics', name: 'Electronics'},
+    {label: 'House Builder', value: 'House Builder', name: 'House Builder'},
+    {label: 'Gift Articles', value: 'Gift Articles', name: 'Gift Articles'},
+  ];
   static getAgeList = last => {
     var data = [];
 
-    for (let i = last ? last : 0; i < 21; i++) {
-      data.push({name: i * 5});
+    for (let i = last ? last : 0; i < 101; i++) {
+      data.push({name: i * 1});
     }
 
     return data;

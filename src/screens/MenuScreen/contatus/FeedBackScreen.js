@@ -12,10 +12,12 @@ import moment from 'moment';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 import {
   BoxTextInput,
+  DateSelection,
   DaySelection,
   HorizontalDetailInput,
   HorizontalSelection,
   HorizontalTextInput,
+  MyMobileNumber,
 } from '../../../components/SimpleTextInput';
 // import {
 //   getCities,
@@ -39,7 +41,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {AppFonts} from '../../../utils/AppFonts';
 import DatePicker from 'react-native-date-picker';
 import {getString} from '../../../utils/AsyncStorageHelper';
-import { staticArray } from '../../../utils/staticArray';
+import {staticArray} from '../../../utils/staticArray';
 
 const FeedBackScreen = props => {
   const [openDatePicker, setDatePicker] = useState(false);
@@ -52,12 +54,13 @@ const FeedBackScreen = props => {
 
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState(null);
-  const[option,setOption]=useState('');
+  const [option, setOption] = useState('');
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [date, setDate] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const [country_code, setCountryCode] = useState('+91');
 
   useEffect(() => {
     getString('village', response => {
@@ -133,7 +136,7 @@ const FeedBackScreen = props => {
 
         <KeyboardAwareScrollView
           enableOnAndroid={true}
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: -250}}
           showsVerticalScrollIndicator={false}>
           {/* <HorizontalSelection
           label={`Choose Option`}
@@ -146,6 +149,7 @@ const FeedBackScreen = props => {
             setSuggestionID(item?.id);
           }}
         /> */}
+        <View style={{flex:1}}>
           <View
             style={{
               marginVertical: '6%',
@@ -158,6 +162,7 @@ const FeedBackScreen = props => {
               backgroundColor: 'white',
               alignSelf: 'center',
               paddingBottom: 30,
+             
 
               ...Platform.select({
                 ios: {
@@ -187,13 +192,19 @@ const FeedBackScreen = props => {
               defaultText={name}
               onChangeText={setName}
             />
-            <HorizontalTextInput
+
+            <MyMobileNumber
               label={`Your Mobile`}
-              defaultText={phone}
+              countryCode={country_code}
+              phone={phone}
+              type={'numeric'}
+              setCountryCode={item => {
+                setCountryCode(item?.name);
+              }}
               onChangeText={setPhone}
             />
 
-            <View
+            {/* <View
               style={{
                 width: '100%',
                 flexDirection: 'row',
@@ -259,7 +270,9 @@ const FeedBackScreen = props => {
               onCancel={() => {
                 setDatePicker(false);
               }}
-            />
+            /> */}
+
+            <DateSelection text={'Date : '} title={'Select Date'} />
 
             <HorizontalSelection
               label={`Village`}
@@ -339,9 +352,13 @@ const FeedBackScreen = props => {
               />
             )}
           </View>
-          <View style={{flex: 1, justifyContent: 'flex-end'}}>
-            <AddBorder />
           </View>
+          <BorderView
+          backgroundColor={AppColors.BackgroundSecondColor}
+          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          borderStyle={{position:''}}
+        />
+          
         </KeyboardAwareScrollView>
       </View>
     </View>

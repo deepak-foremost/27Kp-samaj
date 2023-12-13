@@ -36,7 +36,7 @@ const ProfileScreen = () => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
+            
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
@@ -69,7 +69,7 @@ const ProfileScreen = () => {
             }}>
             <View style={[AppStyles.AppLogoStyle, {}]}>
               <Image
-                style={{height: 100, width: 100}}
+                style={{height: 140, width: 140}}
                 source={AppImages.APP_MAIN_ICON}
               />
             </View>

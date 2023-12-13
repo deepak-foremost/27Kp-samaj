@@ -43,6 +43,10 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import AppInputView from '../../../components/AppInputView';
+import {CustomDatePicker} from '../../../components/CustomDatePicker';
+import {getCategories, getCities} from '../../../networking/CallApi';
+import {Api} from '../../../networking/Api';
+import {showMessage} from 'react-native-flash-message';
 
 // import LoaderView from '../../../utils/LoaderView';
 // import {set} from 'react-native-reanimated';
@@ -72,71 +76,135 @@ const AddBusinessScreen = props => {
   const [email, setEmail] = useState('');
   const [website, setWebsite] = useState('');
   const [visiting, setVisiting] = useState('');
+  const [visitingOne, setVisitingOne] = useState('');
   const [allCities, setAlLCities] = useState([]);
   const [week, setWeek] = useState(staticArray.week);
   const [type, setType] = useState('own');
   const [city, setCity] = useState('');
+  const [openDatePicker, setDatePicker] = useState(false);
+  const [dob, setDOB] = useState(null);
 
-  //   useEffect(() => {
-  //     getCities(
-  //       response => {
-  //         printLog('NewUserScreen', response?.status);
-  //         setAlLCities(response?.data);
-  //       },
-  //       error => {
-  //         printLog('NewUserScreen', error);
-  //       },
-  //     );
-  //   }, []);
+  useEffect(() => {
+    getCities(
+      response => {
+        printLog('NewUserScreen', response?.status);
+        setAlLCities(response?.data);
+      },
+      error => {
+        printLog('NewUserScreen', error);
+      },
+    );
+  }, []);
 
-  //   useEffect(() => {
-  //     printLog('AddBusinessScreen', JSON.stringify(bussinessItem));
+  useEffect(() => {
+    printLog('AddBusinessScreen', JSON.stringify(bussinessItem));
 
-  //     if (bussinessItem != undefined) {
-  //       setFirm(bussinessItem?.firm);
-  //       setCategory(bussinessItem?.category_name);
-  //       setCatId(bussinessItem?.category_id);
-  //       setOwner1(bussinessItem?.owner_name_1);
-  //       setOwner2(bussinessItem?.owner_name_2);
-  //       setOwner3(bussinessItem?.owner_name_3);
-  //       setAddress(bussinessItem?.address);
-  //       setProduct(bussinessItem?.products);
-  //       setStart(bussinessItem?.from_time);
-  //       setClose(bussinessItem?.to_time);
-  //       setCode(bussinessItem?.country_code);
-  //       setSelectedCity(bussinessItem?.city);
-  //       setMobile(bussinessItem?.business_phone);
-  //       setEmail(bussinessItem?.business_email);
-  //       setWebsite(bussinessItem?.website);
-  //       setVisiting(bussinessItem?.visting_card_photo);
-  //       var daysList = [];
-  //       for (let c = 0; c < bussinessItem?.business_hours?.length; c++) {
-  //         daysList.push({
-  //           day: bussinessItem?.business_hours[c]?.day,
-  //           status: bussinessItem?.business_hours[c]?.status == '1',
-  //         });
-  //       }
+    if (bussinessItem != undefined) {
+      setFirm(bussinessItem?.firm);
+      setCategory(bussinessItem?.category_name);
+      setCatId(bussinessItem?.category_id);
+      setOwner1(bussinessItem?.owner_name_1);
+      setOwner2(bussinessItem?.owner_name_2);
+      setOwner3(bussinessItem?.owner_name_3);
+      setAddress(bussinessItem?.address);
+      setProduct(bussinessItem?.products);
+      setStart(bussinessItem?.from_time);
+      setClose(bussinessItem?.to_time);
+      setCode(bussinessItem?.country_code);
+      setSelectedCity(bussinessItem?.city);
+      setMobile(bussinessItem?.business_phone);
+      setEmail(bussinessItem?.business_email);
+      setWebsite(bussinessItem?.website);
+      // setVisiting(bussinessItem?.visting_card_photo);
+      var daysList = [];
+      for (let c = 0; c < bussinessItem?.business_hours?.length; c++) {
+        daysList.push({
+          day: bussinessItem?.business_hours[c]?.day,
+          status: bussinessItem?.business_hours[c]?.status == '1',
+        });
+      }
 
-  //       setWeek(daysList);
-  //     }
+      setWeek(daysList);
+    }
 
-  //     getCategories(
-  //       response => {
-  //         if (response?.status) {
-  //           var data = [];
-  //           var selected = -1;
-  //           for (let i = 0; i < response?.data?.length; i++) {
-  //             data.push({
-  //               name: response?.data[i]?.name,
-  //               id: response?.data[i]?.id,
-  //             });
-  //           }
-  //           setCategories(data);
-  //         }
-  //       },
-  //       error => {},
-  //     );
-  //   }, []);
+    getCategories(
+      response => {
+        if (response?.status) {
+          var data = [];
+          var selected = -1;
+          for (let i = 0; i < response?.data?.length; i++) {
+            data.push({
+              name: response?.data[i]?.name,
+              id: response?.data[i]?.id,
+            });
+          }
+          setCategories(data);
+        }
+      },
+      error => {},
+    );
+  }, [selectedCategory, setCategory]);
+
+  const addNewBusiness = async () => {
+    setLoading(true);
+
+    var payload = new FormData();
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    printLog('tokenPrint----', token);
+
+    payload.append('category_id', catId);
+    payload.append('firm', firm);
+    payload.append('owner_name_1', owner1);
+    payload.append('owner_name_2', owner2);
+    payload.append('owner_name_3', owner3);
+    payload.append('address', address);
+    payload.append('products', product);
+    payload.append('country_code', code);
+    payload.append('business_phone', mobile);
+    payload.append('business_email', email);
+    payload.append('website', website);
+    payload.append('from_time', startTime);
+    payload.append('to_time', endTime);
+    payload.append('city', selectedCity);
+    payload.append('business_hourse', JSON.stringify(week));
+
+    // payload.append('visting_card_photo', {
+    //   uri:
+    //     Platform.OS === 'android'
+    //       ? visiting?.uri
+    //       : visiting?.uri.replace('file://', ''),
+    //   name: visiting?.fileName,
+    //   type: visiting?.type,
+    // });
+    printLog('PARAMS', JSON.stringify(payload));
+
+    fetch(Api.POST_ADD_BUSINESS, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization:
+          'Bearer ' +
+          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // return responseJson
+        printLog('responseJson', JSON.stringify(responseJson));
+        ShowMessage(responseJson?.message);
+        if (responseJson?.status) {
+          RootNavigation?.goBack();
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        ShowMessage(JSON.stringify(error));
+        printLog('responseJson Error', JSON.stringify(error));
+        setLoading(false);
+      });
+  };
 
   //
 
@@ -201,26 +269,31 @@ const AddBusinessScreen = props => {
   //       });
   //   };
 
-  //   const getMyImage = () => {
-  //     ImagePicker.launchImageLibrary(
-  //       {
-  //         storageOptions: {
-  //           skipBackup: true,
-  //           path: 'images',
-  //         },
-  //       },
-  //       response => {
-  //         printLog('Respuesta =', JSON.stringify(response?.assets[0]));
-  //         if (response.didCancel) {
-  //           printLog('response : ', 'didCancel');
-  //         } else if (response.error) {
-  //           printLog('Error : ', error);
-  //         } else {
-  //           setVisiting(response?.assets[0]);
-  //         }
-  //       },
-  //     );
-  //   };
+  const getMyImage = first => {
+    ImagePicker.launchImageLibrary(
+      {
+        storageOptions: {
+          skipBackup: true,
+          path: 'images',
+        },
+      },
+      response => {
+        // printLog('Respuesta =', JSON.stringify(response?.assets[0]));
+        if (response.didCancel) {
+          printLog('response : ', 'didCancel');
+        } else if (response.error) {
+          printLog('Error : ', error);
+        } else {
+          // setVisiting(response?.assets[0]);
+          if (first == 1) {
+            setVisiting(response?.assets[0]);
+          } else {
+            setVisitingOne(response?.assets[0]);
+          }
+        }
+      },
+    );
+  };
 
   useEffect(() => {
     getString('village', response => {
@@ -251,22 +324,22 @@ const AddBusinessScreen = props => {
               : 'ADD BUSINESS DETAILS'
           }
         />
+        <View style={{flex: 1}}>
+          <AppButton
+            text={'Mobile Number : 9999999999'}
+            buttonStyle={{
+              width: '90%',
+              alignSelf: 'center',
+              marginTop: 15,
+              borderRadius: 20,
+              height: 40,
+              marginBottom: 15,
+            }}
+          />
 
-        <AppButton
-          text={'Mobile Number : 9999999999'}
-          buttonStyle={{
-            width: '90%',
-            alignSelf: 'center',
-            marginTop: 15,
-            borderRadius: 20,
-            height: 40,
-            marginBottom: 15,
-          }}
-        />
+          {/* <EditBusiness /> */}
 
-        {/* <EditBusiness /> */}
-
-        {/* <ScrollView
+          {/* <ScrollView
           nestedScrollEnabled
           contentContainerStyle={{
             flexGrow: 1,
@@ -276,16 +349,16 @@ const AddBusinessScreen = props => {
           }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}> */}
-        <KeyboardAwareScrollView
-          enableOnAndroid={true}
-          extraScrollHeight={40}
-          keyboardShouldPersistTaps={'handled'}
-          contentContainerStyle={{
-            // flex: 1,
-            paddingBottom: Platform.OS == 'android' && -250,
-          }}
-          showsVerticalScrollIndicator={false}>
-          {/* <View
+          <KeyboardAwareScrollView
+            enableOnAndroid={true}
+            extraScrollHeight={40}
+            keyboardShouldPersistTaps={'handled'}
+            contentContainerStyle={{
+              // flex: 1,
+              paddingBottom: Platform.OS == 'android' && -270,
+            }}
+            showsVerticalScrollIndicator={false}>
+            {/* <View
               style={{
                 marginTop: '5%',
                 width: '100%',
@@ -308,187 +381,187 @@ const AddBusinessScreen = props => {
                   },
                 }),
               }}> */}
-          <View
-            style={{
-              marginVertical: '5%',
-              width: '90%',
-              alignSelf: 'center',
-              backgroundColor: AppColors.backgroundColor,
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              borderRadius: 10,
-              backgroundColor: 'white',
-              flex: 1,
+            <View
+              style={{
+                marginVertical: '5%',
+                width: '90%',
+                alignSelf: 'center',
+                backgroundColor: AppColors.backgroundColor,
+                paddingVertical: 10,
+                paddingHorizontal: 15,
+                borderRadius: 10,
+                backgroundColor: 'white',
+                flex: 1,
 
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#D5D5D5',
-                  shadowOffset: {width: 0, height: -1},
-                  shadowOpacity: 0.9,
-                  shadowRadius: 3,
-                },
-                android: {
-                  elevation: 5,
-                },
-              }),
-            }}>
-            <HorizontalSelection
-              label={`Category`}
-              placeholder={`Select Category`}
-              data={categories == null ? [] : categories}
-              value={selectedCategory}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setCategory(item?.name);
-                setCatId(item?.id);
-              }}
-            />
-            <HorizontalTextInput
-              label={`Firm`}
-              onChangeText={setFirm}
-              defaultText={firm}
-            />
-
-            <View style={{flexDirection: 'row', marginTop: 15}}>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{flexDirection: 'row', alignItems: 'center'}}
-                onPress={() => setType('own')}>
-                <Text
-                  style={{
-                    fontFamily: AppFonts.semiBold,
-                    color: AppColors.extraDark,
-                    fontSize: 12,
-                    alignItems: 'center',
-                    textAlignVertical: 'center',
-                  }}>
-                  Own Business:
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    height: 15,
-                    width: 15,
-                    borderRadius: 15,
-                    // backgroundColor: '#0C65F7',
-                    marginHorizontal: 10,
-                    borderColor: '#AFCCFC',
-                    borderWidth: 3,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  activeOpacity={1}>
-                  {type == 'own' && (
-                    <View
-                      style={{
-                        height: 9,
-                        width: 9,
-                        borderRadius: 15,
-                        backgroundColor: '#0C65F7',
-
-                        opacity: 1,
-                      }}
-                    />
-                  )}
-                </TouchableOpacity>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 15,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#D5D5D5',
+                    shadowOffset: {width: 0, height: -1},
+                    shadowOpacity: 0.9,
+                    shadowRadius: 3,
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
+              }}>
+              <HorizontalSelection
+                label={`Category`}
+                placeholder={`Select Category`}
+                data={categories == null ? [] : categories}
+                value={selectedCategory}
+                onItemSelect={item => {
+                  printLog(JSON.stringify(item?.item));
+                  setCategory(item?.name);
+                  setCatId(item?.id);
                 }}
-                onPress={() => setType('partenership')}>
-                <Text
-                  style={{
-                    fontFamily: AppFonts.semiBold,
-                    color: AppColors.extraDark,
-                    fontSize: 12,
-                    alignItems: 'center',
-                    textAlignVertical: 'center',
-                  }}>
-                  Partnership Business:
-                </Text>
+              />
+              <HorizontalTextInput
+                label={`Firm`}
+                onChangeText={setFirm}
+                defaultText={firm}
+              />
+
+              <View style={{flexDirection: 'row', marginTop: 15}}>
                 <TouchableOpacity
-                  style={{
-                    height: 15,
-                    width: 15,
-                    borderRadius: 15,
-                    // backgroundColor: '#0C65F7',
-                    marginHorizontal: 10,
-                    borderColor: '#AFCCFC',
-                    borderWidth: 3,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  activeOpacity={1}>
-                  {type == 'partenership' && (
-                    <View
-                      style={{
-                        height: 9,
-                        width: 9,
-                        borderRadius: 15,
-                        backgroundColor: '#0C65F7',
-                        opacity: 1,
-                      }}
-                    />
-                  )}
+                  activeOpacity={1}
+                  style={{flexDirection: 'row', alignItems: 'center'}}
+                  onPress={() => setType('own')}>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.semiBold,
+                      color: AppColors.black,
+                      fontSize: 12,
+                      alignItems: 'center',
+                      textAlignVertical: 'center',
+                    }}>
+                    Own Business:
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      height: 15,
+                      width: 15,
+                      borderRadius: 15,
+                      // backgroundColor: '#0C65F7',
+                      marginHorizontal: 10,
+                      borderColor: '#AFCCFC',
+                      borderWidth: 3,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={1}>
+                    {type == 'own' && (
+                      <View
+                        style={{
+                          height: 9,
+                          width: 9,
+                          borderRadius: 15,
+                          backgroundColor: '#0C65F7',
+
+                          opacity: 1,
+                        }}
+                      />
+                    )}
+                  </TouchableOpacity>
                 </TouchableOpacity>
-              </TouchableOpacity>
-            </View>
 
-            <HorizontalTextInput
-              label={`Owner Name 1`}
-              onChangeText={setOwner1}
-              defaultText={owner1}
-            />
-            <HorizontalTextInput
-              label={`Owner Name 2`}
-              onChangeText={setOwner2}
-              defaultText={owner2}
-            />
-            <HorizontalTextInput
-              label={`Owner Name 3`}
-              onChangeText={setOwner3}
-              defaultText={owner3}
-            />
-            <HorizontalTextInput
-              label={`Owner Name 4`}
-              onChangeText={setOwner4}
-              defaultText={owner4}
-            />
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 15,
+                  }}
+                  onPress={() => setType('partenership')}>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.semiBold,
+                      color: AppColors.black,
+                      fontSize: 12,
+                      alignItems: 'center',
+                      textAlignVertical: 'center',
+                    }}>
+                    Partnership Business:
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      height: 15,
+                      width: 15,
+                      borderRadius: 15,
+                      // backgroundColor: '#0C65F7',
+                      marginHorizontal: 10,
+                      borderColor: '#AFCCFC',
+                      borderWidth: 3,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    activeOpacity={1}>
+                    {type == 'partenership' && (
+                      <View
+                        style={{
+                          height: 9,
+                          width: 9,
+                          borderRadius: 15,
+                          backgroundColor: '#0C65F7',
+                          opacity: 1,
+                        }}
+                      />
+                    )}
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
 
-            <HorizontalSelection
-              label={`Village`}
-              placeholder={`Select Village`}
-              data={allCities == null ? [] : allCities}
-              value={selectedCity}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setSelectedCity(item?.name);
-                setCityId(item?.id);
-              }}
-            />
+              <HorizontalTextInput
+                label={`Owner Name 1`}
+                onChangeText={setOwner1}
+                defaultText={owner1}
+              />
+              <HorizontalTextInput
+                label={`Owner Name 2`}
+                onChangeText={setOwner2}
+                defaultText={owner2}
+              />
+              <HorizontalTextInput
+                label={`Owner Name 3`}
+                onChangeText={setOwner3}
+                defaultText={owner3}
+              />
+              <HorizontalTextInput
+                label={`Owner Name 4`}
+                onChangeText={setOwner4}
+                defaultText={owner4}
+              />
 
-            <HorizontalTextInput
-              label={`Address`}
-              onChangeText={setAddress}
-              defaultText={address}
-            />
+              <HorizontalSelection
+                label={`Village`}
+                placeholder={`Select Village`}
+                data={allCities == null ? [] : allCities}
+                value={selectedCity}
+                onItemSelect={item => {
+                  printLog(JSON.stringify(item?.item));
+                  setSelectedCity(item?.name);
+                  setCityId(item?.id);
+                }}
+              />
 
-            {/* <HorizontalTextInput
+              <HorizontalTextInput
+                label={`Address`}
+                onChangeText={setAddress}
+                defaultText={address}
+              />
+
+              {/* <HorizontalTextInput
                 label={`Description :`}
                 onChangeText={setDescription}
                 defaultText={Description}
               /> */}
 
-            <BoxTextInput
-              label={`Description :`}
-              onChangeText={setDescription}
-              defaultText={Description}
-            />
-            {/* <View
+              <BoxTextInput
+                label={`Description :`}
+                onChangeText={setDescription}
+                defaultText={Description}
+              />
+              {/* <View
               style={{
                 flexDirection: 'row',
                 width: '100%',
@@ -512,35 +585,35 @@ const AddBusinessScreen = props => {
               </View>
             </View> */}
 
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
-                <HorizontalSelection
-                  label={`Time  From`}
-                  placeholder={`Select Time`}
-                  data={staticArray.timeList}
-                  value={startTime}
-                  onItemSelect={item => {
-                    printLog(JSON.stringify(item?.item));
-                    setStart(item?.name);
-                  }}
-                />
+              <View style={{flexDirection: 'row'}}>
+                <View style={{flex: 1}}>
+                  <HorizontalSelection
+                    label={`Time  From`}
+                    placeholder={`Select Time`}
+                    data={staticArray.timeList}
+                    value={startTime}
+                    onItemSelect={item => {
+                      printLog(JSON.stringify(item?.item));
+                      setStart(item?.name);
+                    }}
+                  />
+                </View>
+
+                <View style={{flex: 1, marginStart: 10}}>
+                  <HorizontalSelection
+                    label={`To`}
+                    placeholder={`Select Time`}
+                    data={staticArray.timeList}
+                    value={endTime}
+                    onItemSelect={item => {
+                      printLog(JSON.stringify(item?.item));
+                      setClose(item?.name);
+                    }}
+                  />
+                </View>
               </View>
 
-              <View style={{flex: 1, marginStart: 10}}>
-                <HorizontalSelection
-                  label={`To`}
-                  placeholder={`Select Time`}
-                  data={staticArray.timeList}
-                  value={endTime}
-                  onItemSelect={item => {
-                    printLog(JSON.stringify(item?.item));
-                    setClose(item?.name);
-                  }}
-                />
-              </View>
-            </View>
-
-            {/* <View
+              {/* <View
                   style={{
                     flexDirection: 'row',
                     marginTop: 20,
@@ -564,151 +637,182 @@ const AddBusinessScreen = props => {
                   <DaySelection text={'Sunday'} />
                 </View> */}
 
-            {/* <HorizontalDetailInput
+              {/* <HorizontalDetailInput
                   label={`Products`}
                   ChangeText={setProduct}
                   value={product}
                 /> */}
 
-            <View
-              style={{
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                marginTop: 10,
-              }}>
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                data={week}
-                numColumns={3}
-                renderItem={({item, index}) => (
-                  <CheckBoxCell
-                    item={item}
-                    index={index}
-                    onPress={() => {
-                      var temp = [...week];
-                      temp[index] = {
-                        ...item,
-                        status: !item?.status,
-                      };
-                      setWeek(temp);
-                    }}
-                  />
-                )}
+              <View
+                style={{
+                  flexWrap: 'wrap',
+                  flexDirection: 'row',
+                  marginTop: 10,
+                }}>
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
+                  data={week}
+                  numColumns={3}
+                  renderItem={({item, index}) => (
+                    <CheckBoxCell
+                      item={item}
+                      index={index}
+                      onPress={() => {
+                        var temp = [...week];
+                        temp[index] = {
+                          ...item,
+                          status: !item?.status,
+                        };
+                        setWeek(temp);
+                      }}
+                    />
+                  )}
+                />
+              </View>
+
+              <MyMobileNumber
+                // placeholder={'vjbrb'}
+                type={'numeric'}
+                label={`Mobile No`}
+                countryCode={code}
+                phone={mobile}
+                setCountryCode={item => {
+                  setCode(item?.name);
+                }}
+                onChangeText={setMobile}
               />
-            </View>
 
-            <MyMobileNumber
-              // placeholder={'vjbrb'}
-              type={'numeric'}
-              label={`Mobile No`}
-              countryCode={code}
-              phone={mobile}
-              setCountryCode={item => {
-                setCode(item?.name);
-              }}
-              onChangeText={setMobile}
-            />
+              <HorizontalTextInput
+                label={`Email`}
+                onChangeText={setEmail}
+                type="email-address"
+                defaultText={email}
+              />
 
-            <HorizontalTextInput
-              label={`Email`}
-              onChangeText={setEmail}
-              type="email-address"
-              defaultText={email}
-            />
+              <DateSelection
+                text={'Bussiness Start Date:'}
+                title={'Select Bussiness Start Date'}
+              />
 
-            <DateSelection text={'Bussiness Start Date:'} />
-
-            <DateSelection text={'Bussiness End Date:'} />
-            {/* <HorizontalTextInput
+              <DateSelection
+                text={'Bussiness End Date:'}
+                title={'Select Bussiness End Date'}
+              />
+              {/* <HorizontalTextInput
               label={`Bussiness Start Date`}
               onChangeText={setWebsite}
               defaultText={website}
             /> */}
-            {/* <HorizontalTextInput
+              {/* <HorizontalTextInput
               label={`Bussiness End Date:`}
               onChangeText={setWebsite}
               defaultText={website}
             /> */}
-            <HorizontalTextInput
-              label={`Website`}
-              onChangeText={setWebsite}
-              defaultText={website}
-            />
+              <HorizontalTextInput
+                label={`Website`}
+                onChangeText={setWebsite}
+                defaultText={website}
+              />
 
-            <View style={{flexDirection: 'row'}}>
-              <View>
+              <View style={{flexDirection: 'row'}}>
                 <View style={{flexDirection: 'row', paddingTop: 20}}>
                   <Text
                     style={{
                       fontSize: 12,
                       fontFamily: AppFonts.semiBold,
-                      color: AppColors.extraDark,
+                      color: AppColors.black,
                     }}>
                     Visiting Card :{' '}
                   </Text>
                   <AppButton
+                    // buttonPress={() => getMyImage(visiting == '' ? 1 : 2)}
                     text={'Browse'}
-                    textStyle={{marginLeft: 0}}
+                    textStyle={{marginLeft: 0, fontSize: 12}}
                     buttonStyle={{
                       width: 80,
                       height: 25,
-                      backgroundColor: '#9A9A9A',
+                      backgroundColor:
+                        visiting == ''
+                          ? '#9A9A9A'
+                          : AppColors.BackgroundSecondColor,
                       borderRadius: 30,
                       marginLeft: 15,
                     }}
                   />
                 </View>
 
-                <View style={{flexDirection: 'row', paddingVertical: 10}}>
+                {/* <View style={{flexDirection: 'row', paddingVertical: 10}}>
                   <Text
                     style={{
                       fontSize: 12,
                       fontFamily: AppFonts.semiBold,
-                      color: AppColors.extraDark,
+                      color: AppColors.black,
                     }}>
                     Visiting Card :{' '}
                   </Text>
                   <AppButton
+                    buttonPress={() => getMyImage(false)}
                     text={'Browse'}
-                    textStyle={{marginLeft: 0}}
+                    textStyle={{marginLeft: 0, fontSize: 12}}
                     buttonStyle={{
                       width: 80,
                       height: 25,
-                      backgroundColor: '#9A9A9A',
+                      backgroundColor:
+                        visitingOne == ''
+                          ? '#9A9A9A'
+                          : AppColors.BackgroundSecondColor,
                       borderRadius: 30,
                       marginLeft: 15,
                     }}
                   />
+                </View> */}
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flex: 1,
+                    alignItems: 'flex-end',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 5,
+                    paddingTop: 20,
+                  }}>
+                  <View
+                    style={{
+                      width: '48%',
+                      height: '100%',
+                    }}>
+                    <Image
+                      style={{}}
+                      source={
+                        visiting == ''
+                          ? require('../../../assets/images/visiting_card.png')
+                          : {uri: visiting?.uri}
+                      }
+                    />
+                  </View>
+                  <View
+                    style={{
+                      width: '48%',
+                      height: '100%',
+                    }}>
+                    <Image
+                      style={{
+                        marginHorizontal: 5,
+
+                        borderRadius: 5,
+                      }}
+                      source={
+                        visitingOne == ''
+                          ? require('../../../assets/images/visiting_card.png')
+                          : {uri: visitingOne?.uri}
+                      }
+                    />
+                  </View>
                 </View>
               </View>
 
-              <View
-                style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
-                <Image
-                  style={{
-                    width: '45%',
-                    marginHorizontal: 5,
-                    height: '70%',
-                    borderRadius: 15,
-                    resizeMode: 'cover',
-                  }}
-                  source={require('../../../assets/images/visiting_card.png')}
-                />
-
-                <Image
-                  style={{
-                    width: '45%',
-                    marginHorizontal: 5,
-                    height: '70%',
-                    borderRadius: 15,
-                  }}
-                  source={require('../../../assets/images/visiting_card.png')}
-                />
-              </View>
-            </View>
-
-            {/* <View
+              {/* <View
               style={{
                 flexDirection: 'row',
                 
@@ -843,49 +947,53 @@ const AddBusinessScreen = props => {
               )}
             </View> */}
 
-            {loading ? (
-              // <LoaderView
-              //   style={{width: '50%', height: 35, marginVertical: 20}}
-              // />
-              <></>
-            ) : (
-              <AppButton
-                width={'50%'}
-                text={bussinessItem != undefined ? 'Update' : `Submit`}
-                buttonStyle={{
-                  marginVertical: 20,
-                  alignSelf: 'center',
-                  borderRadius: 20,
-                  width: '50%',
-                  height: 40,
-                }}
-                isLoading={loading}
-                onClick={() => {
-                  if (selectedCategory == null) {
-                    ShowMessage('Please select category');
-                  } else if (firm == undefined || firm?.trim() == '') {
-                    ShowMessage('Please enter firm name');
-                  } else if (owner1 == undefined || owner1?.trim() == '') {
-                    ShowMessage('Please enter owner name');
-                  } else if (address == undefined || address?.trim() == '') {
-                    ShowMessage('Please enter address');
-                  } else if (selectedCity == null) {
-                    ShowMessage('Please select villiage');
-                  } else if (visiting == undefined) {
-                    ShowMessage('Please upload visiting card');
-                  } else {
-                    bussinessItem == undefined
-                      ? addNewBusiness()
-                      : updateBusiness();
-                  }
-                }}
-              />
-            )}
-            {/* </View> */}
-          </View>
+              {loading ? (
+                // <LoaderView
+                //   style={{width: '50%', height: 35, marginVertical: 20}}
+                // />
+                <></>
+              ) : (
+                <AppButton
+                  width={'50%'}
+                  text={bussinessItem != undefined ? 'Update' : `Submit`}
+                  buttonStyle={{
+                    marginVertical: 20,
+                    alignSelf: 'center',
+                    borderRadius: 20,
+                    width: '50%',
+                    height: 40,
+                  }}
+                  isLoading={loading}
+                  buttonPress={() => {
+                    // if (selectedCategory == null) {
+                    //   showMessage('Please select category');
+                    // } else if (firm == undefined || firm?.trim() == '') {
+                    //   ShowMessage('Please enter firm name');
+                    // } else if (owner1 == undefined || owner1?.trim() == '') {
+                    //   ShowMessage('Please enter owner name');
+                    // } else if (address == undefined || address?.trim() == '') {
+                    //   ShowMessage('Please enter address');
+                    // } else if (selectedCity == null) {
+                    //   ShowMessage('Please select villiage');
+                    // } else if (visiting == undefined) {
+                    //   ShowMessage('Please upload visiting card');
+                    // } else {
+                    // addNewBusiness();
+                    // updateBusiness();
+                    // }
+                  }}
+                />
+              )}
+              {/* </View> */}
+            </View>
+            <BorderView
+              text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+              backgroundColor={AppColors.BackgroundSecondColor}
+              borderStyle={{position: ''}}
+            />
+          </KeyboardAwareScrollView>
+        </View>
 
-          <AddBorder />
-        </KeyboardAwareScrollView>
         {/* </ScrollView> */}
       </View>
     </View>
@@ -913,7 +1021,7 @@ const CheckBoxCell = props => {
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
           flex: 1,
-          color: AppColors.extraDark,
+          color: AppColors.black,
         }}>
         {props?.item?.day} :{' '}
       </Text>

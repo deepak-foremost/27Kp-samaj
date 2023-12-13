@@ -53,6 +53,7 @@ const UserSignUp = ({route}) => {
   const [phone, setPhone] = useState('');
   const [value, setValue] = useState('');
   const [cities, setCities] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     getString('village', response => {
@@ -92,6 +93,8 @@ const UserSignUp = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Sign Up'}
+          imgStyle={{tintColor: screen == 'User Signin' ? 'black' : 'white'}}
+          textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -101,7 +104,7 @@ const UserSignUp = ({route}) => {
         />
         <KeyboardAwareScrollView
           contentContainerStyle={{
-            flexGrow: 1,
+            flexGrow: 0.9,
             paddingBottom: Platform.OS == 'android' && -250,
           }}
           showsVerticalScrollIndicator={false}
@@ -173,7 +176,7 @@ const UserSignUp = ({route}) => {
                           style={{
                             fontSize: 14,
                             fontFamily: AppFonts.medium,
-                            color: AppColors.Red,
+                            color: 'black',
                           }}>
                           Login
                         </Text>
@@ -219,7 +222,7 @@ const UserSignUp = ({route}) => {
                   style={{
                     fontFamily: AppFonts.semiBold,
                     fontSize: 12,
-                    color: AppColors.extraDark,
+                    color: AppColors.black,
                   }}>
                   Village
                 </Text>
@@ -230,26 +233,24 @@ const UserSignUp = ({route}) => {
                     alignItems: 'center',
                     borderBottomColor: AppColors.line_color,
                     borderBottomWidth: 1,
-                    
                   }}>
                   <Image
-                    style={{marginRight: 15,tintColor:AppColors.Red}}
+                    style={{marginRight: 15}}
                     source={AppImages.LOCATION_ICON}
                   />
                   <Dropdown
-                  
                     data={cities}
                     placeholder={'Village Name is Here'}
                     maxHeight={200}
                     placeholderStyle={{
                       fontFamily: AppFonts.regular,
                       fontSize: 14,
-                      color: AppColors.extraDark,
+                      color: AppColors.black,
                     }}
                     selectedTextStyle={{
                       fontFamily: AppFonts.regular,
                       fontSize: 12,
-                      color: AppColors.extraDark,
+                      color: AppColors.black,
                     }}
                     value={value?.name}
                     labelField="name"
@@ -268,9 +269,9 @@ const UserSignUp = ({route}) => {
                         style={{
                           fontSize: 14,
                           fontFamily: AppFonts.regular,
-                          color: AppColors.extraDark,
+                          color: AppColors.black,
                           marginTop: 5,
-                          marginLeft:15
+                          marginLeft: 15,
                         }}>
                         {item.name}
                       </Text>
@@ -280,6 +281,13 @@ const UserSignUp = ({route}) => {
               </View>
 
               <AppInputView
+                code={countryCode}
+                selectCode={cod => {
+                  setCountryCode('+' + cod.callingCode);
+                  setVisible(false);
+                }}
+                Visible={visible}
+                open={() => setVisible(true)}
                 text={'Mobile Number'}
                 placeholder={'Mobile Number'}
                 onChangeText={i => setPhone(i)}
@@ -316,7 +324,64 @@ const UserSignUp = ({route}) => {
 
               <AppButton
                 text={'Sign up'}
+                textStyle={{color: 'black'}}
                 buttonPress={() =>
+                  // () => {
+                  //   var params = {
+                  //     country_code: countryCode,
+                  //     phone: phone,
+                  //     name: firstName,
+                  //     city_id: value?.id,
+                  //     password: password,
+                  //   };
+                  //   countryCode == ''
+                  //     ? ShowMessage('Please select country code')
+                  //     : phone.trim().length < 9
+                  //     ? ShowMessage('Please enter phone no.')
+                  //     : firstName.trim().length == 0
+                  //     ? ShowMessage('Please enter first name')
+                  //     : value == '' || value == null || value == undefined
+                  //     ? ShowMessage('Please select your village')
+                  //     : password.length < 6
+                  //     ? ShowMessage('Password must be 6 latter long.')
+                  //     : (setLoading(true),
+                  //       register(
+                  //         params,
+                  //         response => {
+                  //           printLog(
+                  //             'register error',
+                  //             JSON.stringify(response),
+                  //           );
+                  //           if (!response?.status) {
+                  //             showMessage(response?.message);
+                  //             setLoading(false);
+                  //           } else {
+                  //             setLoading(false);
+                  //             var token = response?.token;
+                  //             printLog(typeof token);
+                  //             setString(
+                  //               AsyncStorageConst.allDetails,
+                  //               JSON.stringify(response),
+                  //             );
+                  //             setString(AsyncStorageConst.token, token);
+                  //             setString(
+                  //               AsyncStorageConst.user,
+                  //               JSON.stringify(response?.data),
+                  //             );
+                  //             RootNavigation.push(
+                  //               props?.navigation,
+                  //               AppScreens.HOME_SCREEN,
+                  //               params,
+                  //             );
+                  //             setLoading(false);
+                  //           }
+                  //         },
+                  //         error => {
+                  //           printLog('register error', error);
+                  //           setLoading(false);
+                  //         },
+                  //       ));
+                  // }
                   RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
                     screen: screen,
                     show: true,
@@ -392,10 +457,6 @@ const UserSignUp = ({route}) => {
               />
             </View>
           </View>
-          <BorderView
-            backgroundColor={AppColors.Red}
-            text={'સમાજ એજ મારો પરિવાર'}
-          />
 
           {/* <View
             style={{
@@ -432,6 +493,7 @@ const UserSignUp = ({route}) => {
               }}></View>
           </View> */}
         </KeyboardAwareScrollView>
+       
 
         {/* </KeyboardAwareScrollView> */}
       </View>

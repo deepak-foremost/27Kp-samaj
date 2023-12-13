@@ -26,7 +26,7 @@ export const HorizontalMenuComponent = props => {
         style={{
           width: '48%',
           backgroundColor:
-            pos == 0 ? AppColors.BackgroundSecondColor : '#B8D3FF',
+            pos == 0 ? AppColors.BackgroundSecondColor : '#A5CAD1',
           height: 45,
           borderRadius: 8,
           justifyContent: 'center',
@@ -40,11 +40,10 @@ export const HorizontalMenuComponent = props => {
         <Text
           style={{
             fontFamily: AppFonts.semiBold,
-            fontSize: 11,
+            fontSize: 12,
+            marginTop:2.5,
             color: pos == 0 ? '#FFF' : AppColors.lineColor,
-            
             textAlign: 'center',
-           
           }}>
           Search By Category
         </Text>
@@ -66,7 +65,7 @@ export const HorizontalMenuComponent = props => {
         style={{
           width: '48%',
           backgroundColor:
-            pos == 1 ? AppColors.BackgroundSecondColor : '#B8D3FF',
+            pos == 1 ? AppColors.BackgroundSecondColor : '#A5CAD1',
           height: 45,
           borderRadius: 8,
           justifyContent: 'center',
@@ -78,13 +77,13 @@ export const HorizontalMenuComponent = props => {
         }}
         activeOpacity={AppConstValue.ButtonOpacity}>
         <Text
-        
           style={{
             fontFamily: AppFonts.semiBold,
-            fontSize: 11,
+            fontSize: 12,
             color: pos == 1 ? '#FFF' : AppColors.lineColor,
             padding: 10,
             textAlign: 'center',
+            marginTop:2.5
           }}>
           Business Directory
         </Text>
@@ -123,7 +122,6 @@ export const GridListComponent = props => {
           alignItems: 'center',
           marginBottom: 10,
           borderRadius: 10,
-
           backgroundColor: 'black',
           ...Platform.select({
             ios: {
@@ -138,12 +136,14 @@ export const GridListComponent = props => {
           }),
         }}>
         <Image
+          // source={{uri: props?.item?.icon}}
           source={require('../assets/images/jwellry_image.png')}
           style={{
             height: '100%',
             width: '100%',
             resizeMode: 'cover',
             borderRadius: 10,
+            opacity:0.8,
           }}
         />
 
@@ -193,7 +193,6 @@ export const BusinessDirectoryCell = props => {
           flexDirection: 'row',
           justifyContent: 'center',
           paddingTop: 15,
-          
         }}
         activeOpacity={AppConstValue.ButtonOpacity}>
         <Image
@@ -208,15 +207,14 @@ export const BusinessDirectoryCell = props => {
           }}
         />
 
-        <View style={{paddingRight: 5,flex:1 }}>
+        <View style={{paddingRight: 5, flex: 1}}>
           <Text
-          numberOfLines={3}
+            numberOfLines={3}
             style={{
               fontFamily: AppFonts.semiBold,
               fontSize: 15,
               color: AppColors.black,
               textTransform: 'capitalize',
-              
             }}>
             {props?.item?.firm}
           </Text>
@@ -299,8 +297,8 @@ export const SimpleDoubleLine = props => {
       }}>
       <Text
         style={{
-          fontFamily: AppFonts.medium,
-          fontSize: 13,
+          fontFamily: AppFonts.semiBold,
+          fontSize: 12,
           marginRight: 5,
           color: AppColors.black,
           textTransform: 'capitalize',
@@ -309,12 +307,12 @@ export const SimpleDoubleLine = props => {
       </Text>
       <Text
         style={{
-          fontFamily: AppFonts.medium,
-          fontSize: 13,
+          fontFamily: AppFonts.semiBold,
+          fontSize: 12,
 
           color: '#B7B7B7',
           ...props?.textStyles,
-          maxWidth:'60%'
+          maxWidth: '60%',
         }}>
         {props?.value}
       </Text>

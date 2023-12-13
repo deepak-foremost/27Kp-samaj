@@ -7,37 +7,53 @@ const BorderView = props => {
   return (
     <View
       style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width:'100%',
-        paddingBottom:30,
-        
-        ...props.style
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        ...props.borderStyle,
       }}>
       <View
         style={{
-          backgroundColor: props?.backgroundColor,
-          height: 5,
-          borderTopRightRadius: 5,
-          borderBottomRightRadius:5,
-          width: '10%',
-        }}></View>
-      <Text
-        style={{
-          fontSize: 16,
-          fontFamily: AppFonts.regular,
-          color: '#78789D',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          marginBottom: 10,
+          ...props.style,
         }}>
-        {props?.text}
-      </Text>
+        <View
+          style={{
+            backgroundColor: props?.backgroundColor,
+            height: 5,
+            borderTopRightRadius: 5,
+            borderBottomRightRadius: 5,
+            width: '10%',
+          }}></View>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: AppFonts.regular,
+            color: '#78789D',
+            paddingTop: 2.5,
+          }}>
+          {props?.text}
+        </Text>
+        <View
+          style={{
+            backgroundColor: props?.backgroundColor,
+            height: 5,
+            borderTopLeftRadius: 5,
+            borderBottomLeftRadius: 5,
+            width: '10%',
+          }}></View>
+      </View>
       <View
         style={{
+          height: 25,
           backgroundColor: props?.backgroundColor,
-          height: 5,
-          borderTopLeftRadius: 5,
-          borderBottomLeftRadius:5,
-          width: '10%',
+          width: '100%',
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
         }}></View>
     </View>
   );

@@ -13,6 +13,7 @@ const OtpTextInput = (props) => {
         fontFamily: AppFonts.semiBold,
         fontSize: 12,
         color: AppColors.Red,
+        ...props.textStyle
       }}>
       {props?.text}
     </Text>

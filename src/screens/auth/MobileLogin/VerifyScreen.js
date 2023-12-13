@@ -20,7 +20,7 @@ import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import OtpTextInput from '../../../components/OtpTextInput';
 import {AppConstValue} from '../../../utils/AppConstValue';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const VerifyScreen = ({route}) => {
   const screen = route.params.screen;
@@ -42,6 +42,8 @@ const VerifyScreen = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Sign in'}
+          imgStyle={{tintColor: screen == 'User Signin' ? 'black' : 'white'}}
+          textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -111,7 +113,15 @@ const VerifyScreen = ({route}) => {
                     marginBottom: 30,
                   },
                 ]}>
-                <OtpTextInput text={'Your Code'} />
+                <OtpTextInput
+                  text={'Your Code'}
+                  textStyle={{
+                    color:
+                      screen == 'User Signin'
+                        ? 'black'
+                        : AppColors.BackgroundSecondColor,
+                  }}
+                />
 
                 <View
                   style={{
@@ -134,8 +144,8 @@ const VerifyScreen = ({route}) => {
                         fontSize: 12,
                         color:
                           screen == 'User Signin'
-                            ? AppColors.Red
-                            : AppColors.Red,
+                            ? 'black'
+                            : AppColors.BackgroundSecondColor,
                       }}>
                       Resend Your Code
                     </Text>
@@ -157,6 +167,9 @@ const VerifyScreen = ({route}) => {
                     })
                   }
                   text={'Confirm'}
+                  textStyle={{
+                    color: screen == 'User Signin' ? 'black' : 'white',
+                  }}
                   buttonStyle={{
                     width: '100%',
                     alignSelf: 'center',

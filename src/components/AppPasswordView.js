@@ -68,7 +68,7 @@ const AppPasswordView = props => {
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-          color: AppColors.extraDark,
+          color: AppColors.black,
         }}>
         {props?.text}
       </Text>
@@ -90,7 +90,8 @@ const AppPasswordView = props => {
               fontFamily: AppFonts.regular,
               marginLeft: 20,
               flex: 1,
-              color: AppColors.extraDark,
+              marginTop:2.5,
+              color: AppColors.black,
             }}
            
             placeholderTextColor={'#38385E'}

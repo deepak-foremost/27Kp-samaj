@@ -31,10 +31,15 @@ const LogInToolbar = props => {
           alignItems: 'center',
         }}
         onPress={() => RootNavigation.goBack()}>
-        <Image style={{}} source={AppImages.BACK_ICON} />
+        <Image style={{...props.imgStyle}} source={AppImages.BACK_ICON} />
       </TouchableOpacity>
       <Text
-        style={{fontSize: 16, color: '#fff', fontFamily: AppFonts.semiBold}}>
+        style={{
+          fontSize: 16,
+          color: '#fff',
+          fontFamily: AppFonts.semiBold,
+          ...props.textStyle,
+        }}>
         {props?.text}
       </Text>
     </View>

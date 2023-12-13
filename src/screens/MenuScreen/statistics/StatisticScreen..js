@@ -28,6 +28,7 @@ import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCities, getStatistics} from '../../../networking/CallApi';
 // import {staticArray} from '../../../../utils/staticArray';
 
 const count = [
@@ -39,7 +40,7 @@ const count = [
   {
     id: 1,
     count: '354',
-    name: 'ટોટલ રજીસ્ટર ફૅમિલી ',
+    name: 'ટોટલ રજીસ્ટર \n ફૅમિલી ',
   },
   {
     id: 2,
@@ -74,17 +75,17 @@ const count = [
   {
     id: 8,
     count: '354',
-    name: 'સ્ત્રી (60 વર્ષથી ઉપર)',
+    name: 'સ્ત્રી\n(60 વર્ષથી ઉપર)',
   },
   {
     id: 9,
     count: '354',
-    name: 'અપરિણીત સ્ત્રી' + '\n' + '(20 વર્ષથી ઉપર)',
+    name: 'પરિણીત પુરુષ ',
   },
   {
     id: 10,
     count: '354',
-    name: 'પરિણીત પુરુષ ',
+    name: 'પરિણીત સ્ત્રી',
   },
 ];
 
@@ -94,13 +95,77 @@ const StatisticScreen = props => {
   const [cities, setCities] = useState([]);
   const [value, setValue] = useState('All');
   const [cityId, setCityId] = useState('0');
-  const [counts, getCounts] = useState(0);
+  const [counts, setCount] = useState(0);
 
   useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
+    getCities(
+      response => {
+        if (response?.status) {
+          var temp = [];
+          temp.push({name: 'All', id: 0});
+          setValue('All');
+          setCityId(0);
+          getCounts(0);
+          for (let i = 0; i < response?.data?.length; i++) {
+            if (i == 0) {
+            }
+            temp.push({
+              name: response?.data[i]?.name,
+              id: response?.data[i]?.id,
+            });
+          }
+          setCities(temp);
+        }
+      },
+      error => {
+        printLog('StatisticScreen', error);
+      },
+    );
+  }, []);
+
+  const getCounts = id => {
+    getStatistics(
+      {city_id: id},
+      response => {
+        printLog('fetchStatistic', JSON.stringify(response));
+        if (response?.status) {
+          setCount([
+            {name: 'ટોટલ ગામ', count: response?.data?.total_city},
+            {name: 'ટોટલ ફેમિલી', count: response?.data?.total_family},
+            {name: 'ટોટલ સભ્યો', count: response?.data?.total_member},
+            {name: 'ટોટલ પુરુષ', count: response?.data?.total_male},
+            {name: 'ટોટલ સ્ત્રી', count: response?.data?.total_female},
+            {
+              name: 'અપરણિત પુરુષ \n(૨૦ વર્ષથી ઉપર)',
+              count: response?.data?.total_unmarried_male,
+            },
+            {
+              name: 'અપરણિત સ્ત્રી\n(૨૦ વર્ષથી ઉપર)',
+              count: response?.data?.total_unmarried_female,
+            },
+            {name: 'પરણિત પુરુષ', count: response?.data?.total_married_male},
+            {
+              name: 'પરણિત સ્ત્રી',
+              count: response?.data?.total_married_female,
+            },
+          ]);
+        } else {
+          setCount([]);
+        }
+      },
+      error => {
+        printLog('fetchStatistic', error);
+        setCount([]);
+      },
+    );
+  };
+
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
+
   // const [count, setCount] = useState(null);
 
   //   useEffect(() => {
@@ -178,7 +243,7 @@ const StatisticScreen = props => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
+
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
@@ -201,7 +266,7 @@ const StatisticScreen = props => {
         leadIcon={AppImages.BACK_ICON}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-
+       <View style={{flex:0.9}}>
         <View
           style={{
             marginTop: -40,
@@ -280,11 +345,13 @@ const StatisticScreen = props => {
             />
           </View>
 
-          <BorderView
+         
+        </ScrollView>
+        </View>
+        <BorderView
             text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
             backgroundColor={AppColors.BackgroundSecondColor}
           />
-        </ScrollView>
 
         {/* <FooterTextCell title={`સમાજ એજ મારુ પરિવાર છે`} /> */}
       </View>
@@ -333,6 +400,7 @@ export const MenuComponent = props => {
             textAlignVertical: 'center',
             fontFamily: AppFonts.semiBold,
             fontSize: 29,
+            marginTop: 15,
 
             alignSelf: 'center',
           }}>
@@ -344,7 +412,9 @@ export const MenuComponent = props => {
             textAlign: 'center',
             fontFamily: AppFonts.regular,
             fontSize: 10,
+            marginTop: -5,
             width: '70%',
+            flex: 1,
           }}>
           {props?.item?.item?.name}
         </Text>

@@ -24,7 +24,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const NewPasswordScreen = ({route}) => {
   const screen = route.params.screen;
-  const returnScreen= route.params.return;
+  const returnScreen = route.params.return;
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
 
@@ -46,6 +46,8 @@ const NewPasswordScreen = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Sign in'}
+          imgStyle={{tintColor: screen == 'User Signin' ? 'black' : 'white'}}
+          textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -86,7 +88,7 @@ const NewPasswordScreen = ({route}) => {
                   style={{
                     fontFamily: AppFonts.semiBold,
                     fontSize: 22,
-                    color: AppColors.Red,
+                    color: AppColors.black,
                   }}>
                   Create New Password
                 </Text>
@@ -120,10 +122,11 @@ const NewPasswordScreen = ({route}) => {
 
               <AppButton
                 text={'Confirm'}
+                textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
                 buttonPress={() =>
                   RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
                     screen: screen,
-                    return:returnScreen
+                    return: returnScreen,
                   })
                 }
                 buttonStyle={{

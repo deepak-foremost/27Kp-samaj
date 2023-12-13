@@ -50,7 +50,7 @@ const SponserScreen = props => {
       <StatusBar backgroundColor={AppColors.BackgroundSecondColor} />
       <View style={AppStyles.AppLogoStyle}>
         <Image
-          style={{height: 100, width: 100}}
+          style={{height: 140, width: 140}}
           source={AppImages.APP_MAIN_ICON}
         />
       </View>
@@ -73,6 +73,7 @@ const SponserScreen = props => {
           textAlign: 'center',
           lineHeight: 35,
           marginTop: 50,
+         
         }}>
         Welcome {'\n'} Let’s Get Started!
       </Text>
@@ -84,7 +85,7 @@ const SponserScreen = props => {
           position: 'absolute',
           bottom: 30,
         }}
-        textStyle={{color: '#303590'}}
+        textStyle={{color: 'black'}}
         buttonPress={() =>
           RootNavigation.push(props?.navigation, screen_name, '')
         }

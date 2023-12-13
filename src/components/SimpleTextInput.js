@@ -18,6 +18,7 @@ import {PhoneWithCountry} from './PhoneWithCountry';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import CountryPicker from 'react-native-country-picker-modal';
+import {CustomDatePicker} from './CustomDatePicker';
 
 export const MySelection = props => {
   const ref = useRef();
@@ -90,11 +91,12 @@ export const MySelection = props => {
           <Text
             numberOfLines={1}
             style={{
-              fontFamily: AppFonts.bold,
+              fontFamily: AppFonts.semiBold,
               fontSize: 16,
               flex: 1,
               textAlignVertical: 'center',
               paddingStart: 20,
+              color: AppColors.black,
             }}>
             {props?.placeholder ? props?.placeholder : 'Select Option'}
           </Text>
@@ -153,7 +155,7 @@ export const HorizontalDetailInput = props => {
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
         }}>
         {props?.label} :{' '}
@@ -196,7 +198,7 @@ export const HorizontalSelection = props => {
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
           textAlignVertical: 'center',
         }}>
@@ -219,7 +221,7 @@ export const HorizontalSelection = props => {
         <Text
           style={{
             fontFamily: AppFonts.regular,
-            fontSize: 13,
+            fontSize: 12,
             flex: 1,
             paddingStart: 5,
             color: props?.value ? AppColors.black : AppColors.line_color,
@@ -279,7 +281,7 @@ export const HorizontalSelection = props => {
                 fontSize: 16,
                 textAlignVertical: 'center',
                 paddingHorizontal: 20,
-                color: AppColors.red,
+                color: AppColors.black,
               }}>
               {'Close'}
             </Text>
@@ -292,7 +294,6 @@ export const HorizontalSelection = props => {
           contentContainerStyle={{paddingHorizontal: 15, paddingTop: 10}}
           data={props?.data == null ? [] : props?.data}
           renderItem={({item, index}) => {
-            printLog('FlatList', JSON.stringify(item));
             return (
               <TouchableOpacity
                 activeOpacity={1}
@@ -332,7 +333,7 @@ export const HorizontalTextInput = props => {
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
           alignItems: 'center',
           textAlignVertical: 'center',
@@ -363,6 +364,7 @@ export const HorizontalTextInput = props => {
             fontSize: 12,
             marginStart: 5,
             minheight: 40,
+            marginTop: 2.5,
           }}
           numberOfLines={1}
           maxLength={props?.contact ? 10 : 1000}
@@ -384,17 +386,16 @@ export const MyMobileNumber = props => {
     <View
       style={{
         flexDirection: 'row',
-        marginTop: 20,
+        marginTop: 10,
         alignItems: 'center',
       }}>
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
           alignItems: 'center',
           textAlignVertical: 'center',
-          marginBottom:10
         }}>
         {props?.label} :{' '}
       </Text>
@@ -404,7 +405,6 @@ export const MyMobileNumber = props => {
           flexDirection: 'row',
           borderBottomColor: AppColors.line_color,
           borderBottomWidth: 1,
-          paddingBottom: 10,
         }}>
         <TouchableOpacity
           // onPressIn={onPressIn}
@@ -412,20 +412,20 @@ export const MyMobileNumber = props => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            marginLeft: 15,
+            marginLeft: 10,
           }}
           onPress={() => setVisible(!Visible)}
           activeOpacity={0.9}>
           <Text
             style={{
               fontSize: 12,
-              fontFamily: AppFonts.semiBold,
-              color: AppColors.DarkText,
+              fontFamily: AppFonts.regular,
+              color: AppColors.black,
             }}>
             {country}
           </Text>
           <Image
-            style={[{marginLeft: 10}, props?.icon]}
+            style={[{marginLeft: 5}, props?.icon]}
             source={AppImages.DROP_DOWN_ICON}
           />
         </TouchableOpacity>
@@ -440,7 +440,7 @@ export const MyMobileNumber = props => {
             fontSize: 12,
             marginStart: 5,
             minheight: 40,
-            flex:1
+            flex: 1,
           }}
           numberOfLines={1}
           maxLength={props?.contact ? 10 : 1000}
@@ -487,7 +487,7 @@ export const DaySelection = props => {
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-          color: AppColors.extraDark,
+          color: AppColors.black,
         }}>
         {props?.text}
         {':'}
@@ -505,7 +505,7 @@ export const DaySelection = props => {
           style={{
             fontSize: 14,
             fontFamily: AppFonts.semiBold,
-            color: AppColors.extraDark,
+            color: AppColors.black,
           }}>
           ✓
         </Text>
@@ -523,7 +523,6 @@ export const BoxTextInput = props => {
         marginTop: 10,
         // justifyContent: 'center',
         minHeight: 80,
-        paddingVertical: 10,
         ...props?.styles,
 
         // alignItems:'center'
@@ -531,7 +530,7 @@ export const BoxTextInput = props => {
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
           ...props.textStyle,
           // alignItems: 'center',
@@ -555,6 +554,7 @@ export const BoxTextInput = props => {
             fontSize: 12,
             marginStart: 5,
             minHeight: 45,
+            paddingTop: Platform.OS == 'android' ? -20 : 0,
           }}
           numberOfLines={1}
           maxLength={props?.contact ? 10 : 1000}
@@ -572,6 +572,7 @@ export const BoxTextInput = props => {
 export const DateSelection = props => {
   const [openDatePicker, setDatePicker] = useState(false);
   const [dob, setDOB] = useState(null);
+
   return (
     <View
       style={{
@@ -584,7 +585,7 @@ export const DateSelection = props => {
       <Text
         style={{
           fontFamily: AppFonts.semiBold,
-          color: AppColors.extraDark,
+          color: AppColors.black,
           fontSize: 12,
           textAlignVertical: 'center',
         }}>
@@ -593,9 +594,7 @@ export const DateSelection = props => {
 
       <TouchableOpacity
         activeOpacity={AppConstValue.ButtonOpacity}
-        onPress={() => {
-          setDatePicker(true);
-        }}
+        onPress={() => setDatePicker(true)}
         style={{
           flex: 1,
           flexDirection: 'row',
@@ -607,11 +606,11 @@ export const DateSelection = props => {
         <Text
           style={{
             fontFamily: AppFonts.regular,
-            color: dob == null ? AppColors?.lineColor : AppColors.black,
-            fontSize: 13,
+            color: dob == null ? AppColors?.line_color : AppColors.black,
+            fontSize: 12,
             marginStart: 5,
           }}>
-          {dob == null ? 'DD-MM-YYYY' : moment(dob).format('DD-MM-YYYY')}
+          {dob == null ? 'DD-MM-YYYY' : dob}
         </Text>
         <Image
           style={{
@@ -623,7 +622,7 @@ export const DateSelection = props => {
         />
       </TouchableOpacity>
 
-      <DatePicker
+      {/* <DatePicker
         modal
         mode="date"
         open={openDatePicker}
@@ -636,7 +635,19 @@ export const DateSelection = props => {
         onCancel={() => {
           setDatePicker(false);
         }}
+      /> */}
+      <CustomDatePicker
+        onChangeDob={i =>props?.expiry? setDOB(moment(i).format('MM-YYYY')):
+           setDOB(moment(i).format('DD-MM-YYYY'))}
+        isOpened={openDatePicker}
+        onClose={() => setDatePicker(false)}
+        title={props.title}
+        expiry={props?.expiry}
+
+        // value={dob}
       />
     </View>
   );
 };
+
+

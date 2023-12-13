@@ -1,5 +1,5 @@
-import {View, Text, SafeAreaView, Image} from 'react-native';
-import React from 'react';
+import {View, Text, SafeAreaView, Image, Dimensions} from 'react-native';
+import React, {useState} from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
 import LogInToolbar from '../../../components/LogInToolbar';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -11,12 +11,16 @@ import AppInputView from '../../../components/AppInputView';
 import AppButton from '../../../components/AppButton';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const ForgotScreen = ({route}) => {
   const screen = route.params.screen;
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
+  const [mobile, setMobile] = useState('');
+  const [Visible, setVisible] = useState(false);
+  const [country, setCountry] = useState('+91');
+  const {code, setCode} = useState('+91');
 
   return (
     <View
@@ -33,6 +37,8 @@ const ForgotScreen = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Forgot Password'}
+          imgStyle={{tintColor: screen == 'User Signin' ? 'black' : 'white'}}
+          textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
           style={{
             backgroundColor:
               screen == 'User Signin'
@@ -42,13 +48,13 @@ const ForgotScreen = ({route}) => {
         />
 
         <KeyboardAwareScrollView
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{height: Dimensions.get('window').height - 55}}
           enableOnAndroid={true}
           showsVerticalScrollIndicator={false}>
           {/* TopView  */}
           <View
             style={{
-              flex: 0.35,
+              height: Dimensions.get('window').height / 3,
               justifyContent: 'space-evenly',
               alignItems: 'center',
               paddingHorizontal: 25,
@@ -90,7 +96,7 @@ const ForgotScreen = ({route}) => {
           </View>
 
           {/* CenterView  */}
-          <View style={{flex: 0.3}}>
+          <View style={{height: Dimensions.get('window').height / 2.5}}>
             <View
               style={[
                 {
@@ -98,18 +104,39 @@ const ForgotScreen = ({route}) => {
                 },
                 AppStyles.OutlineBackground,
               ]}>
-              <AppInputView
+              {/* <AppInputView
                 text={'Phone Number'}
                 placeholder={'Phone Number'}
+              /> */}
+
+              <AppInputView
+                close={() => setVisible(false)}
+                code={country}
+                selectCode={cod => {
+                  setCountry('+' + cod.callingCode);
+                  setVisible(false);
+                }}
+                Visible={Visible}
+                open={() => setVisible(true)}
+                text={'Mobile Number'}
+                placeholder={'Mobile Number'}
+                onChangeText={i => setMobile(i)}
+                icon={{
+                  tintColor:
+                    screen == 'User Signin'
+                      ? AppColors.Red
+                      : AppColors.BackgroundSecondColor,
+                }}
               />
 
               <AppButton
+                textStyle={{
+                  color: screen == 'User Signin' ? AppColors.black : 'white',
+                }}
                 buttonPress={() =>
-                  RootNavigation.navigate(
-                    screen == 'User Signin'
-                      ? AppScreens.USER_LOGIN_DETAIL
-                      : AppScreens.VERIFY_SCREEN,
-                  )
+                  RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
+                    screen: screen,
+                  })
                 }
                 text={'Send my code'}
                 buttonStyle={{
@@ -125,15 +152,20 @@ const ForgotScreen = ({route}) => {
               />
             </View>
           </View>
-
-          <BorderView
-            text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
-            backgroundColor={
-              screen == 'User Signin'
-                ? AppColors.Red
-                : AppColors.BackgroundSecondColor
-            }
-          />
+          <View
+            style={{
+              height: Dimensions.get('window').height / 5.2,
+              justifyContent: 'flex-end',
+            }}>
+            <BorderView
+              text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+              backgroundColor={
+                screen == 'User Signin'
+                  ? AppColors.Red
+                  : AppColors.BackgroundSecondColor
+              }
+            />
+          </View>
         </KeyboardAwareScrollView>
       </View>
     </View>

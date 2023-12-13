@@ -16,9 +16,10 @@ const TextComponent = (props) => {
     </Text>
     <Text
       style={{
-        fontFamily: AppFonts.regular,
+        fontFamily: AppFonts.medium,
         fontSize: 11,
         color: AppColors.DarkText,
+        marginLeft:5
       }}>
       {props?.second}
     </Text>

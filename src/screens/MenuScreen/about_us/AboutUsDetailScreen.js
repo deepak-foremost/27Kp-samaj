@@ -8,6 +8,7 @@ import {
   Linking,
   SafeAreaView,
   Platform,
+  StyleSheet,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 // import {getAboutUsListById} from '../../../../networking/CallApi';
@@ -27,6 +28,8 @@ import ShimmerCustomView from '../../../components/ShimmerCustomView';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {printLog} from '../../../utils/AppConstValue';
+import {getAboutUsListById} from '../../../networking/CallApi';
 // import {ListMember} from '../advisour_member/AdvicerMemberScreeen';
 
 const myList = [
@@ -52,27 +55,27 @@ const AboutUsDetailScreen = ({props, route}) => {
   // const title=route?.item?.name;
   // console.warn(title);
 
-  //   const [myList, setMyList] = useState(null);
+  // const [myList, setMyList] = useState(null);
 
-  //   useEffect(() => {
-  //     printLog('AboutUsDetailScreen', JSON.stringify(props?.route?.params));
+  // useEffect(() => {
+  //   printLog('AboutUsDetailScreen', JSON.stringify(props?.route?.params));
 
-  //     getAboutUsListById(
-  //       {id: props?.route?.params?.id},
-  //       response => {
-  //         printLog('getAboutUsListById', JSON.stringify(response));
-  //         if (response?.status) {
-  //           setMyList(response?.data);
-  //         } else {
-  //           setMyList([]);
-  //         }
-  //       },
-  //       error => {
-  //         printLog('getAboutUsListById', JSON.stringify(error));
+  //   getAboutUsListById(
+  //     {id: route?.params?.item?.id},
+  //     response => {
+  //       printLog('getAboutUsListById', JSON.stringify(response));
+  //       if (response?.status) {
+  //         setMyList(response?.data);
+  //       } else {
   //         setMyList([]);
-  //       },
-  //     );
-  //   }, []);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('getAboutUsListById', JSON.stringify(error));
+  //       setMyList([]);
+  //     },
+  //   );
+  // }, []);
 
   return (
     <View
@@ -93,7 +96,6 @@ const AboutUsDetailScreen = ({props, route}) => {
         /> */}
 
         <ScreenToolbar text={'પ્રમુખ શ્રી : રાજેશ ભાઈ પટેલ'} />
-
         {/* <AppDrawerHeader
         title={props?.route?.params?.title}
         background={false}
@@ -105,11 +107,13 @@ const AboutUsDetailScreen = ({props, route}) => {
             style={{
               marginTop: '5%',
               width: '90%',
-              // flex: 0.6,
+              paddingHorizontal: 15,
+
+              flex: 0.45,
               marginBottom: 30,
               alignItems: 'center',
               alignSelf: 'center',
-              justifyContent: 'center',
+              justifyContent:'center',
               backgroundColor: AppColors.BackgroundColor,
               padding: 22,
               borderRadius: 10,
@@ -129,47 +133,68 @@ const AboutUsDetailScreen = ({props, route}) => {
             {myList == null || (myList?.length > 1 && mobile == 2) ? (
               <View
                 style={{
-                  width: '100%',
                   flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  paddingHorizontal: 10,
+                  paddingTop: 15,
+                  paddingBottom: 5,
                 }}>
                 <Text
                   style={{
-                    width: '10%',
-                    color: AppColors.black,
+                    fontSize: 8,
                     fontFamily: AppFonts.semiBold,
-                    fontSize: 10,
+                    color: AppColors.DarkText,
+                    width: '5%',
                   }}>
-                  ક્રમ
+                  {'ક્રમ'}
                 </Text>
                 <Text
                   style={{
-                    paddingStart: 10,
-                    width: '30%',
-                    color: AppColors.black,
+                    fontSize: 9,
                     fontFamily: AppFonts.semiBold,
-                    fontSize: 10,
+                    color: AppColors.DarkText,
+                    width: '25%',
                   }}>
                   નામ
                 </Text>
                 <Text
                   style={{
-                    width: '35%',
-                    paddingStart: 10,
-                    color: AppColors.black,
+                    fontSize: 9,
                     fontFamily: AppFonts.semiBold,
-                    fontSize: 10,
+                    color: AppColors.DarkText,
+                    width: '15%',
                   }}>
-                  Mobile No
+                  ગામ
                 </Text>
                 <Text
                   style={{
-                    width: '25%',
-                    paddingStart: 10,
-                    color: AppColors.black,
+                    fontSize: 9,
                     fontFamily: AppFonts.semiBold,
-                    fontSize: 10,
+                    color: AppColors.DarkText,
+                    width: '13%',
                   }}>
-                  Village
+                  હોદો
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    fontFamily: AppFonts.semiBold,
+                    color: AppColors.DarkText,
+                    width: '25%',
+                  }}>
+                  મોબાઈલ નંબર
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    fontFamily: AppFonts.semiBold,
+                    color: AppColors.DarkText,
+                    width: '7%',
+
+                    textAlign: 'right',
+                  }}>
+                  ફોટો
                 </Text>
               </View>
             ) : (
@@ -191,12 +216,16 @@ const AboutUsDetailScreen = ({props, route}) => {
                 <ListMember styles={{height: 20}} />
               </View>
             ) : (myList != null && myList?.length == 1) || mobile == 1 ? (
-              <View style={{alignItems: 'center', width: '100%'}}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  width: '100%',
+                }}>
                 <Image
                   source={require('../../../assets/images/member_image.png')}
                   style={{
                     height: 90,
-                    width: 109,
+                    width: 90,
                     resizeMode: 'contain',
                     // borderRadius: 80,
                     // borderColor: '#0C65F7',
@@ -211,14 +240,14 @@ const AboutUsDetailScreen = ({props, route}) => {
                     fontFamily: AppFonts.semiBold,
                     color: AppColors.BackgroundSecondColor,
                     marginTop: 25,
-                    marginBottom: 15,
+                    marginBottom: 10,
                   }}>
                   {myList[0]?.name}
                 </Text>
                 <AboutUsMemberDetail
                   title={'Village Name'}
                   detailText={myList[0]?.city}
-                  style={{marginBottom: 15}}
+                  style={{marginBottom: 10}}
                 />
                 <AboutUsMemberDetail
                   title={'Phone Number'}
@@ -239,82 +268,222 @@ const AboutUsDetailScreen = ({props, route}) => {
                 renderItem={({item, index}) => (
                   <View
                     style={{
-                      marginHorizontal: 1,
                       flexDirection: 'row',
+                      paddingVertical: props?.item ? 10 : 10,
+                      paddingHorizontal: 10,
+                      justifyContent: 'space-between',
+                      backgroundColor: props?.change ? '#F3F3F3' : '#fff',
                       marginTop: 10,
-                      paddingVertical: 5,
-                      alignItems: 'center',
-                      alignSelf: 'center',
-                      backgroundColor: AppColors.BackgroundColor,
-                      borderRadius: 10,
-                      backgroundColor: 'white',
+                      borderRadius: 8,
                       ...Platform.select({
                         ios: {
                           shadowColor: '#D5D5D5',
                           shadowOffset: {width: 0, height: -1},
-                          shadowOpacity: 0.9,
+                          shadowOpacity: props?.change ? 0 : 0.9,
                           shadowRadius: 3,
                         },
                         android: {
-                          elevation: 2,
+                          elevation: props?.change ? 0 : 5,
                         },
                       }),
                     }}>
                     <Text
-                      style={{
-                        width: '10%',
-                        color: AppColors.black,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
-                        textAlign: 'center',
-                      }}>
+                      style={[
+                        styles.heading,
+                        {
+                          width: '5%',
+                          color: AppColors.DarkText,
+                        },
+                      ]}>
                       {index + 1}
                     </Text>
                     <Text
-                      style={{
-                        width: '30%',
-                        paddingStart: 10,
-                        color: AppColors.black,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
-                      }}>
-                      {item?.name}
+                      style={[
+                        styles.heading,
+                        {
+                          width: '25%',
+                          color: AppColors.DarkText,
+                        },
+                      ]}>
+                      {item ? `${item?.name}` : 'નામ'}
                     </Text>
+                    <Text
+                      style={[
+                        styles.heading,
+                        {
+                          width: '15%',
+                          color: AppColors.DarkText,
+                        },
+                      ]}>
+                      {item ? `${item?.city}` : 'ગામ'}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.heading,
+                        {
+                          width: '13%',
+                          color: AppColors.DarkText,
+                        },
+                      ]}>
+                      {item ? `${item?.title}` : 'હોદો'}
+                    </Text>
+
                     <TouchableOpacity
-                      activeOpacity={0.9}
-                      onPress={() => Linking.openURL(`tel:${item?.phone}`)}
+                      activeOpacity={1}
                       style={{
-                        width: '35%',
-                        height: '100%',
-                        paddingStart: 10,
                         flexDirection: 'row',
+                        width: '25%',
+                        marginLeft: 10,
                         alignItems: 'center',
-                      }}>
+                      }}
+                      onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
                       <Text
-                        style={{
-                          color: AppColors.black,
-                          fontFamily: AppFonts.semiBold,
-                          fontSize: 10,
-                        }}>
-                        {item?.phone}
+                        style={[styles.heading, {color: AppColors.DarkText}]}>
+                        {item ? `${item?.phone}` : 'મોબાઈલ નંબર'}
                       </Text>
 
-                      <Image
-                        source={AppImages.CALL_ICON}
-                        style={{height: 14, width: 14, marginHorizontal: 5}}
-                      />
+                      <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity
+                          activeOpacity={1}
+                          style={{paddingHorizontal: 2.5}}
+                          onPress={() =>
+                            Linking.openURL(`tel:${'9510135458'}`)
+                          }>
+                          <Image source={AppImages.CIRCLE_CALL_ICON} />
+                        </TouchableOpacity>
+                      </View>
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          paddingHorizontal: 5,
+                          paddingVertical: 2.5,
+                        }}
+                        onPress={() =>
+                          Linking.openURL(
+                            `whatsapp://send?phone=${'9510135458'}`,
+                            // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                          )
+                        }>
+                        <Image source={AppImages.WHATSAPP_ICON} />
+                      </TouchableOpacity>
                     </TouchableOpacity>
-                    <Text
+
+                    <View
                       style={{
-                        width: '25%',
-                        paddingStart: 10,
-                        color: AppColors.black,
-                        fontFamily: AppFonts.semiBold,
-                        fontSize: 10,
+                        width: '7%',
+                        // justifyContent: 'center',
+                        alignItems: 'flex-end',
+                        // marginLeft: 10,
                       }}>
-                      {item?.city}
-                    </Text>
+                      {props?.item ? (
+                        <Image
+                          style={{
+                            height: 15,
+                            width: 15,
+                            // borderColor: 'black',
+                            // borderWidth: 1,
+                            // borderRadius: 10,
+                          }}
+                          source={require('../../../assets/images/small_man_image.png')}
+                        />
+                      ) : (
+                        <Text
+                          style={[styles.heading, {color: AppColors.DarkText}]}>
+                          ફોટો
+                        </Text>
+                      )}
+                    </View>
+
+                    {/* <Text
+                    style={[
+                      styles.heading,
+                      {
+                        
+                      },
+                    ]}>
+                    {props?.item ? `${props?.item?.city}` : 'Photo'}
+                  </Text> */}
                   </View>
+                  // <View
+                  //   style={{
+                  //     marginHorizontal: 1,
+                  //     flexDirection: 'row',
+                  //     marginTop: 10,
+                  //     paddingVertical: 5,
+                  //     alignItems: 'center',
+                  //     alignSelf: 'center',
+                  //     backgroundColor: AppColors.BackgroundColor,
+                  //     borderRadius: 10,
+                  //     backgroundColor: 'white',
+                  //     ...Platform.select({
+                  //       ios: {
+                  //         shadowColor: '#D5D5D5',
+                  //         shadowOffset: {width: 0, height: -1},
+                  //         shadowOpacity: 0.9,
+                  //         shadowRadius: 3,
+                  //       },
+                  //       android: {
+                  //         elevation: 2,
+                  //       },
+                  //     }),
+                  //   }}>
+                  //   <Text
+                  //     style={{
+                  //       width: '10%',
+                  //       color: AppColors.black,
+                  //       fontFamily: AppFonts.semiBold,
+                  //       fontSize: 10,
+                  //       textAlign: 'center',
+                  //     }}>
+                  //     {index + 1}
+                  //   </Text>
+                  //   <Text
+                  //     style={{
+                  //       width: '30%',
+                  //       paddingStart: 10,
+                  //       color: AppColors.black,
+                  //       fontFamily: AppFonts.semiBold,
+                  //       fontSize: 10,
+                  //     }}>
+                  //     {item?.name}
+                  //   </Text>
+                  //   <TouchableOpacity
+                  //     activeOpacity={0.9}
+                  //     onPress={() => Linking.openURL(`tel:${item?.phone}`)}
+                  //     style={{
+                  //       width: '35%',
+                  //       height: '100%',
+                  //       paddingStart: 10,
+                  //       flexDirection: 'row',
+                  //       alignItems: 'center',
+                  //     }}>
+                  //     <Text
+                  //       style={{
+                  //         color: AppColors.black,
+                  //         fontFamily: AppFonts.semiBold,
+                  //         fontSize: 10,
+                  //       }}>
+                  //       {item?.phone}
+                  //     </Text>
+
+                  //     <Image
+                  //       source={AppImages.CALL_ICON}
+                  //       style={{height: 14, width: 14, marginHorizontal: 5}}
+                  //     />
+                  //   </TouchableOpacity>
+                  //   <Text
+                  //     style={{
+                  //       width: '25%',
+                  //       paddingStart: 10,
+                  //       color: AppColors.black,
+                  //       fontFamily: AppFonts.semiBold,
+                  //       fontSize: 10,
+                  //     }}>
+                  //     {item?.city}
+                  //   </Text>
+                  // </View>
                 )}
               />
             )}
@@ -329,18 +498,27 @@ const AboutUsDetailScreen = ({props, route}) => {
   );
 };
 
+const styles = StyleSheet.create({
+  heading: {
+    fontFamily: AppFonts.semiBold,
+    fontSize: 9,
+    color: AppColors.black,
+    justifyContent: 'center',
+  },
+});
 export default AboutUsDetailScreen;
 
 export const MemberDetail = props => {
   return (
     <View
       style={{
-        marginTop: 3,
-        justifyContent: 'center',
+        // marginTop: 2,
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        width: '100%',
+        // width: '100%',
         ...props.style,
         flexDirection: 'row',
+        
       }}>
       <Text
         style={{
@@ -348,6 +526,7 @@ export const MemberDetail = props => {
           fontFamily: AppFonts.semiBold,
           fontSize: 13,
           textAlign: 'center',
+          lineHeight:20
         }}>
         {props?.title}
       </Text>
@@ -357,7 +536,18 @@ export const MemberDetail = props => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {props?.icon ? <Image source={AppImages.CALL_ICON} /> : null}
+        {props?.icon ? (
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                `tel:${props?.item?.phone}`,
+                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              )
+            }>
+            {' '}
+            <Image source={AppImages.CIRCLE_CALL_ICON} />
+          </TouchableOpacity>
+        ) : null}
 
         <Text
           style={{
@@ -420,29 +610,53 @@ export const AboutUsMemberDetail = props => {
         }}>
         {props?.title}
       </Text>
-      <TouchableOpacity
+      <View
         activeOpacity={1}
-        onPress={props?.press}
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: 5,
         }}>
         <Text
           style={{
             color: '#A4A4A4',
             fontFamily: AppFonts.semiBold,
             fontSize: 11,
-            textAlign: 'center',
-            marginRight: 10,
+            textAlign: 'left',
+            marginRight: 8,
+            textAlignVertical: 'center',
+
             ...props?.textStyle,
           }}>
           {props?.detailText}
         </Text>
-        {props?.iconOne ? <Image source={AppImages.CIRCLE_CALL_ICON} /> : null}
-        {props?.iconTwo ? <Image source={AppImages.WHATSAPP_ICON} /> : null}
-      </TouchableOpacity>
+        {props?.iconOne ? (
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              alignItems: 'center',
+              paddingBottom: 2.5,
+            }}
+            onPress={props?.press}>
+            <Image style={{}} source={AppImages.CIRCLE_CALL_ICON} />
+          </TouchableOpacity>
+        ) : null}
+        {props?.iconTwo ? (
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() =>
+              Linking.openURL(
+                `whatsapp://send?phone=${'9510135458'}`,
+                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              )
+            }>
+            <Image source={AppImages.WHATSAPP_ICON} />
+          </TouchableOpacity>
+        ) : null}
+      </View>
     </View>
   );
 };

@@ -1,4 +1,10 @@
-import {View, Text, SafeAreaView, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import ScreenToolbar from '../../../components/ScreenToolbar';
@@ -7,7 +13,10 @@ import {AppFonts} from '../../../utils/AppFonts';
 import {AddBorder} from '../../FamilyMemberScreen/AddMemberScreen';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {AppConstValue} from '../../../utils/AppConstValue';
+import MainButton from '../../../components/MainButton';
+import BorderView from '../../../components/BorderView';
 
 const ImPLINKS = () => {
   const inset = useSafeAreaInsets();
@@ -22,7 +31,7 @@ const ImPLINKS = () => {
       <View style={{flex: 1, backgroundColor: '#F3F3F3'}}>
         <ScreenToolbar text={'IMP.LINKS'} />
 
-        <View style={{flex: 1, padding: 15}}>
+        <View style={{flex: 0.9, padding: 15}}>
           <LinksButton
             textfirst={'eBook'}
             textsecond={'Click Here'}
@@ -50,7 +59,10 @@ const ImPLINKS = () => {
             src={require('../../../assets/images/job_icon.png')}
           />
         </View>
-        <AddBorder />
+        <BorderView
+          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          backgroundColor={AppColors.BackgroundSecondColor}
+        />
       </View>
     </View>
   );
@@ -65,10 +77,11 @@ export const LinksButton = props => {
         flexDirection: 'row',
         width: '100%',
         marginTop: 10,
+        alignItems: 'center',
         ...props.buttonStyle,
       }}>
-      <AppButton
-      buttonPress={props?.buttonPress}
+      <MainButton
+        buttonPress={props?.buttonPress}
         text={props?.textfirst}
         buttonStyle={{
           width: '100%',
@@ -85,22 +98,51 @@ export const LinksButton = props => {
           textAlign: 'flex-start',
         }}
       />
-      <AppButton
+      {/* <AppButton
         text={props?.textsecond}
         buttonStyle={{
           width: '30%',
-          borderRadius: 25,
+          borderRadius: 5,
           height: 25,
           // justifyContent: 'center',
-          // alignItems: 'center',
-          backgroundColor: '#FF9900',
+          alignItems: 'center',
+          backgroundColor: '#fff',
           position: 'absolute',
           right: 10,
           top: 5,
         }}
-        textStyle={{fontSize: 10, fontFamily: AppFonts.regular, marginLeft: -5}}
+        textStyle={{fontSize: 10, fontFamily: AppFonts.semiBold,color:'black'}}
         buttonPress={props?.buttonPress}
-      />
+      /> */}
+      <TouchableOpacity
+        activeOpacity={AppConstValue.ButtonOpacity}
+        onPress={props?.buttonPress}
+        // onPress={() =>
+        //   RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+        //     status: 'main',
+        //   })
+        // }
+        style={{
+          position: 'absolute',
+          right: 15,
+          backgroundColor: '#FFFFFF',
+          padding: 3,
+          borderRadius: 8,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: 10,
+        }}>
+        <Text
+          style={{
+            fontFamily: AppFonts.semiBold,
+            fontSize: 9,
+            color: 'black',
+            textAlign: 'center',
+            paddingTop: 2.5,
+          }}>
+          {props?.textsecond}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

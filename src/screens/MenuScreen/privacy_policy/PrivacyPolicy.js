@@ -21,7 +21,7 @@ const PrivacyPolicy = () => {
         <View style={{flex: 1}}>
           <View
             style={{
-              flex: 1,
+              flex: 0.9,
               marginHorizontal: 15,
               borderRadius: 15,
               backgroundColor: AppColors.BackgroundColor,

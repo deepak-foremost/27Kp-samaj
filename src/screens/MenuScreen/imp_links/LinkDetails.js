@@ -157,6 +157,7 @@ const LinkDetails = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={headerText} />
+        <View style={{flex:0.9}}>
         {headerText == 'eBOOK' && (
           <View style={{flex: 1}}>
             {files == null ? (
@@ -359,7 +360,7 @@ const LinkDetails = props => {
                     // />
                     <LinksButton
                       textfirst={item.title}
-                      textsecond={'LINK TO Visit'}
+                      textsecond={'LINK TO VISIT'}
                       buttonStyle={{width: '90%', marginHorizontal: 15}}
                       // buttonPress={() =>
                       //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
@@ -377,6 +378,7 @@ const LinkDetails = props => {
             )}
           </View>
         )}
+        </View>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
@@ -450,7 +452,7 @@ const FileCell = props => {
           style={{
             backgroundColor: AppColors.DarkText,
             borderRadius: 15,
-            padding: 5,
+            padding: 3,
             justifyContent: 'center',
             alignItems: 'center',
             marginHorizontal: 10,
@@ -462,6 +464,7 @@ const FileCell = props => {
               fontFamily: AppFonts.medium,
               fontSize: 7,
               color: '#fff',
+              marginTop:2
             }}>
             {props?.item?.circular_date}
           </Text>

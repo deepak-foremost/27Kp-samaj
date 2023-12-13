@@ -9,7 +9,7 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {AppImages} from '../../../utils/AppImages';
@@ -18,19 +18,27 @@ import TextComponent from '../../../components/TextComponent';
 import BorderView from '../../../components/BorderView';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import RenderHTML from 'react-native-render-html';
 
 const NewsDetailScreen = ({route}) => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
-  const item = route?.params?.item;
+  const news = route?.params?.item;
   const [showModal, setShowModal] = useState(false);
+  const [images, setImages] = useState([]);
 
-  const images = [
-    {
-      url: '',
-      props: {source: require('../../../assets/images/full_village_image.png')},
-    },
-  ];
+  useEffect(() => {
+    var data = [];
+    news?.images?.map((item, index) => data?.push({url: item?.image}));
+    setImages(data);
+  }, []);
+
+  // const images = [
+  //   {
+  //     url: '',
+  //     props: {source: require('../../../assets/images/full_village_image.png')},
+  //   },
+  // ];
   return (
     <View
       style={{
@@ -43,6 +51,7 @@ const NewsDetailScreen = ({route}) => {
           style={{
             alignSelf: 'flex-end',
             padding: 20,
+            paddingTop: Platform.OS == 'ios' && StatusBarHeight,
             width: '100%',
             backgroundColor: 'rgba(0,0,0,0.7)',
           }}
@@ -82,17 +91,19 @@ const NewsDetailScreen = ({route}) => {
         <ScreenToolbar text={'27 SAMAJ LATEST UPDATE'} />
         <View
           style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#fff',
+            marginVertical: '5%',
+            width: '90%',
+            alignSelf: 'center',
+            backgroundColor: AppColors.backgroundColor,
+            paddingBottom: 13,
+            flex: 0.9,
+            paddingHorizontal: 10,
             borderRadius: 10,
-            margin: 15,
-            padding: 10,
+            backgroundColor: 'white',
             ...Platform.select({
               ios: {
                 shadowColor: '#D5D5D5',
-                shadowOffset: {width: 0, height: 5},
+                shadowOffset: {width: 0, height: -1},
                 shadowOpacity: 0.9,
                 shadowRadius: 3,
               },
@@ -101,44 +112,57 @@ const NewsDetailScreen = ({route}) => {
               },
             }),
           }}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => setShowModal(item.src == null ? false : true)}>
-              <Image
-                style={{
-                  alignSelf: 'center',
-                  backgroundColor: '#F2F2F2',
-                  borderRadius: 10,
-                  width: item.src == null ? 15 : '100%',
-                  height: item.src == null ? 25 : 100,
-                }}
-                source={item.src == null ? AppImages.NEWS_FILE_ICON : item.src}
-              />
-            </TouchableOpacity>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}>
+            <View style={{paddingTop: 10,}}>
+              {news?.images?.map((item, index) => (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => setShowModal(true)}>
+                  <Image
+                    style={{
+                      alignSelf: 'center',
+                      backgroundColor: '#F2F2F2',
+                      borderRadius: 10,
+                      width: '100%',
+                      height: 100,
+                    }}
+                    source={{uri: item?.image}}
+                  />
+                </TouchableOpacity>
+              ))}
 
-            <View
-              style={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                paddingVertical: 5,
-              }}>
-              <TextComponent first={'Title :'} />
-              <TextComponent first={'Village :'} />
-              <TextComponent first={'સ્પોનસર નું નામ :'} />
-              <TextComponent first={'Date :'} />
-              <TextComponent first={'Note :'} />
-            </View>
-
-            <View style={{}}>
-              <Text
+              <View
                 style={{
-                  fontSize: 10,
-                  lineHeight: 20,
-                  color: AppColors.DarkText,
+                  width: '100%',
+                  justifyContent: 'flex-start',
+                  paddingVertical: 5,
                 }}>
-                {item.content}
-              </Text>
+                <TextComponent first={'Title :'} second={news?.title} />
+                <TextComponent first={'Village :'} />
+                <TextComponent first={'સ્પોનસર નું નામ :'} />
+                <TextComponent first={'Date :'} second={news?.news_date}/>
+                <TextComponent first={'Note :'} />
+              </View>
+
+              <View style={{}}>
+                <RenderHTML
+                  source={{html: news?.description}}
+                  contentWidth={Dimensions.get('window').width}
+                  tagsStyles={{
+                    body: {
+                      color: AppColors.DarkText,
+                      marginTop: 5,
+                      fontFamily: AppFonts.semiBold,
+                    },
+                    p: {marginTop: -5},
+                  }}
+                />
+              </View>
             </View>
           </ScrollView>
         </View>

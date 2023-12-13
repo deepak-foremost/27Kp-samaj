@@ -37,7 +37,7 @@ const ServiceDetails = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#F3F3f3'}}>
         <ScreenToolbar text={headerText} />
 
-        <View style={{flex: 1, paddingTop: 15}}>
+        <View style={{flex: 0.9, paddingTop: 15}}>
           <FlatList
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
@@ -50,7 +50,7 @@ const ServiceDetails = ({route}) => {
                     ? 'Railway PNR Check'
                     : headerText
                 }
-                textsecond={'LINK TO Visit'}
+                textsecond={'LINK TO VISIT'}
                 buttonStyle={{width: '90%', marginHorizontal: 15}}
                 // buttonPress={() =>
                 //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {

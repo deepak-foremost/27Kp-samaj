@@ -6,88 +6,99 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import MainToolbar from '../../../components/MainToolbar';
 import {AppFonts} from '../../../utils/AppFonts';
 import {MySelection} from '../../../components/SimpleTextInput';
-import {AppConstValue} from '../../../utils/AppConstValue';
+import {AppConstValue, printLog} from '../../../utils/AppConstValue';
 import BorderView from '../../../components/BorderView';
 import {AppScreens} from '../../../utils/AppScreens';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getAboutUsMember, getYearRange} from '../../../networking/CallApi';
 
 const members = [
   {
     id: 0,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 1,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 2,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 3,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 4,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 5,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 6,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
-    status: 0,
+    status: 1,
   },
   {
     id: 7,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
+    city:'મહેસાણા',
     number: 1,
+    status: 1,
+  },
+  {
+    id: 8,
+    title: 'પ્રમુખ શ્રી',
+    name: 'કારોબારી સભ્યશ્રી',
+    city:'મહેસાણા',
+    number: 2,
     status: 0,
   },
   {
     id: 8,
     title: 'પ્રમુખ શ્રી',
     name: 'કારોબારી સભ્યશ્રી',
-    number: 1,
-    status: 1,
-  },
-  {
-    id: 8,
-    title: 'પ્રમુખ શ્રી',
-    name: 'કારોબારી સભ્યશ્રી',
-    number: 1,
-    status: 1,
+    city:'મહેસાણા',
+    number: 2,
+    status: 0,
   },
 ];
 
@@ -117,6 +128,51 @@ const AboutUsScreen = props => {
   const [valueId, setValueId] = useState('');
   // const [members, setMembers] = useState(null);
 
+  // useEffect(() => {
+  //   getYearRange(
+  //     response => {
+  //       printLog('getYearRange', JSON.stringify(response));
+  //       if (response?.status) {
+  //         var data = [];
+  //         for (let i = 0; i < response?.data?.length; i++) {
+  //           data.push({
+  //             name: response?.data[i]?.range,
+  //             id: response?.data[i]?.id,
+  //           });
+
+  //           if (i == 0) {
+  //             setValue(response?.data[i]?.range);
+  //             setValueId(response?.data[i]?.id);
+  //           }
+  //         }
+
+  //         setRange(data);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('getYearRange', error);
+  //     },
+  //   );
+  // }, []);
+
+  // useEffect(() => {
+  //   getAboutUsMember(
+  //     `range_id=${valueId}`,
+  //     response => {
+  //       printLog('getAboutUsMember', JSON.stringify(response));
+  //       if (response?.status) {
+  //         setMembers(response?.data);
+  //       } else {
+  //         setMembers([]);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('getAboutUsMember', error);
+  //       setMembers([]);
+  //     },
+  //   );
+  // }, [valueId]);
+
   return (
     <View
       style={{
@@ -129,7 +185,6 @@ const AboutUsScreen = props => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
@@ -196,7 +251,7 @@ const AboutUsScreen = props => {
           </View>
         </View>
 
-        <View style={{flex: 1}}>
+        <View style={{flex: 0.9,paddingVertical:10}}>
           <FlatList
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
@@ -218,6 +273,11 @@ const AboutUsScreen = props => {
             )}
           />
         </View>
+
+        <BorderView
+          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          backgroundColor={AppColors.BackgroundSecondColor}
+        />
 
         {/* <View
           style={{
@@ -304,7 +364,7 @@ const AboutCell = props => {
           },
         }),
       }}>
-      {props?.item?.status == 0 ? (
+      {props?.item?.status != 0 ? (
         <View
           style={{
             flexDirection: 'row',
@@ -355,7 +415,7 @@ const AboutCell = props => {
                 fontSize: 12,
                 marginLeft: 15,
               }}>
-              {props?.item?.name}
+              {props?.item?.city}
             </Text>
           </TouchableOpacity>
         </View>
@@ -400,14 +460,16 @@ const AboutCell = props => {
                   position: 'absolute',
                   right: 15,
                   backgroundColor: '#FFFFFF',
-                  padding: 5,
+                  padding: 4,
                   borderRadius: 8,
+                  
                 }}>
                 <Text
                   style={{
                     fontFamily: AppFonts.bold,
                     fontSize: 10,
-                    color: '#EB7E01',
+                    color: 'black',
+                    marginTop:2
                   }}>
                   Click Here
                 </Text>

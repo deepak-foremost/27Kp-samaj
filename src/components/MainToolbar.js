@@ -50,7 +50,13 @@ const MainToolbar = props => {
         </View>
 
         <Text
-          style={{fontSize: 16, color: '#fff', fontFamily: AppFonts.semiBold}}>
+          style={{
+            fontSize: 16,
+            color: '#fff',
+            fontFamily: AppFonts.semiBold,
+            paddingTop:2.5,
+            ...props.txtStyle,
+          }}>
           {props?.text}
         </Text>
       </View>
@@ -70,7 +76,7 @@ const MainToolbar = props => {
         />
 
         <Text
-          style={{fontSize: 14, fontFamily: AppFonts.semiBold, color: '#fff'}}>
+          style={{fontSize: 14, fontFamily: AppFonts.semiBold, color: '#fff',paddingTop:2.5}}>
           9955885522
         </Text>
       </TouchableOpacity>

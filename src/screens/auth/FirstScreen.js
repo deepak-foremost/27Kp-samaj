@@ -16,13 +16,18 @@ import BorderView from '../../components/BorderView';
 import * as RootNavigation from '../../utils/RootNavigation';
 import {AppScreens} from '../../utils/AppScreens';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import MainButton from '../../components/MainButton';
 
 const FirstScreen = () => {
   return (
     <View
       style={[
         AppStyles.AppMainBackground,
-        {backgroundColor: AppColors.BackgroundSecondColor, flex: 1,paddingTop:55},
+        {
+          backgroundColor: AppColors.BackgroundSecondColor,
+          flex: 1,
+          paddingTop: 55,
+        },
       ]}>
       {/* <View
         style={{
@@ -38,14 +43,14 @@ const FirstScreen = () => {
       <View
         style={{
           backgroundColor: AppColors.BackgroundSecondColor,
-          height: 55,
+          height: 30,
         }}></View>
       {/* TopView  */}
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <View style={{backgroundColor: '#fff', flex: 1}}>
           <View
             style={{
-              flex: 0.35,
+              flex: 0.4,
               backgroundColor: AppColors.BackgroundSecondColor,
               borderBottomLeftRadius: 30,
               borderBottomRightRadius: 30,
@@ -54,7 +59,7 @@ const FirstScreen = () => {
             }}>
             <View style={AppStyles.AppLogoStyle}>
               <Image
-                style={{width: 100, height: 100}}
+                style={{width: 140, height: 140}}
                 source={AppImages.APP_MAIN_ICON}
               />
             </View>
@@ -68,7 +73,7 @@ const FirstScreen = () => {
               alignItems: 'center',
               paddingTop: 50,
             }}>
-            <AppButton
+            <MainButton
               buttonPress={() =>
                 RootNavigation.navigate(AppScreens.MOILE_LOGIN_SCREEN, {
                   screen: 'Login',
@@ -78,22 +83,25 @@ const FirstScreen = () => {
               src={require('../../assets/images/register_icon.png')}
               buttonStyle={{marginTop: 1}}
             />
-
-            <AppButton
+            <MainButton
               buttonPress={() =>
                 RootNavigation.navigate(AppScreens.MOILE_LOGIN_SCREEN, {
                   screen: 'User Signin',
                 })
               }
               text={'Guest Sign-in'}
+              textStyle={{color: 'black'}}
+              imgStyle={{tintColor:'black'}}
               src={require('../../assets/images/guest_icon.png')}
               buttonStyle={{backgroundColor: AppColors.Red, marginTop: 15}}
             />
-            <AppButton
+            <MainButton
               buttonPress={() =>
-                RootNavigation.navigate(AppScreens.SOCIAL_SERVICE)
+                RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {pay: 'pay'})
               }
               text={'Quick Pay'}
+              imgStyle={{tintColor:'black'}}
+              textStyle={{color: 'black'}}
               src={require('../../assets/images/pay_icon.png')}
               buttonStyle={{backgroundColor: AppColors.Orange, marginTop: 15}}
             />

@@ -12,6 +12,7 @@ import AppButton from '../../components/AppButton';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 import {
   BoxTextInput,
+  DateSelection,
   HorizontalSelection,
   HorizontalTextInput,
   MyMobileNumber,
@@ -26,7 +27,7 @@ import {safeAreaBottomHeight} from '../../utils/AppScreens';
 import {AppStyles} from '../../utils/AppStyles';
 import * as RootNavigation from '../../utils/RootNavigation';
 import {staticArray} from '../../utils/staticArray';
-import ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
 // import {Apis} from '../../../../networking/Apis';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -38,6 +39,9 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import BorderView from '../../components/BorderView';
 import LoaderView from '../../utils/LoaderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCities, getRelation} from '../../networking/CallApi';
+import {Api} from '../../networking/Api';
+import {showMessage} from 'react-native-flash-message';
 
 const AddMemberScreen = props => {
   const inset = useSafeAreaInsets();
@@ -79,76 +83,89 @@ const AddMemberScreen = props => {
   const [openDatePicker, setDatePicker] = useState(false);
   var payload = new FormData();
   const [user, setUser] = useState(null);
+  const [visiting, setVisiting] = useState('');
+  const [visitingOne, setVisitingOne] = useState('');
+  const [VisitingTwo, setVisitingTwo] = useState('');
 
-  //   useEffect(() => {
-  //     getString(AsyncStorageConst.user, res => {
-  //       setUser(res);
-  //       printLog('USER', JSON.stringify(res));
-  //       setFamilyId(res?.family_id);
-  //     });
-  //     setBlood(memberItem?.blood_group);
-  //     printLog('FamilyMemberDetailScreen memberItem', JSON.stringify(memberItem));
-  //     getCities(
-  //       response => {
-  //         printLog('FamilyMemberDetailScreen', JSON.stringify(response));
-  //         if (response?.status) {
-  //           var temp = [];
-  //           for (let i = 0; i < response?.data?.length; i++) {
-  //             temp.push({
-  //               name: response?.data[i]?.name,
-  //               id: response?.data[i]?.id,
-  //             });
-  //           }
-  //           setCities(temp);
-  //         }
-  //       },
-  //       error => {
-  //         printLog('FamilyMemberDetailScreen', JSON.stringify(error));
-  //       },
-  //     );
+  useEffect(() => {
+    getString(AsyncStorageConst.user, res => {
+      setUser(res);
+      printLog('USER', JSON.stringify(res));
+      setFamilyId(res?.family_id);
+    });
+    setBlood(memberItem?.blood_group);
+    // printLog('FamilyMemberDetailScreen memberItem', JSON.stringify(memberItem));
+    getCities(
+      response => {
+        printLog('FamilyMemberDetailScreen', JSON.stringify(response));
+        if (response?.status) {
+          var temp = [];
+          for (let i = 0; i < response?.data?.length; i++) {
+            temp.push({
+              name: response?.data[i]?.name,
+              id: response?.data[i]?.id,
+            });
+          }
+          setCities(temp);
+        }
+      },
+      error => {
+        printLog('FamilyMemberDetailScreen', JSON.stringify(error));
+      },
+    );
 
-  //     getRelation(
-  //       response => {
-  //         var temp_list = [];
-  //         printLog('RelationsShips', JSON.stringify(response));
-  //         if (response?.status) {
-  //           for (let i = 0; i < response?.data?.length; i++) {
-  //             temp_list.push({
-  //               name: response?.data[i]?.name,
-  //               label: response?.data[i]?.name,
-  //               value: response?.data[i]?.name,
-  //             });
-  //           }
-  //           setRelations(temp_list);
-  //         }
-  //       },
-  //       error => {},
-  //     );
-  //   }, []);
+    getRelation(
+      response => {
+        var temp_list = [];
+        printLog('RelationsShips', JSON.stringify(response));
+        if (response?.status) {
+          for (let i = 0; i < response?.data?.length; i++) {
+            temp_list.push({
+              name: response?.data[i]?.name,
+              label: response?.data[i]?.name,
+              value: response?.data[i]?.name,
+            });
+          }
+          setRelations(temp_list);
+        }
+      },
+      error => {},
+    );
+  }, []);
 
-  //   const getMyImage = () => {
-  //     ImagePicker.launchImageLibrary(
-  //       {
-  //         storageOptions: {
-  //           skipBackup: true,
-  //           path: 'images',
-  //         },
-  //         mediaType: 'photo',
-  //         quality: 0.8,
-  //       },
+  const getMyImage = first => {
+    ImagePicker.launchImageLibrary(
+      {
+        storageOptions: {
+          skipBackup: true,
+          path: 'images',
+        },
+      },
+      response => {
+        // printLog('Respuesta =', JSON.stringify(response?.assets[0]));
+        if (response.didCancel) {
+          printLog('response : ', 'didCancel');
+        } else if (response.error) {
+          printLog('Error : ', error);
+        } else {
+          // setVisiting(response?.assets[0]);
+          if (first == 1) {
+            setVisiting(response?.assets[0]);
+          } else if (first == 2) {
+            setVisitingOne(response?.assets[0]);
+          } else {
+            setVisitingTwo(response?.assets[0]);
+          }
+          // if (visiting != '') {
 
-  //       response => {
-  //         printLog('Respuesta =', JSON.stringify(response));
-  //         if (response.didCancel) {
-  //           printLog('response : ', 'didCancel');
-  //         } else if (response.error) {
-  //           printLog('Error : ', error);
-  //         } else {
-  //           setImage(response?.assets[0]);
-  //         }
-  //       },
-  //     );
-  //   };
+          //   setVisiting('')
+          // } else {
+
+          // }
+        }
+      },
+    );
+  };
 
   //   useEffect(() => {
   //     if (memberItem != undefined && memberItem != null) {
@@ -181,82 +198,83 @@ const AddMemberScreen = props => {
       setCities(response);
     });
   }, [cities, setCities]);
-  //   const addMembers = async () => {
-  //     let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+  const addMembers = async () => {
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
 
-  //     if (memberItem != undefined) {
-  //       payload.append('id', memberItem?.id);
-  //     }
+    if (memberItem != undefined) {
+      payload.append('id', memberItem?.id);
+    }
 
-  //     payload.append('name', familyMember);
-  //     payload.append('email', email);
-  //     payload.append('gender', gender);
-  //     payload.append('city', city);
-  //     payload.append('height', height);
-  //     payload.append('weight', weigth);
-  //     payload.append('blood_group', blood);
-  //     payload.append('family_main_member_with_relation', relation);
-  //     payload.append('marital_status', status);
-  //     payload.append('study', study);
-  //     payload.append('business', business);
-  //     payload.append('business_address', businessAddress);
-  //     payload.append('current_address', homeAddress);
-  //     payload.append('mosal', mosal);
-  //     payload.append('shakh', hobby);
-  //     payload.append('country_code', country_code);
-  //     payload.append('phone', phone);
-  //     payload.append('dob', moment(dob).format('YYYY-MM-DD'));
-  //     if (image?.uri != undefined) {
-  //       payload.append('image', {
-  //         uri:
-  //           Platform.OS === 'android'
-  //             ? image?.uri
-  //             : image?.uri.replace('file://', ''),
-  //         name: image?.fileName,
-  //         type: image?.type,
-  //       });
-  //     }
-  //     printLog(
-  //       'PARAMS',
-  //       JSON.stringify(payload) +
-  //         ' ' +
-  //         (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-  //     );
-  //     setLoading(true);
-  //     fetch(
-  //       memberItem == undefined ? Apis.POST_ADD_MEMBER : Apis.POST_UPDATE_MEMBER,
-  //       {
-  //         method: 'POST',
-  //         headers: {
-  //           Accept: 'application/json',
-  //           'Content-Type': 'multipart/form-data',
-  //           Authorization:
-  //             'Bearer ' +
-  //             (token?.token == undefined
-  //               ? JSON.parse(token)?.token
-  //               : token?.token),
-  //         },
-  //         body: payload,
-  //       },
-  //     )
-  //       .then(response => response.json())
-  //       .then(responseJson => {
-  //         // return responseJson
-  //         ShowMessage(responseJson?.message);
-  //         printLog('responseJson', JSON.stringify(responseJson));
-  //         if (responseJson?.status) {
-  //           RootNavigation?.goBack();
-  //         }
-  //         setLoading(false);
-  //       })
-  //       .catch(error => {
-  //         printLog('responseJson Error', JSON.stringify(error));
-  //         ShowMessage(error);
-  //         setLoading(false);
-  //       });
-  //   };
+    payload.append('name', familyMember);
+    payload.append('email', email);
+    payload.append('gender', gender);
+    payload.append('city', city);
+    payload.append('height', height);
+    payload.append('weight', weigth);
+    payload.append('blood_group', blood);
+    payload.append('family_main_member_with_relation', relation);
+    payload.append('marital_status', status);
+    payload.append('study', study);
+    payload.append('business', business);
+    payload.append('business_address', businessAddress);
+    payload.append('current_address', homeAddress);
+    payload.append('mosal', mosal);
+    payload.append('shakh', hobby);
+    payload.append('country_code', country_code);
+    payload.append('phone', phone);
+    payload.append('dob', moment(dob).format('YYYY-MM-DD'));
+    if (image?.uri != undefined) {
+      payload.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? image?.uri
+            : image?.uri.replace('file://', ''),
+        name: image?.fileName,
+        type: image?.type,
+      });
+    }
+    printLog(
+      'PARAMS',
+      JSON.stringify(payload) +
+        ' ' +
+        (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+    );
+    setLoading(true);
+    fetch(
+      memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization:
+            'Bearer ' +
+            (token?.token == undefined
+              ? JSON.parse(token)?.token
+              : token?.token),
+        },
+        body: payload,
+      },
+    )
+      .then(response => response.json())
+      .then(responseJson => {
+        // return responseJson
+        ShowMessage(responseJson?.message);
+        printLog('responseJson', JSON.stringify(responseJson));
+        if (responseJson?.status) {
+          RootNavigation?.goBack();
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        printLog('responseJson Error', JSON.stringify(error));
+        ShowMessage(error);
+        setLoading(false);
+      });
+  };
 
   // React.useLayoutEffect(() => {
+
   //   props.navigation.setOptions({
   //     headerShown: true,
   //     headerTitleAlign: 'center',
@@ -273,7 +291,8 @@ const AddMemberScreen = props => {
   //       <View style={{paddingStart: 20}}>{/* <BackButton /> */}</View>
   //     ),
   //   });
-  // }, [props.navigation]);
+  // }
+  // , [props.navigation]);
 
   return (
     <View
@@ -299,100 +318,187 @@ const AddMemberScreen = props => {
             memberItem == undefined ? 'Add Family Member' : 'Edit Family Member'
           }
         />
-        <AppButton
-          text={'Mobile Number : 9999999999'}
-          textStyle={{marginHorizontal: 5}}
-          buttonStyle={{
-            width: '85%',
-            alignSelf: 'center',
-            marginTop: 15,
-            borderRadius: 20,
-            height: 40,
-          }}
-        />
-
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
-        extraScrollHeight={40}>
-          {/* Form */}
-          <View
-            style={{
-              marginVertical: '5%',
-              width: '90%',
+        <View style={{flex: 1}}>
+          <AppButton
+            text={'Mobile Number : 9999999999'}
+            textStyle={{marginHorizontal: 5}}
+            buttonStyle={{
+              width: '85%',
               alignSelf: 'center',
-              backgroundColor: AppColors.backgroundColor,
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              borderRadius: 10,
-              backgroundColor: '#fff',
-              flex: 1,
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#D5D5D5',
-                  shadowOffset: {width: 0, height: -1},
-                  shadowOpacity: 0.9,
-                  shadowRadius: 3,
-                },
-                android: {
-                  elevation: 5,
-                },
-              }),
-            }}>
-            <HorizontalTextInput
-              label={`નામ:`}
-              defaultText={name}
-              onChangeText={setName}
-            />
+              marginTop: 15,
+              borderRadius: 20,
+              height: 40,
+            }}
+          />
 
+          <KeyboardAwareScrollView
+            showsVerticalScrollIndicator={false}
+            extraScrollHeight={40}>
+            {/* Form */}
             <View
               style={{
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'space-between',
+                marginVertical: '5%',
+                width: '90%',
+                alignSelf: 'center',
+                backgroundColor: AppColors.backgroundColor,
+                paddingVertical: 10,
+                paddingHorizontal: 15,
+                borderRadius: 10,
+                backgroundColor: '#fff',
+                flex: 1,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#D5D5D5',
+                    shadowOffset: {width: 0, height: -1},
+                    shadowOpacity: 0.9,
+                    shadowRadius: 3,
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
               }}>
-              <View style={{width: '49%'}}>
-                <HorizontalSelection
-                  label={`ગામ`}
-                  placeholder={`ગામ`}
-                  data={cities == null ? [] : cities}
-                  value={city}
-                  onItemSelect={item => {
-                    printLog(JSON.stringify(item?.item));
-                    setCity(item?.name);
-                  }}
-                />
-              </View>
-              <View style={{width: '49%'}}>
-                <HorizontalTextInput
-                  label={`સાસરું`}
-                  defaultText={fatherinlaw}
-                  onChangeText={setFatherinLaw}
-                />
-              </View>
-            </View>
+              <HorizontalTextInput
+                label={`નામ:`}
+                defaultText={name}
+                onChangeText={setName}
+              />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: '49%'}}>
-                <HorizontalTextInput
-                  label={`મોસાળ`}
-                  defaultText={mosal}
-                  onChangeText={setMosal}
-                />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View style={{width: '49%'}}>
+                  <HorizontalSelection
+                    label={`ગામ`}
+                    placeholder={`ગામ`}
+                    data={cities == null ? [] : cities}
+                    value={city}
+                    onItemSelect={item => {
+                      // printLog(JSON.stringify(item?.item));
+                      setCity(item?.name);
+                    }}
+                  />
+                </View>
+                <View style={{width: '49%'}}>
+                  <HorizontalTextInput
+                    label={`શાખ `}
+                    defaultText={hobby}
+                    onChangeText={setHobby}
+                  />
+                </View>
               </View>
-              <View style={{width: '49%'}}>
-                <HorizontalTextInput
-                  label={`શાખ `}
-                  defaultText={hobby}
-                  onChangeText={setHobby}
-                />
-              </View>
-            </View>
 
-            <View
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{width: '49%'}}>
+                  <HorizontalTextInput
+                    label={`મોસાળ`}
+                    defaultText={mosal}
+                    onChangeText={setMosal}
+                  />
+                </View>
+                <View style={{width: '49%'}}>
+                  <HorizontalTextInput
+                    label={`સાસરું`}
+                    defaultText={fatherinlaw}
+                    onChangeText={setFatherinLaw}
+                  />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View style={{width: '49%'}}>
+                  <HorizontalTextInput
+                    label={`ઉંમર`}
+                    placeholder={``}
+                    defaultText={age}
+                    type="phone-pad"
+                    onChangeText={setAge}
+                  />
+                  {/* <Text
+                    style={{
+                      fontFamily: AppFonts.regular,
+                      color:
+                        dob == null ? AppColors?.lineColor : AppColors.black,
+                      fontSize: 13,
+                    }}>
+                    Age :{' '}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.regular,
+                      color:
+                        dob == null ? AppColors?.lineColor : AppColors.black,
+                      fontSize: 13,
+                    }}>
+                    {dob == null ? '' : getAge(dob)}
+                  </Text> */}
+                </View>
+                <View style={{width: '49%'}}>
+                  <HorizontalSelection
+                    label={`બ્લડ ગ્રુપ`}
+                    defaultText={blood}
+                    placeholder={`બ્લડ ગ્રુપ`}
+                    data={[
+                      {name: 'A+'},
+                      {name: 'A-'},
+                      {name: 'B+'},
+                      {name: 'B-'},
+                      {name: 'O+'},
+                      {name: 'O-'},
+                      {name: 'AB+'},
+                      {name: 'AB-'},
+                    ]}
+                    value={blood}
+                    onItemSelect={item => {
+                      // printLog(JSON.stringify(item?.item));
+                      setBlood(item?.name);
+                    }}
+                  />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{width: '49%'}}>
+                  <HorizontalTextInput
+                    label={`ઊંચાઈ`}
+                    placeholder={`ft.`}
+                    defaultText={height}
+                    type="phone-pad"
+                    onChangeText={setHeight}
+                  />
+                </View>
+                <View style={{width: '49%'}}>
+                  <HorizontalTextInput
+                    label={`વજન`}
+                    placeholder={`KG`}
+                    type="phone-pad"
+                    defaultText={weigth}
+                    onChangeText={setWeight}
+                  />
+                </View>
+              </View>
+
+              {/* <View
               style={{
                 width: '100%',
                 flexDirection: 'row',
@@ -443,233 +549,161 @@ const AddMemberScreen = props => {
                   }}
                 />
               </TouchableOpacity>
-            </View>
+            </View> */}
 
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: '49%'}}>
-                <HorizontalTextInput
-                  label={`ઊંચાઈ`}
-                  placeholder={`CM`}
-                  defaultText={height}
-                  type="phone-pad"
-                  onChangeText={setHeight}
-                />
-              </View>
-              <View style={{width: '49%'}}>
-                <HorizontalTextInput
-                  label={`વજન`}
-                  placeholder={`KG`}
-                  type="phone-pad"
-                  defaultText={weigth}
-                  onChangeText={setWeight}
-                />
-              </View>
-            </View>
+              <HorizontalSelection
+                label={`કુટુંબ ના વડા સાથે નો સંબંધ`}
+                defaultText={``}
+                placeholder={`કુટુંબ ના વડા સાથે નો સંબંધ`}
+                data={staticArray.relationWithHead}
+                value={relation}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setRelation(item?.name);
+                }}
+              />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{width: '49%'}}>
-                <HorizontalTextInput
-                  label={`ઉંમર`}
-                  placeholder={``}
-                  defaultText={age}
-                  type="phone-pad"
-                  onChangeText={setAge}
-                />
-                {/* <Text
-                    style={{
-                      fontFamily: AppFonts.regular,
-                      color:
-                        dob == null ? AppColors?.lineColor : AppColors.black,
-                      fontSize: 13,
-                    }}>
-                    Age :{' '}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: AppFonts.regular,
-                      color:
-                        dob == null ? AppColors?.lineColor : AppColors.black,
-                      fontSize: 13,
-                    }}>
-                    {dob == null ? '' : getAge(dob)}
-                  </Text> */}
-              </View>
-              <View style={{width: '49%'}}>
-                <HorizontalSelection
-                  label={`બ્લડ ગ્રુપ`}
-                  defaultText={blood}
-                  data={[
-                    {name: 'A+'},
-                    {name: 'A-'},
-                    {name: 'B+'},
-                    {name: 'B-'},
-                    {name: 'O+'},
-                    {name: 'O-'},
-                    {name: 'AB+'},
-                    {name: 'AB-'},
-                  ]}
-                  value={blood}
-                  onItemSelect={item => {
-                    printLog(JSON.stringify(item?.item));
-                    setBlood(item?.name);
-                  }}
-                />
-              </View>
-            </View>
+              <HorizontalSelection
+                label={`લગ્ન સ્થિતિ`}
+                placeholder={`લગ્ન સ્થિતિ`}
+                defaultText={``}
+                data={[
+                  {name: 'Single'},
+                  {name: 'Married'},
+                  {name: 'Widowed'},
+                  {name: 'Divorced'},
+                  {name: 'Separated'},
+                ]}
+                value={status}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setStatus(item?.name);
+                }}
+              />
+              <HorizontalSelection
+                label={`અભ્યાસ:`}
+                defaultText={`અભ્યાસ:`}
+                placeholder={`અભ્યાસ`}
+                data={staticArray.studies}
+                value={study}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setStudy(item?.name);
+                }}
+              />
 
-            <HorizontalTextInput
+              <BoxTextInput
+                styles={{flexDirection: 'coloum', minHeight: 120}}
+                textStyle={{marginBottom: 10}}
+                label={`હાલ ના રહેઠાણ નુ સરનામું`}
+                defaultText={presentAddress}
+                onChangeText={setPresentAddress}
+              />
+
+              <HorizontalTextInput
+                label={`વ્યવસાય`}
+                defaultText={business}
+                onChangeText={setBusiness}
+              />
+              <BoxTextInput
+                styles={{flexDirection: 'coloum'}}
+                textStyle={{marginBottom: 10}}
+                label={`વ્યવસાયનું સરનામું`}
+                defaultText={businessAddress}
+                onChangeText={setBusinessAddress}
+              />
+
+              <MyMobileNumber
+                label={`મોબાઇલ નંબર`}
+                countryCode={country_code}
+                phone={phone}
+                type={'numeric'}
+                setCountryCode={item => {
+                  setCountryCode(item?.name);
+                }}
+                onChangeText={setPhone}
+              />
+              <HorizontalTextInput
+                label={`Email ID`}
+                defaultText={email}
+                type="email-address"
+                onChangeText={setEmail}
+              />
+              <HorizontalSelection
+                label={`ફોરેન Country Name`}
+                placeholder={`ફોરેન Country Name`}
+                defaultText={``}
+                data={staticArray.foriegnCountry}
+                value={homeAddress}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setHomeAddress(item?.name);
+                }}
+              />
+              <HorizontalTextInput
+                label={`ભુમિ સભાસદ નં:`}
+                defaultText={bhumiNo}
+                // type="email-address"
+                onChangeText={setBhumiNo}
+              />
+              <HorizontalTextInput
+                label={`જીવન સહાય સભાસદ નં:`}
+                defaultText={lifeSupportNo}
+                // type="email-address"
+                onChangeText={setLifeSupportNo}
+              />
+
+              <DateSelection text={'જન્મ તારીખ:'} title={'જન્મ તારીખ'} />
+
+              {/* <HorizontalTextInput
               label={`Family ID`}
               defaultText={familyId}
               onChangeText={setFamilyId}
-            />
-            <HorizontalTextInput
-              label={`કુટુંબ ના વ્યકિતનું નામ`}
-              defaultText={familyMember}
-              onChangeText={setFamilyMember}
-            />
-            <HorizontalSelection
-              label={`લિંગ`}
-              placeholder={`લિંગ`}
-              data={[{name: 'Male'}, {name: 'Female'}]}
-              value={gender}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setGender(item?.name);
-              }}
-            />
+            /> */}
+              <HorizontalTextInput
+                label={`કુટુંબ ના વ્યકિતનું નામ`}
+                defaultText={familyMember}
+                onChangeText={setFamilyMember}
+              />
+              <HorizontalSelection
+                label={`લિંગ`}
+                placeholder={`લિંગ`}
+                data={[{name: 'Male'}, {name: 'Female'}]}
+                value={gender}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setGender(item?.name);
+                }}
+              />
 
-            <DatePicker
-              modal
-              mode="date"
-              open={openDatePicker}
-              maximumDate={new Date()}
-              date={dob == null ? new Date() : dob}
-              onConfirm={date => {
-                setDatePicker(false);
-                setDOB(date);
-              }}
-              onCancel={() => {
-                setDatePicker(false);
-              }}
-            />
+              <DatePicker
+                modal
+                mode="date"
+                open={openDatePicker}
+                maximumDate={new Date()}
+                date={dob == null ? new Date() : dob}
+                onConfirm={date => {
+                  setDatePicker(false);
+                  setDOB(date);
+                }}
+                onCancel={() => {
+                  setDatePicker(false);
+                }}
+              />
 
-            <HorizontalSelection
-              label={`કુટુંબ ના વડા સાથે નો સંબંધ`}
-              defaultText={``}
-              data={staticArray.relationWithHead}
-              value={relation}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setRelation(item?.name);
-              }}
-            />
-            <HorizontalSelection
-              label={`લગ્ન સ્થિતિ`}
-              defaultText={``}
-              data={[
-                {name: 'Single'},
-                {name: 'Married'},
-                {name: 'Widowed'},
-                {name: 'Divorced'},
-                {name: 'Separated'},
-              ]}
-              value={status}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setStatus(item?.name);
-              }}
-            />
-            <HorizontalSelection
-              label={`અભ્યાસ:`}
-              defaultText={`અભ્યાસ:`}
-              data={staticArray.studies}
-              value={study}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setStudy(item?.name);
-              }}
-            />
-            <HorizontalTextInput
-              label={`Course Name : `}
-              defaultText={course}
-              onChangeText={setCourse}
-            />
-            <HorizontalTextInput
-              label={`વ્યવસાય`}
-              defaultText={business}
-              onChangeText={setBusiness}
-            />
-            <BoxTextInput
-              styles={{flexDirection: 'coloum'}}
-              textStyle={{marginBottom: 10}}
-              label={`વ્યવસાયનું સરનામું`}
-              defaultText={businessAddress}
-              onChangeText={setBusinessAddress}
-            />
+              <HorizontalTextInput
+                label={`Course Name`}
+                defaultText={course}
+                onChangeText={setCourse}
+              />
 
-            <HorizontalSelection
-              label={`ફોરેન Country Name`}
-              defaultText={``}
-              data={staticArray.foriegnCountry}
-              value={homeAddress}
-              onItemSelect={item => {
-                // printLog(JSON.stringify(item?.item));
-                setHomeAddress(item?.name);
-              }}
-            />
-
-            {/* <HorizontalTextInput
+              {/* <HorizontalTextInput
               label={`ફોરેન Country Name`}
               defaultText={homeAddress}
               onChangeText={setHomeAddress}
             /> */}
 
-            <BoxTextInput
-              styles={{flexDirection: 'coloum', minHeight: 120}}
-              textStyle={{marginBottom: 10}}
-              label={`હાલ ના રહેઠાણ નુ સરનામું`}
-              defaultText={presentAddress}
-              onChangeText={setPresentAddress}
-            />
-
-            <MyMobileNumber
-              label={`મોબાઇલ નંબર`}
-              countryCode={country_code}
-              phone={phone}
-              setCountryCode={item => {
-                setCountryCode(item?.name);
-              }}
-              onChangeText={setPhone}
-            />
-            <HorizontalTextInput
-              label={`Email ID`}
-              defaultText={email}
-              type="email-address"
-              onChangeText={setEmail}
-            />
-            <HorizontalTextInput
-              label={`જીવન સહાય સભાસદ નં:`}
-              defaultText={lifeSupportNo}
-              // type="email-address"
-              onChangeText={setLifeSupportNo}
-            />
-            <HorizontalTextInput
-              label={`ભુમિ સભાસદ નં:`}
-              defaultText={bhumiNo}
-              // type="email-address"
-              onChangeText={setBhumiNo}
-            />
-            {/* <View
+              {/* <View
               style={{
                 flexDirection: 'row',
                 height: 35,
@@ -721,114 +755,166 @@ const AddMemberScreen = props => {
               )}
             </View> */}
 
-            <View style={{flexDirection: 'row'}}>
-              <View>
+              <View style={{flex: 1, flexDirection: 'column'}}>
                 <View style={{flexDirection: 'row', paddingTop: 20}}>
                   <Text
                     style={{
                       fontSize: 12,
                       fontFamily: AppFonts.semiBold,
-                      color: AppColors.extraDark,
+                      color: AppColors.black,
                     }}>
                     ફોટો :{' '}
                   </Text>
                   <AppButton
+                    // buttonPress={() => {
+                    //   if (visiting == '') {
+                    //     getMyImage(1);
+                    //   } else if (visitingOne == '') {
+                    //     getMyImage(2);
+                    //   } else {
+                    //     getMyImage(3);
+                    //   }
+                    // }}
                     text={'Browse'}
-                    textStyle={{marginLeft: 0}}
+                    textStyle={{marginLeft: 0, fontSize: 12}}
                     buttonStyle={{
                       width: 100,
                       height: 25,
-                      backgroundColor: '#9A9A9A',
+                      backgroundColor:
+                        visiting == ''
+                          ? '#9A9A9A'
+                          : AppColors.BackgroundSecondColor,
                       borderRadius: 30,
                       marginLeft: 15,
                     }}
                   />
                 </View>
 
-                <View style={{flexDirection: 'row', paddingVertical: 10}}>
+                {/* <View style={{flexDirection: 'row', paddingVertical: 10}}>
                   <Text
                     style={{
                       fontSize: 12,
                       fontFamily: AppFonts.semiBold,
-                      color: AppColors.extraDark,
+                      color: AppColors.black,
                     }}>
                     ફોટો :{' '}
                   </Text>
                   <AppButton
+                    buttonPress={() => getMyImage(false)}
                     text={'Browse'}
                     textStyle={{marginLeft: 0}}
                     buttonStyle={{
                       width: 100,
                       height: 25,
-                      backgroundColor: '#9A9A9A',
+                      backgroundColor:
+                        visitingOne == ''
+                          ? '#9A9A9A'
+                          : AppColors.BackgroundSecondColor,
                       borderRadius: 30,
                       marginLeft: 15,
                     }}
                   />
+                </View> */}
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-end',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 5,
+                    height: 70,
+                    paddingTop: 15,
+                  }}>
+                  <Image
+                    style={{
+                      width: '30%',
+                      height: '100%',
+                      borderRadius: 5,
+                      resizeMode: 'cover',
+                      borderRadius: 10,
+                    }}
+                    source={
+                      visiting == ''
+                        ? require('../../assets/images/visiting_card.png')
+                        : {uri: visiting?.uri}
+                    }
+                  />
+
+                  <Image
+                    style={{
+                      width: '30%',
+                      height: '100%',
+                      borderRadius: 5,
+                      marginLeft: 5,
+                      borderRadius: 10,
+                    }}
+                    source={
+                      visitingOne == ''
+                        ? require('../../assets/images/visiting_card.png')
+                        : {uri: visitingOne?.uri}
+                    }
+                  />
+                  <Image
+                    style={{
+                      width: '30%',
+                      height: '100%',
+                      borderRadius: 5,
+                      marginLeft: 5,
+                      borderRadius: 10,
+                    }}
+                    source={
+                      VisitingTwo == ''
+                        ? require('../../assets/images/visiting_card.png')
+                        : {uri: VisitingTwo?.uri}
+                    }
+                  />
                 </View>
               </View>
 
-              <View
-                style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
-                <Image
-                  style={{
-                    flex: 0.5,
-                    borderRadius: 15,
-                    
-                    marginHorizontal: 5,
-                  }}
-                  source={require('../../assets/images/visiting_card.png')}
+              {loading ? (
+                <LoaderView
+                  style={{width: '50%', height: 35, marginVertical: 20}}
                 />
-
-                <Image
-                  style={{
-                    flex: 0.5,
-                    borderRadius: 15,
+              ) : (
+                <AppButton
+                  width={'50%'}
+                  text={`Submit`}
+                  buttonStyle={{
+                    width: '50%',
+                    height: 40,
+                    borderRadius: 20,
+                    alignSelf: 'center',
+                    marginVertical: 20,
                   }}
-                  source={require('../../assets/images/visiting_card.png')}
+                  // onClick={() => {
+                  //   if (city == null) {
+                  //     showMessage('Please Select City');
+                  //   } else if (familyMember?.trim() == '') {
+                  //     ShowMessage('Please enter name');
+                  //   } else if (gender == null) {
+                  //     ShowMessage('Please select gender');
+                  //   } else if (dob == null) {
+                  //     ShowMessage('Please select Date of Birth');
+                  //   } else if (image == undefined || image == null) {
+                  //     ShowMessage('Please selcet photo');
+                  //   } else {
+                  //     setAdding(true);
+                  //     addMembers();
+                  //   }
+                  // }}
+                  // isLoading={loading}
                 />
-              </View>
+              )}
             </View>
+            <BorderView
+              text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+              backgroundColor={AppColors.BackgroundSecondColor}
+              borderStyle={{position: ''}}
+            />
 
-            {loading ? (
-              <LoaderView
-                style={{width: '50%', height: 35, marginVertical: 20}}
-              />
-            ) : (
-              <AppButton
-                width={'50%'}
-                text={`Submit`}
-                buttonStyle={{
-                  width: '50%',
-                  height: 40,
-                  borderRadius: 20,
-                  alignSelf: 'center',
-                  marginVertical: 20,
-                }}
-                onClick={() => {
-                  if (city == null) {
-                    ShowMessage('Please Select City');
-                  } else if (familyMember?.trim() == '') {
-                    ShowMessage('Please enter name');
-                  } else if (gender == null) {
-                    ShowMessage('Please select gender');
-                  } else if (dob == null) {
-                    ShowMessage('Please select Date of Birth');
-                  } else if (image == undefined || image == null) {
-                    ShowMessage('Please selcet photo');
-                  } else {
-                    setAdding(true);
-                    addMembers();
-                  }
-                }}
-                isLoading={loading}
-              />
-            )}
-          </View>
-
-          {/* Footer */}
-          <AddBorder />
-        </KeyboardAwareScrollView>
+            {/* Footer */}
+          </KeyboardAwareScrollView>
+        </View>
 
         {/* <KeyboardAwareScrollView
           enableOnAndroid={true}

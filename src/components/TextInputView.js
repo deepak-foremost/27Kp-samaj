@@ -17,7 +17,7 @@ const TextInputView = props => {
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-          color: AppColors.extraDark,
+          color: AppColors.black,
         }}>
         {props?.text}
       </Text>
@@ -41,7 +41,7 @@ const TextInputView = props => {
             fontFamily: AppFonts.regular,
             marginLeft: 20,
             flex: 1,
-            color:AppColors.extraDark
+            color:AppColors.black
           }}
           onChangeText={props?.onChangeText}
           placeholderTextColor={'#38385E'}

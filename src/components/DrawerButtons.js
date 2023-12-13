@@ -5,6 +5,7 @@ import {AppFonts} from '../utils/AppFonts';
 import * as RootNavigation from '../utils/RootNavigation';
 import {AppImages} from '../utils/AppImages';
 import { AppScreens } from '../utils/AppScreens';
+import { AppColors } from '../utils/AppColors';
 
 const DrawerButtons = props => {
   // const [show,setShow]=useState('');
@@ -18,7 +19,7 @@ const DrawerButtons = props => {
         marginTop: 8,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: props?.item?.item?.index==props?.show ? '#0F50BB' : null,
+        backgroundColor: props?.item?.item?.index==props?.show ? '#07879E' : null,
         paddingVertical: 8,
       }}
       activeOpacity={AppConstValue.ButtonOpacity}

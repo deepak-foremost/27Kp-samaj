@@ -10,6 +10,7 @@ import {
   ScrollView,
   StyleSheet,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import AppButton from '../../../components/AppButton';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -29,6 +30,7 @@ import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCities, getSearch} from '../../../networking/CallApi';
 
 const list = [
   {
@@ -44,6 +46,8 @@ const list = [
     marital_status: ' Married',
     study: ' B.Tech',
     business: 'નોકરી',
+    business_address: 'અમદાવાદ',
+    foreign_country: 'USA',
     current_address: 'અમદાવાદ',
     email: 'Test@gmail.com',
     country_code: '+91',
@@ -60,6 +64,8 @@ const list = [
     height: '165 CM',
     weight: '75 Kg',
     blood_group: 'A+',
+    business_address: 'અમદાવાદ',
+    foreign_country: 'USA',
     family_main_member_with_relation: 'પોતે',
     marital_status: ' Married',
     study: ' B.Tech',
@@ -83,6 +89,8 @@ const list = [
     family_main_member_with_relation: 'પોતે',
     marital_status: ' Married',
     study: ' B.Tech',
+    business_address: 'અમદાવાદ',
+    foreign_country: 'USA',
     business: 'નોકરી',
     current_address: 'અમદાવાદ',
     email: 'Test@gmail.com',
@@ -106,14 +114,41 @@ const SearchScreen = props => {
   const [bloodGroup, setBloodGroup] = useState('');
   const [country, setCountry] = useState('Foreign Country');
   const [study, setStudy] = useState('');
-
   const [result, setResult] = useState([]);
 
   useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
+    setResult(list);
+  }, []);
+
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
+
+  useEffect(() => {
+    getCities(
+      response => {
+        var temp = [];
+        temp.push({
+          name: 'Village',
+          id: 0,
+        });
+
+        setCity('Village');
+        setCityId(0);
+
+        for (let i = 0; i < response?.data?.length; i++) {
+          temp.push({
+            name: response?.data[i]?.name,
+            id: response?.data[i]?.id,
+          });
+        }
+        setCities(temp);
+      },
+      error => {},
+    );
+  }, []);
 
   //   useEffect(() => {
   //     getCities(
@@ -152,7 +187,7 @@ const SearchScreen = props => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            paddingTop: 10,
+
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
@@ -175,7 +210,7 @@ const SearchScreen = props => {
         leadIcon={AppImages.BACK_ICON}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-
+      <View>
         <View
           style={{
             marginTop: -40,
@@ -254,7 +289,7 @@ const SearchScreen = props => {
               ]}>
               <MySelection
                 label={`Village`}
-                placeholder={`Village`}
+                placeholder={`Select Village`}
                 data={cities == null ? [] : cities}
                 value={city}
                 onItemSelect={item => {
@@ -365,7 +400,7 @@ const SearchScreen = props => {
               <View style={{flex: 1}}>
                 <MySelection
                   label={`0`}
-                  placeholder={`0`}
+                  placeholder={`Selecte Age`}
                   data={staticArray.getAgeList()}
                   value={from}
                   onItemSelect={item => {
@@ -514,7 +549,7 @@ const SearchScreen = props => {
               ]}>
               <MySelection
                 label={`Foreign Country :`}
-                placeholder={`Foreign Country :`}
+                placeholder={`Foreign Country`}
                 data={staticArray.foriegnCountry}
                 textStyle={{fontSize: 8}}
                 value={country}
@@ -536,40 +571,45 @@ const SearchScreen = props => {
               }}
             /> */}
           </View>
-
           <AppButton
             text={`Search`}
-            width={'30%'}
+            textStyle={{fontSize: 12}}
             buttonStyle={{
               alignSelf: 'flex-end',
               width: '40%',
               borderRadius: 30,
               marginBottom: 10,
-              height: 25,
+              height: 30,
             }}
-            buttonPress={() => {
-              setResult(list);
-              //   setResult(null);
-              //   getSearch(
-              //     {
-              //       city_id: cityId,
-              //       city: cityId == 0 ? '' : city,
-              //       marital_status: status,
-              //       gender: gender,
-              //       age: `${from}-${to}`,
-              //     },
-              //     response => {
-              //       if (response?.status) {
-              //         setResult(response?.data);
-              //       } else {
-              //         setResult([]);
-              //       }
-              //     },
-              //     error => {
-              //       setResult([]);
-              //     },
-              //   );
-            }}
+            // buttonPress={() => {
+            //   setResult(list);
+            //   setResult(null);
+            //   getSearch(
+            //     {
+            //       city_id: cityId,
+            //       city: cityId == 0 ? '' : city,
+            //       marital_status: status,
+            //       gender: gender,
+            //       age: `${from}-${to}`,
+            //     },
+            //     response => {
+            //       if (response?.status) {
+            //         setResult(response?.data);
+            //         console.log(
+            //           'details',
+            //           cityId + city + status + gender + from + to,
+            //         );
+            //         printLog('search', response?.data);
+            //       } else {
+            //         setResult([]);
+            //       }
+            //     },
+            //     error => {
+            //       console.log('searchFail', error);
+            //       setResult([]);
+            //     },
+            //   );
+            // }}
           />
         </View>
         <ScrollView
@@ -696,12 +736,14 @@ const SearchScreen = props => {
               )}
             </View>
           )}
-          <BorderView
+         
+        </ScrollView>
+        </View>
+        <BorderView
             text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
             backgroundColor={AppColors.BackgroundSecondColor}
-            style={result.length == 0 && styles.last}
+            style={result?.length == 0 && styles.last}
           />
-        </ScrollView>
       </View>
     </View>
   );
@@ -730,6 +772,7 @@ const AboutCell = props => {
         marginTop: 10,
         width: '100%',
         paddingLeft: 10,
+        elevation:3
       }}>
       <View
         style={{
@@ -752,7 +795,7 @@ const AboutCell = props => {
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
-            marginLeft: 10,
+            marginLeft: 5,
           }}>
           {props?.item?.name}
         </Text>
@@ -768,11 +811,11 @@ const AboutCell = props => {
         /> */}
         <Text
           style={{
-            flex: 1,
+            flex: 0.9,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
-            marginLeft: 5,
+            marginLeft: 10,
           }}>
           {props?.item?.city}
         </Text>
@@ -805,7 +848,7 @@ const AboutCell = props => {
         <TouchableOpacity
           style={{flexDirection: 'row', alignItems: 'center'}}
           activeOpacity={1}
-          onPress={() => Linking.openURL(`telprompt:${props?.item?.phone}`)}>
+          onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
           <Text
             style={{
               // flex: 1.2,
@@ -817,15 +860,21 @@ const AboutCell = props => {
               ? ''
               : props?.item?.country_code + props?.item?.phone}
           </Text>
-          <Image style={{marginHorizontal: 5}} source={AppImages.CALL_ICON} />
+          <Image
+            style={{marginHorizontal: 5, marginBottom: 2.5}}
+            source={AppImages.CIRCLE_CALL_ICON}
+          />
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={1}
+          style={{
+            paddingBottom: 2.5,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
           onPress={() =>
-            Linking.openURL(
-              `whatsapp://send?text=hello&phone=${props?.item?.phone}`,
-            )
+            Linking.openURL(`whatsapp://send?text=hello&phone=${'9510135458'}`)
           }>
           <Image
             style={{height: 10, width: 10}}
@@ -834,7 +883,7 @@ const AboutCell = props => {
         </TouchableOpacity>
 
         <View
-          style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
+          style={{flex: 0.8, justifyContent: 'center', alignItems: 'center',paddingBottom:2.5}}>
           <Image source={AppImages.SMALL_MAN_IMAGE} />
         </View>
       </View>

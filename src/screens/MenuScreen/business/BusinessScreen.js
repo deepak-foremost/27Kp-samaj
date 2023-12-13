@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  RefreshControl,
 } from 'react-native';
 
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -32,6 +33,8 @@ import {staticArray} from '../../../utils/staticArray';
 import BorderView from '../../../components/BorderView';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getBusinessAllList, getCategories} from '../../../networking/CallApi';
+import {BusinessBox} from '../advisour_member/AdvicerMember';
 
 const categories = [
   {
@@ -59,7 +62,7 @@ const businsesses = [
     firm: 'Pramukh International',
     owner_name_1: ' Dhaval Patel',
     category_name: 'Visa Consultants',
-    address: ' Nikol, Ahmedabad djb ,jfeugfw jkb',
+    address: ' Nikol, Ahmedabad',
     phone: '+919999999999',
     is_family_id: 1,
   },
@@ -77,40 +80,77 @@ const BusinessScreen = props => {
   const StatusBarHeight = inset.top;
   const [pos, setPos] = useState(0);
   const [catItem, setCatItem] = useState(null);
-  //   const [businsesses, setBusinsesses] = useState(null);
-  //   const [categories, setCategories] = useState(null);
+  // const [businsesses, setBusinsesses] = useState(null);
+  // const [categories, setCategories] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  //   useEffect(() => {
-  //     pos == 0
-  //       ? getCategories(
-  //           response => {
-  //             printLog('getBusinessList', JSON.stringify(response));
-  //             if (response?.status) {
-  //               setCategories(response?.data);
-  //             } else {
-  //               setCategories([]);
-  //             }
-  //           },
-  //           error => {
+  // const onRefresh = () => {
+  //   pos == 0
+  //     ? getCategories(
+  //         response => {
+  //           printLog('getBusinessList', JSON.stringify(response));
+  //           if (response?.status) {
+  //             setCategories(response?.data);
+  //           } else {
   //             setCategories([]);
-  //           },
-  //         )
-  //       : getBusinessAllList(
-  //           {id: catItem?.id == undefined ? 0 : catItem?.id},
-  //           response => {
-  //             printLog('getBusinessList', JSON.stringify(response));
-  //             if (response?.status) {
-  //               setBusinsesses(response?.data);
-  //             } else {
-  //               setBusinsesses([]);
-  //             }
-  //           },
-  //           error => {
-  //             printLog('getBusinessList', error);
+  //           }
+  //         },
+  //         error => {
+  //           setCategories([]);
+  //         },
+  //       )
+  //     : getBusinessAllList(
+  //         {id: catItem?.id == undefined ? 0 : catItem?.id},
+  //         response => {
+  //           printLog('getBusinessList', JSON.stringify(response));
+  //           if (response?.status) {
+  //             setBusinsesses(response?.data);
+  //           } else {
   //             setBusinsesses([]);
-  //           },
-  //         );
-  //   }, [pos]);
+  //           }
+  //         },
+  //         error => {
+  //           printLog('getBusinessList', error);
+  //           setBusinsesses([]);
+  //         },
+  //       );
+  // };
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   pos == 0
+  //     ? getCategories(
+  //         response => {
+  //           printLog('getBusinessList', JSON.stringify(response));
+  //           if (response?.status) {
+  //             setCategories(response?.data);
+  //           } else {
+  //             setCategories([]);
+  //           }
+  //           setLoading(false);
+  //         },
+  //         error => {
+  //           setCategories([]);
+  //         },
+  //       )
+  //     : getBusinessAllList(
+  //         {id: catItem?.id == undefined ? 0 : catItem?.id},
+  //         response => {
+  //           printLog('getBusinessList', JSON.stringify(response));
+  //           if (response?.status) {
+  //             setBusinsesses(response?.data);
+  //           } else {
+  //             setBusinsesses([]);
+  //           }
+  //           setLoading(false);
+  //         },
+  //         error => {
+  //           printLog('getBusinessList', error);
+  //           setBusinsesses([]);
+  //         },
+  //       );
+  // }, [pos]);
 
   return (
     <View
@@ -133,55 +173,81 @@ const BusinessScreen = props => {
             setCatItem(null);
           }}
         />
-        <View style={{flex: 1, paddingTop: 10}}>
+        <View style={{flex: 0.9, paddingTop: 10}}>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                paddingTop: 17,
-                paddingHorizontal: 10,
-                paddingVertical: 20,
-              }}>
-              {pos == 0 ? (
-                categories?.map((item, index) => (
-                  <GridListComponent
-                    item={item}
-                    index={index}
-                    onSelectItem={() => {
-                      setPos(1);
-                      setCatItem(item);
-                    }}
-                  />
-                ))
-              ) : (
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  showsHorizontalScrollIndicator={false}
-                  numColumns={1}
-                  contentContainerStyle={{}}
-                  data={businsesses == null ? [] : businsesses}
-                  renderItem={({item, index}) => (
-                    <BusinessDirectoryCell
-                      is_family_id={1}
+            showsHorizontalScrollIndicator={false}
+            // refreshControl={
+            //   // <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            // }
+          >
+            {isLoading ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  paddingTop: 17,
+                  paddingHorizontal: 10,
+                  paddingVertical: 20,
+                }}>
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+                <BusinessBox />
+              </View>
+            ) : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  paddingTop: 17,
+                  paddingHorizontal: 10,
+                  paddingVertical: 20,
+                }}>
+                {pos == 0 ? (
+                  categories?.map((item, index) => (
+                    <GridListComponent
                       item={item}
                       index={index}
-                      onClicked={type =>
-                        RootNavigation.push(
-                          props?.navigation,
-                          AppScreens.BUSINESS_DETAIL_SCREEN,
-                          {
-                            item: item,
-                          },
-                        )
-                      }
+                      onSelectItem={() => {
+                        setPos(1);
+                        setCatItem(item);
+                      }}
                     />
-                  )}
-                />
-              )}
-            </View>
+                  ))
+                ) : (
+                  <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    numColumns={1}
+                    contentContainerStyle={{}}
+                    data={businsesses == null ? [] : businsesses}
+                    renderItem={({item, index}) => (
+                      <BusinessDirectoryCell
+                        is_family_id={1}
+                        item={item}
+                        index={index}
+                        onClicked={type =>
+                          RootNavigation.push(
+                            props?.navigation,
+                            AppScreens.BUSINESS_DETAIL_SCREEN,
+                            {
+                              item: item,
+                            },
+                          )
+                        }
+                      />
+                    )}
+                  />
+                )}
+              </View>
+            )}
           </ScrollView>
         </View>
         <BorderView

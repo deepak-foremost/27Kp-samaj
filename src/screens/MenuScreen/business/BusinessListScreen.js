@@ -30,6 +30,7 @@ import ScreenToolbar from '../../../components/ScreenToolbar';
 import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getMyBusinesses} from '../../../networking/CallApi';
 
 const list = [
   {
@@ -41,6 +42,27 @@ const list = [
     is_family_id: 1,
   },
   {
+    firm: 'Pramukh International',
+    owner_name_1: ' Dhaval Patel',
+    category_name: 'Visa Consultants',
+    address: ' Nikol, Ahmedabad',
+    phone: '+919999999999',
+    is_family_id: 1,
+  },{
+    firm: 'Pramukh International',
+    owner_name_1: ' Dhaval Patel',
+    category_name: 'Visa Consultants',
+    address: ' Nikol, Ahmedabad',
+    phone: '+919999999999',
+    is_family_id: 1,
+  },{
+    firm: 'Pramukh International',
+    owner_name_1: ' Dhaval Patel',
+    category_name: 'Visa Consultants',
+    address: ' Nikol, Ahmedabad',
+    phone: '+919999999999',
+    is_family_id: 1,
+  },{
     firm: 'Pramukh International',
     owner_name_1: ' Dhaval Patel',
     category_name: 'Visa Consultants',
@@ -71,45 +93,45 @@ const BusinessListScreen = props => {
     // setUser(userList);
   });
 
-  //   const onRefresh = React.useCallback(() => {
-  //     setRefreshing(true);
-  //     getMyBusinessesList();
-  //   }, []);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getMyBusinessesList();
+  }, []);
 
-  //   useEffect(() => {
-  //     const willFocusSubscription = props.navigation.addListener('focus', () => {
-  //       getString(AsyncStorageConst.user, res => setUser(res));
-  //       getMyBusinessesList();
-  //     });
+  useEffect(() => {
+    const willFocusSubscription = props.navigation.addListener('focus', () => {
+      getString(AsyncStorageConst.user, res => setUser(res));
+      getMyBusinessesList();
+    });
 
-  //     return () => {
-  //       willFocusSubscription;
-  //     };
-  //   }, []);
+    return () => {
+      willFocusSubscription;
+    };
+  }, []);
 
-  //   const getMyBusinessesList = () => {
-  //     getMyBusinesses(
-  //       response => {
-  //         printLog('BusinessListScreen', JSON.stringify(response));
-  //         if (response?.status) {
-  //           setBusiness(response?.data);
-  //         } else {
-  //           setBusiness([]);
-  //         }
-  //         setRefreshing(false);
-  //       },
-  //       error => {
-  //         printLog('BusinessListScreen', JSON.stringify(error));
-  //         setBusiness([]);
-  //         setRefreshing(false);
-  //       },
-  //     );
-  //   };
+  const getMyBusinessesList = () => {
+    getMyBusinesses(
+      response => {
+        printLog('BusinessListScreen', JSON.stringify(response));
+        if (response?.status) {
+          setBusiness(response?.data);
+        } else {
+          setBusiness([]);
+        }
+        setRefreshing(false);
+      },
+      error => {
+        printLog('BusinessListScreen', JSON.stringify(error));
+        setBusiness([]);
+        setRefreshing(false);
+      },
+    );
+  };
 
-  //   useEffect(() => {
-  //     getString(AsyncStorageConst.user, res => setUser(res));
-  //     getMyBusinessesList();
-  //   }, []);
+    useEffect(() => {
+      getString(AsyncStorageConst.user, res => setUser(res));
+      getMyBusinessesList();
+    }, []);
 
   //   const deleteItemList = () => {
   //     var deleteIndex = businesses.indexOf(deleteItem);
@@ -162,7 +184,7 @@ const BusinessListScreen = props => {
             height: 40,
           }}
         />
-        <View style={{flex: 1}}>
+        <View style={{flex: 0.9}}>
           {businesses == null ? (
             <View
               style={{

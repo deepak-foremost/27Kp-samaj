@@ -10,8 +10,8 @@ export const AppStyles = StyleSheet.create({
     width: '100%',
   },
   AppLogoStyle: {
-    height: 130,
-    width: 130,
+    height: 160,
+    width: 160,
     backgroundColor: '#F7F7F7',
     borderRadius: 30,
     justifyContent: 'center',
