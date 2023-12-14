@@ -1,9 +1,13 @@
-import {View, Text} from 'react-native';
+import {View, Text, Platform} from 'react-native';
 import React from 'react';
 import {AppColors} from '../utils/AppColors';
 import {AppFonts} from '../utils/AppFonts';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BorderView = props => {
+  const inset = useSafeAreaInsets();
+  const StatusBarHeight = inset.bottom;
+ 
   return (
     <View
       style={{
@@ -49,7 +53,7 @@ const BorderView = props => {
       </View>
       <View
         style={{
-          height: 25,
+          height:Platform.OS=='ios'? StatusBarHeight:25,
           backgroundColor: props?.backgroundColor,
           width: '100%',
           borderTopLeftRadius: 30,

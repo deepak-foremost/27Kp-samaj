@@ -393,7 +393,7 @@ const MobileLogInScreen = props => {
                   //   RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
                   //   setString('first', 'enter');
                   // }
-                  RootNavigation.navigate(AppScreens.HOME_SCREEN);
+                  // RootNavigation.navigate(AppScreens.HOME_SCREEN);
                   RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
                   setString('first', 'enter');
                   storeToken();

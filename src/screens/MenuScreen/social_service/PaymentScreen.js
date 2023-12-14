@@ -1,4 +1,11 @@
-import {View, Text, SafeAreaView, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  Modal,
+} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import ScreenToolbar from '../../../components/ScreenToolbar';
@@ -88,6 +95,26 @@ const PaymentScreen = ({route}) => {
         flex: 1,
         paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
+      {/* <Modal
+        transparent={true}
+        animationType="slide"
+        visible={open}
+        onRequestClose={()=>setOpen(false)}>
+        <View style={{flex: 1, justifyContent:'flex-end'}}>
+          <View style={{flex: 0.4,backgroundColor:'red'}}>
+            <MonthPicker
+              onChange={onValueChange}
+              mode="number"
+              //  autoTheme={false}
+              dividerHeight={250}
+              //androidVariant="nativeAndroid"
+              date={new Date()}
+              value={new Date()}
+              onItemSelect={i => console.log('select', i)}
+            />
+          </View>
+        </View>
+      </Modal> */}
       <View
         style={{
           flex: 1,
@@ -292,16 +319,18 @@ const PaymentScreen = ({route}) => {
                     expiry={true}
                   /> */}
                   {open && (
-                    <MonthPicker
-                      onChange={onValueChange}
-                      mode="number"
-                      //  autoTheme={false}
-                      dividerHeight={250}
-                      //androidVariant="nativeAndroid"
-                      date={new Date()}
-                      value={new Date()}
-                      onItemSelect={i => console.log('select', i)}
-                    />
+                   
+                      <MonthPicker
+                        onChange={onValueChange}
+                        mode="number"
+                        //  autoTheme={false}
+                        dividerHeight={250}
+                        //androidVariant="nativeAndroid"
+                        date={new Date()}
+                        value={new Date()}
+                        onItemSelect={i => console.log('select', i)}
+                      />
+                   
                   )}
 
                   {/* <HorizontalTextInput
@@ -371,7 +400,7 @@ const PaymentScreen = ({route}) => {
                   style={{
                     width: '100%',
                     height: 130,
-                    justifyContent: 'space-between',
+                    flex: 1,
                   }}>
                   <Text
                     style={{
@@ -383,7 +412,7 @@ const PaymentScreen = ({route}) => {
                   </Text>
                   <TouchableOpacity style={{}} activeOpacity={1}>
                     <Image
-                      style={{height: 90, width: 90, marginTop: 10}}
+                      style={{height: 90, width: 90, marginTop: 20}}
                       source={require('../../../assets/images/scanner.png')}
                     />
                   </TouchableOpacity>

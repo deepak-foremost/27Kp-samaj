@@ -34,6 +34,8 @@ import Swiper from 'react-native-swiper';
 import Carousel from 'react-native-snap-carousel';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useRoute} from '@react-navigation/native';
+import {getMyImageSlider} from '../../networking/CallApi';
+import {BusinessBox} from '../MenuScreen/advisour_member/AdvicerMember';
 
 const images = [
   {
@@ -114,7 +116,6 @@ const Pager = props => {
 
 const HomeScreen = ({route}) => {
   const screen = route?.params?.data?.screen;
-
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [select, setSelect] = useState(null);
@@ -127,9 +128,25 @@ const HomeScreen = ({route}) => {
   const width = Dimensions.get('window').width;
   const [number, setNumber] = useState(-1);
   const [active, setActive] = useState(0);
+  const [isLoading, setLoading] = useState(false);
 
   // console.warn(select)
-  // const [images, setImages] = useState([]);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    setLoading(true);
+    getMyImageSlider(response => {
+      if (response?.status) {
+        var item = [];
+        for (let a = 0; a < response.data.length; a++) {
+          // item[a].uri = response.data[a]?.photo;
+          item.push(response.data[a]?.photo);
+        }
+        setLoading(false);
+        setImages(item);
+      }
+    });
+  }, []);
 
   const fadebackground = () => {
     setTimeout(() => {
@@ -325,9 +342,9 @@ const HomeScreen = ({route}) => {
                   color: 'white',
                   fontFamily: AppFonts.bold,
                   marginTop: 15,
-                  textAlign:'center'
+                  textAlign: 'center',
                 }}>
-                શ્રી સત્તાવીસ કડવા પાટીદાર સમાજ{"\n"} ઊંઝા
+                શ્રી સત્તાવીસ કડવા પાટીદાર સમાજ{'\n'} ઊંઝા
               </Text>
             </View>
 
@@ -420,12 +437,13 @@ const HomeScreen = ({route}) => {
           leftSrc={require('../../assets/images/navigation_icon.png')}
           rightSrc={AppImages.LOGOUT_ICON}
           text={'27 KP SAMAJ UNJHA'}
-          txtStyle={{fontSize:13}}
+          txtStyle={{fontSize: 13}}
           leftPress={() => setVisible(true)}
         />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{flex: 0.3, justifyContent: 'center', paddingTop: 15}}>
-            {/* <ScrollView
+        <View style={{flex: 0.9}}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{flex: 0.3, justifyContent: 'center', paddingTop: 15}}>
+              {/* <ScrollView
             ref={scrollViewRef}
             horizontal
             pagingEnabled
@@ -451,7 +469,7 @@ const HomeScreen = ({route}) => {
             </View>
           </ScrollView> */}
 
-            {/* <SliderBox
+              {/* <SliderBox
           
             images={images}
             sliderBoxHeight={200}
@@ -467,7 +485,7 @@ const HomeScreen = ({route}) => {
             circleLoop
           /> */}
 
-            {/* <Swiper
+              {/* <Swiper
             containerStyle={{}}
             // renderPagination={renderPagination}
             // pagingEnabled={true}
@@ -488,85 +506,103 @@ const HomeScreen = ({route}) => {
                 flex: 1,
               }}></View>
           </Swiper> */}
-            <View style={{flex: 1}}>
-              <Carousel
-                // ref={c => {
-                //   this._carousel = c;
-                // }}
-                data={images}
-                renderItem={({item, index}) => (
-                  <Image
-                    style={{
-                      width: '102%',
-                      alignSelf: 'center',
-                      borderRadius: 10,
-                      flex: 1,
-                    }}
-                    source={item.src}
-                  />
-                )}
-                sliderWidth={Dimensions.get('window').width}
-                itemWidth={Dimensions.get('window').width - 50}
-                layout="default"
-                layoutCardOffset={`20`}
-                inactiveSlideOpacity={1}
-                inactiveSlideScale={0.9}
-                disableIntervalMomentum={true}
-                // enableMomentum={true}
-                // decelerationRate={0.9}
-                onSnapToItem={index => setActive(index)}
-                loop
-              />
               <View
                 style={{
-                  flexDirection: 'row',
-                  width: 45,
-                  alignSelf: 'center',
-                  marginTop: 10,
-                  justifyContent: 'space-between',
-                  marginBottom: 10,
+                  height: 190,
+                  width: Dimensions.get('window').width,
                 }}>
-                <DotIndicator opacity={{opacity: active == 0 ? 1 : 0.49}} />
-                <DotIndicator opacity={{opacity: active == 1 ? 1 : 0.49}} />
-                <DotIndicator opacity={{opacity: active == 2 ? 1 : 0.49}} />
+                {isLoading && (
+                  <BusinessBox
+                    styles={{
+                      width: Dimensions.get('window').width - 40,
+                      height: 170,
+                      marginHorizontal: 15,
+                      alignSelf: 'center',
+                    }}
+                  />
+                )}
+                <Carousel
+                  // ref={c => {
+                  //   this._carousel = c;
+                  // }}
+                  data={images}
+                  renderItem={({item, index}) => (
+                    // console.log('url',item)
+                    <Image
+                      // onLoadEnd={() => index == 0 && setLoading(false)}
+                      // onLoadStart={() => setLoading(true)}
+                      style={{
+                        width: '102%',
+                        alignSelf: 'center',
+                        borderRadius: 10,
+                        backgroundColor: '#F2F2F2',
+                        flex: 1,
+                      }}
+                      source={{uri: item}}
+                    />
+                  )}
+                  sliderWidth={Dimensions.get('window').width}
+                  itemWidth={Dimensions.get('window').width - 50}
+                  layout="default"
+                  layoutCardOffset={`20`}
+                  inactiveSlideOpacity={1}
+                  inactiveSlideScale={0.9}
+                  disableIntervalMomentum={true}
+                  // enableMomentum={true}
+                  // decelerationRate={0.9}
+                  onSnapToItem={index => setActive(index)}
+                  loop
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    width: 45,
+                    alignSelf: 'center',
+                    marginTop: 10,
+                    justifyContent: 'space-between',
+                    marginBottom: 10,
+                  }}>
+                  <DotIndicator opacity={{opacity: active == 0 ? 1 : 0.49}} />
+                  <DotIndicator opacity={{opacity: active == 1 ? 1 : 0.49}} />
+                  <DotIndicator opacity={{opacity: active == 2 ? 1 : 0.49}} />
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={{flex: 0.7}}>
-            <FlatList
-              numColumns={3}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-              }}
-              data={staticArray.HomeMenu}
-              renderItem={(item, index) => (
-                <HomeMenuButton
-                  item={item}
-                  index={index}
-                  // press={() => {
-                  //   MyLog('ContactUsScreen', item?.item?.index);
+            <View style={{flex: 0.7}}>
+              <FlatList
+                numColumns={3}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 15,
+                  paddingVertical: 5,
+                }}
+                data={staticArray.HomeMenu}
+                renderItem={(item, index) => (
+                  <HomeMenuButton
+                    item={item}
+                    index={index}
+                    // press={() => {
+                    //   MyLog('ContactUsScreen', item?.item?.index);
 
-                  //   RootNavigation.push(
-                  //     props?.navigation,
-                  //     item?.item?.screen,
-                  //     NaN,
-                  //   );
-                  // }}
-                />
-              )}
-            />
-          </View>
-         
-        </ScrollView>
+                    //   RootNavigation.push(
+                    //     props?.navigation,
+                    //     item?.item?.screen,
+                    //     NaN,
+                    //   );
+                    // }}
+                  />
+                )}
+              />
+            </View>
+          </ScrollView>
+        </View>
         <BorderView
-            style={{marginTop: 15}}
-            backgroundColor={AppColors.BackgroundSecondColor}
-            text={'સમાજ એજ મારો પરિવાર'}
-          />
+          style={{marginTop: 15}}
+          backgroundColor={AppColors.BackgroundSecondColor}
+          text={'સમાજ એજ મારો પરિવાર'}
+        />
 
         {/* <View style={{flex: 0.55, justifyContent: 'space-evenly'}}>
           <View

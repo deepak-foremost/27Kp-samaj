@@ -226,7 +226,14 @@ const FamilyMemberDetailScreen = props => {
           </View>
 
           {isloading ? (
-            <View style={{justifyContent: 'center', marginHorizontal: 15}}>
+            <View
+              style={{
+                justifyContent: 'center',
+                width:'90%',
+                alignSelf: 'center',
+                alignItems:'center',
+                
+              }}>
               <ListMember />
               <ListMember />
               <ListMember />

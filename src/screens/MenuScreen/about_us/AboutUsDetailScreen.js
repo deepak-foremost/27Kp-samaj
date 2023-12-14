@@ -222,10 +222,10 @@ const AboutUsDetailScreen = ({props, route}) => {
                   width: '100%',
                 }}>
                 <Image
-                  source={require('../../../assets/images/member_image.png')}
+                  source={AppImages.MEMBER_IMAGE}
                   style={{
-                    height: 90,
-                    width: 90,
+                    height: 100,
+                    width: 100,
                     resizeMode: 'contain',
                     // borderRadius: 80,
                     // borderColor: '#0C65F7',

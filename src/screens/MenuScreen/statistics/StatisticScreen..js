@@ -266,92 +266,90 @@ const StatisticScreen = props => {
         leadIcon={AppImages.BACK_ICON}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-       <View style={{flex:0.9}}>
-        <View
-          style={{
-            marginTop: -40,
-            width: '90%',
-            alignItems: 'center',
-            alignSelf: 'center',
-            backgroundColor: AppColors.BackgroundColor,
-            padding: 22,
-            borderRadius: 10,
-            backgroundColor: 'white',
-            ...Platform.select({
-              ios: {
-                shadowColor: '#D5D5D5',
-                shadowOffset: {width: 0, height: 5},
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-              },
-              android: {
-                elevation: 15,
-              },
-            }),
-          }}>
-          <Text
-            style={{
-              fontFamily: AppFonts.medium,
-              fontSize: 12,
-              color: AppColors.DarkText,
-              alignSelf: 'flex-start',
-              marginLeft: 10,
-            }}>
-            Please Select Village Below
-          </Text>
-
+        <View style={{flex: 0.9}}>
           <View
             style={{
-              width: '95%',
-              flexDirection: 'row',
-              marginTop: 10,
-              borderRadius: 3,
-              justifyContent: 'center',
+              marginTop: -40,
+              width: '90%',
               alignItems: 'center',
-              borderColor: '#DEDEDE',
-              borderWidth: 1,
+              alignSelf: 'center',
+              backgroundColor: AppColors.BackgroundColor,
+              padding: 22,
+              borderRadius: 10,
+              backgroundColor: 'white',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#D5D5D5',
+                  shadowOffset: {width: 0, height: 5},
+                  shadowOpacity: 0.9,
+                  shadowRadius: 3,
+                },
+                android: {
+                  elevation: 15,
+                },
+              }),
             }}>
-            <MySelection
-              label={`Select Village`}
-              placeholder={`Select Village`}
-              data={cities}
-              value={value}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setValue(item?.name);
-                setCityId(item?.id);
-                getCounts(item?.id);
-              }}
-            />
-          </View>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <FlatList
-              numColumns={3}
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingBottom: 20,
-                // paddingStart: 15,
-                paddingTop: 20,
+            <Text
+              style={{
+                fontFamily: AppFonts.medium,
+                fontSize: 12,
+                color: AppColors.DarkText,
+                alignSelf: 'flex-start',
+                marginLeft: 10,
+              }}>
+              Please Select Village Below
+            </Text>
+
+            <View
+              style={{
+                width: '95%',
+                flexDirection: 'row',
+                marginTop: 10,
+                borderRadius: 3,
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}
-              data={count == null ? [] : count}
-              renderItem={(item, index) => (
-                <MenuComponent index={index} item={item} onClick={() => {}} />
-              )}
-            />
+                borderColor: '#DEDEDE',
+                borderWidth: 1,
+              }}>
+              <MySelection
+                label={`Select Village`}
+                placeholder={`Select Village`}
+                data={cities}
+                value={value}
+                onItemSelect={item => {
+                  printLog(JSON.stringify(item?.item));
+                  setValue(item?.name);
+                  setCityId(item?.id);
+                  getCounts(item?.id);
+                }}
+              />
+            </View>
           </View>
-
-         
-        </ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{flex: 1, justifyContent: 'center'}}>
+              <FlatList
+                numColumns={3}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingBottom: 20,
+                  // paddingStart: 15,
+                  paddingTop: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                data={count == null ? [] : count}
+                renderItem={(item, index) => (
+                  <MenuComponent index={index} item={item} onClick={() => {}} />
+                )}
+              />
+            </View>
+          </ScrollView>
         </View>
         <BorderView
-            text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
-            backgroundColor={AppColors.BackgroundSecondColor}
-          />
+          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          backgroundColor={AppColors.BackgroundSecondColor}
+        />
 
         {/* <FooterTextCell title={`સમાજ એજ મારુ પરિવાર છે`} /> */}
       </View>
@@ -415,6 +413,7 @@ export const MenuComponent = props => {
             marginTop: -5,
             width: '70%',
             flex: 1,
+            marginTop: Platform.OS == 'ios' ? 10 : 0,
           }}>
           {props?.item?.item?.name}
         </Text>

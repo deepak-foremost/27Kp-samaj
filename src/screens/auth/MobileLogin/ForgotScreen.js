@@ -12,6 +12,8 @@ import AppButton from '../../../components/AppButton';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {CustomExpiryPicker} from '../../../components/CustomExpiryPicker';
+import moment from 'moment';
 
 const ForgotScreen = ({route}) => {
   const screen = route.params.screen;
@@ -48,124 +50,120 @@ const ForgotScreen = ({route}) => {
         />
 
         <KeyboardAwareScrollView
-          contentContainerStyle={{height: Dimensions.get('window').height - 55}}
+          contentContainerStyle={{flexGrow: 1}}
           enableOnAndroid={true}
           showsVerticalScrollIndicator={false}>
           {/* TopView  */}
-          <View
-            style={{
-              height: Dimensions.get('window').height / 3,
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-              paddingHorizontal: 25,
-            }}>
-            <Image
-              source={
-                screen == 'User Signin'
-                  ? AppImages.USER_KEY_ICON
-                  : AppImages.KEY_ICON
-              }
-            />
-
+          <View style={{flex: 1}}>
             <View
               style={{
-                justifyContent: 'center',
+                height: Dimensions.get('window').height / 3,
+                justifyContent: 'space-evenly',
                 alignItems: 'center',
+                paddingHorizontal: 25,
               }}>
-              <Text
+              <Image
+                source={
+                  screen == 'User Signin'
+                    ? AppImages.USER_KEY_ICON
+                    : AppImages.KEY_ICON
+                }
+              />
+              <View
                 style={{
-                  fontFamily: AppFonts.semiBold,
-                  fontSize: 22,
-                  color: '#000',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}>
-                Forgot Password
-              </Text>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.semiBold,
+                    fontSize: 22,
+                    color: '#000',
+                  }}>
+                  Forgot Password
+                </Text>
 
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: AppFonts.regular,
-                  color: AppColors.LightText,
-                  textAlign: 'center',
-                  marginTop: 15,
-                }}>
-                Please enter your number. We will send a code to your phone to
-                reset your password.
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: AppFonts.regular,
+                    color: AppColors.LightText,
+                    textAlign: 'center',
+                    marginTop: 15,
+                  }}>
+                  Please enter your number. We will send a code to your phone to
+                  reset your password.
+                </Text>
+              </View>
             </View>
-          </View>
 
-          {/* CenterView  */}
-          <View style={{height: Dimensions.get('window').height / 2.5}}>
-            <View
-              style={[
-                {
-                  marginBottom: 30,
-                },
-                AppStyles.OutlineBackground,
-              ]}>
-              {/* <AppInputView
+            {/* CenterView  */}
+            <View style={{flex: 0.4}}>
+              <View
+                style={[
+                  {
+                    marginBottom: 30,
+                  },
+                  AppStyles.OutlineBackground,
+                ]}>
+                {/* <AppInputView
                 text={'Phone Number'}
                 placeholder={'Phone Number'}
               /> */}
 
-              <AppInputView
-                close={() => setVisible(false)}
-                code={country}
-                selectCode={cod => {
-                  setCountry('+' + cod.callingCode);
-                  setVisible(false);
-                }}
-                Visible={Visible}
-                open={() => setVisible(true)}
-                text={'Mobile Number'}
-                placeholder={'Mobile Number'}
-                onChangeText={i => setMobile(i)}
-                icon={{
-                  tintColor:
-                    screen == 'User Signin'
-                      ? AppColors.Red
-                      : AppColors.BackgroundSecondColor,
-                }}
-              />
+                <AppInputView
+                  close={() => setVisible(false)}
+                  code={country}
+                  selectCode={cod => {
+                    setCountry('+' + cod.callingCode);
+                    setVisible(false);
+                  }}
+                  Visible={Visible}
+                  open={() => setVisible(true)}
+                  text={'Mobile Number'}
+                  placeholder={'Mobile Number'}
+                  onChangeText={i => setMobile(i)}
+                  icon={{
+                    tintColor:
+                      screen == 'User Signin'
+                        ? AppColors.Red
+                        : AppColors.BackgroundSecondColor,
+                  }}
+                />
 
-              <AppButton
-                textStyle={{
-                  color: screen == 'User Signin' ? AppColors.black : 'white',
-                }}
-                buttonPress={() =>
-                  RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
-                    screen: screen,
-                  })
-                }
-                text={'Send my code'}
-                buttonStyle={{
-                  width: '100%',
-                  alignSelf: 'center',
-                  marginTop: 30,
-                  marginBottom: 20,
-                  backgroundColor:
-                    screen == 'User Signin'
-                      ? AppColors.Red
-                      : AppColors.BackgroundSecondColor,
-                }}
-              />
+                <AppButton
+                  textStyle={{
+                    color: screen == 'User Signin' ? AppColors.black : 'white',
+                  }}
+                  buttonPress={() =>
+                    RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
+                      screen: screen,
+                    })
+                  }
+                  text={'Send my code'}
+                  buttonStyle={{
+                    width: '100%',
+                    alignSelf: 'center',
+                    marginTop: 30,
+                    marginBottom: 20,
+                    backgroundColor:
+                      screen == 'User Signin'
+                        ? AppColors.Red
+                        : AppColors.BackgroundSecondColor,
+                  }}
+                />
+              </View>
             </View>
           </View>
-          <View
-            style={{
-              height: Dimensions.get('window').height / 5.2,
-              justifyContent: 'flex-end',
-            }}>
-            <BorderView
-              text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
-              backgroundColor={
-                screen == 'User Signin'
-                  ? AppColors.Red
-                  : AppColors.BackgroundSecondColor
-              }
-            />
-          </View>
+
+          <BorderView
+            text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+            backgroundColor={
+              screen == 'User Signin'
+                ? AppColors.Red
+                : AppColors.BackgroundSecondColor
+            }
+          />
         </KeyboardAwareScrollView>
       </View>
     </View>

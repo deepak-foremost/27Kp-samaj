@@ -200,7 +200,7 @@ const MembersDetailScreen = props => {
                     //   source={{uri: item?.image}}
                     source={AppImages.MEMBER_IMAGE}
                     style={{
-                      height: 65,
+                      height: 80,
                       width: '30%',
                       resizeMode: 'stretch',
                       borderRadius: 10,
@@ -211,7 +211,7 @@ const MembersDetailScreen = props => {
                     //   source={{uri: item?.image}}
                     source={AppImages.MEMBER_IMAGE}
                     style={{
-                      height: 65,
+                      height: 80,
                       width: '30%',
                       resizeMode: 'stretch',
                       borderRadius: 10,
@@ -222,7 +222,7 @@ const MembersDetailScreen = props => {
                     //   source={{uri: item?.image}}
                     source={AppImages.MEMBER_IMAGE}
                     style={{
-                      height: 65,
+                      height: 80,
                       width: '30%',
                       resizeMode: 'stretch',
                       borderRadius: 10,

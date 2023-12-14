@@ -125,6 +125,16 @@ export const getBusinessAllList = (params, onSuccess, onFailure) => {
   );
 };
 
+export const getMyImageSlider = (onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_IMAGE_SLIDERS}`,
+    RequestType.get,
+    NaN,
+    onSuccess,
+    onFailure,
+  );
+};
+
 export const getCategories = (onSuccess, onFailure) => {
   CallApi(Api.GET_CATEGORIES, RequestType.get, NaN, onSuccess, onFailure);
 };

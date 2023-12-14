@@ -28,9 +28,10 @@ import ScreenToolbar from '../../../components/ScreenToolbar';
 import {MemberDetail} from '../about_us/AboutUsDetailScreen';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
 import {getFamilyMembersList} from '../../../networking/CallApi';
+import RNHTMLToPdf from 'react-native-html-to-pdf';
+import Share from 'react-native-share';
 
 const list = [
   {
@@ -98,6 +99,28 @@ const list = [
   },
 ];
 
+// const page1 = PDFPage.create()
+//   .setMediaBox(200, 200)
+//   .drawText('You can add text and rectangles to the PDF!', {
+//     x: 5,
+//     y: 235,
+//     color: '#007386',
+//   })
+//   .drawRectangle({
+//     x: 25,
+//     y: 25,
+//     width: 150,
+//     height: 150,
+//     color: '#FF99CC',
+//   })
+//   .drawRectangle({
+//     x: 75,
+//     y: 75,
+//     width: 50,
+//     height: 50,
+//     color: '#99FFCC',
+//   });
+
 const FamilyDetailScreen = props => {
   const [filePath, setFilePath] = useState('');
   const [members, setMembers] = useState([]);
@@ -105,6 +128,79 @@ const FamilyDetailScreen = props => {
   useEffect(() => {
     setMembers(list);
   }, [members]);
+
+  const generatePDF = async userData => {
+    const htmlContent = `
+      <html>
+        <body>
+          <h1>User Details</h1>
+          <p style="color:red;">ગામ: ${userData.name}</p>
+          <p>શાખ: ${userData.shakh}</p>
+          <p>મોસાળ: ${userData.mosal}</p>
+          <p>સાસરું: ${userData.sas}</p>
+          <p>જન્મ તારીખ: ${userData.dob}</p>
+          <p>ઊંચાઈ: ${userData.height}</p>
+          <p>બ્લડગ્રુપ: ${userData.blood_group}</p>
+          <p>કુટુંબના વડા સાથેનો સંબંધ: ${userData.family_main_member_with_relation}</p>
+          <p>લગ્ન સ્થિતિ:: ${userData.marital_status}</p>
+          <p>અભ્યાસ: ${userData.study}</p>
+          <p>વ્યવસાય: ${userData.business}</p>
+          <p>વ્યવસાયનું સરનામું: ${userData.current_address}</p>
+          <p>ફોરેન Country નામ: ${userData.city}</p>
+          <p>હાલ ના રહેઠાણનું સરનામું: ${userData.business_address}</p>
+          <p>મોબાઈલ નંબર: ${userData.phone}</p>
+          <p>E-Mail ID: ${userData.email}</p>
+        
+          
+        </body>
+      </html>
+    `;
+
+    const options = {
+      html: htmlContent,
+      fileName: 'UserDetails',
+      directory: 'Documents',
+    };
+
+    const pdf = await RNHTMLToPdf.convert(options);
+    return pdf.filePath;
+  };
+  const sharePDF = async pdfFilePath => {
+    try {
+      const options = {
+        url: `file://${pdfFilePath}`,
+        type: 'application/pdf',
+        failOnCancel: false,
+      };
+
+      await Share.open(options);
+    } catch (error) {
+      console.error('Error sharing PDF:', error.message);
+    }
+  };
+
+  const handleGeneratePDF = async userData => {
+    // const userData = {
+    //   name: 'John Doe',
+    //   number: '123-456-7890',
+    //   gender: 'Male',
+    // };
+
+    const pdfFilePath = await generatePDF(userData);
+    await sharePDF(pdfFilePath);
+  };
+
+  // const CreatePdf = async () => {
+  //   const docsDir = await PDFLib.getDocumentsDirectory();
+  //   const pdfPath = `${docsDir}/sample.pdf`;
+  //   PDFDocument.create(pdfPath)
+  //     .addPages(page1)
+  //     .write() // Returns a promise that resolves with the PDF's path
+  //     .then(path => {
+  //       console.log('PDF created at: ' + path);
+  //       // Do stuff with your shiny new PDF!
+  //     });
+  // };
 
   // const isPermitted = async () => {
   //   if (Platform.OS === 'android') {
@@ -189,107 +285,107 @@ const FamilyDetailScreen = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={item.name.toUpperCase()} />
-        <View style={{flex:0.9}}>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 22,
-            marginTop: 15,
-            backgroundColor: AppColors.BackgroundSecondColor,
-            marginHorizontal: 15,
-            borderRadius: 8,
-            paddingVertical: 10,
-          }}>
-          <Text
-            style={{
-              color: '#fff',
-              fontFamily: AppFonts.semiBold,
-              fontSize: 13,
-            }}>
-            {`મોં : ${item?.family_id}`}
-          </Text>
-          <Text
-            style={{
-              color: '#fff',
-              fontFamily: AppFonts.semiBold,
-              fontSize: 13,
-              marginTop: 5,
-            }}>
-            {`ગામ : ${item?.city}`}
-          </Text>
-        </View>
-
-        {members == null ? (
+        <View style={{flex: 0.9}}>
           <View
             style={{
-              flex: 1,
               alignItems: 'center',
-              paddingHorizontal: 10,
-              paddingTop: 15,
-            }}>
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-          </View>
-        ) : members?.length == 0 ? (
-          <View
-            style={{
-              flex: 1,
               justifyContent: 'center',
-              alignItems: 'center',
+              paddingHorizontal: 22,
+              marginTop: 15,
+              backgroundColor: AppColors.BackgroundSecondColor,
+              marginHorizontal: 15,
+              borderRadius: 8,
+              paddingVertical: 10,
             }}>
             <Text
               style={{
-                fontFamily: AppFonts.bold,
-                color: AppColors.black,
-                fontSize: 15,
+                color: '#fff',
+                fontFamily: AppFonts.semiBold,
+                fontSize: 13,
               }}>
-              No List Found
+              {`મોં : ${item?.family_id}`}
+            </Text>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: AppFonts.semiBold,
+                fontSize: 13,
+                marginTop: 5,
+              }}>
+              {`ગામ : ${item?.city}`}
             </Text>
           </View>
-        ) : (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{paddingVertical: 15}}
-            data={members == null ? [] : members}
-            renderItem={({item, index}) => {
-              printLog(`ITEM$${index}`, JSON.stringify(item?.item));
-              return (
-                <View style={{}}>
-                  <FamilyMermberCell
-                    // saveButton={() => createPDF()}
-                    index={index}
-                    item={item}
-                    visible={[...visible]}
-                    onClick={
-                      () =>
-                        // setVisible([...index])
-                        {
-                          const newList = [...members];
-                          newList[index].is_selected =
-                            !newList[index].is_selected;
-                          setMembers(newList);
-                        }
-                      // RootNavigation.push(
-                      //   props?.navigation,
-                      //   AppScreens.MEMBER_DETAIL_SCREEN,
-                      //   item?.item,
-                      // )
-                    }
-                  />
-                  {/* {
+
+          {members == null ? (
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                paddingHorizontal: 10,
+                paddingTop: 15,
+              }}>
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+            </View>
+          ) : members?.length == 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.bold,
+                  color: AppColors.black,
+                  fontSize: 15,
+                }}>
+                No List Found
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingVertical: 15}}
+              data={members == null ? [] : members}
+              renderItem={({item, index}) => {
+                printLog(`ITEM$${index}`, JSON.stringify(item?.item));
+                return (
+                  <View style={{}}>
+                    <FamilyMermberCell
+                      saveButton={() => handleGeneratePDF(item)}
+                      index={index}
+                      item={item}
+                      visible={[...visible]}
+                      onClick={
+                        () =>
+                          // setVisible([...index])
+                          {
+                            const newList = [...members];
+                            newList[index].is_selected =
+                              !newList[index].is_selected;
+                            setMembers(newList);
+                          }
+                        // RootNavigation.push(
+                        //   props?.navigation,
+                        //   AppScreens.MEMBER_DETAIL_SCREEN,
+                        //   item?.item,
+                        // )
+                      }
+                    />
+                    {/* {
                     item?.item.id==visible ? ( <MemberDetailCell item={item?.item} />):
                     null
                   } */}
-                </View>
-              );
-            }}
-          />
-        )}
+                  </View>
+                );
+              }}
+            />
+          )}
         </View>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
@@ -467,7 +563,7 @@ export const MemberDetailCell = props => {
             //   source={{uri: item?.image}}
             source={AppImages.MEMBER_IMAGE}
             style={{
-              height: 65,
+              height: 80,
               width: '30%',
               resizeMode: 'stretch',
               borderRadius: 10,
@@ -478,7 +574,7 @@ export const MemberDetailCell = props => {
             //   source={{uri: item?.image}}
             source={AppImages.MEMBER_IMAGE}
             style={{
-              height: 65,
+              height: 80,
               width: '30%',
               resizeMode: 'stretch',
               borderRadius: 10,
@@ -489,7 +585,7 @@ export const MemberDetailCell = props => {
             //   source={{uri: item?.image}}
             source={AppImages.MEMBER_IMAGE}
             style={{
-              height: 65,
+              height: 80,
               width: '30%',
               resizeMode: 'stretch',
               borderRadius: 10,

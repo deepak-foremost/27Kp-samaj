@@ -1,11 +1,32 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, Platform} from 'react-native';
+import {View, Text, Platform, Dimensions, FlatList} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import DatePicker from 'react-native-date-picker';
 import AppButton from './AppButton';
 import {AppFonts} from '../utils/AppFonts';
 import moment from 'moment';
 import MonthPicker from 'react-native-month-year-picker';
+import Carousel from 'react-native-snap-carousel';
+
+const images = [
+  {
+    month: 1,
+  },
+  {
+    month: 2,
+  },
+  {
+    month: 3,
+  },{
+    month: 1,
+  },
+  {
+    month: 2,
+  },
+  {
+    month: 3,
+  },
+];
 
 export const CustomExpiryPicker = props => {
   const refRBSheet = useRef();
@@ -62,25 +83,23 @@ export const CustomExpiryPicker = props => {
             borderTopWidth: 1,
             borderTopColor: '#828282',
           }}>
-          {/* <DatePicker
-            dividerHeight={250}
-            androidVariant="nativeAndroid"
-            mode="date"
-            date={date}
-            theme="light"
-            onDateChange={text => setDate(text)}
-            // maximumDate={new Date()}
-          /> */}
-          <MonthPicker
-            dividerHeight={250}
-            androidVariant="nativeAndroid"
-            mode="date"
-            date={date}
-            theme="light"
-            onChange={(text, date) => setDate(date)}
-            value={date}
-            //    onDateChange={text => setDate(text)}
-          />
+          <View style={{height: 200}}>
+            <FlatList
+            contentContainerStyle={{flexGrow:1}}
+              data={images}
+              renderItem={({item}) => (
+                <Text
+                  style={{
+                    backgroundColor: 'red',
+                    height:40,
+                    width:200,
+                    marginVertical: 10,
+                  }}>
+                  {item.month}
+                </Text>
+              )}
+            />
+          </View>
         </View>
 
         <AppButton

@@ -7,6 +7,14 @@ import {AppFonts} from '../utils/AppFonts';
 import moment from 'moment';
 import MonthPicker from 'react-native-month-year-picker';
 
+// const datepickerCustomStyles = {
+//   dateText: {
+//     fontSize: 18,
+//     color: 'red',
+//     fontWeight: 'bold',
+//   },
+// };
+
 export const CustomDatePicker = props => {
   const refRBSheet = useRef();
   const [date, setDate] = useState(
@@ -63,12 +71,15 @@ export const CustomDatePicker = props => {
             borderTopColor: '#828282',
           }}>
           <DatePicker
+            style={{}}
+            textColor="black"
             dividerHeight={250}
             androidVariant="nativeAndroid"
             mode="date"
             date={date}
             theme="light"
             onDateChange={text => setDate(text)}
+            // customStyles={datepickerCustomStyles}
             // maximumDate={new Date()}
           />
         </View>
