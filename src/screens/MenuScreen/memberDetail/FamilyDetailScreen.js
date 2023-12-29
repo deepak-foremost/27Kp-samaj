@@ -32,6 +32,7 @@ import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
 import {getFamilyMembersList} from '../../../networking/CallApi';
 import RNHTMLToPdf from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
+import ZoomImage from '../../../components/ZoomImage';
 
 const list = [
   {
@@ -124,10 +125,20 @@ const list = [
 const FamilyDetailScreen = props => {
   const [filePath, setFilePath] = useState('');
   const [members, setMembers] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [items, setItem] = useState(null);
 
-  useEffect(() => {
-    setMembers(list);
-  }, [members]);
+  const images = [
+    {
+      url: items != null && items?.image,
+      props: {source: items != null && items?.image},
+    },
+  ];
+
+  // useEffect(() => {
+  //   setMembers(list);
+  // }, [members]);
 
   const generatePDF = async userData => {
     const htmlContent = `
@@ -247,29 +258,32 @@ const FamilyDetailScreen = props => {
   const StatusBarHeight = inset.top;
 
   var item = props?.route?.params?.item;
-  // MyLog('FamilyDetailScreen', JSON.stringify(props?.route?.params?.item));
+  printLog('FamilyDetailScreen', JSON.stringify(props?.route?.params?.item));
   // const [members, setMembers] = useState(null);
-  // useEffect(() => {
-  //   getString(AsyncStorageConst.allDetails,
-  //     response=>{
-  //     console.log('token-->',JSON.stringify(response))
-  //   })
-  //   getFamilyMembersList(
-  //     {id: item?.id, flag: 'all'},
-  //     response => {
-  //       printLog('SUCCESS', JSON.stringify(response));
-  //       if (response?.status) {
-  //         setMembers(response?.data);
-  //       } else {
-  //         setMembers([]);
-  //       }
-  //     },
-  //     error => {
-  //       printLog('ERROR', JSON.stringify(error));
-  //       setMembers([]);
-  //     },
-  //   );
-  // }, []);
+  useEffect(() => {
+    setLoading(true);
+    getString(AsyncStorageConst.allDetails, response => {
+      console.log('token-->', JSON.stringify(response));
+    });
+    getFamilyMembersList(
+      {id: item?.id, flag: 'all'},
+      response => {
+        printLog('SUCCESS', JSON.stringify(response));
+        if (response?.status) {
+          setMembers(response?.data);
+          setLoading(false);
+        } else {
+          setMembers([]);
+          setLoading(false);
+        }
+      },
+      error => {
+        printLog('ERROR', JSON.stringify(error));
+        setMembers([]);
+        setLoading(false);
+      },
+    );
+  }, []);
 
   return (
     <View
@@ -285,6 +299,11 @@ const FamilyDetailScreen = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={item.name.toUpperCase()} />
+        <ZoomImage
+          visible={open}
+          images={images}
+          dismiss={() => setOpen(false)}
+        />
         <View style={{flex: 0.9}}>
           <View
             style={{
@@ -316,7 +335,7 @@ const FamilyDetailScreen = props => {
             </Text>
           </View>
 
-          {members == null ? (
+          {isLoading ? (
             <View
               style={{
                 flex: 1,
@@ -330,7 +349,7 @@ const FamilyDetailScreen = props => {
               <ListMember styles={{height: 45}} />
               <ListMember styles={{height: 45}} />
             </View>
-          ) : members?.length == 0 ? (
+          ) : !isLoading && members?.length == 0 ? (
             <View
               style={{
                 flex: 1,
@@ -357,7 +376,11 @@ const FamilyDetailScreen = props => {
                 return (
                   <View style={{}}>
                     <FamilyMermberCell
-                      saveButton={() => handleGeneratePDF(item)}
+                      // saveButton={() => handleGeneratePDF(item)}
+                      imgPress={() => {
+                        setOpen(true);
+                        setItem(item);
+                      }}
                       index={index}
                       item={item}
                       visible={[...visible]}
@@ -491,13 +514,23 @@ const FamilyMermberCell = props => {
         />
       </View>
       {props?.item?.is_selected ? (
-        <MemberDetailCell item={props?.item} saveButton={props?.saveButton} />
+        <MemberDetailCell
+          item={props?.item}
+          saveButton={props?.saveButton}
+          imgPress={props?.imgPress}
+        />
       ) : null}
     </TouchableOpacity>
   );
 };
 
 export const MemberDetailCell = props => {
+  const images = [
+    {
+      url: props?.item?.image,
+      props: {source: props?.item?.image},
+    },
+  ];
   return (
     <View
       style={{
@@ -506,6 +539,7 @@ export const MemberDetailCell = props => {
         borderBottomRightRadius: 8,
         paddingVertical: 15,
         marginTop: -2,
+        ...props.styles,
         ...Platform.select({
           ios: {
             // shadowColor: '#D5D5D5',
@@ -546,9 +580,9 @@ export const MemberDetailCell = props => {
         <View
           style={{
             width: '100%',
-            borderRadius: 54,
             flexDirection: 'row',
             justifyContent: 'center',
+            paddingVertical: 3,
           }}>
           {/* <Image
                   source={AppImages.placeholder_user}
@@ -558,51 +592,75 @@ export const MemberDetailCell = props => {
                     borderRadius: 10,
                   }}
                 /> */}
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{width: '31%', height: 80, borderRadius: 10}}
+            onPress={props?.imgPress}>
+            <Image
+              source={
+                props?.item?.image == null
+                  ? AppImages.MEMBER_IMAGE
+                  : {uri: props?.item?.image}
+              }
+              style={{
+                height: '100%',
+                width: '100%',
+                // resizeMode: 'contain',
+                borderRadius: 10,
+                backgroundColor: '#F2F2F2',
+              }}
+            />
+          </TouchableOpacity>
 
-          <Image
-            //   source={{uri: item?.image}}
-            source={AppImages.MEMBER_IMAGE}
+          <TouchableOpacity
+            activeOpacity={1}
             style={{
+              width: '31%',
               height: 80,
-              width: '30%',
-              resizeMode: 'stretch',
               borderRadius: 10,
-              marginHorizontal: 5,
-            }}
-          />
-          <Image
-            //   source={{uri: item?.image}}
-            source={AppImages.MEMBER_IMAGE}
-            style={{
-              height: 80,
-              width: '30%',
-              resizeMode: 'stretch',
-              borderRadius: 10,
-              marginHorizontal: 5,
-            }}
-          />
-          <Image
-            //   source={{uri: item?.image}}
-            source={AppImages.MEMBER_IMAGE}
-            style={{
-              height: 80,
-              width: '30%',
-              resizeMode: 'stretch',
-              borderRadius: 10,
-              marginHorizontal: 5,
-            }}
-          />
+              marginHorizontal: 15,
+            }}>
+            <Image
+              source={
+                props?.item?.image_one == null
+                  ? AppImages.MEMBER_IMAGE
+                  : {uri: props?.item?.image_one}
+              }
+              style={{
+                height: '100%',
+                width: '100%',
+                // resizeMode: 'contain',
+                borderRadius: 10,
+                backgroundColor: '#F2F2F2',
+              }}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{width: '31%', height: 80, borderRadius: 10}}>
+            <Image
+              source={
+                props?.item?.image_two == null
+                  ? AppImages.MEMBER_IMAGE
+                  : {uri: props?.item?.image_two}
+              }
+              style={{
+                height: '100%',
+                width: '100%',
+                // resizeMode: 'contain',
+                borderRadius: 10,
+                backgroundColor: '#F2F2F2',
+              }}
+            />
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
-            RootNavigation.push(
-              props?.navigation,
-              AppScreens.FamilyDetailScreen,
-              {
-                item: {...item, id: item?.user_id},
-              },
-            );
+            RootNavigation.navigate(AppScreens.FAMILY_DETAIL_SCREEN, {
+              item: {...props.item, id: props?.item?.user_id},
+            });
           }}>
           <Text
             style={{
@@ -612,7 +670,7 @@ export const MemberDetailCell = props => {
               marginTop: 10,
               // marginBottom:5
             }}>
-            {props?.item?.phone}
+            {props?.item?.country_code + ' ' + props?.item?.phone}
           </Text>
           {/* <MemberDetail
                     title={'Family Id :'}
@@ -638,12 +696,12 @@ export const MemberDetailCell = props => {
         />
 
         <MemberDetail title={'મોસાળ :'} detailText={props?.item?.mosal} />
-        <MemberDetail title={'સાસરું: '} detailText={props?.item?.mosal} />
+        <MemberDetail title={'સાસરું: '} detailText={props?.item?.sasru} />
 
         <View style={{flexDirection: 'row'}}>
           <MemberDetail
             title={'જન્મ તારીખ :'}
-            style={{}}
+            styles={{flex: 0}}
             detailText={
               props?.item?.dob != '' && props?.item?.dob != undefined
                 ? moment(props?.item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
@@ -652,26 +710,37 @@ export const MemberDetailCell = props => {
           />
           <MemberDetail
             style={{marginLeft: 10}}
-            title={' |  Age :'}
+            title={'|  ઉંમર :'}
             detailText={props?.item?.age}
+            styles={{flex: 0}}
           />
         </View>
         <View style={{flexDirection: 'row'}}>
           <MemberDetail
             style={{}}
             title={'ઊંચાઈ :'}
-            detailText={props?.item?.height}
+            detailText={props?.item?.height + ' ft.'}
+            styles={{flex: 0}}
           />
           <MemberDetail
             style={{}}
             title={'  |  વજન :'}
-            detailText={props?.item?.weight}
+            detailText={props?.item?.weight + ' Kg'}
+            styles={{flex: 0}}
           />
         </View>
-        <MemberDetail
-          title={'બ્લડ ગ્રુપ :'}
-          detailText={props?.item?.blood_group}
-        />
+        <View style={{flexDirection: 'row'}}>
+          <MemberDetail
+            title={'બ્લડ ગ્રુપ :'}
+            detailText={props?.item?.blood_group}
+            styles={{flex: 0}}
+          />
+          <MemberDetail
+            title={'  |  લિંગ :'}
+            detailText={props?.item?.gender}
+            styles={{flex: 0}}
+          />
+        </View>
         <MemberDetail
           title={'કુટુંબ ના વડા સાથે નો સંબંધ :'}
           detailText={props?.item?.family_main_member_with_relation}
@@ -682,13 +751,14 @@ export const MemberDetailCell = props => {
         />
         <MemberDetail title={'અભ્યાસ :'} detailText={props?.item?.study} />
         <MemberDetail title={'વ્યવસાય :'} detailText={props?.item?.business} />
-        <MemberDetail
-          title={'હાલ નો વ્યવસાય :'}
-          detailText={props?.item?.business}
-        />
+
         <MemberDetail
           title={'વ્યવસાયનું સરનામું :'}
           detailText={props?.item?.business_address}
+        />
+        <MemberDetail
+          title={'ફોરેન Country નામ :'}
+          detailText={props?.item?.foreign_country_name}
         />
         <MemberDetail
           title={'હાલ ના રહેઠાણ નુ સરનામું :'}
@@ -701,8 +771,9 @@ export const MemberDetailCell = props => {
             justifyContent: 'flex-start',
           }}>
           <MemberDetail
+            styles={{flex: 0}}
             title={'મોબાઇલ નંબર :'}
-            detailText={props?.item?.phone}
+            detailText={props?.item?.country_code + ' ' + props?.item?.phone}
             contact
           />
 
@@ -716,7 +787,7 @@ export const MemberDetailCell = props => {
             }}
             onPress={() =>
               Linking.openURL(
-                `tel:${'9510135458'}`,
+                `tel:${props?.item?.country_code + ' ' + props?.item?.phone}`,
                 // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
               )
             }>
@@ -737,7 +808,9 @@ export const MemberDetailCell = props => {
             }}
             onPress={() =>
               Linking.openURL(
-                `whatsapp://send?phone=${'9510135458'}`,
+                `whatsapp://send?phone=${
+                  props?.item?.country_code + ' ' + props?.item?.phone
+                }`,
                 // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
               )
             }>
@@ -749,8 +822,9 @@ export const MemberDetailCell = props => {
 
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <MemberDetail
+            styles={{flex: 0}}
             title={'જીવન સહાય સભાસદ નં :'}
-            detailText={1234}
+            detailText={props?.item?.jeevan_sahay_nubmer}
             style={{}}
           />
           <TouchableOpacity
@@ -784,7 +858,11 @@ export const MemberDetailCell = props => {
         </View>
 
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <MemberDetail title={'ભુમિ સભાસદ નં:'} detailText={1234} style={{}} />
+          <MemberDetail
+            title={'ભુમિ સભાસદ નં:'}
+            detailText={props?.item?.boomi_nubmer}
+            style={{}}
+          />
           {/* <TouchableOpacity
             activeOpacity={AppConstValue.ButtonOpacity}
             onPress={() =>

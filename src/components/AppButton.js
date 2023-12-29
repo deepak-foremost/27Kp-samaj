@@ -3,6 +3,7 @@ import React from 'react';
 import {AppConstValue} from '../utils/AppConstValue';
 import {AppFonts} from '../utils/AppFonts';
 import {AppColors} from '../utils/AppColors';
+import LoaderView from '../utils/LoaderView';
 
 const AppButton = props => {
   return (
@@ -23,18 +24,24 @@ const AppButton = props => {
         style={{position: 'absolute', left: 30, ...props.imgStyle}}
         source={props?.src}
       /> */}
-      <Text
-        style={{
-          fontFamily: AppFonts.semiBold,
-          fontSize: 14,
-          color: '#fff',
-          width: '100%',
-          textAlign: 'center',
-          paddingTop:2.5,
-          ...props.textStyle,
-        }}>
-        {props.text}
-      </Text>
+      {props?.loading ? (
+        <View>
+          <LoaderView style={{width: '25%', height: 30}} color={props?.color} />
+        </View>
+      ) : (
+        <Text
+          style={{
+            fontFamily: AppFonts.semiBold,
+            fontSize: 14,
+            color: '#fff',
+            width: '100%',
+            textAlign: 'center',
+            paddingTop: 2.5,
+            ...props.textStyle,
+          }}>
+          {props.text}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

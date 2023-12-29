@@ -21,7 +21,7 @@ import * as RootNavigation from '../utils/RootNavigation';
 import {staticArray} from '../utils/staticArray';
 import ScreenToolbar from '../components/ScreenToolbar';
 import BorderView from '../components/BorderView';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const ContactUsScreen = props => {
   const inset = useSafeAreaInsets();
@@ -220,7 +220,6 @@ const ContactUsScreen = props => {
                   marginTop: 15,
                   marginBottom: 30,
                   flexDirection: 'row',
-                  
                 }}>
                 <Text
                   numberOfLines={2}
@@ -229,16 +228,16 @@ const ContactUsScreen = props => {
                     fontFamily: AppFonts.semiBold,
                     color: '#fff',
                     width: '85%',
-                    textAlign:'center'
+                    textAlign: 'center',
                   }}>
                   Website / Mobile Application Developer Contact Number : Dhaval
                   Patel : +91 : 9510135458{' '}
                 </Text>
-               
+
                 {
                   <TouchableOpacity
                     activeOpacity={1}
-                    style={{marginLeft:5,marginBottom:5}}
+                    style={{marginLeft: 5, marginBottom: 5}}
                     onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
                     <Image source={AppImages.CIRCLE_CALL_ICON} />
                   </TouchableOpacity>
@@ -250,8 +249,8 @@ const ContactUsScreen = props => {
                     paddingHorizontal: 2.5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginLeft:5,
-                    marginBottom:5
+                    marginLeft: 5,
+                    marginBottom: 5,
                   }}
                   onPress={() =>
                     Linking.openURL(
@@ -372,31 +371,25 @@ const ContactCell = props => {
 
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{paddingStart: 10, paddingEnd: 5,paddingBottom:2.5,}}
+          style={{paddingStart: 10, paddingEnd: 5, paddingBottom: 2.5}}
           onPress={() =>
             Linking.openURL(
               `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
             )
           }>
-          <Image
-            source={AppImages.CIRCLE_CALL_ICON}
-            style={{}}
-          />
+          <Image source={AppImages.CIRCLE_CALL_ICON} style={{}} />
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{paddingStart: 5,paddingBottom:2.5}}
+          style={{paddingStart: 5, paddingBottom: 2.5}}
           onPress={() =>
             Linking.openURL(
-              `whatsapp://send?phone=${'9510135458'}`,
+              `whatsapp://send?phone=${props?.item?.item?.code}${props?.item?.item?.phone}`,
               // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
             )
           }>
-          <Image
-            source={AppImages.WHATSAPP_ICON}
-            style={{}}
-          />
+          <Image source={AppImages.WHATSAPP_ICON} style={{}} />
         </TouchableOpacity>
       </View>
     </View>

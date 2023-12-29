@@ -16,10 +16,10 @@ const App = () => {
         position={'bottom'}
         statusBarHeight={Platform.OS == 'android' ? 0 : 0}
         style={{
-          // backgroundColor: AppColors.BackgroundSecondColor,
+          backgroundColor: AppColors.BackgroundSecondColor,
           fontSize: 14,
           fontFamily: AppFonts.semiBold,
-          color: '#000',
+          color: '#fff',
           marginHorizontal: 20,
           marginBottom: 10,
           borderRadius: 6,

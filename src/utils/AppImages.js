@@ -44,4 +44,6 @@ export class AppImages {
   static IMP_LINKS_ICON = require('../assets/images/imp_link.png');
   static SOCIAL_HELP_ICON = require('../assets/images/social_help.png');
   static FEEDBACK_ICON = require('../assets/images/feedback.png');
+  static DEFAULT_IMAGE = require('../assets/images/default_profile.png');
+  static ICON_CLOSE=require('../assets/images/icon_close.png')
 }

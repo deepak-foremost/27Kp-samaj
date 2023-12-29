@@ -63,21 +63,21 @@ const MainToolbar = props => {
 
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => Linking.openURL(`tel:${9955885522}`)}
+        onPress={() => Linking.openURL(`tel:${+919955885522}`)}
         style={{
           // position: 'absolute',
           // right: 10,
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        <Image
+        {/* <Image
           style={{marginHorizontal: 5}}
           source={require('../assets/images/toolbar_phone_icon.png')}
-        />
+        /> */}
 
         <Text
-          style={{fontSize: 14, fontFamily: AppFonts.semiBold, color: '#fff',paddingTop:2.5}}>
-          9955885522
+          style={{fontSize: 13, fontFamily: AppFonts.semiBold, color: '#fff',paddingTop:2.5}}>
+          +919955885522
         </Text>
       </TouchableOpacity>
 

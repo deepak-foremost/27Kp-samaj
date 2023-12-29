@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import {DotsLoader} from 'react-native-indicator';
 
-import { AppColors } from './AppColors';
+import {AppColors} from './AppColors';
 
 const LoaderView = props => {
   return (
@@ -17,7 +17,7 @@ const LoaderView = props => {
           },
           props.style,
         ]}>
-        <DotsLoader size={10} color={AppColors.LightText} betweenSpace={3} />
+        <DotsLoader size={10} color={props?.color} betweenSpace={3} />
       </View>
     </>
   );

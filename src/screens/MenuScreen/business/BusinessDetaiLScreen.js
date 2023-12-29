@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
 import {
   View,
@@ -25,12 +25,27 @@ import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {AddBorder} from '../../FamilyMemberScreen/AddMemberScreen';
+import moment from 'moment';
+import ZoomImage from '../../../components/ZoomImage';
 
 const BusinessDetaiLScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [item, setItem] = useState(props?.route?.params?.item);
   const DoNotShow = props?.route?.params?.show;
+  const [days, setDayes] = useState([]);
+  const [open, setOpen] = useState(false);
+
+  // const images = [
+  //   {
+  //     url: item != null && item?.image,
+  //     props: {source: item != null && item?.image},
+  //   },
+  // ];
+
+  useEffect(() => {
+    console.log('details-->', item?.business_hours[3]?.status);
+  });
 
   //   printLog('ITEM_OD_BUSIESS', JSON.stringify(item));
   //   var week = JSON.parse(item?.business_hourse);
@@ -48,9 +63,9 @@ const BusinessDetaiLScreen = props => {
         leadIcon={AppImages.ICON_BACK}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-
       <View style={{backgroundColor: AppColors.fadeBackground, flex: 1}}>
         <ScreenToolbar text={item?.firm.toUpperCase()} />
+        {/* <ZoomImage visible={open} items={item} dismiss={() => setOpen(false)} /> */}
         <View style={{flex: 0.9}}>
           <ScrollView
             contentContainerStyle={{
@@ -82,7 +97,7 @@ const BusinessDetaiLScreen = props => {
                     shadowRadius: 3,
                   },
                   android: {
-                    elevation: 15,
+                    elevation: 5,
                   },
                 }),
               }}>
@@ -95,42 +110,52 @@ const BusinessDetaiLScreen = props => {
                   alignItems: 'center',
                   alignSelf: 'center',
                 }}>
-                <Image
-                  style={{
-                    alignSelf: 'center',
-                    resizeMode: 'contain',
-                    backgroundColor: AppColors.black,
+                <TouchableOpacity
+                  style={{width: '47%', marginRight: 5}}
+                  activeOpacity={1}
+                  onPress={() =>
+                    item?.visting_card_photo != null && setOpen(true)
+                  }>
+                  <Image
+                    style={{
+                      alignSelf: 'center',
+                      // resizeMode: 'contain',
+                      backgroundColor: '#F2F2F2',
+                      height: 120,
+                      width: '100%',
 
-                    height: 90,
-                    width: '47%',
-                    marginRight: 5,
-                    resizeMode: 'cover',
-                    borderRadius: 15,
-                  }}
-                  source={
-                    require('../../../assets/images/directory_image.png')
-                    // {uri: item?.visting_card_photo}
-                  }
-                />
-                <Image
-                  style={{
-                    alignSelf: 'center',
-                    resizeMode: 'contain',
-                    backgroundColor: AppColors.backgroundColor,
-
-                    height: 90,
-                    width: '47%',
-                    marginLeft: 10,
-                    resizeMode: 'cover',
-                    borderRadius: 15,
-                  }}
-                  source={
-                    require('../../../assets/images/directory_image.png')
-                    // {uri: item?.visting_card_photo}
-                  }
-                />
+                      resizeMode: 'contain',
+                      borderRadius: 15,
+                    }}
+                    source={
+                      // require('../../../assets/images/directory_image.png')
+                      {uri: item?.visting_card_photo}
+                    }
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{width: '47%', marginLeft: 10}}
+                  activeOpacity={1}>
+                  <Image
+                    style={{
+                      alignSelf: 'center',
+                      resizeMode: 'contain',
+                      backgroundColor: '#F2F2F2',
+                      height: 120,
+                      width: '100%',
+                      resizeMode: 'contain',
+                      borderRadius: 15,
+                    }}
+                    source={
+                      item?.visting_card_photo_two == '' ||
+                      item?.visting_card_photo_two == undefined
+                        ? AppImages.MEMBER_IMAGE
+                        : // require('../../../assets/images/directory_image.png')
+                          {uri: item?.visting_card_photo_two}
+                    }
+                  />
+                </TouchableOpacity>
               </View>
-
               <View style={{paddingHorizontal: '5%'}}>
                 <Text
                   style={{
@@ -153,46 +178,56 @@ const BusinessDetaiLScreen = props => {
                   containerStyle={{marginTop: 5}}
                 />
                 <SimpleDoubleLine
-                  title={'Own Business :'}
-                  value={'Yes'}
+                  title={'Business Type'}
+                  value={item?.business_type}
                   containerStyle={{marginTop: 10, marginBottom: 10}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 1  :'}
-                  value={item?.owner_name_1}
+                  value={
+                    item?.owner_name_1 == '' || null
+                      ? 'N/A'
+                      : item?.owner_name_1
+                  }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 2 :'}
-                  value={item?.owner_name_1}
+                  value={
+                    item?.owner_name_2 == null ? 'N/A' : item?.owner_name_2
+                  }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 3 :'}
-                  value={item?.owner_name_1}
+                  value={
+                    item?.owner_name_3 == null ? 'N/A' : item?.owner_name_3
+                  }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 4 :'}
-                  value={item?.owner_name_1}
+                  value={
+                    item?.owner_name_4 == null ? 'N/A' : item?.owner_name_4
+                  }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Village : '}
-                  value={'Ahmedabad'}
+                  value={item?.city}
                   containerStyle={{marginTop: 10}}
                 />
                 <DeviderLine Style={{marginTop: 15}} />
 
                 <SimpleDoubleLine
                   title={'Address :'}
-                  value={'Lorem ipsum here is there Lorem Iusm is dine.'}
+                  value={item?.address}
                   containerStyle={{}}
                 />
 
                 <SimpleDoubleLine
                   title={'Description :'}
-                  value={'Lorem ipsum here is there Lorem Iusm is dine.'}
+                  value={item?.products}
                   containerStyle={{marginTop: 10}}
                 />
 
@@ -206,7 +241,11 @@ const BusinessDetaiLScreen = props => {
 
                 <SimpleDoubleLine
                   title={'Time :'}
-                  value={'9:30 AM to 7:00 PM.'}
+                  value={
+                    moment(item?.from_time, ['HH:mm']).format('hh:mm A') +
+                    '  TO  ' +
+                    moment(item?.to_time, ['HH:mm']).format('hh:mm A')
+                  }
                   containerStyle={{}}
                 />
 
@@ -219,18 +258,21 @@ const BusinessDetaiLScreen = props => {
                     justifyContent: 'space-between',
                   }}>
                   <SimpleDoubleLine
-                    title={'Monday :'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[0]?.day}
+                    value={item?.business_hours[0]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                   <SimpleDoubleLine
-                    title={'Tuesday:'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[1]?.day}
+                    value={item?.business_hours[1]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                   <SimpleDoubleLine
-                    title={'Wednesday :'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[2]?.day}
+                    value={item?.business_hours[2]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                 </View>
@@ -243,18 +285,21 @@ const BusinessDetaiLScreen = props => {
                     justifyContent: 'space-between',
                   }}>
                   <SimpleDoubleLine
-                    title={'Thursday :'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[3]?.day}
+                    value={item?.business_hours[3]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                   <SimpleDoubleLine
-                    title={'Friday :'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[4]?.day}
+                    value={item?.business_hours[4]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                   <SimpleDoubleLine
-                    title={'Saturday :'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[5]?.day}
+                    value={item?.business_hours[5]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                 </View>
@@ -266,8 +311,9 @@ const BusinessDetaiLScreen = props => {
                     justifyContent: 'space-between',
                   }}>
                   <SimpleDoubleLine
-                    title={'Sunday :'}
-                    value={'✓'}
+                    textStyles={{paddingTop: 2}}
+                    title={item?.business_hours[6]?.day}
+                    value={item?.business_hours[6]?.status == 1 ? '✓' : '╳'}
                     containerStyle={{width: '33%'}}
                   />
                 </View>
@@ -276,13 +322,13 @@ const BusinessDetaiLScreen = props => {
 
                 <SimpleDoubleLine
                   title={'Bussiness Start Date:'}
-                  value={'10/06/2012'}
+                  value={item?.business_start_date}
                   containerStyle={{}}
                 />
 
                 <SimpleDoubleLine
                   title={'Bussiness End Date:'}
-                  value={'10/06/2022'}
+                  value={item?.business_end_date}
                   containerStyle={{marginTop: 10}}
                 />
 
@@ -290,17 +336,17 @@ const BusinessDetaiLScreen = props => {
 
                 <SimpleDoubleLine
                   title={'Website :'}
-                  value={' www.google.com'}
+                  value={item?.website}
                   containerStyle={{marginTop: 10}}
                 />
                 <SimpleDoubleLine
                   title={'Mobile No : '}
-                  value={'+91 9999999999'}
+                  value={item?.country_code + ' ' + item?.business_phone}
                   containerStyle={{marginTop: 10}}
                 />
                 <SimpleDoubleLine
                   title={'E-Mail ID : '}
-                  value={'Patel@gmail.com'}
+                  value={item?.business_email}
                   containerStyle={{marginTop: 10}}
                 />
               </View>
@@ -385,10 +431,7 @@ const BusinessDetaiLScreen = props => {
             </View> */}
             </View>
             {/* <AddBorder text={'hjvv'} /> */}
-           
           </ScrollView>
-
-          
         </View>
         <BorderView
           backgroundColor={AppColors.BackgroundSecondColor}

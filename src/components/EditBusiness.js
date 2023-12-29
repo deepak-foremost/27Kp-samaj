@@ -96,7 +96,7 @@ const EditBusiness = props => {
 
             <SimpleDoubleLine
               title={'Mobile No  :'}
-              value={props?.item?.phone}
+              value={props?.item?.country_code+' '+props?.item?.phone}
               containerStyle={{}}
             />
           </View>

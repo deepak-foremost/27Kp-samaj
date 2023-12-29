@@ -63,9 +63,9 @@ const VillageScreen = props => {
   const [member, setMember] = useState(null);
   const [city, setCity] = useState('');
 
-  useEffect(() => {
-    setMember(list);
-  });
+  // useEffect(() => {
+  //   setMember(list);
+  // });
 
   // useEffect(() => {
   //   getString('village', response => {
@@ -97,27 +97,27 @@ const VillageScreen = props => {
     );
   }, []);
 
-  // useEffect(() => {
-  //   if (cityId != '') {
-  //     console.log('call--', value);
-  //     setMember(null);
-  //     getVillageMembers(
-  //       {city: value},
-  //       response => {
-  //         printLog('getVillageMembers', JSON.stringify(response?.data));
-  //         if (response?.status) {
-  //           setMember(response?.data);
-  //         } else {
-  //           setMember([]);
-  //         }
-  //       },
-  //       error => {
-  //         printLog('getVillageMembers', error);
-  //         setMember([]);
-  //       },
-  //     );
-  //   }
-  // }, [cityId]);
+  useEffect(() => {
+    if (cityId != '') {
+      console.log('call--', value);
+      setMember(null);
+      getVillageMembers(
+        {city: value},
+        response => {
+          printLog('getVillageMembers', JSON.stringify(response?.data));
+          if (response?.status) {
+            setMember(response?.data);
+          } else {
+            setMember([]);
+          }
+        },
+        error => {
+          printLog('getVillageMembers', error);
+          setMember([]);
+        },
+      );
+    }
+  }, [cityId]);
 
   return (
     <View
@@ -315,10 +315,9 @@ const VillageScreen = props => {
                 <Text
                   style={{
                     fontFamily: AppFonts.bold,
-                    color: AppColors.lineColor,
+                    color: AppColors.black,
                     fontSize: 15,
-                    flex: 1,
-                    textAlignVertical: 'center',
+                    marginTop: 50,
                   }}>
                   No List Found
                 </Text>
@@ -468,7 +467,10 @@ const AboutCell = props => {
             }}>
             {props?.item?.phone}
           </Text>
-          <Image source={AppImages.CIRCLE_CALL_ICON} style={{marginRight: 5,marginBottom:2.5}} />
+          <Image
+            source={AppImages.CIRCLE_CALL_ICON}
+            style={{marginRight: 5, marginBottom: 2.5}}
+          />
           <TouchableOpacity
             activeOpacity={1}
             style={{
@@ -476,11 +478,11 @@ const AboutCell = props => {
               width: 15,
               justifyContent: 'center',
               alignItems: 'center',
-              paddingBottom:2.5
+              paddingBottom: 2.5,
             }}
             onPress={() =>
               Linking.openURL(
-                `whatsapp://send?phone=${'9510135458'}`,
+                `whatsapp://send?phone=${props?.item?.phone}`,
                 // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
               )
             }>

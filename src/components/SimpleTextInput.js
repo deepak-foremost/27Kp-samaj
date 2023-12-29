@@ -49,7 +49,7 @@ export const MySelection = props => {
             fontSize: 12,
             flex: 1,
             paddingStart: 5,
-            color: props?.value ? '#0A3C5D' : AppColors.DarkText,
+            color:AppColors.DarkText,
             ...props.textStyle,
           }}>
           {props?.value ? props?.value : props?.label}
@@ -356,7 +356,7 @@ export const HorizontalTextInput = props => {
         }}>
         <TextInput
           placeholder={props?.placeholder}
-          placeholderTextColor={AppColors.lineColor}
+          placeholderTextColor={AppColors.line_color}
           multiline={true}
           style={{
             fontFamily: AppFonts.regular,
@@ -432,7 +432,7 @@ export const MyMobileNumber = props => {
 
         <TextInput
           placeholder={props?.placeholder}
-          placeholderTextColor={AppColors.lineColor}
+          placeholderTextColor={AppColors.line_color}
           multiline={true}
           style={{
             fontFamily: AppFonts.regular,
@@ -606,20 +606,23 @@ export const DateSelection = props => {
         <Text
           style={{
             fontFamily: AppFonts.regular,
-            color: dob == null ? AppColors?.line_color : AppColors.black,
+            color:
+              props?.placeholder == null
+                ? AppColors?.line_color
+                : AppColors.black,
             fontSize: 12,
-            marginStart: 5,
+            // marginStart: 5,
           }}>
-          {dob == null ? 'DD-MM-YYYY' : dob}
+          {props?.placeholder}
         </Text>
-        <Image
+        {/* <Image
           style={{
             width: 1.5,
             height: '80%',
             marginHorizontal: 5,
-            backgroundColor: AppColors.backgroundSecondColor,
+            backgroundColor: AppColors.fade,
           }}
-        />
+        /> */}
       </TouchableOpacity>
 
       {/* <DatePicker
@@ -637,17 +640,19 @@ export const DateSelection = props => {
         }}
       /> */}
       <CustomDatePicker
-        onChangeDob={i =>props?.expiry? setDOB(moment(i).format('MM-YYYY')):
-           setDOB(moment(i).format('DD-MM-YYYY'))}
+        // onChangeDob={i =>
+        //   props?.expiry
+        //     ? setDOB(moment(i).format('MM-YYYY'))
+        //     : // : console.log('dateformat', moment(i).format('DD-MM-YYYY'))
+        //       setDOB(moment(i).format('DD-MM-YYYY'))
+        // }
+        onChangeDob={props?.onChangeDob}
         isOpened={openDatePicker}
         onClose={() => setDatePicker(false)}
         title={props.title}
         expiry={props?.expiry}
-
-        // value={dob}
+        value={props?.value}
       />
     </View>
   );
 };
-
-

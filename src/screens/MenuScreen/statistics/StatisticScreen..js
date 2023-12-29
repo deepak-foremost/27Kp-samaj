@@ -29,6 +29,7 @@ import BorderView from '../../../components/BorderView';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getCities, getStatistics} from '../../../networking/CallApi';
+import {BusinessBox} from '../advisour_member/AdvicerMember';
 // import {staticArray} from '../../../../utils/staticArray';
 
 const count = [
@@ -95,9 +96,11 @@ const StatisticScreen = props => {
   const [cities, setCities] = useState([]);
   const [value, setValue] = useState('All');
   const [cityId, setCityId] = useState('0');
-  const [counts, setCount] = useState(0);
+  const [count, setCount] = useState(0);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     getCities(
       response => {
         if (response?.status) {
@@ -115,6 +118,7 @@ const StatisticScreen = props => {
             });
           }
           setCities(temp);
+          setLoading(false);
         }
       },
       error => {
@@ -124,6 +128,7 @@ const StatisticScreen = props => {
   }, []);
 
   const getCounts = id => {
+    setLoading(true);
     getStatistics(
       {city_id: id},
       response => {
@@ -143,14 +148,24 @@ const StatisticScreen = props => {
               name: 'અપરણિત સ્ત્રી\n(૨૦ વર્ષથી ઉપર)',
               count: response?.data?.total_unmarried_female,
             },
+            {
+              name: 'પુરુષ \n(60 વર્ષથી ઉપર)',
+              count: response?.data?.total_unmarried_male,
+            },
+            {
+              name: 'સ્ત્રી\n(60 વર્ષથી ઉપર)',
+              count: response?.data?.total_unmarried_female,
+            },
             {name: 'પરણિત પુરુષ', count: response?.data?.total_married_male},
             {
               name: 'પરણિત સ્ત્રી',
               count: response?.data?.total_married_female,
             },
           ]);
+          setLoading(false);
         } else {
           setCount([]);
+          // setLoading(false);
         }
       },
       error => {
@@ -266,7 +281,7 @@ const StatisticScreen = props => {
         leadIcon={AppImages.BACK_ICON}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-        <View style={{flex: 0.9}}>
+        <View style={{flex: 1}}>
           <View
             style={{
               marginTop: -40,
@@ -327,29 +342,68 @@ const StatisticScreen = props => {
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{flex: 1, justifyContent: 'center'}}>
-              <FlatList
-                numColumns={3}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                  paddingBottom: 20,
-                  // paddingStart: 15,
-                  paddingTop: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                data={count == null ? [] : count}
-                renderItem={(item, index) => (
-                  <MenuComponent index={index} item={item} onClick={() => {}} />
-                )}
-              />
+              {isLoading ? (
+                <View style={{flex: 1}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginHorizontal: 15,
+                      marginTop: 15,
+                    }}>
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginHorizontal: 15,
+                      marginTop: 15,
+                    }}>
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginHorizontal: 15,
+                      marginTop: 15,
+                    }}>
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                  </View>
+                </View>
+              ) : (
+                <FlatList
+                  numColumns={3}
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingBottom: 20,
+                    // paddingStart: 15,
+                    paddingTop: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  data={count == null ? [] : count}
+                  renderItem={(item, index) => (
+                    <MenuComponent
+                      index={index}
+                      item={item}
+                      onClick={() => {}}
+                    />
+                  )}
+                />
+              )}
             </View>
           </ScrollView>
         </View>
-        <BorderView
+        {/* <BorderView
           text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
           backgroundColor={AppColors.BackgroundSecondColor}
-        />
+        /> */}
 
         {/* <FooterTextCell title={`સમાજ એજ મારુ પરિવાર છે`} /> */}
       </View>
@@ -398,8 +452,7 @@ export const MenuComponent = props => {
             textAlignVertical: 'center',
             fontFamily: AppFonts.semiBold,
             fontSize: 29,
-            marginTop: 15,
-
+            marginTop: Platform.OS == 'ios' ? 15 : 10,
             alignSelf: 'center',
           }}>
           {props?.item?.item?.count}

@@ -6,7 +6,7 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {AppStyles} from '../../utils/AppStyles';
 import {AppColors} from '../../utils/AppColors';
 import {AppImages} from '../../utils/AppImages';
@@ -17,8 +17,14 @@ import * as RootNavigation from '../../utils/RootNavigation';
 import {AppScreens} from '../../utils/AppScreens';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import MainButton from '../../components/MainButton';
+import AsyncStorage from '@react-native-community/async-storage';
+import {AsyncStorageConst} from '../../utils/AsyncStorageHelper';
 
 const FirstScreen = () => {
+  // let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+  // console.log('Status',token);
+ 
+
   return (
     <View
       style={[
@@ -91,7 +97,7 @@ const FirstScreen = () => {
               }
               text={'Guest Sign-in'}
               textStyle={{color: 'black'}}
-              imgStyle={{tintColor:'black'}}
+              imgStyle={{tintColor: 'black'}}
               src={require('../../assets/images/guest_icon.png')}
               buttonStyle={{backgroundColor: AppColors.Red, marginTop: 15}}
             />
@@ -100,7 +106,7 @@ const FirstScreen = () => {
                 RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {pay: 'pay'})
               }
               text={'Quick Pay'}
-              imgStyle={{tintColor:'black'}}
+              imgStyle={{tintColor: 'black'}}
               textStyle={{color: 'black'}}
               src={require('../../assets/images/pay_icon.png')}
               buttonStyle={{backgroundColor: AppColors.Orange, marginTop: 15}}

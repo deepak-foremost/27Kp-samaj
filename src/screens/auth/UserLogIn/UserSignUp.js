@@ -42,10 +42,10 @@ import {
 } from '../../../components/SimpleTextInput';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const UserSignUp = ({route}) => {
+const UserSignUp = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
-  const screen = route.params.screen;
+  const screen = props?.route.params.screen;
   const [isLoading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [password, setPassword] = useState('');
@@ -54,6 +54,7 @@ const UserSignUp = ({route}) => {
   const [value, setValue] = useState('');
   const [cities, setCities] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [cityId, setCityId] = useState('');
 
   useEffect(() => {
     getString('village', response => {
@@ -324,69 +325,71 @@ const UserSignUp = ({route}) => {
 
               <AppButton
                 text={'Sign up'}
+                loading={isLoading}
+                color={'black'}
                 textStyle={{color: 'black'}}
-                buttonPress={() =>
-                  // () => {
-                  //   var params = {
-                  //     country_code: countryCode,
-                  //     phone: phone,
-                  //     name: firstName,
-                  //     city_id: value?.id,
-                  //     password: password,
-                  //   };
-                  //   countryCode == ''
-                  //     ? ShowMessage('Please select country code')
-                  //     : phone.trim().length < 9
-                  //     ? ShowMessage('Please enter phone no.')
-                  //     : firstName.trim().length == 0
-                  //     ? ShowMessage('Please enter first name')
-                  //     : value == '' || value == null || value == undefined
-                  //     ? ShowMessage('Please select your village')
-                  //     : password.length < 6
-                  //     ? ShowMessage('Password must be 6 latter long.')
-                  //     : (setLoading(true),
-                  //       register(
-                  //         params,
-                  //         response => {
-                  //           printLog(
-                  //             'register error',
-                  //             JSON.stringify(response),
-                  //           );
-                  //           if (!response?.status) {
-                  //             showMessage(response?.message);
-                  //             setLoading(false);
-                  //           } else {
-                  //             setLoading(false);
-                  //             var token = response?.token;
-                  //             printLog(typeof token);
-                  //             setString(
-                  //               AsyncStorageConst.allDetails,
-                  //               JSON.stringify(response),
-                  //             );
-                  //             setString(AsyncStorageConst.token, token);
-                  //             setString(
-                  //               AsyncStorageConst.user,
-                  //               JSON.stringify(response?.data),
-                  //             );
-                  //             RootNavigation.push(
-                  //               props?.navigation,
-                  //               AppScreens.HOME_SCREEN,
-                  //               params,
-                  //             );
-                  //             setLoading(false);
-                  //           }
-                  //         },
-                  //         error => {
-                  //           printLog('register error', error);
-                  //           setLoading(false);
-                  //         },
-                  //       ));
-                  // }
-                  RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
-                    screen: screen,
-                    show: true,
-                  })
-                }
+                // buttonPress={() =>
+                //   // () => {
+                //   //   var params = {
+                //   //     country_code: countryCode,
+                //   //     phone: phone,
+                //   //     name: firstName,
+                //   //     city_id: value?.id,
+                //   //     password: password,
+                //   //   };
+                //   //   countryCode == ''
+                //   //     ? ShowMessage('Please select country code')
+                //   //     : phone.trim().length < 9
+                //   //     ? ShowMessage('Please enter phone no.')
+                //   //     : firstName.trim().length == 0
+                //   //     ? ShowMessage('Please enter first name')
+                //   //     : value == '' || value == null || value == undefined
+                //   //     ? ShowMessage('Please select your village')
+                //   //     : password.length < 6
+                //   //     ? ShowMessage('Password must be 6 latter long.')
+                //   //     : (setLoading(true),
+                //   //       register(
+                //   //         params,
+                //   //         response => {
+                //   //           printLog(
+                //   //             'register error',
+                //   //             JSON.stringify(response),
+                //   //           );
+                //   //           if (!response?.status) {
+                //   //             showMessage(response?.message);
+                //   //             setLoading(false);
+                //   //           } else {
+                //   //             setLoading(false);
+                //   //             var token = response?.token;
+                //   //             printLog(typeof token);
+                //   //             setString(
+                //   //               AsyncStorageConst.allDetails,
+                //   //               JSON.stringify(response),
+                //   //             );
+                //   //             setString(AsyncStorageConst.token, token);
+                //   //             setString(
+                //   //               AsyncStorageConst.user,
+                //   //               JSON.stringify(response?.data),
+                //   //             );
+                //   //             RootNavigation.push(
+                //   //               props?.navigation,
+                //   //               AppScreens.HOME_SCREEN,
+                //   //               params,
+                //   //             );
+                //   //             setLoading(false);
+                //   //           }
+                //   //         },
+                //   //         error => {
+                //   //           printLog('register error', error);
+                //   //           setLoading(false);
+                //   //         },
+                //   //       ));
+                //   // }
+                //   RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
+                //     screen: screen,
+                //     show: true,
+                //   })
+                // }
                 buttonStyle={{
                   width: '100%',
                   marginTop: 30,
@@ -397,63 +400,62 @@ const UserSignUp = ({route}) => {
                       ? AppColors.Red
                       : AppColors.BackgroundSecondColor,
                 }}
-                // buttonPress={
-                //   () => {
-                //     var params = {
-                //       country_code: countryCode,
-                //       phone: phone,
-                //       name: firstName,
-                //       city_id: cities,
-                //       password: password,
-                //     };
-
-                //     countryCode == ''
-                //       ? ShowMessage('Please select country code')
-                //       : phone.trim().length < 9
-                //       ? ShowMessage('Please enter phone no.')
-                //       : firstName.trim().length == 0
-                //       ? ShowMessage('Please enter first name')
-                //       : // : cities == ''
-                //       // ? ShowMessage('Please select your village')
-                //       password.length < 6
-                //       ? ShowMessage('Password must be 6 latter long.')
-                //       : // setLoading(true),
-                //         register(
-                //           params,
-                //           response => {
-                //             printLog('register error', JSON.stringify(response));
-                //             if (!response?.status) {
-                //               showMessage(response?.message);
-                //               setLoading(false);
-                //             } else {
-                //               setLoading(false);
-                //               var token = response?.token;
-                //               printLog(typeof token);
-                //               setString(
-                //                 AsyncStorageConst.allDetails,
-                //                 JSON.stringify(response),
-                //               );
-                //               setString(AsyncStorageConst.token, token);
-                //               setString(
-                //                 AsyncStorageConst.user,
-                //                 JSON.stringify(response?.data),
-                //               );
-                //               RootNavigation.push(
-                //                 props?.navigation,
-                //                 AppScreens.VerifyMobileScreen,
-                //                 params,
-                //               );
-                //               setLoading(false);
-                //             }
-                //           },
-                //           error => {
-                //             printLog('register error', error);
-                //             setLoading(false);
-                //           },
-                //         );
-                //   }
-
-                // }
+                buttonPress={() => {
+                  setLoading(true);
+                  var params = {
+                    country_code: countryCode,
+                    phone: phone,
+                    name: firstName,
+                    city_id: value?.id,
+                    password: password,
+                  };
+                  countryCode == ''
+                    ? ShowMessage('Please select country code')
+                    : phone.trim().length < 9
+                    ? ShowMessage('Please enter phone no.')
+                    : firstName.trim().length == 0
+                    ? ShowMessage('Please enter first name')
+                    : // : cities == ''
+                    // ? ShowMessage('Please select your village')
+                    password.length < 6
+                    ? ShowMessage('Password must be 6 latter long.')
+                    : // setLoading(true),
+                      register(
+                        params,
+                        response => {
+                          printLog('register error', JSON.stringify(response));
+                          if (!response?.status) {
+                            showMessage(response?.message);
+                            setLoading(false);
+                          } else {
+                            setLoading(false);
+                            var token = response?.token;
+                            printLog(typeof token);
+                            setString(
+                              AsyncStorageConst.allDetails,
+                              JSON.stringify(response),
+                            );
+                            printLog('signUpToken--', token);
+                            setString(AsyncStorageConst.token, token);
+                            setString(AsyncStorageConst.screen, 'User Signin');
+                            setString(
+                              AsyncStorageConst.user,
+                              JSON.stringify(response?.data),
+                            );
+                            RootNavigation.push(
+                              props?.navigation,
+                              AppScreens.HOME_SCREEN,
+                              params,
+                            );
+                            setLoading(false);
+                          }
+                        },
+                        error => {
+                          printLog('register error', error);
+                          setLoading(false);
+                        },
+                      );
+                }}
               />
             </View>
           </View>
@@ -493,7 +495,6 @@ const UserSignUp = ({route}) => {
               }}></View>
           </View> */}
         </KeyboardAwareScrollView>
-       
 
         {/* </KeyboardAwareScrollView> */}
       </View>

@@ -18,13 +18,14 @@ import {AppScreens} from '../../../utils/AppScreens';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getAboutUsMember, getYearRange} from '../../../networking/CallApi';
+import {ListMember} from './AboutUsDetailScreen';
 
 const members = [
   {
     id: 0,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -32,7 +33,7 @@ const members = [
     id: 1,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -40,7 +41,7 @@ const members = [
     id: 2,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -48,7 +49,7 @@ const members = [
     id: 3,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -56,7 +57,7 @@ const members = [
     id: 4,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -64,7 +65,7 @@ const members = [
     id: 5,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -72,7 +73,7 @@ const members = [
     id: 6,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -80,7 +81,7 @@ const members = [
     id: 7,
     title: 'પ્રમુખ શ્રી',
     name: 'રાજેશ ભાઈ પટેલ',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 1,
     status: 1,
   },
@@ -88,7 +89,7 @@ const members = [
     id: 8,
     title: 'પ્રમુખ શ્રી',
     name: 'કારોબારી સભ્યશ્રી',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 2,
     status: 0,
   },
@@ -96,7 +97,7 @@ const members = [
     id: 8,
     title: 'પ્રમુખ શ્રી',
     name: 'કારોબારી સભ્યશ્રી',
-    city:'મહેસાણા',
+    city: 'મહેસાણા',
     number: 2,
     status: 0,
   },
@@ -123,55 +124,60 @@ const range = [
 const AboutUsScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
-  // const [range, setRange] = useState([]);
+  const [range, setRange] = useState([]);
   const [value, setValue] = useState('Select year');
   const [valueId, setValueId] = useState('');
-  // const [members, setMembers] = useState(null);
+  const [members, setMembers] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   getYearRange(
-  //     response => {
-  //       printLog('getYearRange', JSON.stringify(response));
-  //       if (response?.status) {
-  //         var data = [];
-  //         for (let i = 0; i < response?.data?.length; i++) {
-  //           data.push({
-  //             name: response?.data[i]?.range,
-  //             id: response?.data[i]?.id,
-  //           });
+  useEffect(() => {
+    getYearRange(
+      response => {
+        printLog('getYearRange', JSON.stringify(response));
+        if (response?.status) {
+          var data = [];
+          for (let i = 0; i < response?.data?.length; i++) {
+            data.push({
+              name: response?.data[i]?.range,
+              id: response?.data[i]?.id,
+            });
 
-  //           if (i == 0) {
-  //             setValue(response?.data[i]?.range);
-  //             setValueId(response?.data[i]?.id);
-  //           }
-  //         }
+            if (i == 0) {
+              setValue(response?.data[i]?.range);
+              setValueId(response?.data[i]?.id);
+            }
+          }
 
-  //         setRange(data);
-  //       }
-  //     },
-  //     error => {
-  //       printLog('getYearRange', error);
-  //     },
-  //   );
-  // }, []);
+          setRange(data);
+        }
+      },
+      error => {
+        printLog('getYearRange', error);
+      },
+    );
+  }, []);
 
-  // useEffect(() => {
-  //   getAboutUsMember(
-  //     `range_id=${valueId}`,
-  //     response => {
-  //       printLog('getAboutUsMember', JSON.stringify(response));
-  //       if (response?.status) {
-  //         setMembers(response?.data);
-  //       } else {
-  //         setMembers([]);
-  //       }
-  //     },
-  //     error => {
-  //       printLog('getAboutUsMember', error);
-  //       setMembers([]);
-  //     },
-  //   );
-  // }, [valueId]);
+  useEffect(() => {
+    setLoading(true);
+    getAboutUsMember(
+      `range_id=${valueId}`,
+      response => {
+        printLog('getAboutUsMember', JSON.stringify(response));
+        if (response?.status) {
+          setMembers(response?.data);
+          setLoading(false);
+        } else {
+          setMembers([]);
+          setLoading(false);
+        }
+      },
+      error => {
+        printLog('getAboutUsMember', error);
+        setMembers([]);
+        setLoading(false);
+      },
+    );
+  }, [valueId]);
 
   return (
     <View
@@ -251,52 +257,62 @@ const AboutUsScreen = props => {
           </View>
         </View>
 
-        <View style={{flex: 0.9,paddingVertical:10}}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: 20}}
-            data={members == null ? [] : members}
-            renderItem={({item, index}) => (
-              <AboutCell
-                index={index}
-                item={item}
-                onClick={() => {
-                  // printLog('AboutCell', JSON.stringify(item));
-                  RootNavigation.push(
-                    props?.navigation,
-                    AppScreens.ABOUT_US_DETAIL_SCREEN,
-                    {item: item},
-                  );
-                }}
-              />
-            )}
-          />
+        <View style={{flex: 0.9, paddingVertical: 10}}>
+          {isLoading ? (
+            <View style={{flex: 1, alignItems: 'center', marginHorizontal: 15}}>
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+            </View>
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 20}}
+              data={members == null ? [] : members}
+              renderItem={({item, index}) => (
+                <AboutCell
+                  index={index}
+                  item={item}
+                  onClick={() => {
+                    // printLog('AboutCell', JSON.stringify(item));
+                    RootNavigation.push(
+                      props?.navigation,
+                      AppScreens.ABOUT_US_DETAIL_SCREEN,
+                      {item: item},
+                    );
+                  }}
+                />
+              )}
+            />
+          )}
         </View>
 
-        <BorderView
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
-          backgroundColor={AppColors.BackgroundSecondColor}
-        />
-
-        {/* <View
+        <View
           style={{
             backgroundColor: AppColors.fadeBackground,
             paddingBottom: 30,
-            paddingTop: 15,
+            paddingTop: 5,
           }}>
           <TouchableOpacity
             activeOpacity={AppConstValue.ButtonOpacity}
             style={{
               backgroundColor: AppColors.BackgroundSecondColor,
-              height: 45,
+              height: 40,
               borderRadius: 10,
               marginHorizontal: 15,
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 15,
-            }}>
+            }}
+            onPress={() =>
+              RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                status: 'main',
+              })
+            }>
             <Text
               style={{
                 fontFamily: AppFonts.bold,
@@ -306,13 +322,7 @@ const AboutUsScreen = props => {
               }}>
               કારોબારી સભ્યશ્રી
             </Text>
-            <TouchableOpacity
-              activeOpacity={AppConstValue.ButtonOpacity}
-              onPress={() =>
-                RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-                  status: 'main',
-                })
-              }
+            <View
               style={{
                 position: 'absolute',
                 right: 15,
@@ -324,13 +334,18 @@ const AboutUsScreen = props => {
                 style={{
                   fontFamily: AppFonts.bold,
                   fontSize: 10,
-                  color: '#EB7E01',
+                  color: AppColors.DarkText,
                 }}>
                 Click Here
               </Text>
-            </TouchableOpacity>
+            </View>
           </TouchableOpacity>
-        </View> */}
+        </View>
+
+        <BorderView
+          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          backgroundColor={AppColors.BackgroundSecondColor}
+        />
       </View>
     </View>
   );
@@ -364,7 +379,7 @@ const AboutCell = props => {
           },
         }),
       }}>
-      {props?.item?.status != 0 ? (
+      {
         <View
           style={{
             flexDirection: 'row',
@@ -419,65 +434,66 @@ const AboutCell = props => {
             </Text>
           </TouchableOpacity>
         </View>
-      ) : (
-        <View style={{flex: 1}}>
-          <View
-            style={{
-              backgroundColor: AppColors.fadeBackground,
-              borderRadius: 10,
-              // paddingBottom: 30,
-              // paddingTop: 15,
-            }}>
-            <TouchableOpacity
-              activeOpacity={AppConstValue.ButtonOpacity}
-              style={{
-                backgroundColor: AppColors.BackgroundSecondColor,
-                height: 45,
-                borderRadius: 10,
 
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingHorizontal: 15,
-              }}>
-              <Text
-                style={{
-                  fontFamily: AppFonts.bold,
-                  fontSize: 10,
-                  color: '#fff',
-                  alignSelf: 'center',
-                }}>
-                {props?.item.name}
-              </Text>
-              <TouchableOpacity
-                activeOpacity={AppConstValue.ButtonOpacity}
-                onPress={() =>
-                  RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-                    status: 'main',
-                  })
-                }
-                style={{
-                  position: 'absolute',
-                  right: 15,
-                  backgroundColor: '#FFFFFF',
-                  padding: 4,
-                  borderRadius: 8,
-                  
-                }}>
-                <Text
-                  style={{
-                    fontFamily: AppFonts.bold,
-                    fontSize: 10,
-                    color: 'black',
-                    marginTop:2
-                  }}>
-                  Click Here
-                </Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+        //  (
+        //   <View style={{flex: 1}}>
+        //     <View
+        //       style={{
+        //         backgroundColor: AppColors.fadeBackground,
+        //         borderRadius: 10,
+        //         // paddingBottom: 30,
+        //         // paddingTop: 15,
+        //       }}>
+        //       <TouchableOpacity
+        //         activeOpacity={AppConstValue.ButtonOpacity}
+        //         style={{
+        //           backgroundColor: AppColors.BackgroundSecondColor,
+        //           height: 45,
+        //           borderRadius: 10,
+
+        //           flexDirection: 'row',
+        //           justifyContent: 'center',
+        //           alignItems: 'center',
+        //           paddingHorizontal: 15,
+        //         }}>
+        //         <Text
+        //           style={{
+        //             fontFamily: AppFonts.bold,
+        //             fontSize: 10,
+        //             color: '#fff',
+        //             alignSelf: 'center',
+        //           }}>
+        //           {props?.item.name}
+        //         </Text>
+        //         <TouchableOpacity
+        //           activeOpacity={AppConstValue.ButtonOpacity}
+        //           onPress={() =>
+        //             RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+        //               status: 'main',
+        //             })
+        //           }
+        //           style={{
+        //             position: 'absolute',
+        //             right: 15,
+        //             backgroundColor: '#FFFFFF',
+        //             padding: 4,
+        //             borderRadius: 8,
+        //           }}>
+        //           <Text
+        //             style={{
+        //               fontFamily: AppFonts.bold,
+        //               fontSize: 10,
+        //               color: 'black',
+        //               marginTop: 2,
+        //             }}>
+        //             Click Here
+        //           </Text>
+        //         </TouchableOpacity>
+        //       </TouchableOpacity>
+        //     </View>
+        //   </View>
+        // )
+      }
     </TouchableOpacity>
   );
 };

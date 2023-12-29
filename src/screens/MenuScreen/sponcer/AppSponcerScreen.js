@@ -27,6 +27,7 @@ import {AppFonts} from '../../../utils/AppFonts';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getBhumiSlah, getJevanSlah} from '../../../networking/CallApi';
 
 const members = [
   {
@@ -77,7 +78,30 @@ const AppSponcerScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [isLoading, setLoading] = useState(true);
+  const [members, setMembers] = useState(null);
   const status = props?.route?.params.menu;
+
+  useEffect(() => {
+    if (status == 'ભુમિ સભાસદ સભ્ય') {
+      getBhumiSlah(response => {
+        if (response?.status) {
+          setMembers(response?.data);
+        }
+        response => {
+          console.log('error', response);
+        };
+      });
+    } else {
+      getJevanSlah(response => {
+        if (response?.status) {
+          setMembers(response?.data);
+        }
+        response => {
+          console.log('error', response);
+        };
+      });
+    }
+  }, []);
   // console.warn(status)
 
   // const [members, setMembers] = useState(null);
@@ -165,6 +189,7 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
+                width: '28%',
               }}>
               નામ
             </Text>
@@ -173,6 +198,7 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
+                width: '15%',
               }}>
               ગામ
             </Text>
@@ -181,6 +207,7 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
+                width: '25%',
               }}>
               મોબાઈલ નંબર
             </Text>
@@ -202,7 +229,7 @@ const AppSponcerScreen = props => {
           /> */}
 
           {isLoading && members == null ? (
-            <View style={{marginTop: 15,paddingHorizontal:15}}>
+            <View style={{marginTop: 15, paddingHorizontal: 15}}>
               <ListMember />
               <ListMember />
               <ListMember />
@@ -228,7 +255,7 @@ const AppSponcerScreen = props => {
             </View>
           ) : (
             <FlatList
-              contentContainerStyle={{paddingBottom: 10,paddingHorizontal:15}}
+              contentContainerStyle={{paddingBottom: 10, paddingHorizontal: 15}}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               style={{width: '100%'}}
@@ -258,11 +285,11 @@ export const MemberCell = props => {
       style={{
         flexDirection: 'row',
         paddingVertical: props?.item ? 10 : 10,
-        paddingHorizontal: 10,
+        paddingHorizontal: 5,
         // borderBottomColor: '#e2e2e2',
         // borderBottomWidth: props?.item ? 1 : 0,
         justifyContent: 'space-between',
-        // alignItems:'center',
+        alignItems: 'center',
         backgroundColor: props?.change ? '#F3F3F3' : '#fff',
         marginTop: 10,
         borderRadius: 8,
@@ -283,14 +310,18 @@ export const MemberCell = props => {
           styles.heading,
           {
             width: '20%',
-
             color: AppColors.DarkText,
-
             // textAlign: props?.item ? 'center' : 'auto',
             // paddingLeft: props?.item ? 0 : '2%',
           },
         ]}>
-        {props?.item ? `${props?.item?.number}.` : props?.status + ' નંબર'}
+        {props?.item
+          ? `${
+              props?.item?.sabhy_number == undefined
+                ? props?.item?.boomi_number
+                : props?.item?.sabhy_number
+            }.`
+          : props?.status + ' નંબર'}
       </Text>
       <Text
         style={[
@@ -308,11 +339,10 @@ export const MemberCell = props => {
           {
             width: '13%',
             color: AppColors.DarkText,
-
-            // marginLeft: 5,
+            marginLeft: 5,
           },
         ]}>
-        {props?.item ? `${props?.item?.address}` : 'ગામ'}
+        {props?.item ? `${props?.item?.village}` : 'ગામ'}
       </Text>
 
       {/* {props?.status != 'drawer' ? (
@@ -335,8 +365,7 @@ export const MemberCell = props => {
       <View
         style={{
           flexDirection: 'row',
-          width: '25%',
-          marginLeft: 10,
+          width: '30%',
           alignItems: 'center',
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
@@ -344,16 +373,23 @@ export const MemberCell = props => {
         </Text>
         {!props?.change ? (
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity activeOpacity={1} style={{paddingHorizontal: 2.5,paddingBottom:2.5}}
-            onPress={()=> Linking.openURL(`tel:${'9510135458'}`)}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{paddingHorizontal: 2.5, paddingBottom: 2.5}}
+              onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
               <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
             <TouchableOpacity
-            activeOpacity={1}
-            style={{justifyContent:'center',alignItems:'center',paddingHorizontal:2.5,paddingBottom:2.5}}
+              activeOpacity={1}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: 2.5,
+                paddingBottom: 2.5,
+              }}
               onPress={() =>
                 Linking.openURL(
-                  `whatsapp://send?phone=${'9510135458'}`,
+                  `whatsapp://send?phone=${props?.item?.phone}`,
                   // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
                 )
               }>
@@ -389,11 +425,13 @@ export const MemberCell = props => {
             style={{
               height: 15,
               width: 15,
+              backgroundColor: '#F2F2F2',
+              resizeMode: 'contain',
               // borderColor: 'black',
               // borderWidth: 1,
-              // borderRadius: 10,
+              borderRadius: 10,
             }}
-            source={require('../../../assets/images/small_man_image.png')}
+            source={{uri: props?.item?.image}}
           />
         ) : (
           <Text style={[styles.heading, {color: AppColors.DarkText}]}>

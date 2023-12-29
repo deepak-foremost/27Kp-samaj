@@ -21,11 +21,28 @@ export const getRelation = (onSuccess, onFailure) => {
   CallApi(Api.GET_RELATION, RequestType.get, {}, onSuccess, onFailure);
 };
 
+export const accountLogout = (onSuccess, onFailure) => {
+  CallApi(`${Api.LOGOUT}`, RequestType.get, NaN, onSuccess, onFailure);
+};
+
 export const getYearRange = (onSuccess, onFailure) => {
   CallApi(
     `${Api.GET_ABOUT_US_RANGE}`,
     RequestType.get,
     NaN,
+    onSuccess,
+    onFailure,
+  );
+};
+export const getSuggestionData = (onSuccess, onFailure) => {
+  CallApi(Api.GET_SUGGESTION_LIST, RequestType.get, {}, onSuccess, onFailure);
+};
+
+export const postAddFeedback = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.POST_FEEDBACK}`,
+    RequestType.post,
+    params,
     onSuccess,
     onFailure,
   );
@@ -43,16 +60,26 @@ export const getAboutUsMember = (params, onSuccess, onFailure) => {
 
 export const getStatistics = (params, onSuccess, onFailure) => {
   CallApi(
-    `${Api.GET_STATISTICS}?city_id=${params?.city_id}`,
+    `${Api.GET_STATISTICS}`,
     RequestType.get,
-    NaN,
+    params,
     onSuccess,
     onFailure,
   );
 };
 
 export const getSearch = (params, onSuccess, onFailure) => {
-  CallApi(`${Api.POST_SEARCH}`, RequestType.post, params, onSuccess, onFailure);
+  CallApi(Api.POST_SEARCH, RequestType.post, params, onSuccess, onFailure);
+};
+
+export const updatePassword = (params, onSuccess, onFailure) => {
+  CallApi(
+    Api.POST_UPDATE_PASSWORD,
+    RequestType.post,
+    params,
+    onSuccess,
+    onFailure,
+  );
 };
 
 export const getNews = (params, onSuccess, onFailure) => {
@@ -85,9 +112,9 @@ export const getVillageMembers = (params, onSuccess, onFailure) => {
 
 export const getFamilyMembersList = (params, onSuccess, onFailure) => {
   CallApi(
-    `${Api.GET_FAMILY_MEMBER}?id=${params?.id}&flag=all`,
+    `${Api.GET_FAMILY_MEMBER}`,
     RequestType.get,
-    NaN,
+    params,
     onSuccess,
     onFailure,
   );
@@ -111,15 +138,30 @@ export const getMyFamilies = (onSuccess, onFailure) => {
   CallApi(Api.GET_FAMILY_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
 };
 
+export const getJevanSlah = (onSuccess, onFailure) => {
+  CallApi(Api.GET_JEVAN_SLAH, RequestType.get, NaN, onSuccess, onFailure);
+};
+export const getBhumiSlah = (onSuccess, onFailure) => {
+  CallApi(Api.GET_BHUMI_SLAH, RequestType.get, NaN, onSuccess, onFailure);
+};
+
 export const getMyBusinesses = (onSuccess, onFailure) => {
   CallApi(`${Api.GET_BUSINESSES}`, RequestType.get, {}, onSuccess, onFailure);
+};
+
+export const deleteMyMember = (params, onSuccess, onFailure) => {
+  CallApi(Api.DELETE_MEMBER, RequestType.post, params, onSuccess, onFailure);
+};
+
+export const deleteMyBusiness = (params, onSuccess, onFailure) => {
+  CallApi(Api.DELETE_BUSINESS, RequestType.post, params, onSuccess, onFailure);
 };
 
 export const getBusinessAllList = (params, onSuccess, onFailure) => {
   CallApi(
     `${Api.GET_ALL_BUSINESSES}`,
     RequestType.get,
-    NaN,
+    params,
     onSuccess,
     onFailure,
   );

@@ -354,12 +354,11 @@ const VariousBusiness = props => {
                     <Text style={[styles.heading, {color: AppColors.DarkText}]}>
                       {item ? `${item?.phone}` : 'મોબાઈલ નંબર'}
                     </Text>
-
                     <View style={{flexDirection: 'row'}}>
                       <TouchableOpacity
                         activeOpacity={1}
-                        style={{paddingHorizontal: 2.5,marginBottom:2.5}}
-                        onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
+                        style={{paddingHorizontal: 2.5, marginBottom: 2.5}}
+                        onPress={() => Linking.openURL(`tel:${item?.phone}`)}>
                         <Image source={AppImages.CIRCLE_CALL_ICON} />
                       </TouchableOpacity>
                     </View>
@@ -369,11 +368,11 @@ const VariousBusiness = props => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         paddingHorizontal: 5,
-                        marginBottom:2.5
+                        marginBottom: 2.5,
                       }}
                       onPress={() =>
                         Linking.openURL(
-                          `whatsapp://send?phone=${'9510135458'}`,
+                          `whatsapp://send?phone=${item?.phone}`,
                           // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
                         )
                       }>
@@ -386,7 +385,7 @@ const VariousBusiness = props => {
                       width: '7%',
                       // justifyContent: 'center',
                       alignItems: 'flex-end',
-                      paddingBottom:2.5
+                      paddingBottom: 2.5,
                       // marginLeft: 10,
                     }}>
                     {/* {props?.item ? ( */}

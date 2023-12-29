@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
 import LogInToolbar from '../../../components/LogInToolbar';
 import {AppImages} from '../../../utils/AppImages';
@@ -17,16 +17,69 @@ import {AppColors} from '../../../utils/AppColors';
 import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AppConstValue} from '../../../utils/AppConstValue';
+import {
+  AppConstValue,
+  ShowMessage,
+  printLog,
+} from '../../../utils/AppConstValue';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {updatePassword} from '../../../networking/CallApi';
+import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
 
-const NewPasswordScreen = ({route}) => {
-  const screen = route.params.screen;
-  const returnScreen = route.params.return;
+const NewPasswordScreen = props => {
+  const screen = props?.route.params.screen;
+  const returnScreen = props?.route.params.return;
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
+  const [isLoading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [Userdata, setUserDta] = useState(null);
+
+  useEffect(() => {
+    // function getData() {
+    //   const data = getString(AsyncStorageConst.allDetails);
+    //   console.log('users', data);
+    // }
+    getString(AsyncStorageConst.allDetails, response => {
+      setUserDta(response?.data);
+    });
+  }, []);
+
+  const updateMyPassword = () => {
+    setLoading(true);
+    updatePassword(
+      {
+        family_id: Userdata?.family_id ? Userdata?.family_id : '',
+        country_code: Userdata?.country_code,
+        phone: Userdata?.phone,
+        new_password: password,
+      },
+      response => {
+        printLog('NEW_PASWORD', JSON.stringify(response));
+        ShowMessage(response?.message);
+        if (response?.status) {
+          // RootNavigation.push(props?.navigation, AppScreens.SplashScreen, NaN);
+          setLoading(false);
+          RootNavigation.forcePush(props, AppScreens.USER_LOGIN_DETAIL, {
+            screen: screen,
+            return: returnScreen,
+            userData: Userdata,
+            password:password
+          });
+          // RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {});
+        }
+        setLoading(false);
+      },
+      error => {
+        printLog('NEW_PASWORD', JSON.stringify(error));
+        ShowMessage('Error');
+        setLoading(false);
+      },
+    );
+  };
 
   return (
     <View
@@ -113,22 +166,23 @@ const NewPasswordScreen = ({route}) => {
                 },
                 AppStyles.OutlineBackground,
               ]}>
-              <AppPasswordView text={'New Password'} placeholder={'Password'} />
+              <AppPasswordView
+                text={'New Password'}
+                placeholder={'Password'}
+                onChangeText={i => setPassword(i)}
+              />
 
               <AppPasswordView
                 text={'Retype Your Password'}
                 placeholder={'Password'}
+                onChangeText={i => setPasswordConfirm(i)}
               />
-
               <AppButton
                 text={'Confirm'}
+                loading={isLoading}
+                color={'#fff'}
                 textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
-                buttonPress={() =>
-                  RootNavigation.navigate(AppScreens.USER_LOGIN_DETAIL, {
-                    screen: screen,
-                    return: returnScreen,
-                  })
-                }
+                buttonPress={() => updateMyPassword()}
                 buttonStyle={{
                   width: '100%',
                   marginTop: 30,

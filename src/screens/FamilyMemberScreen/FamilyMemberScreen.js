@@ -31,6 +31,8 @@ import BorderView from '../../components/BorderView';
 import {MemberDetail} from '../MenuScreen/about_us/AboutUsDetailScreen';
 import {MemberDetailCell} from '../MenuScreen/memberDetail/FamilyDetailScreen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {deleteMyMember, getMyFamilies} from '../../networking/CallApi';
+import LoaderView from '../../utils/LoaderView';
 
 const list = [
   {
@@ -107,61 +109,61 @@ const FamilyMembersScreen = props => {
   const [modelOpen, setModelOpen] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
+  // useEffect(() => {
+  //   setFamilies(list);
+  // });
+
+  const getData = () => {
+    getMyFamilies(
+      response => {
+        printLog('FamilyMembersScreen', JSON.stringify(response));
+        if (response?.status) {
+          setFamilies(response?.data);
+        } else {
+          setFamilies([]);
+        }
+        setRefreshing(false);
+      },
+      error => {
+        setFamilies([]);
+        setRefreshing(false);
+      },
+    );
+  };
+
+  const deleteItemList = res => {
+    ShowMessage(res?.message);
+
+    if (res?.status) {
+      var deleteIndex = families.indexOf(deleteItem);
+      printLog('deleteIndex', deleteIndex);
+      if (deleteIndex > -1) {
+        families.splice(deleteIndex, 1);
+      }
+      setFamilies(families);
+      setDeleteItem(null);
+      setModelOpen(false);
+    }
+  };
+
   useEffect(() => {
-    setFamilies(list);
-  });
+    const willFocusSubscription = props.navigation.addListener('focus', () => {
+      getData();
+    });
 
-  // const getData = () => {
-  //   getMyFamilies(
-  //     response => {
-  //       printLog('FamilyMembersScreen', JSON.stringify(response));
-  //       if (response?.status) {
-  //         setFamilies(response?.data);
-  //       } else {
-  //         setFamilies([]);
-  //       }
-  //       setRefreshing(false);
-  //     },
-  //     error => {
-  //       setFamilies([]);
-  //       setRefreshing(false);
-  //     },
-  //   );
-  // };
+    return () => {
+      willFocusSubscription;
+    };
+  }, []);
 
-  // const deleteItemList = res => {
-  //   ShowMessage(res?.message);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getData();
+  }, []);
 
-  //   if (res?.status) {
-  //     var deleteIndex = families.indexOf(deleteItem);
-  //     printLog('deleteIndex', deleteIndex);
-  //     if (deleteIndex > -1) {
-  //       families.splice(deleteIndex, 1);
-  //     }
-  //     setFamilies(families);
-  //     setDeleteItem(null);
-  //     setModelOpen(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const willFocusSubscription = props.navigation.addListener('focus', () => {
-  //     getData();
-  //   });
-
-  //   return () => {
-  //     willFocusSubscription;
-  //   };
-  // }, []);
-
-  // const onRefresh = React.useCallback(() => {
-  //   setRefreshing(true);
-  //   getData();
-  // }, []);
-
-  // useEffect(() => {
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
   useEffect(() => {
     console.log('change list----->', families);
@@ -226,6 +228,9 @@ const FamilyMembersScreen = props => {
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{paddingBottom: 20}}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
               data={families == null ? [] : families}
               // refreshControl={
               //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -304,7 +309,7 @@ const FamilyMermberCell = props => {
   return (
     <TouchableOpacity
       activeOpacity={AppConstValue.ButtonOpacity}
-      onPress={() =>props?.item?.is_selected ? null : props?.editClick()}
+      onPress={() => (props?.item?.is_selected ? null : props?.editClick())}
       style={{
         paddingHorizontal: 14,
         paddingVertical: 5,
@@ -382,7 +387,15 @@ const FamilyMermberCell = props => {
           icon={AppImages.ICON_DELETE}
           onClick={() => props?.deleteClick()}
         />
-        <TouchableOpacity activeOpacity={1} onPress={() => props?.viewClick()}>
+        <TouchableOpacity
+          style={{
+            height: 40,
+            justifyContent: 'center',
+            width: 30,
+            alignItems: 'center',
+          }}
+          activeOpacity={1}
+          onPress={() => props?.viewClick()}>
           <Image
             source={
               props?.item?.is_selected
@@ -440,9 +453,14 @@ const ModalView = props => {
             Are you sure you want to delete Member?
           </Text>
           {deleteLoader ? (
-            // <LoaderView />
-            <></>
+            <View>
+              <LoaderView
+                style={{width: '25%', height: 30}}
+                color={AppColors.BackgroundSecondColor}
+              />
+            </View>
           ) : (
+            // <></>
             <TouchableOpacity
               activeOpacity={1}
               style={{
@@ -452,7 +470,7 @@ const ModalView = props => {
                 marginBottom: Platform.OS == 'ios' ? 30 : 20,
                 justifyContent: 'center',
                 borderRadius: 20,
-                backgroundColor: AppColors.DarkText,
+                backgroundColor: AppColors.BackgroundSecondColor,
                 marginTop: 40,
               }}
               onPress={() => {

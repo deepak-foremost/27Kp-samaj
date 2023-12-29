@@ -34,7 +34,10 @@ import BorderView from '../../../components/BorderView';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getBusinessAllList, getCategories} from '../../../networking/CallApi';
-import {BusinessBox} from '../advisour_member/AdvicerMember';
+import {
+  BusinessBox,
+  BusinessDirectoryBox,
+} from '../advisour_member/AdvicerMember';
 
 const categories = [
   {
@@ -80,77 +83,78 @@ const BusinessScreen = props => {
   const StatusBarHeight = inset.top;
   const [pos, setPos] = useState(0);
   const [catItem, setCatItem] = useState(null);
-  // const [businsesses, setBusinsesses] = useState(null);
-  // const [categories, setCategories] = useState(null);
+  const [businsesses, setBusinsesses] = useState(null);
+  const [categories, setCategories] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  // const onRefresh = () => {
-  //   pos == 0
-  //     ? getCategories(
-  //         response => {
-  //           printLog('getBusinessList', JSON.stringify(response));
-  //           if (response?.status) {
-  //             setCategories(response?.data);
-  //           } else {
-  //             setCategories([]);
-  //           }
-  //         },
-  //         error => {
-  //           setCategories([]);
-  //         },
-  //       )
-  //     : getBusinessAllList(
-  //         {id: catItem?.id == undefined ? 0 : catItem?.id},
-  //         response => {
-  //           printLog('getBusinessList', JSON.stringify(response));
-  //           if (response?.status) {
-  //             setBusinsesses(response?.data);
-  //           } else {
-  //             setBusinsesses([]);
-  //           }
-  //         },
-  //         error => {
-  //           printLog('getBusinessList', error);
-  //           setBusinsesses([]);
-  //         },
-  //       );
-  // };
+  const onRefresh = () => {
+    pos == 0
+      ? getCategories(
+          response => {
+            printLog('getBusinessList', JSON.stringify(response));
+            if (response?.status) {
+              setCategories(response?.data);
+            } else {
+              setCategories([]);
+            }
+          },
+          error => {
+            setCategories([]);
+          },
+        )
+      : getBusinessAllList(
+          {id: catItem?.id == undefined ? 0 : catItem?.id},
+          response => {
+            printLog('getBusinessList', JSON.stringify(response));
+            if (response?.status) {
+              setBusinsesses(response?.data);
+            } else {
+              setBusinsesses([]);
+            }
+          },
+          error => {
+            printLog('getBusinessList', error);
+            setBusinsesses([]);
+          },
+        );
+  };
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   pos == 0
-  //     ? getCategories(
-  //         response => {
-  //           printLog('getBusinessList', JSON.stringify(response));
-  //           if (response?.status) {
-  //             setCategories(response?.data);
-  //           } else {
-  //             setCategories([]);
-  //           }
-  //           setLoading(false);
-  //         },
-  //         error => {
-  //           setCategories([]);
-  //         },
-  //       )
-  //     : getBusinessAllList(
-  //         {id: catItem?.id == undefined ? 0 : catItem?.id},
-  //         response => {
-  //           printLog('getBusinessList', JSON.stringify(response));
-  //           if (response?.status) {
-  //             setBusinsesses(response?.data);
-  //           } else {
-  //             setBusinsesses([]);
-  //           }
-  //           setLoading(false);
-  //         },
-  //         error => {
-  //           printLog('getBusinessList', error);
-  //           setBusinsesses([]);
-  //         },
-  //       );
-  // }, [pos]);
+  useEffect(() => {
+    setLoading(true);
+    pos == 0
+      ? getCategories(
+          response => {
+            printLog('getBusinessList', JSON.stringify(response));
+            if (response?.status) {
+              setCategories(response?.data);
+            } else {
+              setCategories([]);
+            }
+            setLoading(false);
+          },
+          error => {
+            setCategories([]);
+          },
+        )
+      : console.log('itemId--', catItem?.id);
+    getBusinessAllList(
+      {category_id: catItem?.id == undefined ? 0 : catItem?.id},
+      response => {
+        printLog('getBusinessList', JSON.stringify(response));
+        if (response?.status) {
+          setBusinsesses(response?.data);
+        } else {
+          setBusinsesses([]);
+        }
+        setLoading(false);
+      },
+      error => {
+        printLog('getBusinessList', error);
+        setBusinsesses([]);
+      },
+    );
+  }, [pos]);
 
   return (
     <View
@@ -190,16 +194,42 @@ const BusinessScreen = props => {
                   paddingHorizontal: 10,
                   paddingVertical: 20,
                 }}>
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
-                <BusinessBox />
+                {pos == 0 ? (
+                  <View
+                    style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <BusinessDirectoryBox />
+                    <BusinessDirectoryBox />
+                    <BusinessDirectoryBox />
+                    {/* <BusinessBox styles={{width: '90%'}} />
+                    <BusinessBox styles={{width: '90%'}} />
+                    <BusinessBox styles={{width: '90%'}} /> */}
+                    {/* <BusinessBox />
+                  <BusinessBox />
+                  <BusinessBox />
+                  <BusinessBox />
+                  <BusinessBox />
+                  <BusinessBox />
+                  <BusinessBox /> */}
+                  </View>
+                )}
               </View>
             ) : (
               <View
@@ -209,6 +239,7 @@ const BusinessScreen = props => {
                   paddingTop: 17,
                   paddingHorizontal: 10,
                   paddingVertical: 20,
+                  justifyContent: 'center',
                 }}>
                 {pos == 0 ? (
                   categories?.map((item, index) => (
@@ -225,6 +256,9 @@ const BusinessScreen = props => {
                   <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
+                    // refreshControl={
+                    //   refreshing=refreshing
+                    // }
                     numColumns={1}
                     contentContainerStyle={{}}
                     data={businsesses == null ? [] : businsesses}

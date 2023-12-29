@@ -1,5 +1,5 @@
-import {View, Text, SafeAreaView} from 'react-native';
-import React from 'react';
+import {View, Text, SafeAreaView, Platform} from 'react-native';
+import React, {useEffect} from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import LogInToolbar from '../../../components/LogInToolbar';
 import {AppStyles} from '../../../utils/AppStyles';
@@ -8,25 +8,31 @@ import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
-import {setString} from '../../../utils/AsyncStorageHelper';
+import {flushAllData, setString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const UserLogInDetail = ({route}) => {
-  const screen = route.params.screen;
-  const show = route.params.status;
-  const returnScreen = route?.params?.return;
+const UserLogInDetail = props => {
+  const screen = props?.route?.params?.data?.screen;
+  const show = props?.route?.params?.data?.status;
+  const returnScreen = props?.route?.params?.data?.return;
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
+  const userData = props?.route.params?.data?.userData;
+  const password = props?.route.params?.data?.password;
+
+  useEffect(() => {
+    console.log('userDetails', screen);
+  }, []);
   return (
     <View
       style={[
         AppStyles.AppMainBackground,
         {
           backgroundColor:
-            screen == 'User Signin'
-              ? AppColors.Red
-              : AppColors.BackgroundSecondColor,
-          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+          screen == 'User Signin'
+            ? AppColors.Red
+            : AppColors.BackgroundSecondColor,
+        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -68,9 +74,12 @@ const UserLogInDetail = ({route}) => {
                 <DetailsItem first={'Village'} second={'amrapue'} />
               )}
 
-              <DetailsItem first={'Mobile Number'} second={'+91 8733075256'} />
+              <DetailsItem
+                first={'Mobile Number'}
+                second={userData?.country_code + ' ' + userData?.phone}
+              />
 
-              <DetailsItem first={'Password'} second={'Admin@234E34'} />
+              <DetailsItem first={'Password'} second={password} />
             </View>
           </View>
 
@@ -78,13 +87,18 @@ const UserLogInDetail = ({route}) => {
             text={'Thanks'}
             textStyle={{color: screen == 'User Signin' ? 'black' : 'white'}}
             buttonPress={() => {
-              returnScreen != 'profile' &&
-                setString('flag', JSON.stringify('enter'));
-              RootNavigation.navigate(
-                returnScreen == 'profile'
-                  ? AppScreens.HOME_SCREEN
-                  : AppScreens.FirstScreen,
+              flushAllData(
+                success => {},
+                failure => {},
               );
+              RootNavigation?.forcePush(props, AppScreens.SponserScreen, NaN);
+              // returnScreen != 'profile' &&
+              //   setString('flag', JSON.stringify('enter'));
+              // RootNavigation.navigate(
+              //   returnScreen == 'profile'
+              //     ? AppScreens.HOME_SCREEN
+              //     : AppScreens.FirstScreen,
+              // );
             }}
             buttonStyle={{
               width: '85%',

@@ -47,6 +47,8 @@ import {CustomDatePicker} from '../../../components/CustomDatePicker';
 import {getCategories, getCities} from '../../../networking/CallApi';
 import {Api} from '../../../networking/Api';
 import {showMessage} from 'react-native-flash-message';
+import LoaderView from '../../../utils/LoaderView';
+import moment from 'moment';
 
 // import LoaderView from '../../../utils/LoaderView';
 // import {set} from 'react-native-reanimated';
@@ -79,10 +81,14 @@ const AddBusinessScreen = props => {
   const [visitingOne, setVisitingOne] = useState('');
   const [allCities, setAlLCities] = useState([]);
   const [week, setWeek] = useState(staticArray.week);
-  const [type, setType] = useState('own');
+  const [business_type, setBusiness_type] = useState('Own');
   const [city, setCity] = useState('');
   const [openDatePicker, setDatePicker] = useState(false);
   const [dob, setDOB] = useState(null);
+  const [startAdd, setStartAdd] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [owner_name_4, setOwner_name_4] = useState('');
 
   useEffect(() => {
     getCities(
@@ -97,25 +103,30 @@ const AddBusinessScreen = props => {
   }, []);
 
   useEffect(() => {
-    printLog('AddBusinessScreen', JSON.stringify(bussinessItem));
+    printLog('AddBusinessScreen', bussinessItem);
 
     if (bussinessItem != undefined) {
       setFirm(bussinessItem?.firm);
       setCategory(bussinessItem?.category_name);
       setCatId(bussinessItem?.category_id);
+      setBusiness_type(bussinessItem?.business_type);
       setOwner1(bussinessItem?.owner_name_1);
       setOwner2(bussinessItem?.owner_name_2);
       setOwner3(bussinessItem?.owner_name_3);
+      setOwner4(bussinessItem?.owner_name_4);
       setAddress(bussinessItem?.address);
       setProduct(bussinessItem?.products);
       setStart(bussinessItem?.from_time);
+      setStartDate(bussinessItem?.business_start_date);
+      setEndDate(bussinessItem?.business_end_date);
       setClose(bussinessItem?.to_time);
       setCode(bussinessItem?.country_code);
       setSelectedCity(bussinessItem?.city);
       setMobile(bussinessItem?.business_phone);
       setEmail(bussinessItem?.business_email);
       setWebsite(bussinessItem?.website);
-      // setVisiting(bussinessItem?.visting_card_photo);
+      setVisiting(bussinessItem?.visting_card_photo);
+      console.log('uri', bussinessItem?.visting_card_photo);
       var daysList = [];
       for (let c = 0; c < bussinessItem?.business_hours?.length; c++) {
         daysList.push({
@@ -123,10 +134,8 @@ const AddBusinessScreen = props => {
           status: bussinessItem?.business_hours[c]?.status == '1',
         });
       }
-
       setWeek(daysList);
     }
-
     getCategories(
       response => {
         if (response?.status) {
@@ -154,9 +163,11 @@ const AddBusinessScreen = props => {
 
     payload.append('category_id', catId);
     payload.append('firm', firm);
+    payload.append('business_type', business_type);
     payload.append('owner_name_1', owner1);
     payload.append('owner_name_2', owner2);
     payload.append('owner_name_3', owner3);
+    payload.append('owner_name_4', owner4);
     payload.append('address', address);
     payload.append('products', product);
     payload.append('country_code', code);
@@ -166,19 +177,88 @@ const AddBusinessScreen = props => {
     payload.append('from_time', startTime);
     payload.append('to_time', endTime);
     payload.append('city', selectedCity);
+    payload.append('business_start_date', startDate);
+    payload.append('business_end_date', endDate);
     payload.append('business_hourse', JSON.stringify(week));
 
-    // payload.append('visting_card_photo', {
-    //   uri:
-    //     Platform.OS === 'android'
-    //       ? visiting?.uri
-    //       : visiting?.uri.replace('file://', ''),
-    //   name: visiting?.fileName,
-    //   type: visiting?.type,
-    // });
+    payload.append('visting_card_photo', {
+      uri:
+        Platform.OS === 'android'
+          ? visiting?.uri
+          : visiting?.uri.replace('file://', ''),
+      name: visiting?.fileName,
+      type: visiting?.type,
+    });
     printLog('PARAMS', JSON.stringify(payload));
 
     fetch(Api.POST_ADD_BUSINESS, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization:
+          'Bearer ' +
+          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // return responseJson
+        printLog('responseJson-->', JSON.stringify(responseJson));
+        ShowMessage(responseJson?.message);
+        if (responseJson?.status) {
+          RootNavigation?.goBack();
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        ShowMessage(JSON.stringify(error));
+        printLog('responseJson Error', JSON.stringify(error));
+        setLoading(false);
+      });
+  };
+
+  //
+
+  const updateBusiness = async () => {
+    setLoading(true);
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    printLog(JSON.stringify(selectedCategory?.id));
+    var payload = new FormData();
+    payload.append('business_id', bussinessItem?.id);
+    payload.append('category_id', catId);
+    payload.append('business_type', business_type);
+    payload.append('firm', firm);
+    payload.append('owner_name_1', owner1);
+    payload.append('owner_name_2', owner2);
+    payload.append('owner_name_3', owner3);
+    payload.append('owner_name_4', owner4);
+    payload.append('address', address);
+    payload.append('products', product);
+    payload.append('country_code', code);
+    payload.append('business_phone', mobile);
+    payload.append('business_email', email);
+    payload.append('website', website);
+    payload.append('city', selectedCity);
+    payload.append('from_time', startTime);
+    payload.append('to_time', endTime);
+    payload.append('business_start_date', startDate);
+    payload.append('business_end_date', endDate);
+    payload.append('business_hourse', JSON.stringify(week));
+
+    if (visiting?.uri != undefined)
+      payload.append('visting_card_photo', {
+        uri:
+          Platform.OS === 'android'
+            ? visiting?.uri
+            : visiting?.uri.replace('file://', ''),
+        name: visiting?.fileName,
+        type: visiting?.type,
+      });
+    printLog('PARAMS', JSON.stringify(payload));
+
+    fetch(Api.POST_UPDATE_BUSINESS, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -206,69 +286,6 @@ const AddBusinessScreen = props => {
       });
   };
 
-  //
-
-  //   const updateBusiness = async () => {
-  //     let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-  //     printLog(JSON.stringify(selectedCategory?.id));
-  //     setLoading(true);
-  //     var payload = new FormData();
-  //     payload.append('business_id', bussinessItem?.id);
-  //     payload.append('category_id', catId);
-  //     payload.append('firm', firm);
-  //     payload.append('owner_name_1', owner1);
-  //     payload.append('owner_name_2', owner2);
-  //     payload.append('owner_name_3', owner3);
-  //     payload.append('address', address);
-  //     payload.append('products', product);
-  //     payload.append('country_code', code);
-  //     payload.append('business_phone', mobile);
-  //     payload.append('business_email', email);
-  //     payload.append('website', website);
-  //     payload.append('city', selectedCity);
-  //     payload.append('from_time', startTime);
-  //     payload.append('to_time', endTime);
-  //     payload.append('business_hourse', JSON.stringify(week));
-
-  //     if (visiting?.uri != undefined)
-  //       payload.append('visting_card_photo', {
-  //         uri:
-  //           Platform.OS === 'android'
-  //             ? visiting?.uri
-  //             : visiting?.uri.replace('file://', ''),
-  //         name: visiting?.fileName,
-  //         type: visiting?.type,
-  //       });
-  //     printLog('PARAMS', JSON.stringify(payload));
-
-  //     fetch(Apis.POST_UPDATE_BUSINESS, {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'multipart/form-data',
-  //         Authorization:
-  //           'Bearer ' +
-  //           (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-  //       },
-  //       body: payload,
-  //     })
-  //       .then(response => response.json())
-  //       .then(responseJson => {
-  //         // return responseJson
-  //         printLog('responseJson', JSON.stringify(responseJson));
-  //         ShowMessage(responseJson?.message);
-  //         if (responseJson?.status) {
-  //           RootNavigation?.goBack();
-  //         }
-  //         setLoading(false);
-  //       })
-  //       .catch(error => {
-  //         ShowMessage(JSON.stringify(error));
-  //         printLog('responseJson Error', JSON.stringify(error));
-  //         setLoading(false);
-  //       });
-  //   };
-
   const getMyImage = first => {
     ImagePicker.launchImageLibrary(
       {
@@ -295,11 +312,11 @@ const AddBusinessScreen = props => {
     );
   };
 
-  useEffect(() => {
-    getString('village', response => {
-      setAlLCities(response);
-    });
-  }, [allCities, setAlLCities]);
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setAlLCities(response);
+  //   });
+  // }, [allCities, setAlLCities]);
 
   return (
     <View
@@ -426,7 +443,7 @@ const AddBusinessScreen = props => {
                 <TouchableOpacity
                   activeOpacity={1}
                   style={{flexDirection: 'row', alignItems: 'center'}}
-                  onPress={() => setType('own')}>
+                  onPress={() => setBusiness_type('Own')}>
                   <Text
                     style={{
                       fontFamily: AppFonts.semiBold,
@@ -437,7 +454,7 @@ const AddBusinessScreen = props => {
                     }}>
                     Own Business:
                   </Text>
-                  <TouchableOpacity
+                  <View
                     style={{
                       height: 15,
                       width: 15,
@@ -448,21 +465,19 @@ const AddBusinessScreen = props => {
                       borderWidth: 3,
                       justifyContent: 'center',
                       alignItems: 'center',
-                    }}
-                    activeOpacity={1}>
-                    {type == 'own' && (
+                    }}>
+                    {business_type == 'Own' && (
                       <View
                         style={{
                           height: 9,
                           width: 9,
                           borderRadius: 15,
                           backgroundColor: '#0C65F7',
-
                           opacity: 1,
                         }}
                       />
                     )}
-                  </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -472,7 +487,7 @@ const AddBusinessScreen = props => {
                     alignItems: 'center',
                     marginLeft: 15,
                   }}
-                  onPress={() => setType('partenership')}>
+                  onPress={() => setBusiness_type('Partenership')}>
                   <Text
                     style={{
                       fontFamily: AppFonts.semiBold,
@@ -483,7 +498,7 @@ const AddBusinessScreen = props => {
                     }}>
                     Partnership Business:
                   </Text>
-                  <TouchableOpacity
+                  <View
                     style={{
                       height: 15,
                       width: 15,
@@ -494,9 +509,8 @@ const AddBusinessScreen = props => {
                       borderWidth: 3,
                       justifyContent: 'center',
                       alignItems: 'center',
-                    }}
-                    activeOpacity={1}>
-                    {type == 'partenership' && (
+                    }}>
+                    {business_type == 'Partenership' && (
                       <View
                         style={{
                           height: 9,
@@ -507,7 +521,7 @@ const AddBusinessScreen = props => {
                         }}
                       />
                     )}
-                  </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
               </View>
 
@@ -544,7 +558,12 @@ const AddBusinessScreen = props => {
                 }}
               />
 
-              <HorizontalTextInput
+              {/* <HorizontalTextInput
+                label={`Address`}
+                onChangeText={setAddress}
+                defaultText={address}
+              /> */}
+              <BoxTextInput
                 label={`Address`}
                 onChangeText={setAddress}
                 defaultText={address}
@@ -557,9 +576,9 @@ const AddBusinessScreen = props => {
               /> */}
 
               <BoxTextInput
-                label={`Description :`}
-                onChangeText={setDescription}
-                defaultText={Description}
+                label={`Description`}
+                onChangeText={setProduct}
+                defaultText={product}
               />
               {/* <View
               style={{
@@ -672,11 +691,12 @@ const AddBusinessScreen = props => {
               </View>
 
               <MyMobileNumber
-                // placeholder={'vjbrb'}
+                // placeholder={mobile}
                 type={'numeric'}
                 label={`Mobile No`}
                 countryCode={code}
                 phone={mobile}
+                defaultText={mobile}
                 setCountryCode={item => {
                   setCode(item?.name);
                 }}
@@ -693,11 +713,15 @@ const AddBusinessScreen = props => {
               <DateSelection
                 text={'Bussiness Start Date:'}
                 title={'Select Bussiness Start Date'}
+                placeholder={startDate == '' ? 'YYYY-MM-DD' : startDate}
+                onChangeDob={i => setStartDate(moment(i).format('YYYY-MM-DD'))}
               />
 
               <DateSelection
                 text={'Bussiness End Date:'}
                 title={'Select Bussiness End Date'}
+                placeholder={endDate == '' ? 'YYYY-MM-DD' : endDate}
+                onChangeDob={i => setEndDate(moment(i).format('YYYY-MM-DD'))}
               />
               {/* <HorizontalTextInput
               label={`Bussiness Start Date`}
@@ -726,7 +750,7 @@ const AddBusinessScreen = props => {
                     Visiting Card :{' '}
                   </Text>
                   <AppButton
-                    // buttonPress={() => getMyImage(visiting == '' ? 1 : 2)}
+                    buttonPress={() => getMyImage(visiting == '' ? 1 : 2)}
                     text={'Browse'}
                     textStyle={{marginLeft: 0, fontSize: 12}}
                     buttonStyle={{
@@ -777,30 +801,44 @@ const AddBusinessScreen = props => {
                     paddingHorizontal: 5,
                     paddingTop: 20,
                   }}>
-                  <View
+                  <TouchableOpacity
+                    activeOpacity={1}
                     style={{
                       width: '48%',
                       height: '100%',
-                    }}>
+                    }}
+                    onPress={() => (visiting != '' ? getMyImage(1) : null)}>
                     <Image
-                      style={{}}
+                      style={{width: '100%', height: 50, borderRadius: 5}}
                       source={
                         visiting == ''
                           ? require('../../../assets/images/visiting_card.png')
-                          : {uri: visiting?.uri}
+                          : {
+                              uri:
+                                visiting?.uri == undefined
+                                  ? visiting
+                                  : visiting?.uri,
+                            }
                       }
                     />
-                  </View>
-                  <View
+                    <Image
+                      style={{position: 'absolute', right: 5, top: 5}}
+                      source={require('../../../assets/images/cancel_icon.png')}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={1}
                     style={{
                       width: '48%',
                       height: '100%',
-                    }}>
+                    }}
+                    onPress={() => (visitingOne != '' ? getMyImage(2) : null)}>
                     <Image
                       style={{
                         marginHorizontal: 5,
-
                         borderRadius: 5,
+                        width: '100%',
+                        height: 50,
                       }}
                       source={
                         visitingOne == ''
@@ -808,7 +846,11 @@ const AddBusinessScreen = props => {
                           : {uri: visitingOne?.uri}
                       }
                     />
-                  </View>
+                    <Image
+                      style={{position: 'absolute', right: 0, top: 5}}
+                      source={require('../../../assets/images/cancel_icon.png')}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
 
@@ -948,11 +990,12 @@ const AddBusinessScreen = props => {
             </View> */}
 
               {loading ? (
-                // <LoaderView
-                //   style={{width: '50%', height: 35, marginVertical: 20}}
-                // />
-                <></>
+                <LoaderView
+                  color={AppColors.BackgroundSecondColor}
+                  style={{width: '50%', height: 35, marginVertical: 20}}
+                />
               ) : (
+                // <></>
                 <AppButton
                   width={'50%'}
                   text={bussinessItem != undefined ? 'Update' : `Submit`}
@@ -965,22 +1008,23 @@ const AddBusinessScreen = props => {
                   }}
                   isLoading={loading}
                   buttonPress={() => {
-                    // if (selectedCategory == null) {
-                    //   showMessage('Please select category');
-                    // } else if (firm == undefined || firm?.trim() == '') {
-                    //   ShowMessage('Please enter firm name');
-                    // } else if (owner1 == undefined || owner1?.trim() == '') {
-                    //   ShowMessage('Please enter owner name');
-                    // } else if (address == undefined || address?.trim() == '') {
-                    //   ShowMessage('Please enter address');
-                    // } else if (selectedCity == null) {
-                    //   ShowMessage('Please select villiage');
-                    // } else if (visiting == undefined) {
-                    //   ShowMessage('Please upload visiting card');
-                    // } else {
-                    // addNewBusiness();
-                    // updateBusiness();
-                    // }
+                    if (selectedCategory == null) {
+                      showMessage('Please select category');
+                    } else if (firm == undefined || firm?.trim() == '') {
+                      ShowMessage('Please enter firm name');
+                    } else if (owner1 == undefined || owner1?.trim() == '') {
+                      ShowMessage('Please enter owner name');
+                    } else if (address == undefined || address?.trim() == '') {
+                      ShowMessage('Please enter address');
+                    } else if (selectedCity == null) {
+                      ShowMessage('Please select villiage');
+                    } else if (visiting == undefined) {
+                      ShowMessage('Please upload visiting card');
+                    } else {
+                      bussinessItem == undefined
+                        ? addNewBusiness()
+                        : updateBusiness();
+                    }
                   }}
                 />
               )}

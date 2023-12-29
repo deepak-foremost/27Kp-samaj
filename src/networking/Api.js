@@ -13,9 +13,7 @@ export class Api {
   static GET_CATEGORIES = `${this.BASE_URL}getCategory`;
   static GET_ALL_BUSINESSES = `${this.BASE_URL}getAllBusinesses`;
   static GET_RELATION = `${this.BASE_URL}getRelation`;
-
   static GET_ABOUT_US_LIST = `${this.BASE_URL}getAboutUsList`;
-
   //Get No Token Required
   static CHECK_PHONE_EXISTS = `${this.BASE_URL}checkphoneExists`;
   static GET_CITIES = `${this.BASE_URL}getCity`;
@@ -31,6 +29,8 @@ export class Api {
   static GET_PARIPATR = `${this.BASE_URL}getCircularfiles`;
   static GET_IMAGE_SLIDERS = `${this.BASE_URL}getSlider`;
   static GET_FAMILY_DETAIL_BY_ID = `${this.BASE_URL}getSingleFamilyMemberDetail`;
+  static GET_JEVAN_SLAH = `${this.BASE_URL}getjeevan`;
+  static GET_BHUMI_SLAH = `${this.BASE_URL}getBhoomi`;
 
   static DELETE_BUSINESS = `${this.BASE_URL}deleteBusiness`;
   static DELETE_MEMBER = `${this.BASE_URL}deleteFamilyMember`;

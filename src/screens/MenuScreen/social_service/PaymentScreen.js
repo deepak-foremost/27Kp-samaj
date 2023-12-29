@@ -319,18 +319,16 @@ const PaymentScreen = ({route}) => {
                     expiry={true}
                   /> */}
                   {open && (
-                   
-                      <MonthPicker
-                        onChange={onValueChange}
-                        mode="number"
-                        //  autoTheme={false}
-                        dividerHeight={250}
-                        //androidVariant="nativeAndroid"
-                        date={new Date()}
-                        value={new Date()}
-                        onItemSelect={i => console.log('select', i)}
-                      />
-                   
+                    <MonthPicker
+                      onChange={onValueChange}
+                      mode="number"
+                      //  autoTheme={false}
+                      dividerHeight={250}
+                      //androidVariant="nativeAndroid"
+                      date={new Date()}
+                      value={new Date()}
+                      onItemSelect={i => console.log('select', i)}
+                    />
                   )}
 
                   {/* <HorizontalTextInput

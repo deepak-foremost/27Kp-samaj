@@ -7,6 +7,7 @@ import {
   Image,
   Platform,
   SafeAreaView,
+  ImageBackground,
 } from 'react-native';
 import AppButton from '../../components/AppButton';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
@@ -73,12 +74,12 @@ const AddMemberScreen = props => {
   const [phone, setPhone] = useState('');
   const [mosal, setMosal] = useState('');
   const [hobby, setHobby] = useState('');
-  const [fatherinlaw, setFatherinLaw] = useState('');
+  const [sasru, setsasru] = useState('');
   const [email, setEmail] = useState('');
-  const [lifeSupportNo, setLifeSupportNo] = useState('');
-  const [bhumiNo, setBhumiNo] = useState('');
+  const [jeevan_sahay_nubmer, Setjeevan_sahay_nubmer] = useState('');
+  const [boomi_nubmer, setBoomi_nubmer] = useState('');
   const [image, setImage] = useState('');
-  const [age, setAge] = useState('');
+  const [age, setAge] = useState(null);
   const [dob, setDOB] = useState(null);
   const [openDatePicker, setDatePicker] = useState(false);
   var payload = new FormData();
@@ -86,6 +87,9 @@ const AddMemberScreen = props => {
   const [visiting, setVisiting] = useState('');
   const [visitingOne, setVisitingOne] = useState('');
   const [VisitingTwo, setVisitingTwo] = useState('');
+  const [foriegn_country_code, setForeignCountryCode] = useState('+91');
+  const [foriegn_number, setForeignNumber] = useState('');
+  const [foreign_country_name, setForeignCountry] = useState('');
 
   useEffect(() => {
     getString(AsyncStorageConst.user, res => {
@@ -150,7 +154,7 @@ const AddMemberScreen = props => {
         } else {
           // setVisiting(response?.assets[0]);
           if (first == 1) {
-            setVisiting(response?.assets[0]);
+            setImage(response?.assets[0]);
           } else if (first == 2) {
             setVisitingOne(response?.assets[0]);
           } else {
@@ -167,50 +171,57 @@ const AddMemberScreen = props => {
     );
   };
 
-  //   useEffect(() => {
-  //     if (memberItem != undefined && memberItem != null) {
-  //       setCity(memberItem?.city);
-  //       setFamilyMember(memberItem?.name);
-  //       setGender(memberItem?.gender);
-  //       setHeight(memberItem?.height);
-  //       setWeight(memberItem?.weight);
-  //       setStudy(memberItem?.study);
-  //       setBusiness(memberItem?.business);
-  //       setBusinessAddress(memberItem?.business_address);
-  //       setHomeAddress(memberItem?.current_address);
-  //       setCountryCode(memberItem?.country_code);
-  //       setPhone(memberItem?.phone);
-  //       setMosal(memberItem?.mosal);
-  //       setHobby(memberItem?.shakh);
-  //       setEmail(memberItem?.email);
-  //       setImage(memberItem?.image);
-  //       setBlood(memberItem?.blood_group);
-  //       setDOB(new Date(memberItem?.dob));
-  //       setRelation(memberItem?.family_main_member_with_relation);
-  //       setStatus(memberItem?.marital_status);
-  //     }
-  //   }, []);
+  useEffect(() => {
+    // console.log('detail', memberItem);
+    if (memberItem != undefined && memberItem != null) {
+      setCity(memberItem?.city);
+      setFamilyMember(memberItem?.name);
+      setGender(memberItem?.gender);
+      setHeight(memberItem?.height);
+      setWeight(memberItem?.weight);
+      setAge(JSON.stringify(memberItem?.age));
+      setStudy(memberItem?.study);
+      setBusiness(memberItem?.business);
+      setBusinessAddress(memberItem?.business_address);
+      setHomeAddress(memberItem?.current_address);
+      setCountryCode(memberItem?.country_code);
+      setPhone(memberItem?.phone);
+      setMosal(memberItem?.mosal);
+      setHobby(memberItem?.shakh);
+      setEmail(memberItem?.email);
+      setImage(memberItem?.image);
+      setBlood(memberItem?.blood_group);
+      setDOB(new Date(memberItem?.dob));
+      setRelation(memberItem?.family_main_member_with_relation);
+      setStatus(memberItem?.marital_status);
+      setForeignCountry(memberItem?.foreign_country_name);
+      Setjeevan_sahay_nubmer(memberItem?.jeevan_sahay_nubmer);
+      setsasru(memberItem?.sasru);
+      setBoomi_nubmer(memberItem?.boomi_nubmer);
+    }
+  }, []);
 
   const [isAdding, setAdding] = useState(false);
 
-  useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
+
   const addMembers = async () => {
     let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
 
     if (memberItem != undefined) {
       payload.append('id', memberItem?.id);
     }
-
     payload.append('name', familyMember);
     payload.append('email', email);
     payload.append('gender', gender);
     payload.append('city', city);
     payload.append('height', height);
     payload.append('weight', weigth);
+    payload.append('age', age);
     payload.append('blood_group', blood);
     payload.append('family_main_member_with_relation', relation);
     payload.append('marital_status', status);
@@ -222,6 +233,10 @@ const AddMemberScreen = props => {
     payload.append('shakh', hobby);
     payload.append('country_code', country_code);
     payload.append('phone', phone);
+    payload.append('foreign_country_name', foreign_country_name);
+    payload.append('jeevan_sahay_nubmer', jeevan_sahay_nubmer);
+    payload.append('sasru', sasru);
+    payload.append('boomi_nubmer', boomi_nubmer);
     payload.append('dob', moment(dob).format('YYYY-MM-DD'));
     if (image?.uri != undefined) {
       payload.append('image', {
@@ -272,7 +287,6 @@ const AddMemberScreen = props => {
         setLoading(false);
       });
   };
-
   // React.useLayoutEffect(() => {
 
   //   props.navigation.setOptions({
@@ -301,7 +315,6 @@ const AddMemberScreen = props => {
         {
           backgroundColor: AppColors.BackgroundSecondColor,
           paddingTop: Platform.OS == 'ios' && StatusBarHeight,
-
           //   paddingBottom: safeAreaBottomHeight(),
         },
       ]}>
@@ -360,8 +373,19 @@ const AddMemberScreen = props => {
               }}>
               <HorizontalTextInput
                 label={`નામ:`}
-                defaultText={name}
-                onChangeText={setName}
+                defaultText={familyMember}
+                onChangeText={setFamilyMember}
+              />
+
+              <HorizontalSelection
+                label={`લિંગ`}
+                placeholder={`લિંગ`}
+                data={[{name: 'Male'}, {name: 'Female'}]}
+                value={gender}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setGender(item?.name);
+                }}
               />
 
               <View
@@ -391,7 +415,6 @@ const AddMemberScreen = props => {
                   />
                 </View>
               </View>
-
               <View
                 style={{
                   flexDirection: 'row',
@@ -408,12 +431,11 @@ const AddMemberScreen = props => {
                 <View style={{width: '49%'}}>
                   <HorizontalTextInput
                     label={`સાસરું`}
-                    defaultText={fatherinlaw}
-                    onChangeText={setFatherinLaw}
+                    defaultText={sasru}
+                    onChangeText={setsasru}
                   />
                 </View>
               </View>
-
               <View
                 style={{
                   flexDirection: 'row',
@@ -422,12 +444,25 @@ const AddMemberScreen = props => {
                   alignItems: 'center',
                 }}>
                 <View style={{width: '49%'}}>
+                  <DateSelection
+                    text={'જન્મ તારીખ:'}
+                    title={'જન્મ તારીખ'}
+                    onChangeDob={i => setDOB(i)}
+                    value={dob}
+                    placeholder={
+                      dob == null
+                        ? 'DD/MM/YYYY'
+                        : moment(dob).format('YYYY-MM-DD')
+                    }
+                  />
+                </View>
+                <View style={{width: '49%'}}>
                   <HorizontalTextInput
                     label={`ઉંમર`}
                     placeholder={``}
                     defaultText={age}
                     type="phone-pad"
-                    onChangeText={setAge}
+                    onChangeText={i => setAge(i)}
                   />
                   {/* <Text
                     style={{
@@ -448,29 +483,28 @@ const AddMemberScreen = props => {
                     {dob == null ? '' : getAge(dob)}
                   </Text> */}
                 </View>
-                <View style={{width: '49%'}}>
-                  <HorizontalSelection
-                    label={`બ્લડ ગ્રુપ`}
-                    defaultText={blood}
-                    placeholder={`બ્લડ ગ્રુપ`}
-                    data={[
-                      {name: 'A+'},
-                      {name: 'A-'},
-                      {name: 'B+'},
-                      {name: 'B-'},
-                      {name: 'O+'},
-                      {name: 'O-'},
-                      {name: 'AB+'},
-                      {name: 'AB-'},
-                    ]}
-                    value={blood}
-                    onItemSelect={item => {
-                      // printLog(JSON.stringify(item?.item));
-                      setBlood(item?.name);
-                    }}
-                  />
-                </View>
               </View>
+
+              <HorizontalSelection
+                label={`બ્લડ ગ્રુપ`}
+                defaultText={blood}
+                placeholder={`બ્લડ ગ્રુપ`}
+                data={[
+                  {name: 'A+'},
+                  {name: 'A-'},
+                  {name: 'B+'},
+                  {name: 'B-'},
+                  {name: 'O+'},
+                  {name: 'O-'},
+                  {name: 'AB+'},
+                  {name: 'AB-'},
+                ]}
+                value={blood}
+                onItemSelect={item => {
+                  printLog('blood', item?.name);
+                  setBlood(item?.name);
+                }}
+              />
 
               <View
                 style={{
@@ -481,7 +515,7 @@ const AddMemberScreen = props => {
                 <View style={{width: '49%'}}>
                   <HorizontalTextInput
                     label={`ઊંચાઈ`}
-                    placeholder={`ft.`}
+                    placeholder={`ft.inch`}
                     defaultText={height}
                     type="phone-pad"
                     onChangeText={setHeight}
@@ -596,8 +630,8 @@ const AddMemberScreen = props => {
                 styles={{flexDirection: 'coloum', minHeight: 120}}
                 textStyle={{marginBottom: 10}}
                 label={`હાલ ના રહેઠાણ નુ સરનામું`}
-                defaultText={presentAddress}
-                onChangeText={setPresentAddress}
+                defaultText={homeAddress}
+                onChangeText={setHomeAddress}
               />
 
               <HorizontalTextInput
@@ -634,49 +668,47 @@ const AddMemberScreen = props => {
                 placeholder={`ફોરેન Country Name`}
                 defaultText={``}
                 data={staticArray.foriegnCountry}
-                value={homeAddress}
+                value={foreign_country_name}
                 onItemSelect={item => {
                   // printLog(JSON.stringify(item?.item));
-                  setHomeAddress(item?.name);
+                  setForeignCountry(item?.name);
                 }}
+              />
+              <MyMobileNumber
+                label={`ફોરેન Number : `}
+                countryCode={foriegn_country_code}
+                phone={foriegn_number}
+                type={'numeric'}
+                setCountryCode={item => {
+                  setForeignCountryCode(item?.name);
+                }}
+                onChangeText={setForeignNumber}
               />
               <HorizontalTextInput
                 label={`ભુમિ સભાસદ નં:`}
-                defaultText={bhumiNo}
-                // type="email-address"
-                onChangeText={setBhumiNo}
+                defaultText={boomi_nubmer}
+                type="numeric"
+                onChangeText={setBoomi_nubmer}
               />
               <HorizontalTextInput
                 label={`જીવન સહાય સભાસદ નં:`}
-                defaultText={lifeSupportNo}
-                // type="email-address"
-                onChangeText={setLifeSupportNo}
+                defaultText={jeevan_sahay_nubmer}
+                type="numeric"
+                onChangeText={Setjeevan_sahay_nubmer}
               />
-
-              <DateSelection text={'જન્મ તારીખ:'} title={'જન્મ તારીખ'} />
 
               {/* <HorizontalTextInput
               label={`Family ID`}
               defaultText={familyId}
               onChangeText={setFamilyId}
             /> */}
-              <HorizontalTextInput
+              {/* <HorizontalTextInput
                 label={`કુટુંબ ના વ્યકિતનું નામ`}
                 defaultText={familyMember}
                 onChangeText={setFamilyMember}
-              />
-              <HorizontalSelection
-                label={`લિંગ`}
-                placeholder={`લિંગ`}
-                data={[{name: 'Male'}, {name: 'Female'}]}
-                value={gender}
-                onItemSelect={item => {
-                  // printLog(JSON.stringify(item?.item));
-                  setGender(item?.name);
-                }}
-              />
+              /> */}
 
-              <DatePicker
+              {/* <DatePicker
                 modal
                 mode="date"
                 open={openDatePicker}
@@ -689,13 +721,13 @@ const AddMemberScreen = props => {
                 onCancel={() => {
                   setDatePicker(false);
                 }}
-              />
-
+              /> */}
+              {/* COURSE NAME
               <HorizontalTextInput
                 label={`Course Name`}
                 defaultText={course}
                 onChangeText={setCourse}
-              />
+              /> */}
 
               {/* <HorizontalTextInput
               label={`ફોરેન Country Name`}
@@ -766,22 +798,22 @@ const AddMemberScreen = props => {
                     ફોટો :{' '}
                   </Text>
                   <AppButton
-                    // buttonPress={() => {
-                    //   if (visiting == '') {
-                    //     getMyImage(1);
-                    //   } else if (visitingOne == '') {
-                    //     getMyImage(2);
-                    //   } else {
-                    //     getMyImage(3);
-                    //   }
-                    // }}
+                    buttonPress={() => {
+                      if (image == '') {
+                        getMyImage(1);
+                      } else if (visitingOne == '') {
+                        getMyImage(2);
+                      } else {
+                        getMyImage(3);
+                      }
+                    }}
                     text={'Browse'}
                     textStyle={{marginLeft: 0, fontSize: 12}}
                     buttonStyle={{
                       width: 100,
                       height: 25,
                       backgroundColor:
-                        visiting == ''
+                        image == ''
                           ? '#9A9A9A'
                           : AppColors.BackgroundSecondColor,
                       borderRadius: 30,
@@ -822,63 +854,190 @@ const AddMemberScreen = props => {
                     alignItems: 'flex-end',
                     justifyContent: 'space-between',
                     paddingHorizontal: 5,
-                    height: 70,
+                    height: 90,
                     paddingTop: 15,
                   }}>
-                  <Image
+                  <TouchableOpacity
+                    activeOpacity={1}
                     style={{
                       width: '30%',
                       height: '100%',
-                      borderRadius: 5,
-                      resizeMode: 'cover',
-                      borderRadius: 10,
                     }}
-                    source={
-                      visiting == ''
-                        ? require('../../assets/images/visiting_card.png')
-                        : {uri: visiting?.uri}
-                    }
-                  />
+                    onPress={() => (image != '' ? getMyImage(1) : null)}>
+                    <Image
+                      style={{width: '100%', height: 80, borderRadius: 5}}
+                      source={
+                        image == ''
+                          ? require('../../assets/images/visiting_card.png')
+                          : {
+                              uri: image?.uri == undefined ? image : image?.uri,
+                            }
+                      }
+                    />
+                    <Image
+                      style={{position: 'absolute', right: 5, top: 5}}
+                      source={require('../../assets/images/cancel_icon.png')}
+                    />
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity
+                    style={{width: '30%'}}
+                    onPress={() => getMyImage(1)}>
+                    <ImageBackground
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 15,
+                        resizeMode: 'contain',
+                        borderRadius: 10,
+                      }}
+                      source={
+                        image == ''
+                          ? require('../../assets/images/visiting_card.png')
+                          : {
+                              uri: image?.uri == undefined ? image : image?.uri,
+                            }
+                      }>
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={{
+                          height: 24,
+                          width: 24,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          position: 'absolute',
+                          right: 0,
+                        }}
+                        onPress={() => getMyImage(1)}>
+                        <Image
+                          source={require('../../assets/images/cancel_icon.png')}
+                        />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </TouchableOpacity> */}
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={{
+                      width: '30%',
+                      height: '100%',
+                    }}
+                    onPress={() => (visitingOne != '' ? getMyImage(2) : null)}>
+                    <Image
+                      style={{width: '100%', height: 80, borderRadius: 5}}
+                      source={
+                        visitingOne == ''
+                          ? require('../../assets/images/visiting_card.png')
+                          : {
+                              uri:
+                                visitingOne?.uri == undefined
+                                  ? visitingOne
+                                  : visitingOne?.uri,
+                            }
+                      }
+                    />
+                    <Image
+                      style={{position: 'absolute', right: 5, top: 5}}
+                      source={require('../../assets/images/cancel_icon.png')}
+                    />
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity
+                    style={{width: '30%'}}
+                    onPress={() => getMyImage(2)}>
+                    <ImageBackground
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 5,
+                        marginLeft: 5,
+                        borderRadius: 10,
+                      }}
+                      source={
+                        visitingOne == ''
+                          ? require('../../assets/images/visiting_card.png')
+                          : {uri: visitingOne?.uri}
+                      }>
+                      <TouchableOpacity
+                        style={{
+                          height: 24,
+                          width: 24,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          position: 'absolute',
+                          right: 0,
+                        }}
+                        onPress={() => getMyImage(2)}>
+                        <Image
+                          source={require('../../assets/images/cancel_icon.png')}
+                        />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </TouchableOpacity> */}
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={{
+                      width: '30%',
+                      height: '100%',
+                    }}
+                    onPress={() => (VisitingTwo != '' ? getMyImage(3) : null)}>
+                    <Image
+                      style={{width: '100%', height: 80, borderRadius: 5}}
+                      source={
+                        VisitingTwo == ''
+                          ? require('../../assets/images/visiting_card.png')
+                          : {
+                              uri:
+                                VisitingTwo?.uri == undefined
+                                  ? VisitingTwo
+                                  : VisitingTwo?.uri,
+                            }
+                      }
+                    />
+                    <Image
+                      style={{position: 'absolute', right: 5, top: 5}}
+                      source={require('../../assets/images/cancel_icon.png')}
+                    />
+                  </TouchableOpacity>
 
-                  <Image
+                  {/* <TouchableOpacity
                     style={{
                       width: '30%',
-                      height: '100%',
-                      borderRadius: 5,
-                      marginLeft: 5,
-                      borderRadius: 10,
-                    }}
-                    source={
-                      visitingOne == ''
-                        ? require('../../assets/images/visiting_card.png')
-                        : {uri: visitingOne?.uri}
-                    }
-                  />
-                  <Image
-                    style={{
-                      width: '30%',
-                      height: '100%',
-                      borderRadius: 5,
-                      marginLeft: 5,
-                      borderRadius: 10,
-                    }}
-                    source={
-                      VisitingTwo == ''
-                        ? require('../../assets/images/visiting_card.png')
-                        : {uri: VisitingTwo?.uri}
-                    }
-                  />
+                      borderRadius: 20,
+                    }}>
+                    <ImageBackground
+                      source={
+                        VisitingTwo == ''
+                          ? require('../../assets/images/visiting_card.png')
+                          : {uri: VisitingTwo?.uri}
+                      }
+                      style={{width: '100%', height: '100%', borderRadius: 20}}>
+                      <TouchableOpacity
+                        style={{
+                          height: 24,
+                          width: 24,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          position: 'absolute',
+                          right: 0,
+                        }}
+                        onPress={() => getMyImage(3)}>
+                        <Image
+                          source={require('../../assets/images/cancel_icon.png')}
+                        />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                   
+                  </TouchableOpacity> */}
                 </View>
               </View>
 
               {loading ? (
                 <LoaderView
+                  color={AppColors.BackgroundSecondColor}
                   style={{width: '50%', height: 35, marginVertical: 20}}
                 />
               ) : (
                 <AppButton
                   width={'50%'}
-                  text={`Submit`}
+                  text={memberItem == undefined ? `Submit` : `Update`}
                   buttonStyle={{
                     width: '50%',
                     height: 40,
@@ -886,22 +1045,22 @@ const AddMemberScreen = props => {
                     alignSelf: 'center',
                     marginVertical: 20,
                   }}
-                  // onClick={() => {
-                  //   if (city == null) {
-                  //     showMessage('Please Select City');
-                  //   } else if (familyMember?.trim() == '') {
-                  //     ShowMessage('Please enter name');
-                  //   } else if (gender == null) {
-                  //     ShowMessage('Please select gender');
-                  //   } else if (dob == null) {
-                  //     ShowMessage('Please select Date of Birth');
-                  //   } else if (image == undefined || image == null) {
-                  //     ShowMessage('Please selcet photo');
-                  //   } else {
-                  //     setAdding(true);
-                  //     addMembers();
-                  //   }
-                  // }}
+                  buttonPress={() => {
+                    //   if (city == null) {
+                    //     showMessage('Please Select City');
+                    //   } else if (familyMember?.trim() == '') {
+                    //     ShowMessage('Please enter name');
+                    //   } else if (gender == null) {
+                    //     ShowMessage('Please select gender');
+                    //   } else if (dob == null) {
+                    //     ShowMessage('Please select Date of Birth');
+                    //   } else if (image == undefined || image == null) {
+                    //     ShowMessage('Please selcet photo');
+                    //   } else {
+                    //     setAdding(true);
+                    addMembers();
+                    //   }
+                  }}
                   // isLoading={loading}
                 />
               )}

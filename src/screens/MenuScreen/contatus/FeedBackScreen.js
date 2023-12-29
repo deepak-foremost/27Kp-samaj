@@ -42,6 +42,11 @@ import {AppFonts} from '../../../utils/AppFonts';
 import DatePicker from 'react-native-date-picker';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {staticArray} from '../../../utils/staticArray';
+import {
+  getCities,
+  getSuggestionData,
+  postAddFeedback,
+} from '../../../networking/CallApi';
 
 const FeedBackScreen = props => {
   const [openDatePicker, setDatePicker] = useState(false);
@@ -54,54 +59,54 @@ const FeedBackScreen = props => {
 
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState(null);
-  const [option, setOption] = useState('');
+  // const [option, setOption] = useState('');
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState('DD/MM/YYYY');
   const [isLoading, setLoading] = useState(false);
   const [country_code, setCountryCode] = useState('+91');
 
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
+
   useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
+    getCities(
+      response => {
+        var temp = [];
 
-  //   useEffect(() => {
-  //     getCities(
-  //       response => {
-  //         var temp = [];
+        for (let i = 0; i < response?.data?.length; i++) {
+          temp.push({
+            name: response?.data[i]?.name,
+            id: response?.data[i]?.id,
+          });
+        }
 
-  //         for (let i = 0; i < response?.data?.length; i++) {
-  //           temp.push({
-  //             name: response?.data[i]?.name,
-  //             id: response?.data[i]?.id,
-  //           });
-  //         }
+        setCities(temp);
+      },
+      error => {},
+      ``,
+    );
 
-  //         setCities(temp);
-  //       },
-  //       error => {},
-  //       ``,
-  //     );
+    getSuggestionData(
+      response => {
+        var temp = [];
 
-  //     getSuggestionData(
-  //       response => {
-  //         var temp = [];
+        for (let i = 0; i < response?.data?.length; i++) {
+          temp.push({
+            name: response?.data[i]?.name,
+            id: response?.data[i]?.id,
+          });
+        }
 
-  //         for (let i = 0; i < response?.data?.length; i++) {
-  //           temp.push({
-  //             name: response?.data[i]?.name,
-  //             id: response?.data[i]?.id,
-  //           });
-  //         }
-
-  //         setSuggestionList(temp);
-  //       },
-  //       error => {},
-  //     );
-  //   }, []);
+        setSuggestionList(temp);
+      },
+      error => {},
+    );
+  }, []);
 
   return (
     <View
@@ -149,62 +154,61 @@ const FeedBackScreen = props => {
             setSuggestionID(item?.id);
           }}
         /> */}
-        <View style={{flex:1}}>
-          <View
-            style={{
-              marginVertical: '6%',
-              width: '90%',
-              alignItems: 'center',
-              backgroundColor: AppColors.backgroundColor,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderRadius: 10,
-              backgroundColor: 'white',
-              alignSelf: 'center',
-              paddingBottom: 30,
-             
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                marginVertical: '6%',
+                width: '90%',
+                alignItems: 'center',
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderRadius: 10,
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                paddingBottom: 30,
 
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#D5D5D5',
-                  shadowOffset: {width: 0, height: -1},
-                  shadowOpacity: 0.9,
-                  shadowRadius: 3,
-                },
-                android: {
-                  elevation: 15,
-                },
-              }),
-            }}>
-            <HorizontalSelection
-              label={`Choose Option`}
-              placeholder={`Choose Option`}
-              data={staticArray.FeedbackOptions}
-              value={option}
-              onItemSelect={item => {
-                // printLog(JSON.stringify(item?.item));
-                setOption(item?.name);
-              }}
-            />
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#D5D5D5',
+                    shadowOffset: {width: 0, height: -1},
+                    shadowOpacity: 0.9,
+                    shadowRadius: 3,
+                  },
+                  android: {
+                    elevation: 15,
+                  },
+                }),
+              }}>
+              <HorizontalSelection
+                label={`Choose Option`}
+                placeholder={`Choose Option`}
+                data={suggestionList == [] ? [] : suggestionList}
+                value={suggestion}
+                onItemSelect={item => {
+                  // printLog(JSON.stringify(item?.item));
+                  setSuggestion(item?.name);
+                  setSuggestionID(item?.id);
+                }}
+              />
 
-            <HorizontalTextInput
-              label={`Your Name`}
-              defaultText={name}
-              onChangeText={setName}
-            />
+              <HorizontalTextInput
+                label={`Your Name`}
+                defaultText={name}
+                onChangeText={setName}
+              />
 
-            <MyMobileNumber
-              label={`Your Mobile`}
-              countryCode={country_code}
-              phone={phone}
-              type={'numeric'}
-              setCountryCode={item => {
-                setCountryCode(item?.name);
-              }}
-              onChangeText={setPhone}
-            />
+              <MyMobileNumber
+                label={`Your Mobile`}
+                countryCode={country_code}
+                phone={phone}
+                type={'numeric'}
+                setCountryCode={item => {
+                  setCountryCode(item?.name);
+                }}
+                onChangeText={setPhone}
+              />
 
-            {/* <View
+              {/* <View
               style={{
                 width: '100%',
                 flexDirection: 'row',
@@ -272,93 +276,100 @@ const FeedBackScreen = props => {
               }}
             /> */}
 
-            <DateSelection text={'Date : '} title={'Select Date'} />
+              <DateSelection
+                text={'Date : '}
+                title={'Select Date'}
+                placeholder={date}
+                onChangeDob={i => setDate(moment(i).format('YYYY-MM-DD'))}
+              />
 
-            <HorizontalSelection
-              label={`Village`}
-              placeholder={`Village`}
-              data={cities == null ? [] : cities}
-              value={city}
-              onItemSelect={item => {
-                printLog(JSON.stringify(item?.item));
-                setCity(item?.name);
-              }}
-            />
-            {/* <HorizontalTextInput
+              <HorizontalSelection
+                label={`Village`}
+                placeholder={`Village`}
+                data={cities == null ? [] : cities}
+                value={city}
+                onItemSelect={item => {
+                  printLog(JSON.stringify(item?.item));
+                  setCity(item?.name);
+                }}
+              />
+              {/* <HorizontalTextInput
             label={`Message`}
             defaultText={message}
             onChangeText={setMessage}
           /> */}
-            <BoxTextInput
-              label={`Message`}
-              defaultText={message}
-              onChangeText={setMessage}
-            />
-            {/* <HorizontalDetailInput
+              <BoxTextInput
+                label={`Message`}
+                defaultText={message}
+                onChangeText={setMessage}
+              />
+              {/* <HorizontalDetailInput
               label={`Write your message`}
               value={message}
               ChangeText={setMessage}
             /> */}
 
-            {isLoading ? (
-              <View style={{height: 45, width: '55%'}}>
-                {/* <LoaderView /> */}
-              </View>
-            ) : (
-              <AppButton
-                text={'Submit'}
-                width={'55%'}
-                buttonStyle={{
-                  marginTop: 15,
-                  width: '50%',
-                  borderRadius: 30,
-                  height: 40,
-                }}
-                onClick={() => {
-                  if (suggestion == null) {
-                    ShowMessage('Please select suggestion');
-                  } else if (name.trim == '') {
-                    ShowMessage('Please enter name');
-                  } else if (phone.trim == '') {
-                    ShowMessage('Please enter phone');
-                  } else if (city == null) {
-                    ShowMessage('Please select city');
-                  } else if (message.trim == '') {
-                    ShowMessage('Please enter message');
-                  } else {
-                    setLoading(true);
-                    postAddFeedback(
-                      {
-                        suggestion_id: suggestionID,
-                        name: name,
-                        phone: phone,
-                        city: city,
-                        message: message,
-                      },
-                      response => {
-                        ShowMessage(response?.message);
-                        if (response?.status) {
-                          RootNavigation?.goBack();
-                        }
-                        setLoading(false);
-                      },
-                      error => {
-                        ShowMessage(error);
-                        setLoading(false);
-                      },
-                    );
-                  }
-                }}
-              />
-            )}
-          </View>
+              {
+                // isLoading ? (
+                // <View style={{height: 45, width: '55%'}}>
+                //   {/* <LoaderView /> */}
+                // </View>
+                // ) :
+                <AppButton
+                  loading={isLoading}
+                  color={'#fff'}
+                  text={'Submit'}
+                  width={'55%'}
+                  buttonStyle={{
+                    marginTop: 15,
+                    width: '50%',
+                    borderRadius: 30,
+                    height: 40,
+                  }}
+                  buttonPress={() => {
+                    if (suggestion == null) {
+                      ShowMessage('Please select suggestion');
+                    } else if (name.trim == '') {
+                      ShowMessage('Please enter name');
+                    } else if (phone.trim == '') {
+                      ShowMessage('Please enter phone');
+                    } else if (city == null) {
+                      ShowMessage('Please select city');
+                    } else if (message.trim == '') {
+                      ShowMessage('Please enter message');
+                    } else {
+                      setLoading(true);
+                      postAddFeedback(
+                        {
+                          suggestion_id: suggestionID,
+                          name: name,
+                          phone: phone,
+                          city: city,
+                          message: message,
+                        },
+                        response => {
+                          ShowMessage(response?.message);
+                          if (response?.status) {
+                            setLoading(false);
+                            RootNavigation?.goBack();
+                          }
+                        },
+                        error => {
+                          ShowMessage(error);
+                          setLoading(false);
+                        },
+                      );
+                    }
+                  }}
+                />
+              }
+            </View>
           </View>
           <BorderView
-          backgroundColor={AppColors.BackgroundSecondColor}
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
-          borderStyle={{position:''}}
-        />
-          
+            backgroundColor={AppColors.BackgroundSecondColor}
+            text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+            borderStyle={{position: ''}}
+          />
         </KeyboardAwareScrollView>
       </View>
     </View>

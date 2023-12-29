@@ -41,7 +41,7 @@ export const HorizontalMenuComponent = props => {
           style={{
             fontFamily: AppFonts.semiBold,
             fontSize: 12,
-            marginTop:2.5,
+            marginTop: 2.5,
             color: pos == 0 ? '#FFF' : AppColors.lineColor,
             textAlign: 'center',
           }}>
@@ -83,7 +83,7 @@ export const HorizontalMenuComponent = props => {
             color: pos == 1 ? '#FFF' : AppColors.lineColor,
             padding: 10,
             textAlign: 'center',
-            marginTop:2.5
+            marginTop: 2.5,
           }}>
           Business Directory
         </Text>
@@ -136,14 +136,14 @@ export const GridListComponent = props => {
           }),
         }}>
         <Image
-          // source={{uri: props?.item?.icon}}
-          source={require('../assets/images/jwellry_image.png')}
+          source={{uri: props?.item?.icon}}
+          // source={require('../assets/images/jwellry_image.png')}
           style={{
             height: '100%',
             width: '100%',
             resizeMode: 'cover',
             borderRadius: 10,
-            opacity:0.8,
+            opacity: 0.8,
           }}
         />
 
@@ -170,9 +170,9 @@ export const BusinessDirectoryCell = props => {
       style={{
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppColors.fade,
         marginHorizontal: 14,
-        marginVertical: 6.5,
+        marginBottom: 15,
         borderRadius: 10,
         backgroundColor: 'white',
         ...Platform.select({
@@ -192,21 +192,22 @@ export const BusinessDirectoryCell = props => {
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
-          paddingTop: 15,
+          paddingTop: 10,
         }}
         activeOpacity={AppConstValue.ButtonOpacity}>
         <Image
-          source={require('../assets/images/directory_image.png')}
+          source={{uri: props?.item?.visting_card_photo}}
           style={{
-            marginHorizontal: 16,
-            resizeMode: 'cover',
+            marginLeft: 10,
+            marginRight:10,
+            resizeMode: 'contain',
             borderRadius: 10,
             marginBottom: 15,
             backgroundColor: '#F2F2F2',
             height: 100,
+            width: 100,
           }}
         />
-
         <View style={{paddingRight: 5, flex: 1}}>
           <Text
             numberOfLines={3}
@@ -228,7 +229,10 @@ export const BusinessDirectoryCell = props => {
             value={props?.item?.category_name}
           />
           <SimpleDoubleLine title={'Address :'} value={props?.item?.address} />
-          <SimpleDoubleLine title={'Mobile No :'} value={props?.item?.phone} />
+          <SimpleDoubleLine
+            title={'Mobile No :'}
+            value={props?.item?.business_phone}
+          />
 
           {props?.is_family_id != 1 ? (
             <View
@@ -306,13 +310,13 @@ export const SimpleDoubleLine = props => {
         {props?.title}
       </Text>
       <Text
+      numberOfLines={5}
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,
-
           color: '#B7B7B7',
           ...props?.textStyles,
-          maxWidth: '60%',
+          maxWidth: '70%',
         }}>
         {props?.value}
       </Text>

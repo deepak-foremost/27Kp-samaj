@@ -23,7 +23,7 @@ import {AppFonts} from '../../utils/AppFonts';
 import HomeMenu from '../../components/HomeMenu';
 import BorderView from '../../components/BorderView';
 import NavigationDrawer from '../../components/NavigationDrawer';
-import {AppConstValue} from '../../utils/AppConstValue';
+import {AppConstValue, printLog} from '../../utils/AppConstValue';
 import DrawerButtons from '../../components/DrawerButtons';
 import {SliderBox} from 'react-native-image-slider-box';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -34,8 +34,16 @@ import Swiper from 'react-native-swiper';
 import Carousel from 'react-native-snap-carousel';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useRoute} from '@react-navigation/native';
-import {getMyImageSlider} from '../../networking/CallApi';
+import {accountLogout, getMyImageSlider} from '../../networking/CallApi';
 import {BusinessBox} from '../MenuScreen/advisour_member/AdvicerMember';
+import {
+  AsyncStorageConst,
+  flushAllData,
+  getString,
+} from '../../utils/AsyncStorageHelper';
+import {AppScreens} from '../../utils/AppScreens';
+import {ModalView} from '../MenuScreen/business/BusinessListScreen';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const images = [
   {
@@ -114,8 +122,8 @@ const Pager = props => {
   );
 };
 
-const HomeScreen = ({route}) => {
-  const screen = route?.params?.data?.screen;
+const HomeScreen = props => {
+  const [screen, setScreen] = useState('');
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [select, setSelect] = useState(null);
@@ -129,6 +137,63 @@ const HomeScreen = ({route}) => {
   const [number, setNumber] = useState(-1);
   const [active, setActive] = useState(0);
   const [isLoading, setLoading] = useState(false);
+  const [modelOpen, setModelOpen] = useState(false);
+  const [deleteLoader, setLoader] = useState(false);
+
+  useEffect(() => {
+    async function check() {
+      let token = await AsyncStorage.getItem(AsyncStorageConst.screen);
+      setScreen(token);
+      console.log('details', token);
+    }
+    check();
+  }, []);
+
+  const appLogout = () => {
+    setLoader(true);
+    accountLogout(
+      onSuccess => {
+        printLog('accountLogout', JSON.stringify(onSuccess));
+        flushAllData(
+          success => {},
+          failure => {},
+        );
+        setLoader(false);
+        setModelOpen(false);
+        RootNavigation?.forcePush(props, AppScreens.SponserScreen, NaN);
+      },
+      onFailure => {
+        printLog('accountLogout', JSON.stringify(onFailure));
+        setLoader(false);
+      },
+    );
+  };
+
+  const CustomDotsIndicator = ({currentIndex, totalItems}) => {
+    return (
+      <View style={{flexDirection: 'row'}}>
+        {[...Array(totalItems).keys()].map(index => (
+          <View
+            key={index}
+            style={[
+              {
+                height: 8,
+                width: 8,
+                borderRadius: 5,
+                backgroundColor: AppColors.BackgroundSecondColor,
+                opacity: index === currentIndex ? 1 : 0.5,
+                marginHorizontal: 2.5,
+              },
+            ]}
+            // style={[
+            //   styles.dot,
+            //   {backgroundColor: index === currentIndex ? 'blue' : 'lightgray'},
+            // ]}
+          />
+        ))}
+      </View>
+    );
+  };
 
   // console.warn(select)
   const [images, setImages] = useState([]);
@@ -243,6 +308,7 @@ const HomeScreen = ({route}) => {
 
   const Navigate = item => {
     setTimeout(() => {
+      // console.warn(item?.item.screen);
       RootNavigation.navigate(
         item?.item.screen,
         {
@@ -264,7 +330,10 @@ const HomeScreen = ({route}) => {
         backgroundColor: AppColors.BackgroundSecondColor,
         paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
-      <StatusBar backgroundColor={AppColors.BackgroundSecondColor} />
+      <StatusBar
+        backgroundColor={AppColors.BackgroundSecondColor}
+        barStyle={'light-content'}
+      />
       <Modal
         visible={isVisible}
         animationType="fade"
@@ -372,11 +441,23 @@ const HomeScreen = ({route}) => {
                       show={select}
                       // selected={currentMenu}
                       onChange={() => {
+                        if (item?.index == 9 && screen != 'User Signin') {
+                          setVisible(false);
+                          setModelOpen(true);
+                        } else if (
+                          item?.index == 7 &&
+                          screen == 'User Signin'
+                        ) {
+                          setVisible(false);
+                          setModelOpen(true);
+                        } else {
+                          Navigate(item);
+                        }
                         // RootNavigation.navigate(item?.item.screen, {
                         //   status: 'drawer',
                         //   detail: item?.item.detail,
                         // },);
-                        Navigate(item);
+
                         // setMenu(index);
                         // props?.onClose(currentMenu);
                         // if (item?.screen != '' && item?.index != 6) {
@@ -440,9 +521,18 @@ const HomeScreen = ({route}) => {
           txtStyle={{fontSize: 13}}
           leftPress={() => setVisible(true)}
         />
-        <View style={{flex: 0.9}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{flex: 0.3, justifyContent: 'center', paddingTop: 15}}>
+
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}>
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                flex: 0.3,
+                justifyContent: 'center',
+                marginTop: 15,
+                // paddingTop: 15,
+              }}>
               {/* <ScrollView
             ref={scrollViewRef}
             horizontal
@@ -515,7 +605,7 @@ const HomeScreen = ({route}) => {
                   <BusinessBox
                     styles={{
                       width: Dimensions.get('window').width - 40,
-                      height: 170,
+                      height: 160,
                       marginHorizontal: 15,
                       alignSelf: 'center',
                     }}
@@ -553,23 +643,34 @@ const HomeScreen = ({route}) => {
                   onSnapToItem={index => setActive(index)}
                   loop
                 />
+
                 <View
                   style={{
                     flexDirection: 'row',
-                    width: 45,
+                    width: '100%',
                     alignSelf: 'center',
                     marginTop: 10,
                     justifyContent: 'space-between',
-                    marginBottom: 10,
+                    marginBottom: 5,
+                    justifyContent: 'center',
                   }}>
-                  <DotIndicator opacity={{opacity: active == 0 ? 1 : 0.49}} />
+                  <CustomDotsIndicator
+                    currentIndex={active}
+                    totalItems={images.length}
+                  />
+                  {/* <DotIndicator opacity={{opacity: active == 0 ? 1 : 0.49}} />
                   <DotIndicator opacity={{opacity: active == 1 ? 1 : 0.49}} />
-                  <DotIndicator opacity={{opacity: active == 2 ? 1 : 0.49}} />
+                  <DotIndicator opacity={{opacity: active == 2 ? 1 : 0.49}} /> */}
                 </View>
               </View>
             </View>
 
-            <View style={{flex: 0.7}}>
+            <View
+              style={{
+                flex: 0.7,
+                // paddingBottom: 10,
+                // justifyContent: 'center',
+              }}>
               <FlatList
                 numColumns={3}
                 showsVerticalScrollIndicator={false}
@@ -596,13 +697,13 @@ const HomeScreen = ({route}) => {
                 )}
               />
             </View>
-          </ScrollView>
-        </View>
-        <BorderView
-          style={{marginTop: 15}}
-          backgroundColor={AppColors.BackgroundSecondColor}
-          text={'સમાજ એજ મારો પરિવાર'}
-        />
+          </View>
+          <BorderView
+            borderStyle={{position: ''}}
+            backgroundColor={AppColors.BackgroundSecondColor}
+            text={'સમાજ એજ મારો પરિવાર'}
+          />
+        </ScrollView>
 
         {/* <View style={{flex: 0.55, justifyContent: 'space-evenly'}}>
           <View
@@ -667,6 +768,23 @@ const HomeScreen = ({route}) => {
           </View>
         </View> */}
       </View>
+      <ModalView
+        open={modelOpen}
+        color={'#fff'}
+        // item={deleteItem}
+        loader={deleteLoader}
+        first={'yes'}
+        title={'Log Out'}
+        press={() => {
+          appLogout();
+        }}
+        message={'Are you sure you want to log out ?'}
+        // onDelete={deleteItemList}
+        onCancel={() => {
+          // setDeleteItem(null);
+          setModelOpen(false);
+        }}
+      />
     </View>
   );
 };

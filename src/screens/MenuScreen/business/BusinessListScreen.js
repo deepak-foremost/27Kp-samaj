@@ -25,12 +25,16 @@ import {AppStyles} from '../../../utils/AppStyles';
 import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
 // import LoaderView from '../../../../utils/LoaderView';
 import * as RootNavigation from '../../../utils/RootNavigation';
-import {ListMember} from '../advisour_member/AdvicerMember';
+import {
+  BusinessDirectoryBox,
+  ListMember,
+} from '../advisour_member/AdvicerMember';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import AppButton from '../../../components/AppButton';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {getMyBusinesses} from '../../../networking/CallApi';
+import {deleteMyBusiness, getMyBusinesses} from '../../../networking/CallApi';
+import LoaderView from '../../../utils/LoaderView';
 
 const list = [
   {
@@ -48,21 +52,24 @@ const list = [
     address: ' Nikol, Ahmedabad',
     phone: '+919999999999',
     is_family_id: 1,
-  },{
+  },
+  {
     firm: 'Pramukh International',
     owner_name_1: ' Dhaval Patel',
     category_name: 'Visa Consultants',
     address: ' Nikol, Ahmedabad',
     phone: '+919999999999',
     is_family_id: 1,
-  },{
+  },
+  {
     firm: 'Pramukh International',
     owner_name_1: ' Dhaval Patel',
     category_name: 'Visa Consultants',
     address: ' Nikol, Ahmedabad',
     phone: '+919999999999',
     is_family_id: 1,
-  },{
+  },
+  {
     firm: 'Pramukh International',
     owner_name_1: ' Dhaval Patel',
     category_name: 'Visa Consultants',
@@ -87,11 +94,12 @@ const BusinessListScreen = props => {
   const [deleteItem, setDeleteItem] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [deleteLoader, setDeleteLoader] = useState(false);
 
-  useEffect(() => {
-    setBusiness(list);
-    // setUser(userList);
-  });
+  // useEffect(() => {
+  //   setBusiness(list);
+  //   // setUser(userList);
+  // });
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -128,10 +136,10 @@ const BusinessListScreen = props => {
     );
   };
 
-    useEffect(() => {
-      getString(AsyncStorageConst.user, res => setUser(res));
-      getMyBusinessesList();
-    }, []);
+  useEffect(() => {
+    getString(AsyncStorageConst.user, res => setUser(res));
+    getMyBusinessesList();
+  }, []);
 
   //   const deleteItemList = () => {
   //     var deleteIndex = businesses.indexOf(deleteItem);
@@ -194,16 +202,12 @@ const BusinessListScreen = props => {
                 paddingHorizontal: 10,
                 paddingTop: 15,
               }}>
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
-              <ListMember styles={{height: 100}} />
+              <BusinessDirectoryBox />
+              <BusinessDirectoryBox />
+              <BusinessDirectoryBox />
+              {/* <ListMember styles={{height: 150}} />
+              <ListMember styles={{height: 150}} />
+              <ListMember styles={{height: 150}} /> */}
             </View>
           ) : businesses?.length == 0 ? (
             <View
@@ -259,6 +263,32 @@ const BusinessListScreen = props => {
       <ModalView
         open={modelOpen}
         item={deleteItem}
+        loader={deleteLoader}
+        color={AppColors.BackgroundColor}
+        message={'Are you sure you want to delete Business? '}
+        title={'Delete Business'}
+        first={' Yes, Delete '}
+        press={() => {
+          setDeleteLoader(true);
+          deleteMyBusiness(
+            {business_id: deleteItem?.id},
+            response => {
+              printLog('onSuccess', JSON.stringify(response));
+              ShowMessage(response?.message);
+              setModelOpen(false);
+              setDeleteLoader(false);
+              if (response?.status) {
+                // props?.onDelete();
+                getMyBusinessesList();
+              }
+            },
+            error => {
+              // setDeleteLoader(false);
+              printLog('onFailure', JSON.stringify(error));
+              props?.onCancel();
+            },
+          );
+        }}
         // onDelete={deleteItemList}
         onCancel={() => {
           setDeleteItem(null);
@@ -297,9 +327,9 @@ export const ModalView = props => {
             {/* Are you sure you want to delete Business? */}
           </Text>
           {deleteLoader ? (
-            // <LoaderView />
             <></>
           ) : (
+            // <></>
             <TouchableOpacity
               activeOpacity={1}
               style={{
@@ -332,17 +362,24 @@ export const ModalView = props => {
                 //   },
                 // );
               }>
-              <Text
-                style={{
-                  width: '100%',
-                  alignSelf: 'center',
-                  fontFamily: AppFonts.semiBold,
-                  color: 'white',
-                  textAlign: 'center',
-                }}>
-                {props?.first}
-                {/* Yes, Delete */}
-              </Text>
+              {props?.loader ? (
+                <LoaderView
+                  style={{width: '25%', height: 30, alignSelf: 'center'}}
+                  color={props?.color}
+                />
+              ) : (
+                <Text
+                  style={{
+                    width: '100%',
+                    alignSelf: 'center',
+                    fontFamily: AppFonts.semiBold,
+                    color: 'white',
+                    textAlign: 'center',
+                  }}>
+                  {props?.first}
+                  {/* Yes, Delete */}
+                </Text>
+              )}
             </TouchableOpacity>
           )}
           {deleteLoader ? (

@@ -290,7 +290,7 @@ export const MemberCell = props => {
           alignItems: 'center',
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
-          {props?.item ? `${props?.item?.phone}` : 'મોબાઈલ નંબર'}
+          {props?.item ? `${'+91 ' + props?.item?.phone}` : 'મોબાઈલ નંબર'}
         </Text>
         {!props?.change ? (
           <View
@@ -302,7 +302,9 @@ export const MemberCell = props => {
             <TouchableOpacity
               activeOpacity={1}
               style={{paddingHorizontal: 2.5, marginLeft: 3}}
-              onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
+              onPress={() =>
+                Linking.openURL(`tel:${'+91 ' + props?.item?.phone}`)
+              }>
               <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -314,7 +316,7 @@ export const MemberCell = props => {
               activeOpacity={1}
               onPress={() =>
                 Linking.openURL(
-                  `whatsapp://send?phone=${'9510135458'}`,
+                  `whatsapp://send?phone=${props?.item?.phone}`,
                   // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
                 )
               }>
@@ -329,7 +331,7 @@ export const MemberCell = props => {
           justifyContent: 'center',
           alignItems: 'center',
           marginLeft: 10,
-          paddingBottom:2.5
+          paddingBottom: 2.5,
         }}>
         {props?.item ? (
           <Image
@@ -388,6 +390,88 @@ export const BusinessBox = props => {
   return (
     <View style={{width: '30%', height: 100, margin: 5, ...props?.styles}}>
       <ShimmerCustomView />
+    </View>
+  );
+};
+
+export const BusinessDirectoryBox = props => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        width: '90%',
+        height: 150,
+        paddingVertical: 10,
+        marginTop: 20,
+      }}>
+      <View style={{width: 100, height: 100, margin: 5}}>
+        <ShimmerCustomView />
+      </View>
+      <View style={{height: 120, flex: 1, paddingVertical: 10}}>
+        <View
+          style={{
+            width: 140,
+            height: 20,
+            marginLeft: 15,
+          }}>
+          <ShimmerCustomView />
+        </View>
+        <View style={{flexDirection: 'row', marginVertical: 5}}>
+          <View
+            style={{
+              width: 100,
+              height: 15,
+              marginLeft: 15,
+            }}>
+            <ShimmerCustomView />
+          </View>
+          <View
+            style={{
+              width: 50,
+              height: 15,
+              marginLeft: 10,
+            }}>
+            <ShimmerCustomView />
+          </View>
+        </View>
+        <View style={{flexDirection: 'row', marginVertical: 5}}>
+          <View
+            style={{
+              width: 100,
+              height: 15,
+              marginLeft: 15,
+            }}>
+            <ShimmerCustomView />
+          </View>
+          <View
+            style={{
+              width: 50,
+              height: 15,
+              marginLeft: 10,
+            }}>
+            <ShimmerCustomView />
+          </View>
+        </View>
+        <View style={{flexDirection: 'row', marginVertical: 5}}>
+          <View
+            style={{
+              width: 100,
+              height: 15,
+              marginLeft: 15,
+            }}>
+            <ShimmerCustomView />
+          </View>
+          <View
+            style={{
+              width: 50,
+              height: 15,
+              marginLeft: 10,
+            }}>
+            <ShimmerCustomView />
+          </View>
+        </View>
+      </View>
     </View>
   );
 };

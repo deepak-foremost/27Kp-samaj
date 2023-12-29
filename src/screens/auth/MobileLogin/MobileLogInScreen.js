@@ -9,7 +9,7 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
 import LogInToolbar from '../../../components/LogInToolbar';
 import {AppImages} from '../../../utils/AppImages';
@@ -54,6 +54,7 @@ const MobileLogInScreen = props => {
   const [country, setCountry] = useState('+91');
   const [check, setCheck] = useState(false);
   const {code, setCode} = useState('+91');
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(async () => {
     data = await AsyncStorage.getItem('flag');
@@ -103,6 +104,7 @@ const MobileLogInScreen = props => {
             ? AppColors.Red
             : AppColors.BackgroundSecondColor
         }
+        barStyle={screen == 'User Signin' ? 'dark-content' : 'light-content'}
       />
       {/* <KeyboardAwareScrollView contentContainerStyle={{flexGrow:0.8}}
       extraScrollHeight={20}> */}
@@ -339,6 +341,8 @@ const MobileLogInScreen = props => {
 
               <AppButton
                 text={'Sign in'}
+                loading={isLoading}
+                color={screen == 'User Signin' ? 'black' : '#fff'}
                 textStyle={{color: screen == 'User Signin' ? 'black' : '#fff'}}
                 buttonStyle={{
                   width: '100%',
@@ -352,51 +356,64 @@ const MobileLogInScreen = props => {
                 }}
                 buttonPress={() => {
                   // if (screen != 'User Signin') {
-                  //   if (mobile.length < 5) {
-                  //     ShowMessage('Please Enter a Valid Mobile Number');
-                  //   } else if (mobile == '' || mobile == null) {
-                  //     ShowMessage('Please Enter Your Mobile Number');
-                  //   } else if (password == '') {
-                  //     ShowMessage('Please Enter Your Password');
-                  //   } else {
-                  //     login(
-                  //       {
-                  //         login_with: 'FamilyId',
-                  //         family_id: mobile,
-                  //         password: password,
-                  //         // phone: defaultMenuPos == 1 ? phone : '',
-                  //         // country_code:
-                  //         //   defaultMenuPos == 1 ? countryCode : countryCode,
-                  //       },
-                  //       response => {
-                  //         if (!response?.status) {
-                  //           showMessage(response?.message);
-                  //         } else {
-                  //           // setLoading(false);
-                  //           var token = response?.token;
-                  //           printLog('token', JSON.stringify(response));
-                  //           printLog(typeof token);
-                  //           setString(
-                  //             AsyncStorageConst.allDetails,
-                  //             JSON.stringify(response),
-                  //           );
-                  //           setString(AsyncStorageConst.token, token);
-                  //           setString(
-                  //             AsyncStorageConst.user,
-                  //             JSON.stringify(response?.data),
-                  //           );
-                  //         }
-                  //       },
-                  //     );
-                  //   }
+                  if (mobile.length < 5) {
+                    ShowMessage('Please Enter a Valid Mobile Number');
+                  } else if (mobile == '' || mobile == null) {
+                    ShowMessage('Please Enter Your Mobile Number');
+                  } else if (password == '') {
+                    ShowMessage('Please Enter Your Password', '#fff', 'black');
+                  } else {
+                    setLoading(true);
+                    login(
+                      {
+                        login_with:
+                          screen == 'User Signin' ? 'phone' : 'FamilyId',
+                        family_id: screen == 'User Signin' ? '' : mobile,
+                        password: password,
+                        country_code: country,
+                        phone: screen == 'User Signin' ? mobile : '',
+                        // phone: defaultMenuPos == 1 ? phone : '',
+                        // country_code:
+                        //   defaultMenuPos == 1 ? countryCode : countryCode,
+                      },
+                      response => {
+                        if (!response?.status) {
+                          setLoading(false);
+                          showMessage(response?.message);
+                        } else {
+                          // setLoading(false);
+                          var token = response?.token;
+                          printLog('token', JSON.stringify(response));
+                          printLog(typeof token);
+                          setString(
+                            AsyncStorageConst.allDetails,
+                            JSON.stringify(response),
+                          );
+                          setString(AsyncStorageConst.token, token);
+                          setString(
+                            AsyncStorageConst.user,
+                            JSON.stringify(response?.data),
+                          );
+                          setString(AsyncStorageConst.screen, screen);
+                          setLoading(false);
+                          RootNavigation.forcePush(
+                            props,
+                            AppScreens.HOME_SCREEN,
+                            '',
+                          );
+                        }
+                      },
+                    );
+                  }
                   // } else {
                   //   RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
                   //   setString('first', 'enter');
                   // }
+
                   // RootNavigation.navigate(AppScreens.HOME_SCREEN);
-                  RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
-                  setString('first', 'enter');
-                  storeToken();
+                  // RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '');
+                  // setString('first', 'enter');
+                  // storeToken();
                 }}
               />
             </View>

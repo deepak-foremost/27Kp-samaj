@@ -103,6 +103,7 @@ const FamilyMemberDetailScreen = props => {
   }, [cityId != '']);
 
   const getList = id => {
+    setLoading(true);
     getFamilies(
       {city_id: id},
       response => {
@@ -229,10 +230,9 @@ const FamilyMemberDetailScreen = props => {
             <View
               style={{
                 justifyContent: 'center',
-                width:'90%',
+                width: '90%',
                 alignSelf: 'center',
-                alignItems:'center',
-                
+                alignItems: 'center',
               }}>
               <ListMember />
               <ListMember />

@@ -11,4 +11,5 @@ export class AppColors {
   static purple = '#567624';
   static line_color = '#E5E5E5';
   static extraDark = '#1F1F39';
+  static fade='#F2F2F2'
 }
