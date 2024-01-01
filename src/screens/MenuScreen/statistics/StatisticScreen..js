@@ -150,11 +150,11 @@ const StatisticScreen = props => {
             },
             {
               name: 'પુરુષ \n(60 વર્ષથી ઉપર)',
-              count: response?.data?.total_unmarried_male,
+              count: response?.data?.total_year_male,
             },
             {
               name: 'સ્ત્રી\n(60 વર્ષથી ઉપર)',
-              count: response?.data?.total_unmarried_female,
+              count: response?.data?.total_year_female,
             },
             {name: 'પરણિત પુરુષ', count: response?.data?.total_married_male},
             {

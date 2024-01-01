@@ -172,7 +172,7 @@ export const BusinessDirectoryCell = props => {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: AppColors.fade,
-        marginHorizontal: 14,
+        marginHorizontal: 10,
         marginBottom: 15,
         borderRadius: 10,
         backgroundColor: 'white',

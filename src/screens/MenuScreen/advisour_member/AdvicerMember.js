@@ -399,11 +399,11 @@ export const BusinessDirectoryBox = props => {
     <View
       style={{
         flexDirection: 'row',
-        paddingHorizontal: 15,
-        width: '90%',
+        // paddingHorizontal: 15,
+        width: '95%',
         height: 150,
         paddingVertical: 10,
-        marginTop: 20,
+        // marginTop: 20,
       }}>
       <View style={{width: 100, height: 100, margin: 5}}>
         <ShimmerCustomView />

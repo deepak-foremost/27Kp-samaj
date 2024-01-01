@@ -237,14 +237,23 @@ const AddBusinessScreen = props => {
     if (endDate != null) {
       payload.append('business_end_date', endDate);
     }
+
     payload.append('business_id', bussinessItem?.id);
     payload.append('category_id', catId);
     payload.append('business_type', business_type);
     payload.append('firm', firm);
-    payload.append('owner_name_1', owner1);
-    payload.append('owner_name_2', owner2);
-    payload.append('owner_name_3', owner3);
-    payload.append('owner_name_4', owner4);
+    {
+      owner1 != null && payload.append('owner_name_1', owner1);
+    }
+    {
+      owner2 != null && payload.append('owner_name_2', owner2);
+    }
+    {
+      owner3 != null && payload.append('owner_name_3', owner3);
+    }
+    {
+      owner4 != null && payload.append('owner_name_4', owner4);
+    }
     payload.append('address', address);
     payload.append('products', product);
     payload.append('country_code', code);

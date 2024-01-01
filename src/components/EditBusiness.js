@@ -6,16 +6,34 @@ import {SimpleDoubleLine} from './HorizontalMenuComponent';
 import {HorizontalSelection, HorizontalTextInput} from './SimpleTextInput';
 import {AppImages} from '../utils/AppImages';
 import {getString} from '../utils/AsyncStorageHelper';
+import {getCities} from '../networking/CallApi';
 
 const EditBusiness = props => {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState('');
 
   useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
+    getCities(
+      response => {
+        var temp = [];
+        for (let i = 0; i < response?.data?.length; i++) {
+          temp.push({
+            name: response?.data[i]?.name,
+            id: response?.data[i]?.id,
+          });
+        }
+        setCities(temp);
+      },
+      error => {},
+      ``,
+    );
+  }, []);
+
+  // useEffect(() => {
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
   return (
     <View
       style={{
@@ -96,7 +114,7 @@ const EditBusiness = props => {
 
             <SimpleDoubleLine
               title={'Mobile No  :'}
-              value={props?.item?.country_code+' '+props?.item?.phone}
+              value={props?.item?.country_code + ' ' + props?.item?.phone}
               containerStyle={{}}
             />
           </View>
