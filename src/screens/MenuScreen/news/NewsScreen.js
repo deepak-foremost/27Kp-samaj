@@ -140,6 +140,7 @@ const NewsScreen = props => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getNews(
+      {page: page},
       response => {
         printLog('NewsScreen', JSON.stringify(response));
         if (response?.status) {
@@ -277,104 +278,107 @@ const NewsScreen = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={'27 SAMAJ LATEST UPDATE'} />
-        <View style={{flex:0.9}}>
-        {news == null ? (
-          <View
-            style={{
-              flex: 1,
-             
-              alignItems: 'center',
-              paddingHorizontal: 15,
-            }}>
-            <ListMember styles={{height: 45, marginHorizontal: 20}} />
-            <ListMember styles={{height: 45, marginHorizontal: 20}} />
-            <ListMember styles={{height: 45, marginHorizontal: 20}} />
-            <ListMember styles={{height: 45, marginHorizontal: 20}} />
-            <ListMember styles={{height: 45, marginHorizontal: 20}} />
-          </View>
-        ) : news?.length == 0 ? (
-          <View
-            style={{
-              flex: 0.8,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: AppColors.BackgroundColor,
-            }}>
-            <Text
+        <View style={{flex: 0.9}}>
+          {news == null ? (
+            <View
               style={{
-                fontFamily: AppFonts.bold,
-                color: AppColors.black,
-                fontSize: 15,
+                flex: 1,
+
+                alignItems: 'center',
+                paddingHorizontal: 15,
               }}>
-              No List Found
-            </Text>
-          </View>
-        ) : (
-          <View style={{flex: 1}}>
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{paddingBottom: 20}}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              onEndReached={() => {
-                LoadMore();
-              }}
-              data={news == null ? [] : news}
-              renderItem={({item, index}) => (
-                <View>
-                  <NotificationCell
-                    item={item}
-                    index={index}
-                    visible={visible}
-                    imagePress={() => setShowModal(true)}
-                    onNewsClick={() =>
-                      RootNavigation.push(
-                        props?.navigation,
-                        AppScreens.NEWS_DETAIL_SCREEN,
-                        {
-                          item: item,
-                        },
-                      )
-                    }
+              <ListMember styles={{height: 45, marginHorizontal: 20}} />
+              <ListMember styles={{height: 45, marginHorizontal: 20}} />
+              <ListMember styles={{height: 45, marginHorizontal: 20}} />
+              <ListMember styles={{height: 45, marginHorizontal: 20}} />
+              <ListMember styles={{height: 45, marginHorizontal: 20}} />
+            </View>
+          ) : news?.length == 0 ? (
+            <View
+              style={{
+                flex: 0.8,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: AppColors.BackgroundColor,
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.bold,
+                  color: AppColors.black,
+                  fontSize: 15,
+                }}>
+                No List Found
+              </Text>
+            </View>
+          ) : (
+            <View style={{flex: 1}}>
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{paddingBottom: 20}}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
                   />
-                  {visible == item.id ? (
-                    <View
-                      style={{
-                        marginTop: -10,
-                        marginHorizontal: 20,
-                        backgroundColor: '#fff',
-                        borderBottomLeftRadius: 10,
-                        borderBottomRightRadius: 10,
-                        ...Platform.select({
-                          ios: {
-                            shadowColor: '#D5D5D5',
-                            shadowOffset: {width: 0, height: 5},
-                            shadowOpacity: 0.9,
-                            shadowRadius: 3,
+                }
+                onEndReached={() => {
+                  LoadMore();
+                }}
+                data={news == null ? [] : news}
+                renderItem={({item, index}) => (
+                  <View>
+                    <NotificationCell
+                      item={item}
+                      index={index}
+                      visible={visible}
+                      imagePress={() => setShowModal(true)}
+                      onNewsClick={() =>
+                        RootNavigation.push(
+                          props?.navigation,
+                          AppScreens.NEWS_DETAIL_SCREEN,
+                          {
+                            item: item,
                           },
-                          android: {
-                            elevation: 15,
-                          },
-                        }),
-                        padding: 10,
-                      }}>
-                      <Text
+                        )
+                      }
+                    />
+                    {visible == item.id ? (
+                      <View
                         style={{
-                          fontSize: 10,
-                          lineHeight: 20,
-                          color: AppColors.DarkText,
+                          marginTop: -10,
+                          marginHorizontal: 20,
+                          backgroundColor: '#fff',
+                          borderBottomLeftRadius: 10,
+                          borderBottomRightRadius: 10,
+                          ...Platform.select({
+                            ios: {
+                              shadowColor: '#D5D5D5',
+                              shadowOffset: {width: 0, height: 5},
+                              shadowOpacity: 0.9,
+                              shadowRadius: 3,
+                            },
+                            android: {
+                              elevation: 5,
+                            },
+                          }),
+                          padding: 10,
                         }}>
-                        {item.content}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              )}
-            />
-          </View>
-        )}
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            lineHeight: 20,
+                            color: AppColors.DarkText,
+                          }}>
+                          {item.content}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                )}
+              />
+            </View>
+          )}
         </View>
         <BorderView
           text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
@@ -408,7 +412,7 @@ const NotificationCell = props => {
             shadowRadius: 3,
           },
           android: {
-            elevation: 15,
+            elevation: 5,
           },
         }),
       }}>

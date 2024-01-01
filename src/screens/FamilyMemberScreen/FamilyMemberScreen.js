@@ -333,9 +333,14 @@ const FamilyMermberCell = props => {
       }}>
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
         <Image
-          source={AppImages.SMALL_MAN_IMAGE}
+          source={{uri: props?.item?.image}}
           style={{
             marginRight: 10,
+            height: 20,
+            width: 20,
+            borderRadius: 15,
+            resizeMode: 'contain',
+            backgroundColor: '#F2F2F2',
           }}
         />
         <Text

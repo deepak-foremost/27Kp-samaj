@@ -56,25 +56,25 @@ const UserSignUp = props => {
   const [visible, setVisible] = useState(false);
   const [cityId, setCityId] = useState('');
 
-  useEffect(() => {
-    getString('village', response => {
-      setCities(response);
-    });
-  }, [cities, setCities]);
-
   // useEffect(() => {
-  //   getCities(
-  //     response => {
-  //       printLog('NewUserScreen', response?.status);
-  //       setCities(response?.data);
-  //       setString('village', JSON.stringify(response?.data));
-  //       printLog('cities', JSON.stringify(response?.data));
-  //     },
-  //     error => {
-  //       printLog('NewUserScreen', error);
-  //     },
-  //   );
-  // }, []);
+  //   getString('village', response => {
+  //     setCities(response);
+  //   });
+  // }, [cities, setCities]);
+
+  useEffect(() => {
+    getCities(
+      response => {
+        printLog('NewUserScreen', response?.status);
+        setCities(response?.data);
+        setString('village', JSON.stringify(response?.data));
+        printLog('cities', JSON.stringify(response?.data));
+      },
+      error => {
+        printLog('NewUserScreen', error);
+      },
+    );
+  }, []);
 
   return (
     <View

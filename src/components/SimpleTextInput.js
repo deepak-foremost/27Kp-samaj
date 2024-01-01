@@ -388,6 +388,7 @@ export const MyMobileNumber = props => {
         flexDirection: 'row',
         marginTop: 10,
         alignItems: 'center',
+       
       }}>
       <Text
         style={{

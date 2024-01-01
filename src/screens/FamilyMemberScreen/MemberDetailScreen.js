@@ -184,7 +184,7 @@ const MembersDetailScreen = props => {
                 shadowRadius: 3,
               },
               android: {
-                elevation: 15,
+                elevation: 5,
               },
             }),
           }}>
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
       },
       android: {
-        elevation: 15,
+        elevation: 5,
         borderTopColor: '#fff',
       },
     }),

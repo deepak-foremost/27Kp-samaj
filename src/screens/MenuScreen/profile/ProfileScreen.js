@@ -36,7 +36,7 @@ const ProfileScreen = () => {
           style={{
             backgroundColor: AppColors.BackgroundSecondColor,
             height: 120,
-            
+
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
           }}>
@@ -63,7 +63,7 @@ const ProfileScreen = () => {
                   shadowRadius: 3,
                 },
                 android: {
-                  elevation: 15,
+                  elevation: 5,
                 },
               }),
             }}>
@@ -132,7 +132,7 @@ const ProfileScreen = () => {
           setModelOpen(false);
           RootNavigation.navigate(AppScreens.NEW_PASSWORD_SCREEN, {
             screen: 'UserSignIn',
-            return:'profile'
+            return: 'profile',
           });
         }}
         message={'Do you want to change the Password ?'}

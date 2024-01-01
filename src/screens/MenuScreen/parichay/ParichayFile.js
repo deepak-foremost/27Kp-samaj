@@ -71,8 +71,10 @@ const ParichayFileScreen = props => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getParipatr(
+      {page:page},
       onSuccess => {
         printLog('getParipatr', JSON.stringify(onSuccess));
+        printLog('getStatus', onSuccess?.status);
         if (onSuccess?.status) {
           setFiles(onSuccess?.data);
         } else {
@@ -127,55 +129,57 @@ const ParichayFileScreen = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={'પરિપત્ર ફાઈલ '} />
-        <View style={{flex:0.9}}>
-        {files == null ? (
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: AppColors.backgroundColor,
-              alignItems: 'center',
-              paddingHorizontal: 10,
-              paddingTop: 15,
-            }}>
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-            <ListMember styles={{height: 45}} />
-           
-          </View>
-        ) : files?.length == 0 ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text
+        <View style={{flex: 0.9}}>
+          {files == null ? (
+            <View
               style={{
-                fontFamily: AppFonts.semiBold,
-                fontSize: 15,
-                color: AppColors?.lineColor,
+                flex: 1,
+                backgroundColor: AppColors.backgroundColor,
+                alignItems: 'center',
+                paddingHorizontal: 10,
+                paddingTop: 15,
               }}>
-              No List Found
-            </Text>
-          </View>
-        ) : (
-          <View style={{flex: 1}}>
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{paddingBottom: 20}}
-              onEndReached={() => {
-                loadMore();
-              }}
-              data={files == null ? [] : files}
-              renderItem={({item, index}) => (
-                <FileCell item={item} index={index} />
-              )}
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+            </View>
+          ) : files?.length == 0 ? (
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.semiBold,
+                  fontSize: 15,
+                  color: AppColors?.lineColor,
+                }}>
+                No List Found
+              </Text>
+            </View>
+          ) : (
+            <View style={{flex: 1}}>
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{paddingBottom: 20}}
+                onEndReached={() => {
+                  loadMore();
+                }}
+                data={files == null ? [] : files}
+                renderItem={({item, index}) => (
+                  <FileCell item={item} index={index} />
+                )}
                 refreshControl={
-                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
                 }
-            />
-          </View>
-        )}
+              />
+            </View>
+          )}
         </View>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
@@ -210,7 +214,7 @@ const FileCell = props => {
             shadowRadius: 3,
           },
           android: {
-            elevation: 15,
+            elevation: 5,
           },
         }),
       }}>
@@ -262,7 +266,7 @@ const FileCell = props => {
               fontFamily: AppFonts.medium,
               fontSize: 7,
               color: '#fff',
-              paddingTop:2.5
+              paddingTop: 2.5,
             }}>
             {props?.item?.circular_date}
           </Text>

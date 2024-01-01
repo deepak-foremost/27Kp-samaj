@@ -106,6 +106,10 @@ const AddBusinessScreen = props => {
     printLog('AddBusinessScreen', bussinessItem);
 
     if (bussinessItem != undefined) {
+      console.log(
+        'date',
+        bussinessItem?.business_start_date + bussinessItem?.business_end_date,
+      );
       setFirm(bussinessItem?.firm);
       setCategory(bussinessItem?.category_name);
       setCatId(bussinessItem?.category_id);
@@ -126,6 +130,7 @@ const AddBusinessScreen = props => {
       setEmail(bussinessItem?.business_email);
       setWebsite(bussinessItem?.website);
       setVisiting(bussinessItem?.visting_card_photo);
+      setBusiness_type(bussinessItem?.business_type);
       console.log('uri', bussinessItem?.visting_card_photo);
       var daysList = [];
       for (let c = 0; c < bussinessItem?.business_hours?.length; c++) {
@@ -226,6 +231,12 @@ const AddBusinessScreen = props => {
     let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
     printLog(JSON.stringify(selectedCategory?.id));
     var payload = new FormData();
+    if (startDate != null) {
+      payload.append('business_start_date', startDate);
+    }
+    if (endDate != null) {
+      payload.append('business_end_date', endDate);
+    }
     payload.append('business_id', bussinessItem?.id);
     payload.append('category_id', catId);
     payload.append('business_type', business_type);
@@ -243,8 +254,7 @@ const AddBusinessScreen = props => {
     payload.append('city', selectedCity);
     payload.append('from_time', startTime);
     payload.append('to_time', endTime);
-    payload.append('business_start_date', startDate);
-    payload.append('business_end_date', endDate);
+
     payload.append('business_hourse', JSON.stringify(week));
 
     if (visiting?.uri != undefined)
@@ -369,7 +379,7 @@ const AddBusinessScreen = props => {
           <KeyboardAwareScrollView
             enableOnAndroid={true}
             extraScrollHeight={40}
-            keyboardShouldPersistTaps={'handled'}
+            keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               // flex: 1,
               paddingBottom: Platform.OS == 'android' && -270,
@@ -381,7 +391,6 @@ const AddBusinessScreen = props => {
                 width: '100%',
                 alignSelf: 'center',
                 backgroundColor: AppColors.backgroundColor,
-
                 paddingHorizontal: 15,
                 borderRadius: 10,
                 flex: 1,
@@ -487,7 +496,7 @@ const AddBusinessScreen = props => {
                     alignItems: 'center',
                     marginLeft: 15,
                   }}
-                  onPress={() => setBusiness_type('Partenership')}>
+                  onPress={() => setBusiness_type('partnership')}>
                   <Text
                     style={{
                       fontFamily: AppFonts.semiBold,
@@ -510,7 +519,7 @@ const AddBusinessScreen = props => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    {business_type == 'Partenership' && (
+                    {business_type == 'partnership' && (
                       <View
                         style={{
                           height: 9,
@@ -713,14 +722,20 @@ const AddBusinessScreen = props => {
               <DateSelection
                 text={'Bussiness Start Date:'}
                 title={'Select Bussiness Start Date'}
-                placeholder={startDate == '' ? 'YYYY-MM-DD' : startDate}
+                placeholder={
+                  startDate == '' || startDate == null
+                    ? 'YYYY-MM-DD'
+                    : startDate
+                }
                 onChangeDob={i => setStartDate(moment(i).format('YYYY-MM-DD'))}
               />
 
               <DateSelection
                 text={'Bussiness End Date:'}
                 title={'Select Bussiness End Date'}
-                placeholder={endDate == '' ? 'YYYY-MM-DD' : endDate}
+                placeholder={
+                  endDate == '' || endDate == null ? 'YYYY-MM-DD' : endDate
+                }
                 onChangeDob={i => setEndDate(moment(i).format('YYYY-MM-DD'))}
               />
               {/* <HorizontalTextInput

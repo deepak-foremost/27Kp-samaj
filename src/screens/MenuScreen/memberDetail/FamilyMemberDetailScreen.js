@@ -240,6 +240,22 @@ const FamilyMemberDetailScreen = props => {
               <ListMember />
               <ListMember />
             </View>
+          ) : family?.length == 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.bold,
+                  color: AppColors.black,
+                  fontSize: 15,
+                }}>
+                No List Found
+              </Text>
+            </View>
           ) : (
             <FlatList
               showsVerticalScrollIndicator={false}

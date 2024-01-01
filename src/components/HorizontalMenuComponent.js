@@ -144,13 +144,14 @@ export const GridListComponent = props => {
             resizeMode: 'cover',
             borderRadius: 10,
             opacity: 0.8,
+            // backgroundColor:'#F2F2F2'
           }}
         />
 
         <Text
           style={{
-            fontFamily: AppFonts.semiBold,
-            fontSize: 8,
+            fontFamily: AppFonts.bold,
+            fontSize: 9,
             marginBottom: 8,
             marginHorizontal: 14,
             color: '#FFF',
@@ -199,7 +200,7 @@ export const BusinessDirectoryCell = props => {
           source={{uri: props?.item?.visting_card_photo}}
           style={{
             marginLeft: 10,
-            marginRight:10,
+            marginRight: 10,
             resizeMode: 'contain',
             borderRadius: 10,
             marginBottom: 15,
@@ -231,7 +232,9 @@ export const BusinessDirectoryCell = props => {
           <SimpleDoubleLine title={'Address :'} value={props?.item?.address} />
           <SimpleDoubleLine
             title={'Mobile No :'}
-            value={props?.item?.business_phone}
+            value={
+              props?.item?.country_code + ' ' + props?.item?.business_phone
+            }
           />
 
           {props?.is_family_id != 1 ? (
@@ -310,7 +313,7 @@ export const SimpleDoubleLine = props => {
         {props?.title}
       </Text>
       <Text
-      numberOfLines={5}
+        numberOfLines={5}
         style={{
           fontFamily: AppFonts.semiBold,
           fontSize: 12,

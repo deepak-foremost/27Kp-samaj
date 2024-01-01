@@ -90,7 +90,7 @@ const BusinessListScreen = props => {
   const StatusBarHeight = inset.top;
   const [modelOpen, setModelOpen] = useState(false);
   const [businesses, setBusiness] = useState(null);
-  //   const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -216,7 +216,7 @@ const BusinessListScreen = props => {
                 style={{
                   fontFamily: AppFonts.semiBold,
                   fontSize: 15,
-                  color: AppColors?.lineColor,
+                  color: AppColors?.black,
                 }}>
                 No List Found
               </Text>

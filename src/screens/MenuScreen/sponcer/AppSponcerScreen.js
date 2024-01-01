@@ -28,6 +28,7 @@ import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getBhumiSlah, getJevanSlah} from '../../../networking/CallApi';
+import ZoomImage from '../../../components/ZoomImage';
 
 const members = [
   {
@@ -80,6 +81,8 @@ const AppSponcerScreen = props => {
   const [isLoading, setLoading] = useState(true);
   const [members, setMembers] = useState(null);
   const status = props?.route?.params.menu;
+  const [open, setOpen] = useState(false);
+  const [images, setImages] = useState(null);
 
   useEffect(() => {
     if (status == 'ભુમિ સભાસદ સભ્ય') {
@@ -102,6 +105,7 @@ const AppSponcerScreen = props => {
       });
     }
   }, []);
+
   // console.warn(status)
 
   // const [members, setMembers] = useState(null);
@@ -139,7 +143,11 @@ const AppSponcerScreen = props => {
       /> */}
       <View style={{backgroundColor: AppColors.fadeBackground, flex: 1}}>
         <ScreenToolbar text={status} />
-
+        <ZoomImage
+          visible={open}
+          images={images}
+          dismiss={() => setOpen(false)}
+        />
         <View
           style={{
             // marginTop: '5%',
@@ -261,7 +269,15 @@ const AppSponcerScreen = props => {
               style={{width: '100%'}}
               data={members}
               renderItem={({item, index}) => (
-                <MemberCell item={item} index={index} status={status} />
+                <MemberCell
+                  item={item}
+                  index={index}
+                  status={status}
+                  imgPress={() => {
+                    setImages([{url: item?.image}]);
+                    setOpen(true);
+                  }}
+                />
               )}
             />
           )}
@@ -280,6 +296,15 @@ const AppSponcerScreen = props => {
 export default AppSponcerScreen;
 
 export const MemberCell = props => {
+  const [open, setOpen] = useState(false);
+  console.log(props?.item);
+  // const images = [
+  //   {
+  //     url: props?.items != null && props?.item?.image,
+  //     props: {source: props?.items != null && props?.items?.image},
+  //   },
+  // ];
+
   return (
     <View
       style={{
@@ -421,18 +446,20 @@ export const MemberCell = props => {
           // marginLeft: 10,
         }}>
         {props?.item ? (
-          <Image
-            style={{
-              height: 15,
-              width: 15,
-              backgroundColor: '#F2F2F2',
-              resizeMode: 'contain',
-              // borderColor: 'black',
-              // borderWidth: 1,
-              borderRadius: 10,
-            }}
-            source={{uri: props?.item?.image}}
-          />
+          <TouchableOpacity activeOpacity={1} onPress={props?.imgPress}>
+            <Image
+              style={{
+                height: 15,
+                width: 15,
+                backgroundColor: '#F2F2F2',
+                resizeMode: 'contain',
+                // borderColor: 'black',
+                // borderWidth: 1,
+                borderRadius: 10,
+              }}
+              source={{uri: props?.item?.image}}
+            />
+          </TouchableOpacity>
         ) : (
           <Text style={[styles.heading, {color: AppColors.DarkText}]}>
             ફોટો

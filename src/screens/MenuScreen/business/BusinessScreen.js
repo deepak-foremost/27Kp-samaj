@@ -240,6 +240,7 @@ const BusinessScreen = props => {
                   paddingHorizontal: 10,
                   paddingVertical: 20,
                   justifyContent: 'center',
+                  flex:1
                 }}>
                 {pos == 0 ? (
                   categories?.map((item, index) => (
@@ -252,6 +253,22 @@ const BusinessScreen = props => {
                       }}
                     />
                   ))
+                ) : businsesses?.length == 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: AppFonts.bold,
+                        color: AppColors.black,
+                        fontSize: 15,
+                      }}>
+                      No List Found
+                    </Text>
+                  </View>
                 ) : (
                   <FlatList
                     showsVerticalScrollIndicator={false}
@@ -317,7 +334,7 @@ const FileCell = props => {
             shadowRadius: 3,
           },
           android: {
-            elevation: 15,
+            elevation: 5,
           },
         }),
       }}>

@@ -108,7 +108,7 @@ const NewsDetailScreen = ({route}) => {
                 shadowRadius: 3,
               },
               android: {
-                elevation: 15,
+                elevation: 5,
               },
             }),
           }}>
@@ -118,7 +118,7 @@ const NewsDetailScreen = ({route}) => {
             contentContainerStyle={{
               flexGrow: 1,
             }}>
-            <View style={{paddingTop: 10,}}>
+            <View style={{paddingTop: 10}}>
               {news?.images?.map((item, index) => (
                 <TouchableOpacity
                   activeOpacity={1}
@@ -145,7 +145,7 @@ const NewsDetailScreen = ({route}) => {
                 <TextComponent first={'Title :'} second={news?.title} />
                 <TextComponent first={'Village :'} />
                 <TextComponent first={'સ્પોનસર નું નામ :'} />
-                <TextComponent first={'Date :'} second={news?.news_date}/>
+                <TextComponent first={'Date :'} second={news?.news_date} />
                 <TextComponent first={'Note :'} />
               </View>
 

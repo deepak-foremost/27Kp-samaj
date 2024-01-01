@@ -1,4 +1,4 @@
-import {View, Text, SafeAreaView, Platform} from 'react-native';
+import {View, Text, SafeAreaView, Platform, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import LogInToolbar from '../../../components/LogInToolbar';
@@ -29,12 +29,16 @@ const UserLogInDetail = props => {
         AppStyles.AppMainBackground,
         {
           backgroundColor:
-          screen == 'User Signin'
-            ? AppColors.Red
-            : AppColors.BackgroundSecondColor,
-        paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+            screen == 'User Signin'
+              ? AppColors.Red
+              : AppColors.BackgroundSecondColor,
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
         },
       ]}>
+      <StatusBar
+        backgroundColor={AppColors.BackgroundSecondColor}
+        barStyle={'light-content'}
+      />
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <LogInToolbar
           text={'Sign In Details'}

@@ -26,7 +26,10 @@ const AppButton = props => {
       /> */}
       {props?.loading ? (
         <View>
-          <LoaderView style={{width: '25%', height: 30}} color={props?.color} />
+          <LoaderView
+            style={{width: '25%', height: 30, alignSelf: 'center'}}
+            color={props?.color}
+          />
         </View>
       ) : (
         <Text

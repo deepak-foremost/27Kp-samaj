@@ -173,7 +173,7 @@ const VillageScreen = props => {
                   shadowRadius: 3,
                 },
                 android: {
-                  elevation: 15,
+                  elevation: 5,
                 },
               }),
             }}>
@@ -400,6 +400,7 @@ const AboutCell = props => {
         alignItems: 'center',
         height: 30,
         marginTop: 10,
+        elevation:5
         // borderBottomColor: AppColors.light_grey,
         // borderBottomWidth: 1,
       }}>

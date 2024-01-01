@@ -116,13 +116,14 @@ const SearchScreen = props => {
   const [to, setTo] = useState('');
   const [status, setStatus] = useState('');
   const [bloodGroup, setBloodGroup] = useState('');
-  const [country, setCountry] = useState('Foreign Country');
+  const [country, setCountry] = useState('');
   const [study, setStudy] = useState('');
   const [result, setResult] = useState([]);
   const [listLength, setLenght] = useState(-1);
   const [isloading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [nodata, setNoData] = useState(false);
 
   // useEffect(() => {
   //   setResult(list);
@@ -284,7 +285,7 @@ const SearchScreen = props => {
                   shadowRadius: 3,
                 },
                 android: {
-                  elevation: 15,
+                  elevation: 5,
                 },
               }),
             }}>
@@ -312,6 +313,7 @@ const SearchScreen = props => {
                   setBloodGroup('');
                   setStudy('');
                   setCountry('');
+                  setNoData(true);
                 }}>
                 <Text
                   style={{
@@ -550,7 +552,7 @@ const SearchScreen = props => {
                   data={staticArray.bloodGroup}
                   value={bloodGroup}
                   onItemSelect={item => {
-                    printLog(JSON.stringify(item?.item));
+                    printLog(item?.name);
                     setBloodGroup(item?.name);
                   }}
                 />
@@ -577,7 +579,7 @@ const SearchScreen = props => {
                   data={staticArray.studies}
                   value={study}
                   onItemSelect={item => {
-                    printLog(JSON.stringify(item?.item));
+                    printLog('study', item?.name);
                     setStudy(item?.name);
                     // setCityId(item?.id);
                   }}
@@ -603,7 +605,7 @@ const SearchScreen = props => {
                   label={`Foreign Country :`}
                   placeholder={`Foreign Country`}
                   data={staticArray.foriegnCountry}
-                  textStyle={{fontSize: 8}}
+                  textStyle={{fontSize: 10}}
                   value={country}
                   onItemSelect={item => {
                     printLog(JSON.stringify(item?.item));
@@ -635,11 +637,15 @@ const SearchScreen = props => {
               }}
               buttonPress={() => {
                 // setResult(list);
+                setResult([]);
                 var params = {
                   city: city,
                   marital_status: status,
                   gender: gender,
                   age: `${from}-${to}`,
+                  study: study,
+                  blood_group: bloodGroup,
+                  foreign_country_name: country,
                 };
                 const filteredParams = Object.fromEntries(
                   Object.entries(params).filter(
@@ -657,13 +663,10 @@ const SearchScreen = props => {
                   filteredParams,
                   response => {
                     if (response?.status) {
+                      setNoData(false);
                       setTotalPage(response?.last_page);
                       printLog('search', JSON.stringify(response));
                       setResult(response?.data);
-                      console.log(
-                        'details',
-                        city + status + gender + from + to,
-                      );
                     } else {
                       setResult([]);
                     }
@@ -680,8 +683,17 @@ const SearchScreen = props => {
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled>
-            {result?.length == 0 ? (
-              <></>
+            {result?.length == 0 && !nodata ? (
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: AppColors.black,
+                  alignSelf: 'center',
+                  marginTop: 50,
+                  fontFamily:AppFonts.bold
+                }}>
+                No Data Found
+              </Text>
             ) : (
               <View
                 style={{
@@ -694,7 +706,6 @@ const SearchScreen = props => {
                   backgroundColor: AppColors.BackgroundColor,
                   borderRadius: 10,
                   backgroundColor: AppColors.fadeBackground,
-
                   // ...Platform.select({
                   //   ios: {
                   //     shadowColor: '#D5D5D5',
@@ -715,13 +726,14 @@ const SearchScreen = props => {
                     <ListMember styles={{height: 35}} />
                     <ListMember styles={{height: 35}} />
                   </View>
-                ) : result.length == 0 || result == [] ? (
-                  <View style={{height: 100, backgroundColor: 'red'}}>
-                    <Text style={{fontSize: 16, color: AppColors.black}}>
-                      No List Found
-                    </Text>
-                  </View>
                 ) : (
+                  // : result.length == 0 || result == [] || nodata ? (
+                  //   <View style={{height: 100, backgroundColor: 'red'}}>
+                  //     <Text style={{fontSize: 16, color: AppColors.black}}>
+                  //       No List Found
+                  //     </Text>
+                  //   </View>
+                  // )
                   <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
@@ -733,13 +745,14 @@ const SearchScreen = props => {
                       paddingBottom: 20,
                     }}
                     data={result == null ? [] : result}
-                    ListHeaderComponent={
+                    ListHeaderComponent={ !nodata &&
                       <View
                         style={{
                           flexDirection: 'row',
                           marginTop: 10,
                           paddingVertical: 5,
                           paddingLeft: 10,
+                          // backgroundColor:'red'
                         }}>
                         <Text
                           style={{
@@ -934,7 +947,11 @@ const AboutCell = props => {
             style={{paddingHorizontal: 3}}
             onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
             <Image
-              style={{marginHorizontal: 5, marginBottom: 2.5}}
+              style={{
+                marginHorizontal: 5,
+                marginBottom: 2.5,
+                backgroundColor: '#F2F2F2',
+              }}
               source={AppImages.CIRCLE_CALL_ICON}
             />
           </TouchableOpacity>

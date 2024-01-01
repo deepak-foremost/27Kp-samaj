@@ -412,7 +412,7 @@ const FileCell = props => {
             shadowRadius: 3,
           },
           android: {
-            elevation: 15,
+            elevation: 5,
           },
         }),
       }}>

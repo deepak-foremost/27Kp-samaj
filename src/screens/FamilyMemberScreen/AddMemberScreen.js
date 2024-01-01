@@ -174,6 +174,7 @@ const AddMemberScreen = props => {
   useEffect(() => {
     // console.log('detail', memberItem);
     if (memberItem != undefined && memberItem != null) {
+      console.log('phone', memberItem?.phone);
       setCity(memberItem?.city);
       setFamilyMember(memberItem?.name);
       setGender(memberItem?.gender);
@@ -346,6 +347,7 @@ const AddMemberScreen = props => {
 
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps='handled'
             extraScrollHeight={40}>
             {/* Form */}
             <View
@@ -649,6 +651,7 @@ const AddMemberScreen = props => {
 
               <MyMobileNumber
                 label={`મોબાઇલ નંબર`}
+                defaultText={phone}
                 countryCode={country_code}
                 phone={phone}
                 type={'numeric'}

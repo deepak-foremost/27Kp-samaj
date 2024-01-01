@@ -194,21 +194,27 @@ const BusinessDetaiLScreen = props => {
                 <SimpleDoubleLine
                   title={'Owner Name 2 :'}
                   value={
-                    item?.owner_name_2 == null ? 'N/A' : item?.owner_name_2
+                    item?.owner_name_2 == null || 'null'
+                      ? 'N/A'
+                      : item?.owner_name_2
                   }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 3 :'}
                   value={
-                    item?.owner_name_3 == null ? 'N/A' : item?.owner_name_3
+                    item?.owner_name_3 == null || 'null'
+                      ? 'N/A'
+                      : item?.owner_name_3
                   }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 4 :'}
                   value={
-                    item?.owner_name_4 == null ? 'N/A' : item?.owner_name_4
+                    item?.owner_name_4 == 'null' || null
+                      ? 'N/A'
+                      : item?.owner_name_4
                   }
                   containerStyle={{}}
                 />

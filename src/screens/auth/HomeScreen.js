@@ -338,7 +338,7 @@ const HomeScreen = props => {
         visible={isVisible}
         animationType="fade"
         transparent={true}
-        style={{flex: 1}}
+        style={{flex: 1,}}
 
         // style={[
         //   styles.modal,
