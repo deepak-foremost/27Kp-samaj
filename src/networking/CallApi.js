@@ -34,6 +34,16 @@ export const getYearRange = (onSuccess, onFailure) => {
     onFailure,
   );
 };
+
+export const getKarobariRange = (onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_KAROBARI_RANGE}`,
+    RequestType.get,
+    NaN,
+    onSuccess,
+    onFailure,
+  );
+};
 export const getSuggestionData = (onSuccess, onFailure) => {
   CallApi(Api.GET_SUGGESTION_LIST, RequestType.get, {}, onSuccess, onFailure);
 };
@@ -52,6 +62,36 @@ export const getAboutUsMember = (params, onSuccess, onFailure) => {
   CallApi(
     `${Api.GET_ABOUT_US_MEMBER}?${params}`,
     RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getAboutKarobari = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_ABOUT_KAROBARI}?${params}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const getKarobari = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_KAROBARI}?${params}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const checkPhoneNumber = (params, onSuccess, onFailure) => {
+  CallApi(
+    Api.CHECK_PHONE_EXISTS,
+    RequestType.post,
     params,
     onSuccess,
     onFailure,
@@ -88,6 +128,24 @@ export const getNews = (params, onSuccess, onFailure) => {
 
 export const getParipatr = (params, onSuccess, onFailure) => {
   CallApi(`${Api.GET_PARIPATR}`, RequestType.get, params, onSuccess, onFailure);
+};
+
+export const getEbook = (params, onSuccess, onFailure) => {
+  CallApi(`${Api.GET_EBOOK}`, RequestType.get, params, onSuccess, onFailure);
+};
+
+export const getJOB = (params, onSuccess, onFailure) => {
+  CallApi(`${Api.GET_JOB}`, RequestType.get, params, onSuccess, onFailure);
+};
+
+export const getServices = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GET_SERCVICES}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
 };
 
 export const getFamilies = (params, onSuccess, onFailure) => {
@@ -133,6 +191,10 @@ export const getAboutUsListById = (params, onSuccess, onFailure) => {
 export const getSalahkarMember = (onSuccess, onFailure) => {
   CallApi(Api.GET_SALAHKAR_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
 };
+
+// export const getAboutKarobari = (onSuccess, onFailure) => {
+//   CallApi(Api.GET_ABOUT_KAROBARI, RequestType.get, NaN, onSuccess, onFailure);
+// };
 
 export const getMyFamilies = (onSuccess, onFailure) => {
   CallApi(Api.GET_FAMILY_MEMBER, RequestType.get, NaN, onSuccess, onFailure);

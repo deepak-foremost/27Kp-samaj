@@ -1,4 +1,3 @@
-import LottieView from 'lottie-react-native';
 import React from 'react';
 import {Modal, StyleSheet, View, Dimensions, Text, Image} from 'react-native';
 import {AppColors} from '../utils/AppColors';
@@ -6,7 +5,7 @@ import {AppColors} from '../utils/AppColors';
 const PopUp = props => {
   return (
     <View style={{flex: 1}}>
-      <LottieView
+      {/* <LottieView
         style={{
           height: Dimensions.get('window').height,
           width: Dimensions.get('window').width,
@@ -14,7 +13,7 @@ const PopUp = props => {
         source={props?.src}
         autoPlay={true}
         loop={false}
-      />
+      /> */}
     </View>
   );
 };

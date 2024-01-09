@@ -127,45 +127,214 @@ const FamilyDetailScreen = props => {
   const [members, setMembers] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [items, setItem] = useState(null);
+  const [imageList, setImageLIst] = useState(null);
+  const [pdfLoad, setPdfLoad] = useState(false);
+  // const [images, setImages] = useState();
 
-  const images = [
-    {
-      url: items != null && items?.image,
-      props: {source: items != null && items?.image},
-    },
-  ];
+  // const images = [
+  //   {
+  //     url: items != null && items?.image,
+  //     props: {source: items != null && items?.image},
+  //   },
+  // ];
+
+  const images = imageList?.map(item => ({
+    url: item?.image,
+  }));
 
   // useEffect(() => {
   //   setMembers(list);
   // }, [members]);
 
   const generatePDF = async userData => {
-    const htmlContent = `
-      <html>
-        <body>
-          <h1>User Details</h1>
-          <p style="color:red;">ગામ: ${userData.name}</p>
-          <p>શાખ: ${userData.shakh}</p>
-          <p>મોસાળ: ${userData.mosal}</p>
-          <p>સાસરું: ${userData.sas}</p>
-          <p>જન્મ તારીખ: ${userData.dob}</p>
-          <p>ઊંચાઈ: ${userData.height}</p>
-          <p>બ્લડગ્રુપ: ${userData.blood_group}</p>
-          <p>કુટુંબના વડા સાથેનો સંબંધ: ${userData.family_main_member_with_relation}</p>
-          <p>લગ્ન સ્થિતિ:: ${userData.marital_status}</p>
-          <p>અભ્યાસ: ${userData.study}</p>
-          <p>વ્યવસાય: ${userData.business}</p>
-          <p>વ્યવસાયનું સરનામું: ${userData.current_address}</p>
-          <p>ફોરેન Country નામ: ${userData.city}</p>
-          <p>હાલ ના રહેઠાણનું સરનામું: ${userData.business_address}</p>
-          <p>મોબાઈલ નંબર: ${userData.phone}</p>
-          <p>E-Mail ID: ${userData.email}</p>
-        
-          
-        </body>
-      </html>
-    `;
+    const htmlContent = ` <html>
+    <style type="text/css">
+    .topname p{
+      margin: 0;
+      color: #0A3C5D;
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .profile_img{
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 40px;
+      
+    }
+    .profile_img img{
+      width: 31%;
+      float: left;
+      border-radius: 15px;
+      height:200;
+      margin-left:10px
+    }
+  
+    .profile_textdiv1 p{
+      margin: 0px;
+      color: #ABABAB;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .profile_textdiv1 p label{
+      font-weight: bold;
+      color: #363663;
+    }
+    .profile_textdiv1{
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 3px;
+    }
+    .profile_textdiv1 h3{
+      margin: 0px;
+        font-size: 22px;
+        color: #049AB5;    
+        margin-bottom: 15px;
+    }
+  
+    .profile_textdiv p{
+      margin: 0px;
+      color: #ABABAB;
+      font-size: 16px;
+      margin-bottom: 1px;
+    }
+    .profile_textdiv p label{
+      font-weight: bold;
+      color: #000;
+    }
+    .profile_textdiv{
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 20px;
+        border-bottom: 1px solid #E6E6E6;
+        padding-bottom: 20px;
+    }
+    .profile_textdiv h3{
+      margin: 0px;
+        font-size: 22px;
+        color: #049AB5;    
+        margin-bottom: 15px;
+    }
+    .address_textbox{
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 20px;
+        border-bottom: 1px solid #E6E6E6;
+        padding-bottom: 20px;
+    }
+    .address_textbox p{
+      margin: 0px;
+      color: #ABABAB;
+      font-size: 16px;
+      margin-bottom: 1px;
+    }
+    .address_textbox p label{
+      font-weight: bold;
+      color: #363663;
+    }
+    .address_textbox ul{
+      padding: 0px;
+      margin: 0px;
+      margin-top: 10px;
+    }
+    .address_textbox ul li{
+      width: 50%;
+        list-style-type: none;
+        float: left;
+        font-weight: bold;
+        color: #363663;
+        margin: 0px;
+        font-size: 16px;
+        margin-bottom: 6px;
+    }	
+    .address_textbox ul li img{
+      width: 20px;
+    }
+  </style>
+    <body>
+    <div class="container">	
+	<div class="profile_img">
+		<img src='${userData?.images[0]?.image}'>
+		<img src='${userData?.images[1]?.image}'>
+		<img src='${userData?.images[2]?.image}'>
+   
+	</div>
+	<div class="profile_textdiv1">
+		<h3>${userData?.phone}</h3>
+		<p><label> ગામ:</label>  ${userData?.city}</p>	
+		<p><label> શાખ:</label>  ${userData?.shakh}</p>
+	</div>
+	<div class="profile_textdiv">
+		<p><label> મોસાળ</label>  ${userData?.mosal} </p>	
+		<p><label> સાસરું:</label>  ${userData?.sasru} </p>	
+	</div>
+  <div class="address_textbox">
+  <ul>
+  <li><label> જન્મ તારીખ:</label>${userData?.dob} </li>
+  <li><label> ઉંમર:</label>${userData?.age} </li>
+  </ul>
+  <ul>
+  <li><label> ઊંચાઈ:</label>${userData?.height} </li>
+  <li><label> વજન:</label>${userData?.weight} </li>
+  </ul>
+  <ul>
+  <li><label> બ્લડગ્રુપ:</label>${userData?.blood_group} </li>
+  <li><label> લિંગ:</label>${userData?.gender} </li>
+  </ul>
+  </div>
+  <div class="profile_textdiv">
+		<p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  ${userData?.family_main_member_with_relation} </p>	
+		<p><label> લગ્ન સ્થિતિ:</label>  ${userData?.marital_status} </p>	
+    <p><label> અભ્યાસ:</label>  ${userData?.study} </p>
+    <p><label> વ્યવસાય:</label>  ${userData?.business} </p>
+    <p><label> વ્યવસાયનું સરનામું:</label>  ${userData?.business_address} </p>
+    <p><label> ફોરેન Country નામ:</label>  ${userData?.foreign_country_name} </p>
+    <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${userData?.current_address} </p>
+    <p><label> મોબાઈલ નંબર:</label>  ${userData?.phone} </p>
+    <p><label> E-Mail ID:</label>  ${userData?.email} </p>
+    <p><label> જીવન સહાય સભાસદ નં:</label>  ${userData?.jeevan_sahay_nubmer} </p>
+    <p><label> ભુમિ સભાસદ નં:</label>  ${userData?.boomi_nubmer} </p>
+	</div>
+	<div class="address_textbox">
+		
+	</div>
+	<div class="address_textbox">
+		
+	</div>
+	<div class="address_textbox" style="border-bottom: 0px;">
+	
+	</div>
+</div>
+</body>
+</html>
+`;
+    // const htmlContent = `
+    //   <html>
+    //     <body>
+    //       <h1>User Details</h1>
+    //       <p style="color:red;">ગામ: ${userData.name}</p>
+    //       <p>શાખ: ${userData.shakh}</p>
+    //       <p>મોસાળ: ${userData.mosal}</p>
+    //       <p>સાસરું: ${userData.sasru}</p>
+    //       <p>જન્મ તારીખ: ${userData.dob}</p>
+    //       <p>ઉંમર: ${userData.age}</p>
+    //       <p>ઊંચાઈ: ${userData.height}</p>
+    //       <p>વજન: ${userData.weight}</p>
+    //       <p>લિંગ: ${userData.gender}</p>
+    //       <p>બ્લડગ્રુપ: ${userData.blood_group}</p>
+    //       <p>કુટુંબના વડા સાથેનો સંબંધ: ${userData.family_main_member_with_relation}</p>
+    //       <p>લગ્ન સ્થિતિ:: ${userData.marital_status}</p>
+    //       <p>અભ્યાસ: ${userData.study}</p>
+    //       <p>વ્યવસાય: ${userData.business}</p>
+    //       <p>વ્યવસાયનું સરનામું: ${userData.business_address}</p>
+    //       <p>ફોરેન Country નામ: ${userData.city}</p>
+    //       <p>હાલ ના રહેઠાણનું સરનામું: ${userData.current_address}</p>
+    //       <p>મોબાઈલ નંબર: ${userData.phone}</p>
+    //       <p>E-Mail ID: ${userData.email}</p>
+
+    //     </body>
+    //   </html>
+    // `;
 
     const options = {
       html: htmlContent,
@@ -183,10 +352,9 @@ const FamilyDetailScreen = props => {
         type: 'application/pdf',
         failOnCancel: false,
       };
-
       await Share.open(options);
     } catch (error) {
-      console.error('Error sharing PDF:', error.message);
+      // console.error('Error sharing PDF:', error.message);
     }
   };
 
@@ -263,7 +431,7 @@ const FamilyDetailScreen = props => {
   useEffect(() => {
     setLoading(true);
     getString(AsyncStorageConst.allDetails, response => {
-      console.log('token-->', JSON.stringify(response));
+      // console.log('token-->', JSON.stringify(response));
     });
     getFamilyMembersList(
       {id: item?.id, flag: 'all'},
@@ -322,7 +490,7 @@ const FamilyDetailScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 fontSize: 13,
               }}>
-              {`મોં : ${item?.family_id}`}
+              {`મોં : ${item?.country_code + ' ' + item?.phone}`}
             </Text>
             <Text
               style={{
@@ -376,10 +544,13 @@ const FamilyDetailScreen = props => {
                 return (
                   <View style={{}}>
                     <FamilyMermberCell
-                      // saveButton={() => handleGeneratePDF(item)}
+                      saveButton={() => {
+                        setPdfLoad(true);
+                        handleGeneratePDF(item);
+                      }}
                       imgPress={() => {
                         setOpen(true);
-                        setItem(item);
+                        setImageLIst(item?.images);
                       }}
                       index={index}
                       item={item}
@@ -450,7 +621,11 @@ const FamilyMermberCell = props => {
         }),
       }}>
       {/* <Image
-        source={AppImages.FAMILY_MEMBER_ICON}
+        source={
+          props?.item?.images[0]?.image == undefined
+            ? AppImages.MEMBER_IMAGE
+            : {uri: props?.item?.images[0]?.image}
+        }
         style={{
           height: 19,
           width: 10,
@@ -595,12 +770,16 @@ export const MemberDetailCell = props => {
           <TouchableOpacity
             activeOpacity={1}
             style={{width: '31%', height: 80, borderRadius: 10}}
-            onPress={props?.imgPress}>
+            onPress={
+              props?.item?.images[0]?.image == undefined
+                ? null
+                : props?.imgPress
+            }>
             <Image
               source={
-                props?.item?.image == null
+                props?.item?.images[0]?.image == undefined
                   ? AppImages.MEMBER_IMAGE
-                  : {uri: props?.item?.image}
+                  : {uri: props?.item?.images[0]?.image}
               }
               style={{
                 height: '100%',
@@ -619,12 +798,17 @@ export const MemberDetailCell = props => {
               height: 80,
               borderRadius: 10,
               marginHorizontal: 15,
-            }}>
+            }}
+            onPress={
+              props?.item?.images[1]?.image == undefined
+                ? null
+                : props?.imgPress
+            }>
             <Image
               source={
-                props?.item?.image_one == null
+                props?.item?.images[1]?.image == undefined
                   ? AppImages.MEMBER_IMAGE
-                  : {uri: props?.item?.image_one}
+                  : {uri: props?.item?.images[1]?.image}
               }
               style={{
                 height: '100%',
@@ -638,12 +822,17 @@ export const MemberDetailCell = props => {
 
           <TouchableOpacity
             activeOpacity={1}
-            style={{width: '31%', height: 80, borderRadius: 10}}>
+            style={{width: '31%', height: 80, borderRadius: 10}}
+            onPress={
+              props?.item?.images[2]?.image == undefined
+                ? null
+                : props?.imgPress
+            }>
             <Image
               source={
-                props?.item?.image_two == null
+                props?.item?.images[2]?.image == undefined
                   ? AppImages.MEMBER_IMAGE
-                  : {uri: props?.item?.image_two}
+                  : {uri: props?.item?.images[2].image}
               }
               style={{
                 height: '100%',

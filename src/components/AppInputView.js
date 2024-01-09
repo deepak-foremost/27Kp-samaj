@@ -31,9 +31,9 @@ const AppInputView = props => {
           // paddingBottom: 5,
           borderBottomWidth: 1,
           borderBottomColor: '#EAEAFF',
-          height:45
+          height: 45,
         }}>
-        <Image source={AppImages.PHONE_SMALL_ICON}  />
+        <Image source={AppImages.PHONE_SMALL_ICON} />
 
         <TouchableOpacity
           // onPressIn={onPressIn}
@@ -50,7 +50,7 @@ const AppInputView = props => {
             {props?.code}
           </Text>
           <Image
-            style={[{marginLeft: 10},props?.icon]}
+            style={[{marginLeft: 10}, props?.icon]}
             source={require('../assets/images/country_icon.png')}
           />
         </TouchableOpacity>
@@ -82,12 +82,14 @@ const AppInputView = props => {
             marginLeft: 20,
             flex: 1,
             color: AppColors.black,
-            marginTop:2.5
+            marginTop: 2.5,
           }}
           keyboardType="numeric"
           placeholderTextColor={'#38385E'}
           placeholder={props?.placeholder}
           onChangeText={props?.onChangeText}
+          defaultValue={props?.defaultText}
+          maxLength={10}
         />
       </View>
     </View>

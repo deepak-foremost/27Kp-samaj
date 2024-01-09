@@ -26,6 +26,7 @@ import AppButton from '../../../components/AppButton';
 import {LinksButton} from './ImpLinks';
 import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getEbook, getJOB, getServices} from '../../../networking/CallApi';
 
 const list = [
   {
@@ -89,59 +90,108 @@ const LinkDetails = props => {
   const [files, setFiles] = useState(null);
   const [services, setServices] = useState(null);
   const [jobs, setJobs] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   const headerText = props?.route?.params?.text;
 
   const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
-    setFiles(list);
-  }, [files, setFiles]);
+    if (headerText == 'eBOOK') {
+      setLoading(true);
+      getEbook('', response => {
+        if (response?.status) {
+          console.log('ebook', JSON.stringify(response?.data));
+          setFiles(response?.data);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+        Error => {
+          console.log('ebooookError', Error);
+          setLoading(false);
+        };
+      });
+    } else if (headerText == 'JOB') {
+      setLoading(true);
+      getJOB('', response => {
+        if (response?.status) {
+          setJobs(response?.data);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+        Error => {
+          console.log('jobError', Error);
+          setLoading(false);
+        };
+      });
+    } else {
+      setLoading(true);
+      getServices('', response => {
+        if (response?.status) {
+          setServices(response?.data);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+        Error => {
+          setLoading(false);
+          console.log('ServiceError', Error);
+        };
+      });
+      // setServices(listOne);
+    }
+    // setFiles(list);
+  }, []);
 
-  useEffect(() => {
-    setServices(listOne);
-  }, [services, setServices]);
-
-  useEffect(() => {
-    setJobs(listSecond);
-  }, [jobs, setJobs]);
-
-  //   const onRefresh = React.useCallback(() => {
-  //     setRefreshing(true);
-  //     getParipatr(
-  //       onSuccess => {
-  //         printLog('getParipatr', JSON.stringify(onSuccess));
-  //         if (onSuccess?.status) {
-  //           setFiles(onSuccess?.data);
-  //         } else {
-  //           setFiles([]);
-  //         }
-  //         setRefreshing(false);
-  //       },
-  //       onFailure => {
-  //         printLog('getParipatr', JSON.stringify(onFailure));
-  //         setFiles([]);
-  //         setRefreshing(false);
-  //       },
-  //     );
-  //   }, []);
-
-  //   useEffect(() => {
-  //     getParipatr(
-  //       onSuccess => {
-  //         printLog('getParipatr', JSON.stringify(onSuccess));
-  //         if (onSuccess?.status) {
-  //           setFiles(onSuccess?.data);
-  //         } else {
-  //           setFiles([]);
-  //         }
-  //       },
-  //       onFailure => {
-  //         printLog('getParipatr', JSON.stringify(onFailure));
-  //         setFiles([]);
-  //       },
-  //     );
-  //   }, []);
+  const onRefresh = React.useCallback(() => {
+    if (headerText == 'eBOOK') {
+      setRefreshing(true);
+      getEbook('', response => {
+        if (response?.status) {
+          console.log('ebook', JSON.stringify(response?.data));
+          setFiles(response?.data);
+          setRefreshing(false);
+        } else {
+          setRefreshing(false);
+        }
+        Error => {
+          console.log('ebooookError', Error);
+          setRefreshing(false);
+        };
+      });
+    } else if (headerText == 'JOB') {
+      setRefreshing(true);
+      getJOB('', response => {
+        if (response?.status) {
+          setJobs(response?.data);
+          setRefreshing(false);
+        } else {
+          setRefreshing(false);
+        }
+        Error => {
+          console.log('jobError', Error);
+          setRefreshing(false);
+        };
+      });
+    } else {
+      setRefreshing(true);
+      getServices('', response => {
+        if (response?.status) {
+          setServices(response?.data);
+          setRefreshing(false);
+        } else {
+          setRefreshing(false);
+        }
+        Error => {
+          setRefreshing(false);
+          console.log('ServiceError', Error);
+        };
+      });
+      // setServices(listOne);
+    }
+  });
 
   return (
     <View
@@ -157,227 +207,238 @@ const LinkDetails = props => {
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={headerText} />
-        <View style={{flex:0.9}}>
-        {headerText == 'eBOOK' && (
-          <View style={{flex: 1}}>
-            {files == null ? (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: AppColors.backgroundColor,
-                  alignItems: 'center',
-                  paddingHorizontal: 10,
-                  paddingTop: 15,
-                }}>
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-              </View>
-            ) : files?.length == 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
+        <View style={{flex: 0.9}}>
+          {headerText == 'eBOOK' && (
+            <View style={{flex: 1}}>
+              {isLoading ? (
+                <View
                   style={{
-                    fontFamily: AppFonts.semiBold,
-                    fontSize: 15,
-                    color: AppColors?.lineColor,
+                    flex: 1,
+                    backgroundColor: AppColors.backgroundColor,
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    paddingTop: 15,
                   }}>
-                  No List Found
-                </Text>
-              </View>
-            ) : (
-              <View style={{flex: 1, paddingTop: 15}}>
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{paddingBottom: 20}}
-                  data={files == null ? [] : files}
-                  renderItem={({item, index}) => (
-                    <FileCell item={item} index={index} />
-                  )}
-                  //   refreshControl={
-                  //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  //   }
-                />
-              </View>
-            )}
-          </View>
-        )}
-
-        {headerText == 'SERVICES' && (
-          <View style={{flex: 1}}>
-            {services == null ? (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: AppColors.backgroundColor,
-                  alignItems: 'center',
-                  paddingHorizontal: 10,
-                  paddingTop: 15,
-                }}>
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-              </View>
-            ) : services?.length == 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: AppFonts.semiBold,
-                    fontSize: 15,
-                    color: AppColors?.lineColor,
-                  }}>
-                  No List Found
-                </Text>
-              </View>
-            ) : (
-              <View style={{flex: 1, paddingTop: 15}}>
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{paddingBottom: 20}}
-                  data={services == null ? [] : services}
-                  renderItem={({item, index}) => (
-                    <AppButton
-                      buttonStyle={{
-                        width: '90%',
-                        marginHorizontal: 15,
-                        borderRadius: 30,
-                        marginTop: 10,
-                        height: 40,
-                      }}
-                      // item={item} index={index}
-                      text={item.title}
-                      buttonPress={() =>
-                        RootNavigation.navigate(AppScreens.SERVICE_DETAILS, {
-                          text: item.title,
-                        })
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                </View>
+              ) : (
+                <View style={{flex: 1, paddingTop: 15}}>
+                  {files?.length == 0 ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 15,
+                          color: AppColors?.lineColor,
+                        }}>
+                        No List Found
+                      </Text>
+                    </View>
+                  ) : (
+                    <FlatList
+                      showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{paddingBottom: 20}}
+                      data={files == null ? [] : files}
+                      renderItem={({item, index}) => (
+                        <FileCell item={item} index={index} />
+                      )}
+                      refreshControl={
+                        <RefreshControl
+                          refreshing={refreshing}
+                          onRefresh={onRefresh}
+                        />
                       }
                     />
                   )}
-                  //   refreshControl={
-                  //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  //   }
-                />
-              </View>
-            )}
-          </View>
-        )}
+                </View>
+              )}
+            </View>
+          )}
 
-        {headerText == 'JOB' && (
-          <View style={{flex: 1}}>
-            {services == null ? (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: AppColors.backgroundColor,
-                  alignItems: 'center',
-                  paddingHorizontal: 10,
-                  paddingTop: 15,
-                }}>
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-                <ListMember styles={{height: 45}} />
-              </View>
-            ) : services?.length == 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
+          {headerText == 'SERVICES' && (
+            <View style={{flex: 1}}>
+              {isLoading ? (
+                <View
                   style={{
-                    fontFamily: AppFonts.semiBold,
-                    fontSize: 15,
-                    color: AppColors?.lineColor,
+                    flex: 1,
+                    backgroundColor: AppColors.BackgroundColor,
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    paddingTop: 15,
                   }}>
-                  No List Found
-                </Text>
-              </View>
-            ) : (
-              <View style={{flex: 1, paddingTop: 15}}>
-                <View>
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                </View>
+              ) : (
+                <View style={{flex: 1, paddingTop: 5}}>
+                  {services?.length == 0 ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: AppFonts.semiBold,
+                          fontSize: 15,
+                          color: AppColors?.line_color,
+                        }}>
+                        No List Found
+                      </Text>
+                    </View>
+                  ) : (
+                    <FlatList
+                      showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{paddingBottom: 20}}
+                      data={services == null ? [] : services}
+                      renderItem={({item, index}) => (
+                        <AppButton
+                          buttonStyle={{
+                            width: '90%',
+                            marginHorizontal: 15,
+                            borderRadius: 30,
+                            marginTop: 10,
+                            height: 40,
+                          }}
+                          // item={item} index={index}
+                          text={item?.service?.toUpperCase()}
+                          buttonPress={() =>
+                            RootNavigation.navigate(
+                              AppScreens.SERVICE_DETAILS,
+                              {
+                                text: item.title,
+                              },
+                            )
+                          }
+                        />
+                      )}
+                      refreshControl={
+                        <RefreshControl
+                          refreshing={refreshing}
+                          onRefresh={onRefresh}
+                        />
+                      }
+                    />
+                  )}
+                </View>
+              )}
+            </View>
+          )}
+
+          {headerText == 'JOB' && (
+            <View style={{flex: 1}}>
+              {isLoading ? (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: AppColors.backgroundColor,
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    paddingTop: 5,
+                  }}>
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                </View>
+              ) : services?.length == 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.semiBold,
+                      fontSize: 15,
+                      color: AppColors?.lineColor,
+                    }}>
+                    No List Found
+                  </Text>
+                </View>
+              ) : (
+                <View style={{flex: 1}}>
+                  <View>
+                    <FlatList
+                      showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{paddingBottom: 5}}
+                      data={jobs == null ? [] : jobs}
+                      renderItem={({item, index}) =>
+                        item?.file != undefined && item?.link == null ? (
+                          <FileCell item={item} index={index} />
+                        ) : null
+                      }
+                      refreshControl={
+                        <RefreshControl
+                          refreshing={refreshing}
+                          onRefresh={onRefresh}
+                        />
+                      }
+                    />
+                  </View>
                   <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{paddingBottom: 15}}
-                    data={files == null ? [] : files}
-                    renderItem={({item, index}) => (
-                      <FileCell item={item} index={index} />
-                    )}
+                    contentContainerStyle={{alignItems: 'center'}}
+                    data={jobs == null ? [] : jobs}
+                    renderItem={({item, index}) =>
+                      // <AppButton
+                      //   buttonStyle={{
+                      //     width: '90%',
+                      //     marginHorizontal: 15,
+                      //     borderRadius: 30,
+                      //     marginTop: 10,
+                      //     height: 40,
+                      //   }}
+                      //   // item={item} index={index}
+                      //   text={item.title}
+                      // />
+                      item?.link != undefined ? (
+                        <LinksButton
+                          textfirst={item.name.toUpperCase()}
+                          textsecond={'LINK TO VISIT'}
+                          mainStyle={{paddingLeft: 0}}
+                          buttonStyle={{
+                            width: '90%',
+                            marginHorizontal: 15,
+                            elevation: 5,
+                          }}
+                          buttonPress={() => Linking.openURL(`${item.link}`)}
+                          // buttonPress={() =>
+                          //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
+                          //     text: 'SERVICES',
+                          //   })
+                          // }
+                          // src={require('../../../assets/images/service_icon.png')}
+                        />
+                      ) : null
+                    }
                     //   refreshControl={
                     //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     //   }
                   />
                 </View>
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{alignItems: 'center'}}
-                  data={jobs == null ? [] : jobs}
-                  renderItem={({item, index}) => (
-                    // <AppButton
-                    //   buttonStyle={{
-                    //     width: '90%',
-                    //     marginHorizontal: 15,
-                    //     borderRadius: 30,
-                    //     marginTop: 10,
-                    //     height: 40,
-                    //   }}
-                    //   // item={item} index={index}
-                    //   text={item.title}
-                    // />
-                    <LinksButton
-                      textfirst={item.title}
-                      textsecond={'LINK TO VISIT'}
-                      buttonStyle={{width: '90%', marginHorizontal: 15}}
-                      // buttonPress={() =>
-                      //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
-                      //     text: 'SERVICES',
-                      //   })
-                      // }
-                      // src={require('../../../assets/images/service_icon.png')}
-                    />
-                  )}
-                  //   refreshControl={
-                  //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  //   }
-                />
-              </View>
-            )}
-          </View>
-        )}
+              )}
+            </View>
+          )}
         </View>
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
@@ -419,7 +480,7 @@ const FileCell = props => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
-          Linking.openURL(props?.item?.document);
+          Linking.openURL(props?.item?.file);
         }}>
         <Image
           source={AppImages.ICON_PDF_LIST}
@@ -445,7 +506,7 @@ const FileCell = props => {
             flex: 1,
             alignContent: 'center',
           }}>
-          {props?.item?.title}
+          {props?.item?.name}
         </Text>
 
         <View
@@ -464,9 +525,9 @@ const FileCell = props => {
               fontFamily: AppFonts.medium,
               fontSize: 7,
               color: '#fff',
-              marginTop:2
+              marginTop: 2,
             }}>
-            {props?.item?.circular_date}
+            {props?.item?.date}
           </Text>
         </View>
       </View>

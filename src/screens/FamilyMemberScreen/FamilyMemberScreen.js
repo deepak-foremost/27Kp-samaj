@@ -108,6 +108,7 @@ const FamilyMembersScreen = props => {
   const [deleteItem, setDeleteItem] = useState(null);
   const [modelOpen, setModelOpen] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [images, setImages] = useState([]);
 
   // useEffect(() => {
   //   setFamilies(list);
@@ -117,6 +118,7 @@ const FamilyMembersScreen = props => {
     getMyFamilies(
       response => {
         printLog('FamilyMembersScreen', JSON.stringify(response));
+
         if (response?.status) {
           setFamilies(response?.data);
         } else {
@@ -166,7 +168,7 @@ const FamilyMembersScreen = props => {
   }, []);
 
   useEffect(() => {
-    console.log('change list----->', families);
+    // console.log('change list----->', families);
   }, [families]);
 
   return (
@@ -200,10 +202,11 @@ const FamilyMembersScreen = props => {
             <View
               style={{
                 flex: 1,
-                backgroundColor: AppColors.BackgroundColor,
+                // backgroundColor: AppColors.BackgroundColor,
                 alignItems: 'center',
-                paddingHorizontal: 10,
+                width: '95%',
                 paddingTop: 15,
+                alignSelf: 'center',
               }}>
               <ListMember styles={{height: 45}} />
               <ListMember styles={{height: 45}} />
@@ -333,7 +336,11 @@ const FamilyMermberCell = props => {
       }}>
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
         <Image
-          source={{uri: props?.item?.image}}
+          source={
+            props?.item?.images[0]?.image == undefined
+              ? AppImages.MEMBER_IMAGE
+              : {uri: props?.item?.images[0]?.image}
+          }
           style={{
             marginRight: 10,
             height: 20,
@@ -428,7 +435,7 @@ const OptionMenuCell = props => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <Image source={props?.icon} style={{}} />
+      <Image source={props?.icon} style={{resizeMode: 'contain'}} />
     </TouchableOpacity>
   );
 };

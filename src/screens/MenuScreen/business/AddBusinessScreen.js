@@ -106,10 +106,10 @@ const AddBusinessScreen = props => {
     printLog('AddBusinessScreen', bussinessItem);
 
     if (bussinessItem != undefined) {
-      console.log(
-        'date',
-        bussinessItem?.business_start_date + bussinessItem?.business_end_date,
-      );
+      // console.log(
+      //   'date',
+      //   bussinessItem?.business_start_date + bussinessItem?.business_end_date,
+      // );
       setFirm(bussinessItem?.firm);
       setCategory(bussinessItem?.category_name);
       setCatId(bussinessItem?.category_id);
@@ -131,7 +131,7 @@ const AddBusinessScreen = props => {
       setWebsite(bussinessItem?.website);
       setVisiting(bussinessItem?.visting_card_photo);
       setBusiness_type(bussinessItem?.business_type);
-      console.log('uri', bussinessItem?.visting_card_photo);
+      // console.log('uri', bussinessItem?.visting_card_photo);
       var daysList = [];
       for (let c = 0; c < bussinessItem?.business_hours?.length; c++) {
         daysList.push({
@@ -161,40 +161,96 @@ const AddBusinessScreen = props => {
 
   const addNewBusiness = async () => {
     setLoading(true);
+    var list = [];
+    if (visiting?.uri != undefined) {
+      list?.push(visiting);
+    }
 
-    var payload = new FormData();
+    if (visitingOne?.uri != undefined) {
+      list?.push(visitingOne);
+    }
+
+    var uploadImageList = {};
+    list?.map(
+      (item, index) =>
+        (uploadImageList = {
+          ...uploadImageList,
+          [`imagemultiple${index}`]: {
+            uri:
+              Platform.OS === 'android'
+                ? item?.uri
+                : item?.uri?.replace('file://', ''),
+            name: item?.fileName,
+            type: item?.type,
+          },
+        }),
+    );
+    let imageParams = {};
+    var imageObject = {};
+
+    const params = {
+      category_id: catId,
+      firm: firm,
+      business_type: business_type,
+      owner_name_1: owner1,
+      owner_name_2: owner2,
+      owner_name_3: owner3,
+      owner_name_4: owner4,
+      address: address,
+      products: product,
+      country_code: code,
+      business_phone: mobile,
+      business_email: email,
+      website: website,
+      from_time: startTime,
+      to_time: endTime,
+      city: selectedCity,
+      business_start_date: startDate,
+      business_end_date: endDate,
+      business_hourse: JSON.stringify(week),
+      ...uploadImageList,
+    };
+
+    console.log(`PARAMS:::::::`, JSON.stringify(params));
+    let formData = new FormData();
+    var myparams = Object.keys(params);
+    myparams?.map(item => {
+      formData.append(item, params[item]);
+    });
+
+    // var payload = new FormData();
     let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
     printLog('tokenPrint----', token);
 
-    payload.append('category_id', catId);
-    payload.append('firm', firm);
-    payload.append('business_type', business_type);
-    payload.append('owner_name_1', owner1);
-    payload.append('owner_name_2', owner2);
-    payload.append('owner_name_3', owner3);
-    payload.append('owner_name_4', owner4);
-    payload.append('address', address);
-    payload.append('products', product);
-    payload.append('country_code', code);
-    payload.append('business_phone', mobile);
-    payload.append('business_email', email);
-    payload.append('website', website);
-    payload.append('from_time', startTime);
-    payload.append('to_time', endTime);
-    payload.append('city', selectedCity);
-    payload.append('business_start_date', startDate);
-    payload.append('business_end_date', endDate);
-    payload.append('business_hourse', JSON.stringify(week));
+    // payload.append('category_id', catId);
+    // payload.append('firm', firm);
+    // payload.append('business_type', business_type);
+    // payload.append('owner_name_1', owner1);
+    // payload.append('owner_name_2', owner2);
+    // payload.append('owner_name_3', owner3);
+    // payload.append('owner_name_4', owner4);
+    // payload.append('address', address);
+    // payload.append('products', product);
+    // payload.append('country_code', code);
+    // payload.append('business_phone', mobile);
+    // payload.append('business_email', email);
+    // payload.append('website', website);
+    // payload.append('from_time', startTime);
+    // payload.append('to_time', endTime);
+    // payload.append('city', selectedCity);
+    // payload.append('business_start_date', startDate);
+    // payload.append('business_end_date', endDate);
+    // payload.append('business_hourse', JSON.stringify(week));
 
-    payload.append('visting_card_photo', {
-      uri:
-        Platform.OS === 'android'
-          ? visiting?.uri
-          : visiting?.uri.replace('file://', ''),
-      name: visiting?.fileName,
-      type: visiting?.type,
-    });
-    printLog('PARAMS', JSON.stringify(payload));
+    // payload.append('visting_card_photo', {
+    //   uri:
+    //     Platform.OS === 'android'
+    //       ? visiting?.uri
+    //       : visiting?.uri.replace('file://', ''),
+    //   name: visiting?.fileName,
+    //   type: visiting?.type,
+    // });
+    // printLog('PARAMS', JSON.stringify(payload));
 
     fetch(Api.POST_ADD_BUSINESS, {
       method: 'POST',
@@ -205,7 +261,7 @@ const AddBusinessScreen = props => {
           'Bearer ' +
           (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
       },
-      body: payload,
+      body: formData,
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -710,6 +766,7 @@ const AddBusinessScreen = props => {
 
               <MyMobileNumber
                 // placeholder={mobile}
+                contact={true}
                 type={'numeric'}
                 label={`Mobile No`}
                 countryCode={code}
@@ -833,10 +890,15 @@ const AddBusinessScreen = props => {
                     }}
                     onPress={() => (visiting != '' ? getMyImage(1) : null)}>
                     <Image
-                      style={{width: '100%', height: 50, borderRadius: 5}}
+                      style={{
+                        width: '100%',
+                        height: 50,
+                        borderRadius: 5,
+                        backgroundColor: '#F2F2F2',
+                      }}
                       source={
                         visiting == ''
-                          ? require('../../../assets/images/visiting_card.png')
+                          ? AppImages.MEMBER_IMAGE
                           : {
                               uri:
                                 visiting?.uri == undefined
@@ -845,10 +907,12 @@ const AddBusinessScreen = props => {
                             }
                       }
                     />
-                    <Image
-                      style={{position: 'absolute', right: 5, top: 5}}
-                      source={require('../../../assets/images/cancel_icon.png')}
-                    />
+                    {visiting != '' && (
+                      <Image
+                        style={{position: 'absolute', right: 3, top: 3}}
+                        source={require('../../../assets/images/cancel_icon.png')}
+                      />
+                    )}
                   </TouchableOpacity>
                   <TouchableOpacity
                     activeOpacity={1}
@@ -863,17 +927,20 @@ const AddBusinessScreen = props => {
                         borderRadius: 5,
                         width: '100%',
                         height: 50,
+                        backgroundColor: '#F2F2F2',
                       }}
                       source={
                         visitingOne == ''
-                          ? require('../../../assets/images/visiting_card.png')
+                          ? AppImages.MEMBER_IMAGE
                           : {uri: visitingOne?.uri}
                       }
                     />
-                    <Image
-                      style={{position: 'absolute', right: 0, top: 5}}
-                      source={require('../../../assets/images/cancel_icon.png')}
-                    />
+                    {visitingOne != '' && (
+                      <Image
+                        style={{position: 'absolute', right: -2, top: 3}}
+                        source={require('../../../assets/images/cancel_icon.png')}
+                      />
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>

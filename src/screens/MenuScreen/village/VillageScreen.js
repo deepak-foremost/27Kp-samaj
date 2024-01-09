@@ -83,10 +83,10 @@ const VillageScreen = props => {
               name: response?.data[i]?.name,
               id: response?.data[i]?.id,
             });
-            if (i == 0) {
-              setValue(response?.data[i]?.name);
-              setCityId(response?.data[i]?.id);
-            }
+            // if (i == 0) {
+            //   setValue(response?.data[i]?.name);
+            //   setCityId(response?.data[i]?.id);
+            // }
           }
           setCities(temp);
         }
@@ -116,6 +116,23 @@ const VillageScreen = props => {
           setMember([]);
         },
       );
+    }else{
+      getVillageMembers(
+       '',
+        response => {
+          printLog('getVillageMembers', JSON.stringify(response?.data));
+          if (response?.status) {
+            setMember(response?.data);
+          } else {
+            setMember([]);
+          }
+        },
+        error => {
+          printLog('getVillageMembers', error);
+          setMember([]);
+        },
+      );
+
     }
   }, [cityId]);
 
@@ -302,14 +319,15 @@ const VillageScreen = props => {
                   style={{
                     flex: 1,
                     alignItems: 'center',
-                    paddingHorizontal: 10,
+                    alignSelf: 'center',
                     paddingTop: 15,
+                    width: '100%',
                   }}>
-                  <ListMember styles={{height: 25}} />
-                  <ListMember styles={{height: 25}} />
-                  <ListMember styles={{height: 25}} />
-                  <ListMember styles={{height: 25}} />
-                  <ListMember styles={{height: 25}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
+                  <ListMember styles={{height: 35}} />
                 </View>
               ) : member.length == 0 ? (
                 <Text
@@ -400,7 +418,7 @@ const AboutCell = props => {
         alignItems: 'center',
         height: 30,
         marginTop: 10,
-        elevation:5
+        elevation: 5,
         // borderBottomColor: AppColors.light_grey,
         // borderBottomWidth: 1,
       }}>

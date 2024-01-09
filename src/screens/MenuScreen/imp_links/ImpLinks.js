@@ -78,6 +78,7 @@ export const LinksButton = props => {
         width: '100%',
         marginTop: 10,
         alignItems: 'center',
+        elevation: 5,
         ...props.buttonStyle,
       }}>
       <MainButton
@@ -88,7 +89,8 @@ export const LinksButton = props => {
           borderRadius: 25,
           height: 35,
           justifyContent: 'flex-start',
-          paddingLeft: 30,
+          paddingLeft: 20,
+          ...props?.mainStyle,
         }}
         src={props?.src}
         imgStyle={{position: 'relative', left: 0}}

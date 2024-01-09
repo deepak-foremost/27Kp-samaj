@@ -27,7 +27,12 @@ import {AppFonts} from '../../../utils/AppFonts';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {getSalahkarMember} from '../../../networking/CallApi';
+import {
+  getAboutKarobari,
+  getSalahkarMember,
+  getYearRange,
+} from '../../../networking/CallApi';
+import ZoomImage from '../../../components/ZoomImage';
 
 const members = [
   {
@@ -73,27 +78,122 @@ const AdvicerMember = props => {
   const StatusBarHeight = inset.top;
   const [isLoading, setLoading] = useState(true);
   const status = props?.route?.params.status;
-
+  const [value, setValue] = useState('Select year');
+  const [valueId, setValueId] = useState('');
+  const [range, setRange] = useState([]);
   const [members, setMembers] = useState(null);
+  const rangeid = props?.route?.params?.range;
+  const karobari = props?.route?.params?.karobari;
+  const [items, setItem] = useState();
+  const [open, setOpen] = useState(false);
+
+  const images = [
+    {
+      url: items != null && items?.image,
+      props: {source: items != null && items?.image},
+    },
+  ];
+
+  // useEffect(() => {
+  //   getYearRange(
+  //     response => {
+  //       printLog('getYearRange', JSON.stringify(response));
+  //       if (response?.status) {
+  //         var data = [];
+  //         for (let i = 0; i < response?.data?.length; i++) {
+  //           data.push({
+  //             name: response?.data[i]?.range,
+  //             id: response?.data[i]?.id,
+  //           });
+  //           if (i == 0) {
+  //             setValue(response?.data[i]?.range);
+  //             setValueId(response?.data[i]?.id);
+  //           }
+  //         }
+
+  //         setRange(data);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('getYearRange', error);
+  //     },
+  //   );
+  // }, []);
 
   useEffect(() => {
     setLoading(true);
-    getSalahkarMember(
-      response => {
-        printLog('AdvicerMember', JSON.stringify(response));
-        if (!response?.status) {
+    if (status == 'drawer') {
+      getSalahkarMember(
+        response => {
+          printLog('AdvicerMember', JSON.stringify(response));
+          if (!response?.status) {
+            setMembers([]);
+          } else {
+            setMembers(response?.data);
+          }
+          setLoading(false);
+        },
+        error => {
+          setLoading(false);
           setMembers([]);
-        } else {
-          setMembers(response?.data);
-        }
-        setLoading(false);
-      },
-      error => {
-        setLoading(false);
-        setMembers([]);
-      },
-    );
+        },
+      );
+    } else {
+      console.log('karobari', karobari);
+      setMembers(karobari);
+      // console.warn(rangeid);
+      // getYearRange(
+      //   response => {
+      //     printLog('getYearRange', JSON.stringify(response));
+      //     if (response?.status) {
+      //       var data = [];
+      //       for (let i = 0; i < response?.data?.length; i++) {
+      //         data.push({
+      //           name: response?.data[i]?.range,
+      //           id: response?.data[i]?.id,
+      //         });
+      //         if (i == 0) {
+      //           setValue(response?.data[i]?.range);
+      //           setValueId(response?.data[i]?.id);
+      //         }
+      //       }
+
+      //       setRange(data);
+      //     }
+      //   },
+      //   error => {
+      //     printLog('getYearRange', error);
+      //   },
+      // );
+    }
   }, []);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   if (status != 'drawer') {
+  //     getAboutKarobari(
+  //       `range_id=${valueId}`,
+  //       response => {
+  //         printLog('getAboutUskarobari', JSON.stringify(response));
+  //         if (response?.status) {
+  //           setMembers(response?.data);
+  //           setLoading(false);
+  //         } else {
+  //           setMembers([]);
+  //           setLoading(false);
+  //         }
+  //       },
+  //       error => {
+  //         printLog('getAboutUsMember', error);
+  //         setMembers([]);
+  //         setLoading(false);
+  //       },
+  //     );
+  //   } else {
+  //     console.log('karobari', karobari);
+  //     setMembers(karobari);
+  //   }
+  // }, [valueId]);
 
   return (
     <View
@@ -111,7 +211,11 @@ const AdvicerMember = props => {
         <ScreenToolbar
           text={status == 'drawer' ? 'SUPPORT MEMBER' : 'કારોબારી સભ્યશ્રી'}
         />
-
+        <ZoomImage
+          visible={open}
+          images={images}
+          dismiss={() => setOpen(false)}
+        />
         <View
           style={{
             // marginTop: '5%',
@@ -151,7 +255,7 @@ const AdvicerMember = props => {
           /> */}
 
           {isLoading && members == null ? (
-            <View style={{marginTop: 15, paddingHorizontal: 15}}>
+            <View style={{marginTop: 15, width: '95%', alignItems: 'center'}}>
               <ListMember />
               <ListMember />
               <ListMember />
@@ -183,12 +287,19 @@ const AdvicerMember = props => {
               style={{width: '100%'}}
               data={members}
               renderItem={({item, index}) => (
-                <MemberCell item={item} index={index} status={status} />
+                <MemberCell
+                  item={item}
+                  index={index}
+                  status={status}
+                  imgPress={() => {
+                    setItem(item);
+                    setOpen(item?.image == '' ? false : true);
+                  }}
+                />
               )}
             />
           )}
         </View>
-
         {/* <FooterTextCell title={`સમાજ ના હીત માં રહેવુ મારો અધિકાર છે`} /> */}
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
@@ -285,7 +396,7 @@ export const MemberCell = props => {
       <View
         style={{
           flexDirection: 'row',
-          width: '30%',
+          width: '33%',
           // marginLeft: 10,
           alignItems: 'center',
         }}>
@@ -325,14 +436,16 @@ export const MemberCell = props => {
           </View>
         ) : null}
       </View>
-      <View
+      <TouchableOpacity
+        activeOpacity={1}
         style={{
-          width: '10%',
+          width: '7%',
           justifyContent: 'center',
           alignItems: 'center',
           marginLeft: 10,
           paddingBottom: 2.5,
-        }}>
+        }}
+        onPress={props?.imgPress}>
         {props?.item ? (
           <Image
             style={{
@@ -340,9 +453,15 @@ export const MemberCell = props => {
               width: 15,
               // borderColor: 'black',
               // borderWidth: 1,
-              // borderRadius: 10,
+              borderRadius: 10,
+              backgroundColor: '#F2F2F2',
+              // resizeMode:'contain'
             }}
-            source={require('../../../assets/images/small_man_image.png')}
+            source={
+              props?.item?.image == ''
+                ? AppImages.MEMBER_IMAGE
+                : {uri: props?.item?.image}
+            }
           />
         ) : (
           <Text
@@ -353,7 +472,7 @@ export const MemberCell = props => {
             ફોટો
           </Text>
         )}
-      </View>
+      </TouchableOpacity>
 
       {/* <Text
         style={[

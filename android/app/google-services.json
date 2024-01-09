@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "532160654869",
+    "project_id": "kpsamajunjha",
+    "storage_bucket": "kpsamajunjha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532160654869:android:15a21c34055bacace8e81c",
+        "android_client_info": {
+          "package_name": "com.kp_samaj_unjha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQOMWnPWKRF898-d27s9YM2LDWsmiQOTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

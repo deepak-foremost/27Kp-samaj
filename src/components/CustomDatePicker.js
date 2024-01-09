@@ -79,6 +79,7 @@ export const CustomDatePicker = props => {
             date={date}
             theme="light"
             onDateChange={text => setDate(text)}
+            maximumDate={new Date()}
             // customStyles={datepickerCustomStyles}
             // maximumDate={new Date()}
           />

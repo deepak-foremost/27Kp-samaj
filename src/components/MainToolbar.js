@@ -54,7 +54,7 @@ const MainToolbar = props => {
             fontSize: 16,
             color: '#fff',
             fontFamily: AppFonts.semiBold,
-            paddingTop:2.5,
+            paddingTop: 2.5,
             ...props.txtStyle,
           }}>
           {props?.text}
@@ -63,7 +63,7 @@ const MainToolbar = props => {
 
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => Linking.openURL(`tel:${+919955885522}`)}
+        // onPress={() => Linking.openURL(`tel:${props?.phone}`)}
         style={{
           // position: 'absolute',
           // right: 10,
@@ -76,8 +76,13 @@ const MainToolbar = props => {
         /> */}
 
         <Text
-          style={{fontSize: 13, fontFamily: AppFonts.semiBold, color: '#fff',paddingTop:2.5}}>
-          +919955885522
+          style={{
+            fontSize: 13,
+            fontFamily: AppFonts.semiBold,
+            color: '#fff',
+            paddingTop: 2.5,
+          }}>
+          {props?.phone}
         </Text>
       </TouchableOpacity>
 

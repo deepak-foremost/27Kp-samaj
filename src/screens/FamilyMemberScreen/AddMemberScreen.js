@@ -43,6 +43,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getCities, getRelation} from '../../networking/CallApi';
 import {Api} from '../../networking/Api';
 import {showMessage} from 'react-native-flash-message';
+import axios from 'axios';
 
 const AddMemberScreen = props => {
   const inset = useSafeAreaInsets();
@@ -53,7 +54,6 @@ const AddMemberScreen = props => {
 
   const [cities, setCities] = useState([]);
   const [relationships, setRelations] = useState([]);
-
   const [city, setCity] = useState(null);
   const [familyId, setFamilyId] = useState(user?.family_id);
   const [name, setName] = useState('');
@@ -79,7 +79,7 @@ const AddMemberScreen = props => {
   const [jeevan_sahay_nubmer, Setjeevan_sahay_nubmer] = useState('');
   const [boomi_nubmer, setBoomi_nubmer] = useState('');
   const [image, setImage] = useState('');
-  const [age, setAge] = useState(null);
+  const [age, setAge] = useState('Select જન્મ તારીખ');
   const [dob, setDOB] = useState(null);
   const [openDatePicker, setDatePicker] = useState(false);
   var payload = new FormData();
@@ -90,6 +90,11 @@ const AddMemberScreen = props => {
   const [foriegn_country_code, setForeignCountryCode] = useState('+91');
   const [foriegn_number, setForeignNumber] = useState('');
   const [foreign_country_name, setForeignCountry] = useState('');
+  const [imageOne, setOne] = useState();
+  const [imageTwo, setTwo] = useState();
+  const [imageThree, setThree] = useState();
+
+  const [imageList, setImageList] = useState([]);
 
   useEffect(() => {
     getString(AsyncStorageConst.user, res => {
@@ -137,6 +142,18 @@ const AddMemberScreen = props => {
     );
   }, []);
 
+  const imageLinkToParam = imageLink => {
+    let filename = '';
+    let filePath = '';
+    filePath =
+      Platform.OS == 'android' ? imageLink : imageLink.replace('file://', '');
+    filename = imageLink
+      .substring(imageLink.lastIndexOf('/') + 1, imageLink.length)
+      .replaceAll('%20', '_');
+    printLog('imageLinkToParam ::::: ', filename);
+    return {uri: filePath, name: filename, type: 'image/jpg'};
+  };
+
   const getMyImage = first => {
     ImagePicker.launchImageLibrary(
       {
@@ -159,13 +176,8 @@ const AddMemberScreen = props => {
             setVisitingOne(response?.assets[0]);
           } else {
             setVisitingTwo(response?.assets[0]);
+            console.log('imageList', JSON.stringify(imageList));
           }
-          // if (visiting != '') {
-
-          //   setVisiting('')
-          // } else {
-
-          // }
         }
       },
     );
@@ -174,7 +186,7 @@ const AddMemberScreen = props => {
   useEffect(() => {
     // console.log('detail', memberItem);
     if (memberItem != undefined && memberItem != null) {
-      console.log('phone', memberItem?.phone);
+      // console.log('phone', memberItem?.phone);
       setCity(memberItem?.city);
       setFamilyMember(memberItem?.name);
       setGender(memberItem?.gender);
@@ -190,7 +202,12 @@ const AddMemberScreen = props => {
       setMosal(memberItem?.mosal);
       setHobby(memberItem?.shakh);
       setEmail(memberItem?.email);
-      setImage(memberItem?.image);
+      setImage(memberItem?.images[0]?.image);
+      setVisitingOne(memberItem?.images[1]?.image);
+      setVisitingTwo(memberItem?.images[2]?.image);
+      // setOne(memberItem?.images[0]?.image);
+      // setTwo(memberItem?.images[1]?.image);
+      // setThree(memberItem?.images[2]?.image);
       setBlood(memberItem?.blood_group);
       setDOB(new Date(memberItem?.dob));
       setRelation(memberItem?.family_main_member_with_relation);
@@ -200,8 +217,7 @@ const AddMemberScreen = props => {
       setsasru(memberItem?.sasru);
       setBoomi_nubmer(memberItem?.boomi_nubmer);
     }
-  }, []);
-
+  }, [familyId, setFamilyId]);
   const [isAdding, setAdding] = useState(false);
 
   // useEffect(() => {
@@ -211,82 +227,274 @@ const AddMemberScreen = props => {
   // }, [cities, setCities]);
 
   const addMembers = async () => {
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-
-    if (memberItem != undefined) {
-      payload.append('id', memberItem?.id);
-    }
-    payload.append('name', familyMember);
-    payload.append('email', email);
-    payload.append('gender', gender);
-    payload.append('city', city);
-    payload.append('height', height);
-    payload.append('weight', weigth);
-    payload.append('age', age);
-    payload.append('blood_group', blood);
-    payload.append('family_main_member_with_relation', relation);
-    payload.append('marital_status', status);
-    payload.append('study', study);
-    payload.append('business', business);
-    payload.append('business_address', businessAddress);
-    payload.append('current_address', homeAddress);
-    payload.append('mosal', mosal);
-    payload.append('shakh', hobby);
-    payload.append('country_code', country_code);
-    payload.append('phone', phone);
-    payload.append('foreign_country_name', foreign_country_name);
-    payload.append('jeevan_sahay_nubmer', jeevan_sahay_nubmer);
-    payload.append('sasru', sasru);
-    payload.append('boomi_nubmer', boomi_nubmer);
-    payload.append('dob', moment(dob).format('YYYY-MM-DD'));
-    if (image?.uri != undefined) {
-      payload.append('image', {
-        uri:
-          Platform.OS === 'android'
-            ? image?.uri
-            : image?.uri.replace('file://', ''),
-        name: image?.fileName,
-        type: image?.type,
-      });
-    }
-    printLog(
-      'PARAMS',
-      JSON.stringify(payload) +
-        ' ' +
-        (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-    );
     setLoading(true);
-    fetch(
-      memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-          Authorization:
-            'Bearer ' +
-            (token?.token == undefined
-              ? JSON.parse(token)?.token
-              : token?.token),
+    var list = [];
+    if (image?.uri != undefined) {
+      list?.push(image);
+    }
+
+    if (visitingOne?.uri != undefined) {
+      list?.push(visitingOne);
+    }
+
+    if (VisitingTwo?.uri != undefined) {
+      list?.push(VisitingTwo);
+    }
+
+    var uploadImageList = {};
+    list?.map((item, index) => {
+      uploadImageList = {
+        ...uploadImageList,
+        [`imagemultiple[${index}]`]: {
+          uri:
+            Platform.OS === 'android'
+              ? item?.uri
+              : item?.uri?.replace('file://', ''),
+          name: item?.fileName,
+          type: item?.type,
         },
-        body: payload,
+      };
+    });
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    let imageParams = {};
+    var imageObject = {};
+    // if (image?.uri != undefined) {
+
+    //   const imageList = [
+    //     {
+    //       uri:
+    //         Platform.OS === 'android'
+    //           ? image?.uri
+    //           : image?.uri.replace('file://', ''),
+    //       name: image?.fileName,
+    //       type: image?.type,
+    //     },
+    //     {
+    //       uri:
+    //         Platform.OS === 'android'
+    //           ? visitingOne?.uri
+    //           : visitingOne?.uri.replace('file://', ''),
+    //       name: visitingOne?.fileName,
+    //       type: visitingOne?.type,
+    //     },
+    //     {
+    //       uri:
+    //         Platform.OS === 'android'
+    //           ? VisitingTwo?.uri
+    //           : VisitingTwo?.uri.replace('file://', ''),
+    //       name: VisitingTwo?.fileName,
+    //       type: VisitingTwo?.type,
+    //     },
+    //   ];
+
+    //   imageList.map((item, index) => {
+    //     let tamp = imageLinkToParam(item.uri);
+    //     imageObject = {...imageObject, [`${index}`]: tamp};
+    //     imageParams = {...imageParams, ...imageObject};
+    //   });
+    // }
+
+    const params =
+      memberItem != undefined
+        ? {
+            id: memberItem?.id,
+            name: familyMember,
+            email: email,
+            gender: gender,
+            city: city,
+            height: height,
+            weight: weigth,
+            age: age,
+            blood_group: blood,
+            family_main_member_with_relation: relation,
+            marital_status: status,
+            study: study,
+            business: business,
+            business_address: businessAddress,
+            current_address: homeAddress,
+            mosal: mosal,
+            shakh: hobby,
+            country_code: country_code,
+            phone: phone,
+            foreign_country_name: foreign_country_name,
+            jeevan_sahay_nubmer: jeevan_sahay_nubmer,
+            sasru: sasru,
+            boomi_nubmer: boomi_nubmer,
+            dob: moment(dob).format('YYYY-MM-DD'),
+            image_id_one: imageOne,
+            image_id_two: imageTwo,
+            image_id_three: imageThree,
+            ...uploadImageList,
+          }
+        : {
+            name: familyMember,
+            email: email,
+            gender: gender,
+            city: city,
+            height: height,
+            weight: weigth,
+            age: age,
+            blood_group: blood,
+            family_main_member_with_relation: relation,
+            marital_status: status,
+            study: study,
+            business: business,
+            business_address: businessAddress,
+            current_address: homeAddress,
+            mosal: mosal,
+            shakh: hobby,
+            country_code: country_code,
+            phone: phone,
+            foreign_country_name: foreign_country_name,
+            jeevan_sahay_nubmer: jeevan_sahay_nubmer,
+            sasru: sasru,
+            boomi_nubmer: boomi_nubmer,
+            dob: moment(dob).format('YYYY-MM-DD'),
+            ...uploadImageList,
+          };
+
+    // if (memberItem != undefined) {
+    //   payload.append('id', memberItem?.id);
+    // }
+    // payload.append('name', familyMember);
+    // payload.append('email', email);
+    // payload.append('gender', gender);
+    // payload.append('city', city);
+    // payload.append('height', height);
+    // payload.append('weight', weigth);
+    // payload.append('age', age);
+    // payload.append('blood_group', blood);
+    // payload.append('family_main_member_with_relation', relation);
+    // payload.append('marital_status', status);
+    // payload.append('study', study);
+    // payload.append('business', business);
+    // payload.append('business_address', businessAddress);
+    // payload.append('current_address', homeAddress);
+    // payload.append('mosal', mosal);
+    // payload.append('shakh', hobby);
+    // payload.append('country_code', country_code);
+    // payload.append('phone', phone);
+    // payload.append('foreign_country_name', foreign_country_name);
+    // payload.append('jeevan_sahay_nubmer', jeevan_sahay_nubmer);
+    // payload.append('sasru', sasru);
+    // payload.append('boomi_nubmer', boomi_nubmer);
+    // payload.append('dob', moment(dob).format('YYYY-MM-DD'));
+
+    // // payload.append(`imagemultiple`,imageList)
+    // imageList.forEach((image, index) => {
+    //   // const uriParts = image.uri.split('.');
+    //   // const fileType = uriParts[uriParts.length - 1];
+    //   payload.append(`imagemultiple[${image}]`, {
+    //     uri: image.uri,
+    //     type: image.type, // Adjust the type based on your API requirements
+    //     // name: `image${index + 1}.jpg`,
+    //     name: image.fileName,
+    //   });
+    // });
+    // // printLog('PARAMS', JSON.stringify(payload));
+    // printLog(
+    //   'params data---->',
+    //   token?.token == undefined ? JSON.parse(token)?.token : token?.token,
+    // );
+    // return;
+
+    const API_BASE_URL =
+      memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER;
+    const AuthToken =
+      token?.token == undefined ? JSON.parse(token)?.token : token?.token;
+    console.log(`PARAMS:::::::`, JSON.stringify(params));
+    let formData = new FormData();
+    var myparams = Object.keys(params);
+    myparams?.map(item => {
+      formData.append(item, params[item]);
+    });
+
+    setLoading(true);
+    axios({
+      method: 'POST',
+      url: API_BASE_URL,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${AuthToken}`,
+        Accept: 'Application/json',
       },
-    )
-      .then(response => response.json())
-      .then(responseJson => {
-        // return responseJson
-        ShowMessage(responseJson?.message);
-        printLog('responseJson', JSON.stringify(responseJson));
-        if (responseJson?.status) {
-          RootNavigation?.goBack();
-        }
+      data: formData, // Use 'data' property for POST requests
+    })
+      .then(response => {
         setLoading(false);
+        if (response?.data?.status) {
+          ShowMessage(response?.data?.message);
+          RootNavigation?.goBack();
+          printLog(`callApi`, `Success : ${JSON.stringify(response)}`);
+        } else {
+          ShowMessage(response?.data?.message);
+        }
+        // Handle the success case here
       })
       .catch(error => {
-        printLog('responseJson Error', JSON.stringify(error));
-        ShowMessage(error);
         setLoading(false);
+        printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
+        ShowMessage(error?.message);
       });
+
+    //   fetch(
+    //     memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER,
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         Accept: 'application/json',
+    //         'Content-Type': 'multipart/form-data',
+    //         Authorization:
+    //           'Bearer ' +
+    //           (token?.token == undefined
+    //             ? JSON.parse(token)?.token
+    //             : token?.token),
+    //       },
+    //       body: payload,
+    //     },
+    //   )
+    //     .then(response => response.json())
+    //     .then(responseJson => {
+    //       // return responseJson
+    //       ShowMessage(responseJson?.message);
+    //       printLog('responseJson1,2,3--', JSON.stringify(responseJson));
+    //       if (responseJson?.status) {
+    //         RootNavigation?.goBack();
+    //       }
+    //       setLoading(false);
+    //     })
+    //     .catch(error => {
+    //       printLog('responseJson Error', JSON.stringify(error));
+    //       ShowMessage(error);
+    //       setLoading(false);
+    //     });
+    // };
+
+    // const imageLinkToParam = imageLink => {
+    //   let filename = '';
+    //   let filePath = '';
+    //   filePath =
+    //     Platform.OS == 'android' ? imageLink : imageLink.replace('file://', '');
+    //   filename = imageLink
+    //     .substring(imageLink.lastIndexOf('/') + 1, imageLink.length)
+    //     .replaceAll('%20', '_');
+    //   printLog('imageLinkToParam ::::: ', filename);
+    //   return {uri: filePath, name: filename, type: 'image/jpeg'};
+  };
+
+  const calculateAge = birthdate => {
+    const currentDate = new Date();
+    const birthdateObj = new Date(birthdate);
+    const age = currentDate.getFullYear() - birthdateObj.getFullYear();
+    // Check if the birthday has occurred this year
+    if (
+      currentDate.getMonth() < birthdateObj.getMonth() ||
+      (currentDate.getMonth() === birthdateObj.getMonth() &&
+        currentDate.getDate() < birthdateObj.getDate())
+    ) {
+      return age - 1;
+    }
+    return age;
   };
   // React.useLayoutEffect(() => {
 
@@ -347,7 +555,7 @@ const AddMemberScreen = props => {
 
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps='handled'
+            keyboardShouldPersistTaps="handled"
             extraScrollHeight={40}>
             {/* Form */}
             <View
@@ -449,7 +657,10 @@ const AddMemberScreen = props => {
                   <DateSelection
                     text={'જન્મ તારીખ:'}
                     title={'જન્મ તારીખ'}
-                    onChangeDob={i => setDOB(i)}
+                    onChangeDob={i => {
+                      setAge(JSON.stringify(calculateAge(i)));
+                      setDOB(i);
+                    }}
                     value={dob}
                     placeholder={
                       dob == null
@@ -460,8 +671,9 @@ const AddMemberScreen = props => {
                 </View>
                 <View style={{width: '49%'}}>
                   <HorizontalTextInput
+                    diseble={false}
                     label={`ઉંમર`}
-                    placeholder={``}
+                    placeholder={'Select જન્મ તારીખ'}
                     defaultText={age}
                     type="phone-pad"
                     onChangeText={i => setAge(i)}
@@ -650,6 +862,7 @@ const AddMemberScreen = props => {
               />
 
               <MyMobileNumber
+                contact={true}
                 label={`મોબાઇલ નંબર`}
                 defaultText={phone}
                 countryCode={country_code}
@@ -678,6 +891,7 @@ const AddMemberScreen = props => {
                 }}
               />
               <MyMobileNumber
+                contact={true}
                 label={`ફોરેન Number : `}
                 countryCode={foriegn_country_code}
                 phone={foriegn_number}
@@ -802,9 +1016,9 @@ const AddMemberScreen = props => {
                   </Text>
                   <AppButton
                     buttonPress={() => {
-                      if (image == '') {
+                      if (image == undefined) {
                         getMyImage(1);
-                      } else if (visitingOne == '') {
+                      } else if (visitingOne == undefined) {
                         getMyImage(2);
                       } else {
                         getMyImage(3);
@@ -866,21 +1080,28 @@ const AddMemberScreen = props => {
                       width: '30%',
                       height: '100%',
                     }}
-                    onPress={() => (image != '' ? getMyImage(1) : null)}>
+                    onPress={() => (image != undefined ? getMyImage(1) : null)}>
                     <Image
-                      style={{width: '100%', height: 80, borderRadius: 5}}
+                      style={{
+                        width: '100%',
+                        height: 80,
+                        borderRadius: 5,
+                        backgroundColor: '#F2F2F2',
+                      }}
                       source={
-                        image == ''
-                          ? require('../../assets/images/visiting_card.png')
+                        image == undefined
+                          ? AppImages.MEMBER_IMAGE
                           : {
                               uri: image?.uri == undefined ? image : image?.uri,
                             }
                       }
                     />
-                    <Image
-                      style={{position: 'absolute', right: 5, top: 5}}
-                      source={require('../../assets/images/cancel_icon.png')}
-                    />
+                    {image != undefined && (
+                      <Image
+                        style={{position: 'absolute', right: 5, top: 5}}
+                        source={require('../../assets/images/cancel_icon.png')}
+                      />
+                    )}
                   </TouchableOpacity>
                   {/* <TouchableOpacity
                     style={{width: '30%'}}
@@ -923,12 +1144,19 @@ const AddMemberScreen = props => {
                       width: '30%',
                       height: '100%',
                     }}
-                    onPress={() => (visitingOne != '' ? getMyImage(2) : null)}>
+                    onPress={() =>
+                      visitingOne != undefined ? getMyImage(2) : null
+                    }>
                     <Image
-                      style={{width: '100%', height: 80, borderRadius: 5}}
+                      style={{
+                        width: '100%',
+                        height: 80,
+                        borderRadius: 5,
+                        backgroundColor: '#F2F2F2',
+                      }}
                       source={
-                        visitingOne == ''
-                          ? require('../../assets/images/visiting_card.png')
+                        visitingOne == undefined
+                          ? AppImages.MEMBER_IMAGE
                           : {
                               uri:
                                 visitingOne?.uri == undefined
@@ -937,10 +1165,12 @@ const AddMemberScreen = props => {
                             }
                       }
                     />
-                    <Image
-                      style={{position: 'absolute', right: 5, top: 5}}
-                      source={require('../../assets/images/cancel_icon.png')}
-                    />
+                    {visitingOne != undefined && (
+                      <Image
+                        style={{position: 'absolute', right: 5, top: 5}}
+                        source={require('../../assets/images/cancel_icon.png')}
+                      />
+                    )}
                   </TouchableOpacity>
                   {/* <TouchableOpacity
                     style={{width: '30%'}}
@@ -980,12 +1210,19 @@ const AddMemberScreen = props => {
                       width: '30%',
                       height: '100%',
                     }}
-                    onPress={() => (VisitingTwo != '' ? getMyImage(3) : null)}>
+                    onPress={() =>
+                      VisitingTwo != undefined ? getMyImage(3) : null
+                    }>
                     <Image
-                      style={{width: '100%', height: 80, borderRadius: 5}}
+                      style={{
+                        width: '100%',
+                        height: 80,
+                        borderRadius: 5,
+                        backgroundColor: '#F2F2F2',
+                      }}
                       source={
-                        VisitingTwo == ''
-                          ? require('../../assets/images/visiting_card.png')
+                        VisitingTwo == undefined
+                          ? AppImages.MEMBER_IMAGE
                           : {
                               uri:
                                 VisitingTwo?.uri == undefined
@@ -994,10 +1231,12 @@ const AddMemberScreen = props => {
                             }
                       }
                     />
-                    <Image
-                      style={{position: 'absolute', right: 5, top: 5}}
-                      source={require('../../assets/images/cancel_icon.png')}
-                    />
+                    {VisitingTwo != undefined && (
+                      <Image
+                        style={{position: 'absolute', right: 5, top: 5}}
+                        source={require('../../assets/images/cancel_icon.png')}
+                      />
+                    )}
                   </TouchableOpacity>
 
                   {/* <TouchableOpacity

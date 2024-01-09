@@ -49,7 +49,7 @@ export const MySelection = props => {
             fontSize: 12,
             flex: 1,
             paddingStart: 5,
-            color:AppColors.DarkText,
+            color: AppColors.DarkText,
             ...props.textStyle,
           }}>
           {props?.value ? props?.value : props?.label}
@@ -388,7 +388,6 @@ export const MyMobileNumber = props => {
         flexDirection: 'row',
         marginTop: 10,
         alignItems: 'center',
-       
       }}>
       <Text
         style={{

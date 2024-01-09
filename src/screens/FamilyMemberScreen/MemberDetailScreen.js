@@ -31,6 +31,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MemberDetailCell} from '../MenuScreen/memberDetail/FamilyDetailScreen';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import ZoomImage from '../../components/ZoomImage';
 
 const member = [
   {
@@ -61,6 +62,7 @@ const MembersDetailScreen = props => {
   // printLog('MembersDetailScreen', JSON.stringify(item));
   const [member, setMember] = useState(item);
   const [isVisible, setVisible] = useState(false);
+  const [imageList, setImageList] = useState();
   // const [images, setImages] = useState([]);
 
   //   useEffect(() => {
@@ -99,12 +101,17 @@ const MembersDetailScreen = props => {
   //   item?.map((item, index) => data?.push({url: item?.image}));
   //   setImages(data);
   // }, []);
-  const images = [
-    {
-      url: item?.image,
-      props: {source: item?.image},
-    },
-  ];
+  // if (item?.image != '') {
+  //   const images = [
+  //     {
+  //       url: item?.image,
+  //       props: {source: item?.image},
+  //     },
+  //   ];
+  // }
+  const images = imageList?.map(item => ({
+    url: item?.image,
+  }));
 
   return (
     <View
@@ -117,7 +124,7 @@ const MembersDetailScreen = props => {
       ]}>
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={item?.name} />
-        <Modal visible={isVisible} transparent>
+        {/* <Modal visible={isVisible} transparent>
           <ImageViewer
             imageUrls={images}
             // index={currentPosition}
@@ -153,7 +160,12 @@ const MembersDetailScreen = props => {
               </View>
             )}
           />
-        </Modal>
+        </Modal> */}
+        <ZoomImage
+          visible={isVisible}
+          images={images}
+          dismiss={() => setVisible(false)}
+        />
 
         {/* <AppDrawerHeader
         family_id
@@ -195,6 +207,7 @@ const MembersDetailScreen = props => {
                 backgroundColor: AppColors.BackgroundColor,
                 alignItems: 'center',
                 paddingHorizontal: 10,
+                width: '95%',
                 // paddingTop: 15,
               }}>
               <ListMember styles={{height: 45}} />
@@ -211,7 +224,10 @@ const MembersDetailScreen = props => {
                 item={item}
                 notShow={true}
                 styles={{paddingVertical: -15}}
-                imgPress={() => setVisible(true)}
+                imgPress={() => {
+                  setImageList(item?.images);
+                  setVisible(true);
+                }}
               />
             </ScrollView>
           )}

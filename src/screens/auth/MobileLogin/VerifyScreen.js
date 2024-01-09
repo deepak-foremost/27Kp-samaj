@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppStyles} from '../../../utils/AppStyles';
 import LogInToolbar from '../../../components/LogInToolbar';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -19,13 +19,64 @@ import AppButton from '../../../components/AppButton';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import OtpTextInput from '../../../components/OtpTextInput';
-import {AppConstValue} from '../../../utils/AppConstValue';
+import {
+  AppConstValue,
+  ShowMessage,
+  matchAuthCode,
+  printLog,
+  sendFirebasePhoneOtp,
+} from '../../../utils/AppConstValue';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  AsyncStorageConst,
+  getString,
+  setString,
+} from '../../../utils/AsyncStorageHelper';
+import {register} from '../../../networking/CallApi';
+import LoaderView from '../../../utils/LoaderView';
+import {showMessage} from 'react-native-flash-message';
 
-const VerifyScreen = ({route}) => {
-  const screen = route.params.screen;
+const VerifyScreen = props => {
+  const screen = props?.route.params.screen;
+  const forget = props?.route.params.forget;
+  // const params=props?.route.params;
+  const phone = props?.route?.params?.phone;
+  const country_code = props?.route?.params?.country;
+  // const firstname=props?.route?.params?.country;
+  // const codeConfirmation = props?.route?.params?.codeConformation;
+  const name = props?.route?.params?.name;
+  const city_id = props?.route?.params?.city_id;
+  const password = props?.route?.params?.password;
+  const city = props?.route?.params?.city;
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
+  var Userdata = props?.route?.params;
+
+  const [isLoading, setLoading] = useState(false);
+  const [resendCode, setResendCode] = useState('Resend Your Code');
+  const [codeConfirmation, setConformation] = useState(
+    props?.route?.params?.codeConformation,
+  );
+  const [otp, setOtp] = useState('');
+  const [timer, setTimer] = useState(60);
+  const [resendLoad, setLoad] = useState(false);
+
+  const formatTime = seconds => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 61;
+    return `${remainingSeconds}`;
+  };
+
+  useEffect(() => {
+    let interval;
+
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   return (
     <View
@@ -115,6 +166,7 @@ const VerifyScreen = ({route}) => {
                 ]}>
                 <OtpTextInput
                   text={'Your Code'}
+                  codeFilled={i => setOtp(i)}
                   textStyle={{
                     color:
                       screen == 'User Signin'
@@ -134,10 +186,17 @@ const VerifyScreen = ({route}) => {
                   }}>
                   <TouchableOpacity
                     activeOpacity={AppConstValue.ButtonOpacity}
-                    // onPress={() =>
-                    //   RootNavigation.navigate(AppScreens.MOBILE_FORGOT_SCREEN)
-                    // }
-                  >
+                    onPress={() => {
+                      setResendCode('Code has been sent');
+                      sendFirebasePhoneOtp(
+                        `${country_code}${phone}`,
+                        Confirmation => {
+                          setLoad(false);
+                          console.log('co', Confirmation);
+                          setConformation(Confirmation);
+                        },
+                      );
+                    }}>
                     <Text
                       style={{
                         fontFamily: AppFonts.semiBold,
@@ -147,26 +206,182 @@ const VerifyScreen = ({route}) => {
                             ? 'black'
                             : AppColors.BackgroundSecondColor,
                       }}>
-                      Resend Your Code
+                      {resendCode}
                     </Text>
                   </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      color: AppColors.LightText,
-                      fontFamily: AppFonts.medium,
-                    }}>
-                    Expired after 23s
-                  </Text>
+                  {timer > 0 ? (
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        color: AppColors.LightText,
+                        fontFamily: AppFonts.medium,
+                      }}>
+                      {'Expired after ' + formatTime(timer) + 's'}
+                    </Text>
+                  ) : (
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        color: AppColors.LightText,
+                        fontFamily: AppFonts.medium,
+                      }}>
+                      Expired
+                    </Text>
+                  )}
                 </View>
-
                 <AppButton
-                  buttonPress={() =>
-                    RootNavigation.navigate(AppScreens.NEW_PASSWORD_SCREEN, {
-                      screen: screen,
-                    })
+                  buttonPress={
+                    () => {
+                      var params = {
+                        country_code: country_code,
+                        phone: phone,
+                        name: name,
+                        city_id: city_id,
+                        password: password,
+                      };
+                      // console.log(
+                      //   'details--->',
+                      //   codeConfirmation,
+                      //   '+',
+                      //   otp,
+                      //   JSON.stringify(params),
+                      // );
+                      setLoading(true);
+                      matchAuthCode(
+                        codeConfirmation,
+                        otp,
+                        onSuccess => {
+                          console.log('verification done', onSuccess);
+                          if (forget == 'no') {
+                            register(
+                              params,
+                              response => {
+                                printLog(
+                                  'register Success',
+                                  JSON.stringify(response),
+                                );
+                                if (!response?.status) {
+                                  ShowMessage(response?.message);
+                                  setLoading(false);
+                                } else {
+                                  // setLoading(false);
+                                  var token = response?.token;
+                                  printLog(typeof token);
+                                  setString(
+                                    AsyncStorageConst.allDetails,
+                                    JSON.stringify(response),
+                                  );
+                                  printLog('signUpToken--', token);
+                                  setString(AsyncStorageConst.token, token);
+                                  setString(
+                                    AsyncStorageConst.screen,
+                                    'User Signin',
+                                  );
+                                  setString(
+                                    AsyncStorageConst.user,
+                                    JSON.stringify(response?.data),
+                                  );
+                                  RootNavigation.forcePush(
+                                    props,
+                                    AppScreens.USER_LOGIN_DETAIL,
+                                    {
+                                      screen: screen,
+                                      phone: phone,
+                                      country_code: country_code,
+                                      return: 'SignUp',
+                                      city: city,
+                                      password: password,
+                                      name: name,
+                                    },
+                                  );
+                                  setLoading(false);
+                                }
+                              },
+                              error => {
+                                printLog('register error', error);
+                                setLoading(false);
+                              },
+                            );
+                          } else {
+                            RootNavigation.navigate(
+                              AppScreens.NEW_PASSWORD_SCREEN,
+                              {
+                                phone: phone,
+                                country_code: country_code,
+                                screen: screen,
+                                forget: forget,
+                              },
+                            );
+                            setLoading(false);
+                          }
+                        },
+                        onError => {
+                          if (
+                            onError.code == 'auth/invalid-verification-code'
+                          ) {
+                            ShowMessage('Invalid-Otp');
+                          } else if (onError == 'auth/session-expired') {
+                            ShowMessage('Session Expired');
+                          } else if (onError.code === 'missing-phone-number') {
+                            ShowMessage('Missing Phone Number.');
+                          } else if (
+                            onError.code === 'auth/invalid-phone-number'
+                          ) {
+                            ShowMessage('Invalid Phone Number.');
+                          } else if (onError.code === 'auth/quota-exceeded') {
+                            ShowMessage(
+                              'SMS quota exceeded.Please try again later.',
+                            );
+                          } else {
+                            ShowMessage(onError);
+                          }
+                          console.log('error', onError.code);
+                          // showMessage('invalid');
+                        },
+
+                        // onError => {
+                        //   {
+                        //     setLoading(false),
+                        //       console.log('onInvalidError', onError);
+                        //     if (
+                        //       onError.code ==
+                        //       'auth / invalid - verification - code'
+                        //     ) {
+                        //       ShowMessage('invalid Otp');
+                        //     } else if (
+                        //       onError.code === 'auth/session-expired'
+                        //     ) {
+                        //       ShowMessage('Session Expired');
+                        //     } else if (
+                        //       onError.code === 'missing-phone-number'
+                        //     ) {
+                        //       ShowMessage('Missing Phone Number.');
+                        //     } else if (
+                        //       onError.code === 'auth/invalid-phone-number'
+                        //     ) {
+                        //       ShowMessage('Invalid Phone Number.');
+                        //     } else if (onError.code === 'auth/quota-exceeded') {
+                        //       ShowMessage(
+                        //         'SMS quota exceeded.Please try again later.',
+                        //       );
+                        //     } else {
+                        //       ShowMessage(onError);
+                        //     }
+                        //   }
+                        // },
+                        loading => {
+                          setLoading(loading);
+                          ShowMessage('invalid otp');
+                        },
+                      );
+                    }
+                    // RootNavigation.navigate(AppScreens.NEW_PASSWORD_SCREEN, {
+                    //   screen: screen,
+                    // })
                   }
                   text={'Confirm'}
+                  loading={isLoading}
+                  color={screen == 'User Signin' ? 'black' : 'white'}
                   textStyle={{
                     color: screen == 'User Signin' ? 'black' : 'white',
                   }}

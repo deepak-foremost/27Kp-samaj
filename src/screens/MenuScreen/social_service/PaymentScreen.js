@@ -59,7 +59,7 @@ const PaymentScreen = ({route}) => {
 
       setOpen(false);
       setDate(moment(selectedDate).format('MM-YYYY'));
-      console.log('date', date);
+      // console.log('date', date);
     },
     [date, open],
   );
@@ -191,6 +191,7 @@ const PaymentScreen = ({route}) => {
 
               <MyMobileNumber
                 // placeholder={'vjbrb'}
+                contact={true}
                 type={'numeric'}
                 label={`Mobile No`}
                 countryCode={code}

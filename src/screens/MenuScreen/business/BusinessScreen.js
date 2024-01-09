@@ -262,9 +262,9 @@ const BusinessScreen = props => {
                     }}>
                     <Text
                       style={{
-                        fontFamily: AppFonts.bold,
-                        color: AppColors.black,
-                        fontSize: 15,
+                        fontFamily: AppFonts.semiBold,
+                        color: AppColors.LightText,
+                        fontSize: 14,
                       }}>
                       No List Found
                     </Text>

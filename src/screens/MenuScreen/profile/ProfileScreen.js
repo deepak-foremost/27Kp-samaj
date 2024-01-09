@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppColors} from '../../../utils/AppColors';
 import ScreenToolbar from '../../../components/ScreenToolbar';
 import {AppStyles} from '../../../utils/AppStyles';
@@ -18,12 +18,27 @@ import {ModalView} from '../business/BusinessListScreen';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const ProfileScreen = () => {
   const [modelOpen, setModelOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
+  const [data, setData] = useState();
   const inset = useSafeAreaInsets();
+  const [screen, setScreen] = useState('');
   const StatusBarHeight = inset.top;
+
+  useEffect(() => {
+    async function check() {
+      let Details = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      setData(JSON.parse(Details)?.data);
+      let token = await AsyncStorage.getItem(AsyncStorageConst.screen);
+      setScreen(token);
+      // console.log('details', JSON.parse(Details)?.data?.phone);
+    }
+    check();
+  }, []);
   return (
     <View
       style={{
@@ -93,18 +108,23 @@ const ProfileScreen = () => {
             </Text>
 
             <ProfileText
-              firstText={'Sign In Using Your Register Mobile Number'}
-              secondText={'9999999999'}
+              firstText={
+                screen == 'User Signin'
+                  ? 'Guest Sign-In'
+                  : 'Sign In Using Your Register Mobile Number'
+              }
+              firstStyle={{fontSize: screen == 'User Signin' ? 13 : 12}}
+              secondText={data?.country_code + ' ' + data?.phone}
               src={AppImages.PHONE_SMALL_ICON}
             />
             <ProfileText
               firstText={'Member Name'}
-              secondText={'પટેલ ધવલ વિષ્ણુભાઇ'}
+              secondText={data?.name}
               src={AppImages.NAME_SMALL_ICON}
             />
             <ProfileText
               firstText={'Village'}
-              secondText={'શંકરપુરા'}
+              secondText={data?.city}
               src={AppImages.LOCATION_ICON}
             />
             <TouchableOpacity
@@ -131,8 +151,9 @@ const ProfileScreen = () => {
         press={() => {
           setModelOpen(false);
           RootNavigation.navigate(AppScreens.NEW_PASSWORD_SCREEN, {
-            screen: 'UserSignIn',
+            screen: 'UserNot',
             return: 'profile',
+            status: true,
           });
         }}
         message={'Do you want to change the Password ?'}

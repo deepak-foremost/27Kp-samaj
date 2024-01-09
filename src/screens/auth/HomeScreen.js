@@ -139,12 +139,17 @@ const HomeScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [deleteLoader, setLoader] = useState(false);
+  const [HeaderPhone, setHeaderPhone] = useState('');
+  
 
   useEffect(() => {
     async function check() {
       let token = await AsyncStorage.getItem(AsyncStorageConst.screen);
       setScreen(token);
-      console.log('details', token);
+      let Details = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      let data = JSON.parse(Details)?.data;
+      setHeaderPhone(data?.country_code + ' ' + data?.phone);
+      // console.log('details', token);
     }
     check();
   }, []);
@@ -154,10 +159,23 @@ const HomeScreen = props => {
     accountLogout(
       onSuccess => {
         printLog('accountLogout', JSON.stringify(onSuccess));
-        flushAllData(
-          success => {},
-          failure => {},
-        );
+        let key = [
+          AsyncStorageConst.allDetails,
+          AsyncStorageConst.token,
+          AsyncStorageConst.cities,
+          AsyncStorageConst.cities,
+          AsyncStorageConst.screen,
+          AsyncStorageConst.user,
+        ];
+        AsyncStorage.multiRemove(key).then(res => {
+          res => {
+            console.log('res', res);
+          };
+        });
+        // flushAllData(
+        //   success => {},
+        //   failure => {},
+        // );
         setLoader(false);
         setModelOpen(false);
         RootNavigation?.forcePush(props, AppScreens.SponserScreen, NaN);
@@ -338,7 +356,7 @@ const HomeScreen = props => {
         visible={isVisible}
         animationType="fade"
         transparent={true}
-        style={{flex: 1,}}
+        style={{flex: 1}}
 
         // style={[
         //   styles.modal,
@@ -520,6 +538,7 @@ const HomeScreen = props => {
           text={'27 KP SAMAJ UNJHA'}
           txtStyle={{fontSize: 13}}
           leftPress={() => setVisible(true)}
+          phone={HeaderPhone}
         />
 
         <ScrollView

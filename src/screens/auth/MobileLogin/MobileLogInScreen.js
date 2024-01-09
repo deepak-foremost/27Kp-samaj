@@ -55,10 +55,62 @@ const MobileLogInScreen = props => {
   const [check, setCheck] = useState(false);
   const {code, setCode} = useState('+91');
   const [isLoading, setLoading] = useState(false);
+  const [status, setStatus] = useState('');
 
-  useEffect(async () => {
-    data = await AsyncStorage.getItem('flag');
+  useEffect(() => {
+    async function check() {
+      let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      // console.log('Status', JSON.parse(token)?.status);
+      if (screen != 'User Signin') {
+        if (JSON.parse(token)?.status) {
+          setStatus('second');
+
+          // var status = token?.status;
+          // console.log('check--', status);
+        } else {
+          setStatus('first');
+          // console.warn('first');
+        }
+      } else {
+      }
+      let rember = await AsyncStorage.getItem(screen);
+      // console.log('rember', JSON.parse(rember).number);
+      if (JSON.parse(rember)?.screen == screen) {
+        setMobile(JSON.parse(rember).number);
+        setPassword(JSON.parse(rember).password);
+        setCheck(true);
+      }
+    }
+    check();
   }, []);
+
+  // useEffect(() => {
+  //   getString(AsyncStorageConst.first, response => {
+  //     console.log('first', response);
+  //     if (response == '') {
+  //       console.warn('empty');
+  //       setStatus('first');
+  //     } else {
+  //       console.warn('fill');
+  //     }
+  //   });
+  // }, []);
+
+  // useEffect(async () => {
+  //   data = await AsyncStorage.getItem('flag');
+  // }, []);
+
+  // useEffect(() => {
+  //   getString('status', response => {
+  //     if (response == '' && screen != 'User Signin') {
+  //       console.warn('set');
+  //       setStatus('first');
+  //     } else {
+  //       console.warn('remove');
+  //       setStatus('second');
+  //     }
+  //   });
+  // }, []);
 
   const storeToken = () => {
     if (data == null && screen != 'User Signin') {
@@ -230,6 +282,7 @@ const MobileLogInScreen = props => {
                 open={() => setVisible(true)}
                 text={'Mobile Number'}
                 placeholder={'Mobile Number'}
+                defaultText={mobile}
                 onChangeText={i => setMobile(i)}
                 icon={{
                   tintColor:
@@ -255,6 +308,7 @@ const MobileLogInScreen = props => {
                 text={'Password'}
                 placeholder={'Password'}
                 onChangeText={i => setPassword(i)}
+                defaultText={password}
               />
 
               <View
@@ -278,7 +332,9 @@ const MobileLogInScreen = props => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
-                  onPress={() => setCheck(!check)}>
+                  onPress={() => {
+                    setCheck(!check);
+                  }}>
                   {check && (
                     <Text
                       style={{
@@ -368,10 +424,10 @@ const MobileLogInScreen = props => {
                       {
                         login_with:
                           screen == 'User Signin' ? 'phone' : 'FamilyId',
-                        family_id: screen == 'User Signin' ? '' : mobile,
+                        phone: mobile,
                         password: password,
                         country_code: country,
-                        phone: screen == 'User Signin' ? mobile : '',
+                        // phone: screen == 'User Signin' ? mobile : '',
                         // phone: defaultMenuPos == 1 ? phone : '',
                         // country_code:
                         //   defaultMenuPos == 1 ? countryCode : countryCode,
@@ -382,26 +438,79 @@ const MobileLogInScreen = props => {
                           showMessage(response?.message);
                         } else {
                           // setLoading(false);
+                          console.log(
+                            'checxk',
+                            JSON.stringify(response?.data?.is_first_attempt),
+                          );
                           var token = response?.token;
-                          printLog('token', JSON.stringify(response));
-                          printLog(typeof token);
-                          setString(
-                            AsyncStorageConst.allDetails,
-                            JSON.stringify(response),
-                          );
-                          setString(AsyncStorageConst.token, token);
-                          setString(
-                            AsyncStorageConst.user,
-                            JSON.stringify(response?.data),
-                          );
-                          setString(AsyncStorageConst.screen, screen);
-                          setLoading(false);
-                          RootNavigation.forcePush(
-                            props,
-                            AppScreens.HOME_SCREEN,
-                            '',
-                          );
+                          if (
+                            JSON.stringify(response?.data?.is_first_attempt) ==
+                            1
+                          ) {
+                            printLog('token', JSON.stringify(response));
+                            printLog(typeof token);
+                            setString(
+                              AsyncStorageConst.allDetails,
+                              JSON.stringify(response),
+                            );
+                            setString(AsyncStorageConst.token, token);
+                            setString(
+                              AsyncStorageConst.user,
+                              JSON.stringify(response?.data),
+                            );
+                            setString(AsyncStorageConst.screen, screen);
+
+                            console.log(
+                              AsyncStorageConst.user,
+                              JSON.stringify(response?.data),
+                            );
+                            setString(AsyncStorageConst.status, 'second');
+                            if (check) {
+                              setString(
+                                screen,
+                                JSON.stringify({
+                                  number: mobile,
+                                  password: password,
+                                  screen: screen,
+                                  check: true,
+                                }),
+                              );
+                            }
+                            setLoading(false);
+                            RootNavigation.forcePush(
+                              props,
+                              AppScreens.HOME_SCREEN,
+                              '',
+                            );
+                          } else {
+                            printLog('token', JSON.stringify(response));
+                            printLog(typeof token);
+                            setString(
+                              AsyncStorageConst.allDetails,
+                              JSON.stringify(response),
+                            );
+                            setString(AsyncStorageConst.token, token);
+                            setString(
+                              AsyncStorageConst.user,
+                              JSON.stringify(response?.data),
+                            );
+                            setString(AsyncStorageConst.screen, screen);
+                            setString(AsyncStorageConst.status, 'second');
+                            setLoading(false);
+                            RootNavigation.navigate(
+                              AppScreens.NEW_PASSWORD_SCREEN,
+                              {
+                                screen: screen,
+                                phone: mobile,
+                                country_code: country,
+                                check: 'first',
+                              },
+                            );
+                          }
                         }
+                      },
+                      response => {
+                        // console.log('error', response);
                       },
                     );
                   }

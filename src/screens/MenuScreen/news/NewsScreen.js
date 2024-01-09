@@ -283,15 +283,15 @@ const NewsScreen = props => {
             <View
               style={{
                 flex: 1,
-
                 alignItems: 'center',
-                paddingHorizontal: 15,
+                width: '95%',
+                alignSelf: 'center',
               }}>
-              <ListMember styles={{height: 45, marginHorizontal: 20}} />
-              <ListMember styles={{height: 45, marginHorizontal: 20}} />
-              <ListMember styles={{height: 45, marginHorizontal: 20}} />
-              <ListMember styles={{height: 45, marginHorizontal: 20}} />
-              <ListMember styles={{height: 45, marginHorizontal: 20}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
             </View>
           ) : news?.length == 0 ? (
             <View

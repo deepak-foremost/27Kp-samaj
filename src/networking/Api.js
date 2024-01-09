@@ -31,7 +31,6 @@ export class Api {
   static GET_FAMILY_DETAIL_BY_ID = `${this.BASE_URL}getSingleFamilyMemberDetail`;
   static GET_JEVAN_SLAH = `${this.BASE_URL}getjeevan`;
   static GET_BHUMI_SLAH = `${this.BASE_URL}getBhoomi`;
-
   static DELETE_BUSINESS = `${this.BASE_URL}deleteBusiness`;
   static DELETE_MEMBER = `${this.BASE_URL}deleteFamilyMember`;
   static DELETE_ACCOUNT = `${this.BASE_URL}deleteAccount`;
@@ -43,6 +42,12 @@ export class Api {
   static POST_UPDATE_BUSINESS = `${this.BASE_URL}updateBusiness`;
   static POST_UPDATE_MEMBER = `${this.BASE_URL}updateFamilyMember`;
   static POST_FEEDBACK = `${this.BASE_URL}sendFeedBack`;
+  static GET_ABOUT_KAROBARI = `${this.BASE_URL}getkarobarisabhy`;
+  static GET_KAROBARI_RANGE = `${this.BASE_URL}getkarobariRange`;
+  static GET_KAROBARI = `${this.BASE_URL}getkarobaricity`;
+  static GET_EBOOK = `${this.BASE_URL}getbook`;
+  static GET_JOB = `${this.BASE_URL}getjob`;
+  static GET_SERCVICES = `${this.BASE_URL}getservicelist`;
 }
 
 export const RequestType = {

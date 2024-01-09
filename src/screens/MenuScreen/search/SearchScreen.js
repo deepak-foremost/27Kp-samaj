@@ -213,18 +213,18 @@ const SearchScreen = props => {
   useEffect(() => {
     setResult(null);
     getSearch(
-      '',
+      {page: page},
       response => {
         if (response?.status) {
           printLog('search', JSON.stringify(response));
           setResult(response?.data);
-          console.log('details', city + status + gender + from + to);
+          // console.log('details', city + status + gender + from + to);
         } else {
           setResult([]);
         }
       },
       error => {
-        console.log('searchFail', error);
+        // console.log('searchFail', error);
         setResult([]);
       },
     );
@@ -313,6 +313,7 @@ const SearchScreen = props => {
                   setBloodGroup('');
                   setStudy('');
                   setCountry('');
+                  setPage(1);
                   setNoData(true);
                 }}>
                 <Text
@@ -345,6 +346,7 @@ const SearchScreen = props => {
                 <MySelection
                   label={`Village`}
                   placeholder={`Select Village`}
+                  textStyle={{fontSize: 10}}
                   data={cities == null ? [] : cities}
                   value={city}
                   onItemSelect={item => {
@@ -398,6 +400,7 @@ const SearchScreen = props => {
                 <MySelection
                   label={`લગ્ન સ્થિતિ`}
                   placeholder={`લગ્ન સ્થિતિ`}
+                  textStyle={{fontSize: 10}}
                   data={staticArray.merriage_status}
                   value={status}
                   onItemSelect={item => {
@@ -577,6 +580,7 @@ const SearchScreen = props => {
                   label={`અભ્યાસ :`}
                   placeholder={`અભ્યાસ`}
                   data={staticArray.studies}
+                  textStyle={{fontSize: 10}}
                   value={study}
                   onItemSelect={item => {
                     printLog('study', item?.name);
@@ -646,6 +650,7 @@ const SearchScreen = props => {
                   study: study,
                   blood_group: bloodGroup,
                   foreign_country_name: country,
+                  page: page,
                 };
                 const filteredParams = Object.fromEntries(
                   Object.entries(params).filter(
@@ -653,7 +658,7 @@ const SearchScreen = props => {
                       value !== '' && value !== null && value !== '-',
                   ),
                 );
-                console.log('filter', filteredParams);
+                // console.log('filter', filteredParams);
                 if (filteredParams == {}) {
                   filteredParams = '';
                 }
@@ -672,7 +677,7 @@ const SearchScreen = props => {
                     }
                   },
                   error => {
-                    console.log('searchFail', error);
+                    // console.log('searchFail', error);
                     setResult([]);
                   },
                 );
@@ -686,11 +691,11 @@ const SearchScreen = props => {
             {result?.length == 0 && !nodata ? (
               <Text
                 style={{
-                  fontSize: 16,
-                  color: AppColors.black,
+                  fontSize: 14,
+                  color: AppColors.LightText,
                   alignSelf: 'center',
                   marginTop: 50,
-                  fontFamily:AppFonts.bold
+                  fontFamily: AppFonts.semiBold,
                 }}>
                 No Data Found
               </Text>
@@ -719,12 +724,18 @@ const SearchScreen = props => {
                   // }),
                 }}>
                 {result == null ? (
-                  <View style={{flex: 1, paddingTop: 10}}>
-                    <ListMember styles={{height: 35}} />
-                    <ListMember styles={{height: 35}} />
-                    <ListMember styles={{height: 35}} />
-                    <ListMember styles={{height: 35}} />
-                    <ListMember styles={{height: 35}} />
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingTop: 10,
+                      width: '95%',
+                      alignItems: 'center',
+                    }}>
+                    <ListMember styles={{height: 45}} />
+                    <ListMember styles={{height: 45}} />
+                    <ListMember styles={{height: 45}} />
+                    <ListMember styles={{height: 45}} />
+                    <ListMember styles={{height: 45}} />
                   </View>
                 ) : (
                   // : result.length == 0 || result == [] || nodata ? (
@@ -737,71 +748,73 @@ const SearchScreen = props => {
                   <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
-                    // onEndReached={() => {
-                    //   LoadMore();
-                    // }}
+                    onEndReached={() => {
+                      LoadMore();
+                    }}
                     contentContainerStyle={{
                       paddingHorizontal: 15,
                       paddingBottom: 20,
                     }}
                     data={result == null ? [] : result}
-                    ListHeaderComponent={ !nodata &&
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginTop: 10,
-                          paddingVertical: 5,
-                          paddingLeft: 10,
-                          // backgroundColor:'red'
-                        }}>
-                        <Text
+                    ListHeaderComponent={
+                      !nodata && (
+                        <View
                           style={{
-                            width: 15,
-                            color: AppColors.DarkText,
-                            fontFamily: AppFonts.semiBold,
-                            fontSize: 10,
+                            flexDirection: 'row',
+                            marginTop: 10,
+                            paddingVertical: 5,
+                            paddingLeft: 10,
+                            // backgroundColor:'red'
                           }}>
-                          ક્રમ
-                        </Text>
-                        <Text
-                          style={{
-                            flex: 1.4,
-                            color: AppColors.DarkText,
-                            fontFamily: AppFonts.semiBold,
-                            fontSize: 10,
-                            marginLeft: 10,
-                          }}>
-                          નામ
-                        </Text>
-                        <Text
-                          style={{
-                            flex: 1,
-                            color: AppColors.DarkText,
-                            fontFamily: AppFonts.semiBold,
-                            fontSize: 10,
-                          }}>
-                          ગામ
-                        </Text>
-                        <Text
-                          style={{
-                            flex: 1.3,
-                            color: AppColors.DarkText,
-                            fontFamily: AppFonts.semiBold,
-                            fontSize: 10,
-                          }}>
-                          મોબાઈલ નંબર
-                        </Text>
-                        <Text
-                          style={{
-                            flex: 0.8,
-                            color: AppColors.DarkText,
-                            fontFamily: AppFonts.semiBold,
-                            fontSize: 10,
-                            textAlign: 'center',
-                          }}>
-                          ફોટો
-                        </Text>
-                      </View>
+                          <Text
+                            style={{
+                              width: 15,
+                              color: AppColors.DarkText,
+                              fontFamily: AppFonts.semiBold,
+                              fontSize: 10,
+                            }}>
+                            ક્રમ
+                          </Text>
+                          <Text
+                            style={{
+                              flex: 1.4,
+                              color: AppColors.DarkText,
+                              fontFamily: AppFonts.semiBold,
+                              fontSize: 10,
+                              marginLeft: 10,
+                            }}>
+                            નામ
+                          </Text>
+                          <Text
+                            style={{
+                              flex: 1,
+                              color: AppColors.DarkText,
+                              fontFamily: AppFonts.semiBold,
+                              fontSize: 10,
+                            }}>
+                            ગામ
+                          </Text>
+                          <Text
+                            style={{
+                              flex: 1.3,
+                              color: AppColors.DarkText,
+                              fontFamily: AppFonts.semiBold,
+                              fontSize: 10,
+                            }}>
+                            મોબાઈલ નંબર
+                          </Text>
+                          <Text
+                            style={{
+                              flex: 0.8,
+                              color: AppColors.DarkText,
+                              fontFamily: AppFonts.semiBold,
+                              fontSize: 10,
+                              textAlign: 'center',
+                            }}>
+                            ફોટો
+                          </Text>
+                        </View>
+                      )
                     }
                     renderItem={({item, index}) => (
                       <AboutCell
@@ -983,8 +996,17 @@ const AboutCell = props => {
             paddingBottom: 2.5,
           }}>
           <Image
-            style={{height: 15, width: 15, borderRadius: 15}}
-            source={{uri: props?.item?.image}}
+            style={{
+              height: 15,
+              width: 15,
+              borderRadius: 15,
+              backgroundColor: '#F2F2F2',
+            }}
+            source={
+              props?.item?.images[0]?.image == undefined
+                ? AppImages.MEMBER_IMAGE
+                : {uri: props?.item?.images[0]?.image}
+            }
           />
         </View>
       </View>

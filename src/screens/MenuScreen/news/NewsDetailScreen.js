@@ -19,6 +19,7 @@ import BorderView from '../../../components/BorderView';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RenderHTML from 'react-native-render-html';
+import ZoomImage from '../../../components/ZoomImage';
 
 const NewsDetailScreen = ({route}) => {
   const inset = useSafeAreaInsets();
@@ -46,7 +47,7 @@ const NewsDetailScreen = ({route}) => {
         backgroundColor: AppColors.BackgroundSecondColor,
         paddingTop: Platform.OS == 'ios' && StatusBarHeight,
       }}>
-      <Modal style={{flex: 0.4}} visible={showModal} transparent={true}>
+      {/* <Modal style={{flex: 0.4}} visible={showModal} transparent={true}>
         <TouchableOpacity
           style={{
             alignSelf: 'flex-end',
@@ -86,7 +87,12 @@ const NewsDetailScreen = ({route}) => {
           onClick={() => setShowModal(false)}
           imageUrls={images}
         />
-      </Modal>
+      </Modal> */}
+      <ZoomImage
+        visible={showModal}
+        images={images}
+        dismiss={() => setShowModal(false)}
+      />
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
         <ScreenToolbar text={'27 SAMAJ LATEST UPDATE'} />
         <View
@@ -143,10 +149,13 @@ const NewsDetailScreen = ({route}) => {
                   paddingVertical: 5,
                 }}>
                 <TextComponent first={'Title :'} second={news?.title} />
-                <TextComponent first={'Village :'} />
-                <TextComponent first={'સ્પોનસર નું નામ :'} />
+                <TextComponent first={'Village :'} second={news?.village} />
+                <TextComponent
+                  first={'સ્પોનસર નું નામ :'}
+                  second={news?.sponser_name}
+                />
                 <TextComponent first={'Date :'} second={news?.news_date} />
-                <TextComponent first={'Note :'} />
+                <TextComponent first={'Note'} />
               </View>
 
               <View style={{}}>

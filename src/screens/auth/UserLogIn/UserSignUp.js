@@ -23,12 +23,17 @@ import {
   AppConstValue,
   ShowMessage,
   printLog,
+  sendFirebasePhoneOtp,
 } from '../../../utils/AppConstValue';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppScreens} from '../../../utils/AppScreens';
 import Header from '../../../components/Header';
 import TextInputView from '../../../components/TextInputView';
-import {getCities, register} from '../../../networking/CallApi';
+import {
+  checkPhoneNumber,
+  getCities,
+  register,
+} from '../../../networking/CallApi';
 import {showMessage} from 'react-native-flash-message';
 import {
   AsyncStorageConst,
@@ -51,7 +56,7 @@ const UserSignUp = props => {
   const [password, setPassword] = useState('');
   const [countryCode, setCountryCode] = useState('+91');
   const [phone, setPhone] = useState('');
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState();
   const [cities, setCities] = useState([]);
   const [visible, setVisible] = useState(false);
   const [cityId, setCityId] = useState('');
@@ -402,6 +407,7 @@ const UserSignUp = props => {
                 }}
                 buttonPress={() => {
                   setLoading(true);
+
                   var params = {
                     country_code: countryCode,
                     phone: phone,
@@ -420,39 +426,93 @@ const UserSignUp = props => {
                     password.length < 6
                     ? ShowMessage('Password must be 6 latter long.')
                     : // setLoading(true),
-                      register(
-                        params,
+                      checkPhoneNumber(
+                        {
+                          phone: phone,
+                          country_code: countryCode,
+                        },
                         response => {
-                          printLog('register error', JSON.stringify(response));
                           if (!response?.status) {
-                            showMessage(response?.message);
-                            setLoading(false);
+                            sendFirebasePhoneOtp(
+                              `${countryCode}${phone}`,
+                              conformation => {
+                                // console.log('confirm', conformation);
+                                RootNavigation.navigate(
+                                  AppScreens.VERIFY_SCREEN,
+                                  {
+                                    country: countryCode,
+                                    // country_name: country?.name,
+                                    phone: phone,
+                                    codeConformation: conformation,
+                                    screen: screen,
+                                    name: firstName,
+                                    city_id: value?.id,
+                                    password: password,
+                                    forget: 'no',
+                                    city: value?.name,
+                                  },
+                                );
+                                // register(
+                                //   params,
+                                //   response => {
+                                //     printLog(
+                                //       'register error',
+                                //       JSON.stringify(response),
+                                //     );
+                                //     if (!response?.status) {
+                                //       showMessage(response?.message);
+                                //       setLoading(false);
+                                //     } else {
+                                //       setLoading(false);
+                                //       var token = response?.token;
+                                //       printLog(typeof token);
+                                //       setString(
+                                //         AsyncStorageConst.allDetails,
+                                //         JSON.stringify(response),
+                                //       );
+                                //       printLog('signUpToken--', token);
+                                //       setString(AsyncStorageConst.token, token);
+                                //       setString(
+                                //         AsyncStorageConst.screen,
+                                //         'User Signin',
+                                //       );
+                                //       setString(
+                                //         AsyncStorageConst.user,
+                                //         JSON.stringify(response?.data),
+                                //       );
+                                //       RootNavigation.navigate(
+                                //         AppScreens.VERIFY_SCREEN,
+                                //         {
+                                //           country: countryCode,
+                                //           country_name: country?.name,
+                                //           phone: phone,
+                                //           codeConformation: conformation,
+                                //           screen: screen,
+                                //         },
+                                //       );
+                                //       setLoading(false);
+
+                                //       // RootNavigation.push(
+                                //       //   props?.navigation,
+                                //       //   AppScreens.VERIFY_SCREEN,
+                                //       //   params,
+                                //       // );
+                                //     }
+                                //   },
+                                //   error => {
+                                //     printLog('register error', error);
+                                //     setLoading(false);
+                                //   },
+                                // );
+                              },
+                              error => {
+                                // console.log('error', error);
+                              },
+                            );
                           } else {
                             setLoading(false);
-                            var token = response?.token;
-                            printLog(typeof token);
-                            setString(
-                              AsyncStorageConst.allDetails,
-                              JSON.stringify(response),
-                            );
-                            printLog('signUpToken--', token);
-                            setString(AsyncStorageConst.token, token);
-                            setString(AsyncStorageConst.screen, 'User Signin');
-                            setString(
-                              AsyncStorageConst.user,
-                              JSON.stringify(response?.data),
-                            );
-                            RootNavigation.push(
-                              props?.navigation,
-                              AppScreens.HOME_SCREEN,
-                              params,
-                            );
-                            setLoading(false);
+                            ShowMessage(response?.message);
                           }
-                        },
-                        error => {
-                          printLog('register error', error);
-                          setLoading(false);
                         },
                       );
                 }}

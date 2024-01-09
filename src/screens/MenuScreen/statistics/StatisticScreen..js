@@ -136,7 +136,7 @@ const StatisticScreen = props => {
         if (response?.status) {
           setCount([
             {name: 'ટોટલ ગામ', count: response?.data?.total_city},
-            {name: 'ટોટલ ફેમિલી', count: response?.data?.total_family},
+            {name: 'ટોટલ રજીસ્ટર\n ફૅમિલી ', count: response?.data?.total_family},
             {name: 'ટોટલ સભ્યો', count: response?.data?.total_member},
             {name: 'ટોટલ પુરુષ', count: response?.data?.total_male},
             {name: 'ટોટલ સ્ત્રી', count: response?.data?.total_female},

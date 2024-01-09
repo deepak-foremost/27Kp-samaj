@@ -70,4 +70,7 @@ export class AsyncStorageConst {
   static user = 'userDetails';
   static cities = 'cities';
   static screen = 'screen';
+  static status = 'status';
+  static first = 'first';
+  static rember='rember';
 }

@@ -136,8 +136,9 @@ const ParichayFileScreen = props => {
                 flex: 1,
                 backgroundColor: AppColors.backgroundColor,
                 alignItems: 'center',
-                paddingHorizontal: 10,
                 paddingTop: 15,
+                width:'95%',
+                alignSelf:'center'
               }}>
               <ListMember styles={{height: 45}} />
               <ListMember styles={{height: 45}} />

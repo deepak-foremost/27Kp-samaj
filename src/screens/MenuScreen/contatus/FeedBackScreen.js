@@ -198,6 +198,7 @@ const FeedBackScreen = props => {
               />
 
               <MyMobileNumber
+                contact={true}
                 label={`Your Mobile`}
                 countryCode={country_code}
                 phone={phone}
@@ -346,6 +347,7 @@ const FeedBackScreen = props => {
                           phone: phone,
                           city: city,
                           message: message,
+                          country_code: country_code,
                         },
                         response => {
                           ShowMessage(response?.message);

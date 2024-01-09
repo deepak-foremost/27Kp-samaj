@@ -172,7 +172,7 @@ const FamilyMemberDetailScreen = props => {
                   shadowRadius: 3,
                 },
                 android: {
-                  elevation: 15,
+                  elevation: 5,
                 },
               }),
             }}>
@@ -230,15 +230,16 @@ const FamilyMemberDetailScreen = props => {
             <View
               style={{
                 justifyContent: 'center',
-                width: '90%',
+                width: '95%',
                 alignSelf: 'center',
                 alignItems: 'center',
+                paddingTop: 10,
               }}>
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
             </View>
           ) : family?.length == 0 ? (
             <View
@@ -249,9 +250,9 @@ const FamilyMemberDetailScreen = props => {
               }}>
               <Text
                 style={{
-                  fontFamily: AppFonts.bold,
-                  color: AppColors.black,
-                  fontSize: 15,
+                  fontFamily: AppFonts.semiBold,
+                  color: AppColors.LightText,
+                  fontSize: 14,
                 }}>
                 No List Found
               </Text>
@@ -320,7 +321,7 @@ const FamilyMermberCell = props => {
           color: AppColors.DarkText,
           paddingVertical: 10,
         }}>
-        {props?.item?.family_id}
+        {props?.item?.country_code + props?.item?.phone}
       </Text>
       <Image
         style={{
@@ -328,7 +329,7 @@ const FamilyMermberCell = props => {
           width: 2,
           alignSelf: 'center',
           backgroundColor: AppColors.DarkText,
-          marginHorizontal: 16,
+          marginHorizontal: 10,
         }}
       />
       <Text

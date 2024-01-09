@@ -17,8 +17,13 @@ import BorderView from '../../../components/BorderView';
 import {AppScreens} from '../../../utils/AppScreens';
 import * as RootNavigation from '../../../utils/RootNavigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {getAboutUsMember, getYearRange} from '../../../networking/CallApi';
+import {
+  getAboutKarobari,
+  getAboutUsMember,
+  getYearRange,
+} from '../../../networking/CallApi';
 import {ListMember} from './AboutUsDetailScreen';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const members = [
   {
@@ -129,6 +134,8 @@ const AboutUsScreen = props => {
   const [valueId, setValueId] = useState('');
   const [members, setMembers] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [karobari, setKarobari] = useState(null);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     getYearRange(
@@ -174,6 +181,30 @@ const AboutUsScreen = props => {
       error => {
         printLog('getAboutUsMember', error);
         setMembers([]);
+        setLoading(false);
+      },
+    );
+  }, [valueId]);
+
+  useEffect(() => {
+    setLoading(true);
+    getAboutKarobari(
+      `range_id=${valueId}`,
+      response => {
+        printLog('getAboutUskarobari', JSON.stringify(response));
+        if (response?.status) {
+          setKarobari(response?.data);
+          setShow(true);
+          setLoading(false);
+        } else {
+          setKarobari(null);
+          setLoading(false);
+          setShow(false);
+        }
+      },
+      error => {
+        printLog('getAboutUsKarobarieror', error);
+        setKarobari(null);
         setLoading(false);
       },
     );
@@ -252,94 +283,111 @@ const AboutUsScreen = props => {
                 // printLog(JSON.stringify(item?.item));
                 setValue(item?.name);
                 setValueId(item?.id);
+                setShow(false);
               }}
             />
           </View>
         </View>
-
         <View style={{flex: 0.9, paddingVertical: 10}}>
-          {isLoading ? (
-            <View style={{flex: 1, alignItems: 'center', marginHorizontal: 15}}>
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-            </View>
-          ) : (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{paddingBottom: 20}}
-              data={members == null ? [] : members}
-              renderItem={({item, index}) => (
-                <AboutCell
-                  index={index}
-                  item={item}
-                  onClick={() => {
-                    // printLog('AboutCell', JSON.stringify(item));
-                    RootNavigation.push(
-                      props?.navigation,
-                      AppScreens.ABOUT_US_DETAIL_SCREEN,
-                      {item: item},
-                    );
-                  }}
-                />
-              )}
-            />
-          )}
-        </View>
-
-        <View
-          style={{
-            backgroundColor: AppColors.fadeBackground,
-            paddingBottom: 30,
-            paddingTop: 5,
-          }}>
-          <TouchableOpacity
-            activeOpacity={AppConstValue.ButtonOpacity}
-            style={{
-              backgroundColor: AppColors.BackgroundSecondColor,
-              height: 40,
-              borderRadius: 10,
-              marginHorizontal: 15,
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingHorizontal: 15,
-            }}
-            onPress={() =>
-              RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-                status: 'main',
-              })
-            }>
-            <Text
-              style={{
-                fontFamily: AppFonts.bold,
-                fontSize: 10,
-                color: '#fff',
-                alignSelf: 'center',
-              }}>
-              કારોબારી સભ્યશ્રી
-            </Text>
-            <View
-              style={{
-                position: 'absolute',
-                right: 15,
-                backgroundColor: '#FFFFFF',
-                padding: 5,
-                borderRadius: 8,
-              }}>
-              <Text
+          <ScrollView>
+            {isLoading ? (
+              <View
                 style={{
-                  fontFamily: AppFonts.bold,
-                  fontSize: 10,
-                  color: AppColors.DarkText,
+                  flex: 1,
+                  alignItems: 'center',
+                  width: '95%',
+                  alignSelf: 'center',
                 }}>
-                Click Here
-              </Text>
-            </View>
-          </TouchableOpacity>
+                <ListMember styles={{height: 45}} />
+                <ListMember styles={{height: 45}} />
+                <ListMember styles={{height: 45}} />
+                <ListMember styles={{height: 45}} />
+                <ListMember styles={{height: 45}} />
+              </View>
+            ) : (
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingBottom: 10,
+                }}
+                data={members == null ? [] : members}
+                renderItem={({item, index}) => (
+                  <AboutCell
+                    index={index}
+                    item={item}
+                    onClick={() => {
+                      // printLog('AboutCell', JSON.stringify(item));
+                      RootNavigation.push(
+                        props?.navigation,
+                        AppScreens.ABOUT_US_DETAIL_SCREEN,
+                        {item: item},
+                      );
+                    }}
+                  />
+                )}
+              />
+            )}
+            {show && karobari?.length != 0 ? (
+              <View
+                style={{
+                  backgroundColor: AppColors.fadeBackground,
+                  paddingBottom: 10,
+                  paddingTop: 5,
+                }}>
+                <TouchableOpacity
+                  activeOpacity={AppConstValue.ButtonOpacity}
+                  style={{
+                    backgroundColor: AppColors.BackgroundSecondColor,
+                    height: 45,
+                    borderRadius: 10,
+                    marginHorizontal: 15,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 15,
+                    elevation: 3,
+                  }}
+                  onPress={() =>
+                    RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
+                      status: 'main',
+                      range: valueId,
+                      karobari: karobari,
+                    })
+                  }>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.bold,
+                      fontSize: 10,
+                      color: '#fff',
+                      alignSelf: 'center',
+                    }}>
+                    કારોબારી સભ્યશ્રી
+                  </Text>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 15,
+                      backgroundColor: '#FFFFFF',
+                      padding: 5,
+                      borderRadius: 8,
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: AppFonts.bold,
+                        fontSize: 10,
+                        color: AppColors.DarkText,
+                        paddingTop: 2.5,
+                      }}>
+                      Click Here
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <></>
+            )}
+          </ScrollView>
         </View>
 
         <BorderView
@@ -395,7 +443,8 @@ const AboutCell = props => {
               color: '#F3F3F3',
               textAlign: 'center',
               justifyContent: 'center',
-              height: 15,
+              height: 30,
+              textAlignVertical: 'center',
             }}>
             {props?.item?.title}
           </Text>
@@ -419,7 +468,7 @@ const AboutCell = props => {
                 color: AppColors.DarkText,
                 fontFamily: AppFonts.bold,
                 fontSize: 12,
-                marginLeft: 15,
+                marginLeft: 5,
               }}>
               {props?.item?.name}
             </Text>
@@ -428,7 +477,7 @@ const AboutCell = props => {
                 color: AppColors.DarkText,
                 fontFamily: AppFonts.bold,
                 fontSize: 12,
-                marginLeft: 15,
+                marginLeft: 5,
               }}>
               {props?.item?.city}
             </Text>

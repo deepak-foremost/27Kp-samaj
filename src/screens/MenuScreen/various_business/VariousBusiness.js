@@ -31,7 +31,13 @@ import {AppStyles} from '../../../utils/AppStyles';
 import BorderView from '../../../components/BorderView';
 import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {getCities, getFamilies} from '../../../networking/CallApi';
+import {
+  getCities,
+  getFamilies,
+  getKarobari,
+  getKarobariRange,
+} from '../../../networking/CallApi';
+import {ListMember} from '../advisour_member/AdvicerMember';
 
 const myList = [
   {
@@ -65,32 +71,84 @@ const VariousBusiness = props => {
   const [value, setValue] = useState('All');
   const [cityId, setCityId] = useState('0');
   const [counts, setCount] = useState(0);
+  const [valueId, setValueId] = useState('');
+  const [karobariRange, setKarobariRange] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+  const [members, setMembers] = useState(null);
+  // useEffect(() => {
+  //   getCities(
+  //     response => {
+  //       if (response?.status) {
+  //         var temp = [];
+  //         temp.push({name: 'All', id: 0});
+  //         setValue('All');
+  //         setCityId(0);
+  //         getCounts(0);
+  //         for (let i = 0; i < response?.data?.length; i++) {
+  //           if (i == 0) {
+  //           }
+  //           temp.push({
+  //             name: response?.data[i]?.name,
+  //             id: response?.data[i]?.id,
+  //           });
+  //         }
+  //         setCities(temp);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('StatisticScreen', error);
+  //     },
+  //   );
+  // }, []);
 
   useEffect(() => {
-    getCities(
+    setLoading(true);
+    getKarobariRange(
       response => {
+        printLog('getKarobariRange', JSON.stringify(response));
         if (response?.status) {
-          var temp = [];
-          temp.push({name: 'All', id: 0});
-          setValue('All');
-          setCityId(0);
-          getCounts(0);
+          var data = [];
           for (let i = 0; i < response?.data?.length; i++) {
-            if (i == 0) {
-            }
-            temp.push({
-              name: response?.data[i]?.name,
+            data.push({
+              name: response?.data[i]?.range,
               id: response?.data[i]?.id,
             });
+            if (i == 0) {
+              setValue(response?.data[i]?.range);
+              setValueId(response?.data[i]?.id);
+            }
           }
-          setCities(temp);
+          setKarobariRange(data);
+          setLoading(false);
         }
       },
       error => {
-        printLog('StatisticScreen', error);
+        printLog('getkarobariRangeEror', error);
       },
     );
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    getKarobari(
+      `range_id=${valueId}`,
+      response => {
+        printLog('getAboutUsMember', JSON.stringify(response));
+        if (response?.status) {
+          setMembers(response?.data);
+          setLoading(false);
+        } else {
+          setMembers([]);
+          setLoading(false);
+        }
+      },
+      error => {
+        printLog('getAboutUsMembererroe', error);
+        setMembers([]);
+        setLoading(false);
+      },
+    );
+  }, [valueId]);
 
   return (
     <View
@@ -187,88 +245,34 @@ const VariousBusiness = props => {
               <MySelection
                 label={`select વિવિધ શહેર કારોબારી`}
                 placeholder={`select કારોબારી`}
-                data={cities}
+                data={karobariRange}
                 value={value}
                 onItemSelect={item => {
                   printLog(JSON.stringify(item?.name + '---' + item?.id));
                   setValue(item?.name);
-                  setCityId(item?.id);
-                  getList(item?.id);
+                  setValueId(item?.id);
+
+                  // getList(item?.id);
                 }}
               />
             </View>
           </View>
-          {myList == null || myList?.length > 0 ? (
+          {isLoading ? (
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '90%',
-                paddingHorizontal: 10,
-                paddingTop: 15,
-                paddingBottom: 5,
+                flex: 1,
+                paddingTop: 10,
+                width: '95%',
+                alignItems: 'center',
                 alignSelf: 'center',
               }}>
-              <Text
-                style={{
-                  fontSize: 8,
-                  fontFamily: AppFonts.semiBold,
-                  color: AppColors.DarkText,
-                  width: '5%',
-                }}>
-                {'ક્રમ'}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 9,
-                  fontFamily: AppFonts.semiBold,
-                  color: AppColors.DarkText,
-                  width: '25%',
-                }}>
-                નામ
-              </Text>
-              <Text
-                style={{
-                  fontSize: 9,
-                  fontFamily: AppFonts.semiBold,
-                  color: AppColors.DarkText,
-                  width: '15%',
-                }}>
-                ગામ
-              </Text>
-              <Text
-                style={{
-                  fontSize: 9,
-                  fontFamily: AppFonts.semiBold,
-                  color: AppColors.DarkText,
-                  width: '10%',
-                }}>
-                હોદો
-              </Text>
-              <Text
-                style={{
-                  fontSize: 9,
-                  fontFamily: AppFonts.semiBold,
-                  color: AppColors.DarkText,
-                  width: '28%',
-                }}>
-                મોબાઈલ નંબર
-              </Text>
-              <Text
-                style={{
-                  fontSize: 9,
-                  fontFamily: AppFonts.semiBold,
-                  color: AppColors.DarkText,
-                  width: '7%',
-                  textAlign: 'right',
-                }}>
-                ફોટો
-              </Text>
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
             </View>
           ) : (
-            <></>
-          )}
-          {
             <FlatList
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
@@ -276,7 +280,90 @@ const VariousBusiness = props => {
                 paddingBottom: 20,
                 width: '100%',
               }}
-              data={myList == null ? [] : myList}
+              data={members == null ? [] : members}
+              ListHeaderComponent={
+                <View>
+                  {members?.length == 0 ? (
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: AppColors.LightText,
+                        alignSelf: 'center',
+                        marginTop: 50,
+                        fontFamily: AppFonts.semiBold,
+                      }}>
+                      No data found
+                    </Text>
+                  ) : (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        width: '90%',
+                        paddingHorizontal: 10,
+                        paddingTop: 15,
+                        paddingBottom: 5,
+                        alignSelf: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 8,
+                          fontFamily: AppFonts.semiBold,
+                          color: AppColors.DarkText,
+                          width: '4%',
+                        }}>
+                        {'ક્રમ'}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontFamily: AppFonts.semiBold,
+                          color: AppColors.DarkText,
+                          width: '25%',
+                        }}>
+                        નામ
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontFamily: AppFonts.semiBold,
+                          color: AppColors.DarkText,
+                          width: '15%',
+                        }}>
+                        ગામ
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontFamily: AppFonts.semiBold,
+                          color: AppColors.DarkText,
+                          width: '10%',
+                        }}>
+                        હોદો
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontFamily: AppFonts.semiBold,
+                          color: AppColors.DarkText,
+                          width: '30%',
+                        }}>
+                        મોબાઈલ નંબર
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontFamily: AppFonts.semiBold,
+                          color: AppColors.DarkText,
+                          width: '7%',
+                          textAlign: 'right',
+                        }}>
+                        ફોટો
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              }
               renderItem={({item, index}) => (
                 <View
                   style={{
@@ -284,6 +371,7 @@ const VariousBusiness = props => {
                     paddingVertical: props?.item ? 10 : 10,
                     paddingHorizontal: 10,
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                     backgroundColor: props?.change ? '#F3F3F3' : '#fff',
                     marginTop: 10,
                     borderRadius: 8,
@@ -305,7 +393,7 @@ const VariousBusiness = props => {
                     style={[
                       styles.heading,
                       {
-                        width: '5%',
+                        width: '4%',
                         color: AppColors.DarkText,
                       },
                     ]}>
@@ -339,25 +427,25 @@ const VariousBusiness = props => {
                         color: AppColors.DarkText,
                       },
                     ]}>
-                    {item ? `${item?.title}` : 'હોદો'}
+                    {item ? `${item?.layakat}` : 'હોદો'}
                   </Text>
 
                   <TouchableOpacity
                     activeOpacity={1}
                     style={{
                       flexDirection: 'row',
-                      width: '28%',
+                      width: '30%',
                       // marginLeft: 10,
                       alignItems: 'center',
                     }}
-                    onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
+                    onPress={() => Linking.openURL(`tel:${item?.phone}`)}>
                     <Text style={[styles.heading, {color: AppColors.DarkText}]}>
                       {item ? `${item?.phone}` : 'મોબાઈલ નંબર'}
                     </Text>
                     <View style={{flexDirection: 'row'}}>
                       <TouchableOpacity
                         activeOpacity={1}
-                        style={{paddingHorizontal: 2.5, marginBottom: 2.5}}
+                        style={{paddingHorizontal: 2, marginBottom: 2.5}}
                         onPress={() => Linking.openURL(`tel:${item?.phone}`)}>
                         <Image source={AppImages.CIRCLE_CALL_ICON} />
                       </TouchableOpacity>
@@ -367,7 +455,7 @@ const VariousBusiness = props => {
                       style={{
                         justifyContent: 'center',
                         alignItems: 'center',
-                        paddingHorizontal: 5,
+                        paddingHorizontal: 2,
                         marginBottom: 2.5,
                       }}
                       onPress={() =>
@@ -393,12 +481,17 @@ const VariousBusiness = props => {
                       style={{
                         height: 15,
                         width: 15,
-
+                        borderRadius: 10,
+                        backgroundColor: '#F2F2F2',
                         // borderColor: 'black',
                         // borderWidth: 1,
                         // borderRadius: 10,
                       }}
-                      source={require('../../../assets/images/small_man_image.png')}
+                      source={
+                        item?.image == ''
+                          ? AppImages.MEMBER_IMAGE
+                          : {uri: item?.image}
+                      }
                     />
                     {/* ) : ( */}
                     {/* // <Text style={[styles.heading, {color: AppColors.DarkText}]}>
@@ -497,11 +590,12 @@ const VariousBusiness = props => {
                 // </View>
               )}
             />
-          }
+          )}
 
           {/* <FooterTextCell title={`પરિવાર નુ ખુબ ખુબ સ્વાગત છે`} /> */}
         </View>
       </View>
+
       <BorderView
         text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
         backgroundColor={AppColors.BackgroundSecondColor}

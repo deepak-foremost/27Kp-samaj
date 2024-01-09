@@ -237,16 +237,22 @@ const AppSponcerScreen = props => {
           /> */}
 
           {isLoading && members == null ? (
-            <View style={{marginTop: 15, paddingHorizontal: 15}}>
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
-              <ListMember />
+            <View
+              style={{
+                marginTop: 15,
+                width: '95%',
+                alignItems: 'center',
+                alignSelf: 'center',
+              }}>
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
+              <ListMember styles={{height: 45}} />
             </View>
           ) : members?.length == 0 ? (
             <View>
@@ -275,7 +281,7 @@ const AppSponcerScreen = props => {
                   status={status}
                   imgPress={() => {
                     setImages([{url: item?.image}]);
-                    setOpen(true);
+                    setOpen(item?.image == '' ? false : true);
                   }}
                 />
               )}
@@ -457,7 +463,11 @@ export const MemberCell = props => {
                 // borderWidth: 1,
                 borderRadius: 10,
               }}
-              source={{uri: props?.item?.image}}
+              source={
+                props?.item?.image == ''
+                  ? AppImages.MEMBER_IMAGE
+                  : {uri: props?.item?.image}
+              }
             />
           </TouchableOpacity>
         ) : (

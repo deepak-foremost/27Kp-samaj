@@ -14,6 +14,8 @@ import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {CustomExpiryPicker} from '../../../components/CustomExpiryPicker';
 import moment from 'moment';
+import {checkPhoneNumber} from '../../../networking/CallApi';
+import {ShowMessage, sendFirebasePhoneOtp} from '../../../utils/AppConstValue';
 
 const ForgotScreen = ({route}) => {
   const screen = route.params.screen;
@@ -23,6 +25,7 @@ const ForgotScreen = ({route}) => {
   const [Visible, setVisible] = useState(false);
   const [country, setCountry] = useState('+91');
   const {code, setCode} = useState('+91');
+  const [isLoading, setLoading] = useState(false);
 
   return (
     <View
@@ -52,6 +55,7 @@ const ForgotScreen = ({route}) => {
         <KeyboardAwareScrollView
           contentContainerStyle={{flexGrow: 1}}
           enableOnAndroid={true}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           {/* TopView  */}
           <View style={{flex: 1}}>
@@ -135,12 +139,55 @@ const ForgotScreen = ({route}) => {
                   textStyle={{
                     color: screen == 'User Signin' ? AppColors.black : 'white',
                   }}
-                  buttonPress={() =>
-                    RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
-                      screen: screen,
-                    })
+                  buttonPress={
+                    () => {
+                      setLoading(true);
+                      checkPhoneNumber(
+                        {
+                          phone: mobile,
+                          country_code: country,
+                        },
+                        response => {
+                          // console.log('true', response);
+                          if (response?.status) {
+                            sendFirebasePhoneOtp(
+                              `${country}${mobile}`,
+                              confirmation => {
+                                setLoading(false);
+                                RootNavigation.navigate(
+                                  AppScreens.VERIFY_SCREEN,
+                                  {
+                                    country: country,
+                                    // country_name: country?.name,
+                                    phone: mobile,
+                                    codeConformation: confirmation,
+                                    screen: screen,
+                                    // name: firstName,
+                                    // city_id: value?.id,
+                                    // password: password,
+                                    forget: 'yes',
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            setLoading(false);
+                            ShowMessage('User not found');
+                          }
+                        },
+                        response => {
+                          // console.log('fail', response);
+                          setLoading(false);
+                        },
+                      );
+                    }
+                    // RootNavigation.navigate(AppScreens.VERIFY_SCREEN, {
+                    //   screen: screen,
+                    // })
                   }
                   text={'Send my code'}
+                  loading={isLoading}
+                  color={screen == 'User Signin' ? AppColors.black : 'white'}
                   buttonStyle={{
                     width: '100%',
                     alignSelf: 'center',
