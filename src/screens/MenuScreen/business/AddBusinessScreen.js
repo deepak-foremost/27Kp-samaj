@@ -49,6 +49,7 @@ import {Api} from '../../../networking/Api';
 import {showMessage} from 'react-native-flash-message';
 import LoaderView from '../../../utils/LoaderView';
 import moment from 'moment';
+import axios from 'axios';
 
 // import LoaderView from '../../../utils/LoaderView';
 // import {set} from 'react-native-reanimated';
@@ -89,6 +90,8 @@ const AddBusinessScreen = props => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [owner_name_4, setOwner_name_4] = useState('');
+  const [imageOne, setImageOne] = useState(null);
+  const [imageTwo, setImageTwo] = useState(null);
 
   useEffect(() => {
     getCities(
@@ -129,7 +132,10 @@ const AddBusinessScreen = props => {
       setMobile(bussinessItem?.business_phone);
       setEmail(bussinessItem?.business_email);
       setWebsite(bussinessItem?.website);
-      setVisiting(bussinessItem?.visting_card_photo);
+      setVisiting(bussinessItem?.images[0]?.visting_card_photo);
+      setVisitingOne(bussinessItem?.images[1]?.visting_card_photo);
+      setImageOne(bussinessItem?.images[0]?.id);
+      setImageTwo(bussinessItem?.images[1]?.id);
       setBusiness_type(bussinessItem?.business_type);
       // console.log('uri', bussinessItem?.visting_card_photo);
       var daysList = [];
@@ -171,46 +177,75 @@ const AddBusinessScreen = props => {
     }
 
     var uploadImageList = {};
-    list?.map(
-      (item, index) =>
-        (uploadImageList = {
-          ...uploadImageList,
-          [`imagemultiple${index}`]: {
-            uri:
-              Platform.OS === 'android'
-                ? item?.uri
-                : item?.uri?.replace('file://', ''),
-            name: item?.fileName,
-            type: item?.type,
-          },
-        }),
-    );
+    list?.map((item, index) => {
+      uploadImageList = {
+        ...uploadImageList,
+        [`visting_card_photo[${index}]`]: {
+          uri:
+            Platform.OS === 'android'
+              ? item?.uri
+              : item?.uri?.replace('file://', ''),
+          name: item?.fileName,
+          type: item?.type,
+        },
+      };
+    });
     let imageParams = {};
     var imageObject = {};
-
-    const params = {
-      category_id: catId,
-      firm: firm,
-      business_type: business_type,
-      owner_name_1: owner1,
-      owner_name_2: owner2,
-      owner_name_3: owner3,
-      owner_name_4: owner4,
-      address: address,
-      products: product,
-      country_code: code,
-      business_phone: mobile,
-      business_email: email,
-      website: website,
-      from_time: startTime,
-      to_time: endTime,
-      city: selectedCity,
-      business_start_date: startDate,
-      business_end_date: endDate,
-      business_hourse: JSON.stringify(week),
-      ...uploadImageList,
-    };
-
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    const params =
+      bussinessItem != undefined
+        ? {
+            business_id: bussinessItem?.id,
+            category_id: catId,
+            firm: firm,
+            business_type: business_type,
+            owner_name_1: owner1,
+            owner_name_2: owner2,
+            owner_name_3: owner3,
+            owner_name_4: owner4,
+            address: address,
+            products: product,
+            country_code: code,
+            business_phone: mobile,
+            business_email: email,
+            website: website,
+            from_time: startTime,
+            to_time: endTime,
+            city: selectedCity,
+            business_start_date: startDate,
+            business_end_date: endDate,
+            business_hourse: JSON.stringify(week),
+            ...uploadImageList,
+          }
+        : {
+            category_id: catId,
+            firm: firm,
+            business_type: business_type,
+            owner_name_1: owner1,
+            owner_name_2: owner2,
+            owner_name_3: owner3,
+            owner_name_4: owner4,
+            address: address,
+            products: product,
+            country_code: code,
+            business_phone: mobile,
+            business_email: email,
+            website: website,
+            from_time: startTime,
+            to_time: endTime,
+            city: selectedCity,
+            business_start_date: startDate,
+            business_end_date: endDate,
+            business_hourse: JSON.stringify(week),
+            ...uploadImageList,
+          };
+    const API_BASE_URL =
+      bussinessItem == undefined
+        ? Api.POST_ADD_BUSINESS
+        : Api.POST_UPDATE_BUSINESS;
+    const AuthToken =
+      token?.token == undefined ? JSON.parse(token)?.token : token?.token;
     console.log(`PARAMS:::::::`, JSON.stringify(params));
     let formData = new FormData();
     var myparams = Object.keys(params);
@@ -219,7 +254,7 @@ const AddBusinessScreen = props => {
     });
 
     // var payload = new FormData();
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+
     printLog('tokenPrint----', token);
 
     // payload.append('category_id', catId);
@@ -251,34 +286,225 @@ const AddBusinessScreen = props => {
     //   type: visiting?.type,
     // });
     // printLog('PARAMS', JSON.stringify(payload));
-
-    fetch(Api.POST_ADD_BUSINESS, {
+    setLoading(true);
+    axios({
       method: 'POST',
+      url: API_BASE_URL,
       headers: {
-        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
-        Authorization:
-          'Bearer ' +
-          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+        Authorization: `Bearer ${AuthToken}`,
+        Accept: 'Application/json',
       },
-      body: formData,
+      data: formData, // Use 'data' property for POST requests
     })
-      .then(response => response.json())
-      .then(responseJson => {
-        // return responseJson
-        printLog('responseJson-->', JSON.stringify(responseJson));
-        ShowMessage(responseJson?.message);
-        if (responseJson?.status) {
-          RootNavigation?.goBack();
-        }
+      .then(response => {
         setLoading(false);
+        if (response?.data?.status) {
+          ShowMessage(response?.data?.message);
+          RootNavigation?.goBack();
+          printLog(`callApi`, `Success : ${JSON.stringify(response)}`);
+        } else {
+          ShowMessage(response?.data?.message);
+        }
+        // Handle the success case here
       })
       .catch(error => {
-        ShowMessage(JSON.stringify(error));
-        printLog('responseJson Error', JSON.stringify(error));
         setLoading(false);
+        printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
+        ShowMessage(error?.message);
       });
   };
+
+  const AddBusiness = async () => {
+    setLoading(true);
+    var list = [];
+    if (visiting?.uri != undefined) {
+      list?.push(visiting);
+    }
+
+    if (visitingOne?.uri != undefined) {
+      list?.push(visitingOne);
+    }
+
+    var uploadImageList = {};
+    list?.map((item, index) => {
+      uploadImageList = {
+        ...uploadImageList,
+        [`visting_card_photo[${index}]`]: {
+          uri:
+            Platform.OS === 'android'
+              ? item?.uri
+              : item?.uri?.replace('file://', ''),
+          name: item?.fileName,
+          type: item?.type,
+        },
+      };
+    });
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    let imageParams = {};
+    var imageObject = {};
+
+    const params =
+      bussinessItem != undefined
+        ? {
+            business_id: bussinessItem?.id,
+            category_id: catId,
+            firm: firm,
+            business_type: business_type,
+            owner_name_1: owner1,
+            owner_name_2: owner2,
+            owner_name_3: owner3,
+            owner_name_4: owner4,
+            address: address,
+            products: product,
+            country_code: code,
+            business_phone: mobile,
+            business_email: email,
+            website: website,
+            from_time: startTime,
+            to_time: endTime,
+            city: selectedCity,
+            business_start_date: startDate,
+            business_end_date: endDate,
+            business_hourse: JSON.stringify(week),
+            ...uploadImageList,
+          }
+        : {
+            category_id: catId,
+            firm: firm,
+            business_type: business_type,
+            owner_name_1: owner1,
+            owner_name_2: owner2,
+            owner_name_3: owner3,
+            owner_name_4: owner4,
+            address: address,
+            products: product,
+            country_code: code,
+            business_phone: mobile,
+            business_email: email,
+            website: website,
+            from_time: startTime,
+            to_time: endTime,
+            city: selectedCity,
+            business_start_date: startDate,
+            business_end_date: endDate,
+            business_hourse: JSON.stringify(week),
+            ...uploadImageList,
+          };
+
+    const API_BASE_URL =
+      bussinessItem == undefined
+        ? Api.POST_ADD_BUSINESS
+        : Api.POST_UPDATE_BUSINESS;
+    const AuthToken =
+      token?.token == undefined ? JSON.parse(token)?.token : token?.token;
+    console.log(`PARAMS:::::::`, JSON.stringify(params));
+    let formData = new FormData();
+    var myparams = Object.keys(params);
+    myparams?.map(item => {
+      formData.append(item, params[item]);
+    });
+
+    setLoading(true);
+    axios({
+      method: 'POST',
+      url: API_BASE_URL,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${AuthToken}`,
+        Accept: 'Application/json',
+      },
+      data: formData, // Use 'data' property for POST requests
+    })
+      .then(response => {
+        setLoading(false);
+        if (response?.data?.status) {
+          ShowMessage(response?.data?.message);
+          RootNavigation?.goBack();
+          printLog(`callApi`, `Success : ${JSON.stringify(response)}`);
+        } else {
+          ShowMessage(response?.data?.message);
+        }
+        // Handle the success case here
+      })
+      .catch(error => {
+        setLoading(false);
+        printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
+        ShowMessage(error?.message);
+      });
+
+    //   fetch(
+    //     memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER,
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         Accept: 'application/json',
+    //         'Content-Type': 'multipart/form-data',
+    //         Authorization:
+    //           'Bearer ' +
+    //           (token?.token == undefined
+    //             ? JSON.parse(token)?.token
+    //             : token?.token),
+    //       },
+    //       body: payload,
+    //     },
+    //   )
+    //     .then(response => response.json())
+    //     .then(responseJson => {
+    //       // return responseJson
+    //       ShowMessage(responseJson?.message);
+    //       printLog('responseJson1,2,3--', JSON.stringify(responseJson));
+    //       if (responseJson?.status) {
+    //         RootNavigation?.goBack();
+    //       }
+    //       setLoading(false);
+    //     })
+    //     .catch(error => {
+    //       printLog('responseJson Error', JSON.stringify(error));
+    //       ShowMessage(error);
+    //       setLoading(false);
+    //     });
+    // };
+
+    // const imageLinkToParam = imageLink => {
+    //   let filename = '';
+    //   let filePath = '';
+    //   filePath =
+    //     Platform.OS == 'android' ? imageLink : imageLink.replace('file://', '');
+    //   filename = imageLink
+    //     .substring(imageLink.lastIndexOf('/') + 1, imageLink.length)
+    //     .replaceAll('%20', '_');
+    //   printLog('imageLinkToParam ::::: ', filename);
+    //   return {uri: filePath, name: filename, type: 'image/jpeg'};
+  };
+
+  //   fetch(Api.POST_ADD_BUSINESS, {
+  //     method: 'POST',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'multipart/form-data',
+  //       Authorization:
+  //         'Bearer ' +
+  //         (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+  //     },
+  //     body: formData,
+  //   })
+  //     .then(response => response.json())
+  //     .then(responseJson => {
+  //       // return responseJson
+  //       printLog('responseJson-->', JSON.stringify(responseJson));
+  //       ShowMessage(responseJson?.message);
+  //       if (responseJson?.status) {
+  //         RootNavigation?.goBack();
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch(error => {
+  //       ShowMessage(JSON.stringify(error));
+  //       printLog('responseJson Error', JSON.stringify(error));
+  //       setLoading(false);
+  //     });
+  // };
 
   //
 
@@ -361,6 +587,90 @@ const AddBusinessScreen = props => {
       });
   };
 
+  const updateImage = async (src, id) => {
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    var payload = new FormData();
+    if (src != undefined) {
+      payload.append('id', id);
+      payload.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? src?.uri
+            : src?.uri.replace('file://', ''),
+        name: src?.fileName,
+        type: src?.type,
+      });
+    }
+    fetch(Api.UPDATE_BUSINESS_IMAGE, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization:
+          'Bearer ' +
+          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // return responseJson
+        printLog('UpdateImage', JSON.stringify(responseJson));
+        ShowMessage('Image Update Successfully');
+        // if (responseJson?.status) {
+        //   RootNavigation?.goBack();
+        // }
+        setLoading(false);
+      })
+      .catch(error => {
+        ShowMessage(error);
+        printLog('Update Error', JSON.stringify(error));
+        setLoading(false);
+      });
+  };
+
+  const UPDATEIMAGE = async (src, id) => {
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    var payload = new FormData();
+    if (src != undefined) {
+      payload.append('id', id);
+      payload.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? src?.uri
+            : src?.uri.replace('file://', ''),
+        name: src?.fileName,
+        type: src?.type,
+      });
+    }
+    fetch(Api.UPDATE_BUSINESS_IMAGE, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization:
+          'Bearer ' +
+          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // return responseJson
+        printLog('UpdateImage', JSON.stringify(responseJson));
+        ShowMessage('Image Update Successfully');
+        // if (responseJson?.status) {
+        //   RootNavigation?.goBack();
+        // }
+        setLoading(false);
+      })
+      .catch(error => {
+        ShowMessage(JSON.stringify(error));
+        printLog('Update Error', error);
+        setLoading(false);
+      });
+  };
+
   const getMyImage = first => {
     ImagePicker.launchImageLibrary(
       {
@@ -379,8 +689,13 @@ const AddBusinessScreen = props => {
           // setVisiting(response?.assets[0]);
           if (first == 1) {
             setVisiting(response?.assets[0]);
+            if (imageOne != null) {
+              UPDATEIMAGE(response?.assets[0], imageOne);
+            }
           } else {
-            setVisitingOne(response?.assets[0]);
+            if (imageTwo != null) {
+              UPDATEIMAGE(response?.assets[0], imageTwo);
+            }
           }
         }
       },
@@ -831,7 +1146,13 @@ const AddBusinessScreen = props => {
                     Visiting Card :{' '}
                   </Text>
                   <AppButton
-                    buttonPress={() => getMyImage(visiting == '' ? 1 : 2)}
+                    buttonPress={() => {
+                      if (visiting == undefined || visiting == '') {
+                        getMyImage(1);
+                      } else {
+                        getMyImage(2);
+                      }
+                    }}
                     text={'Browse'}
                     textStyle={{marginLeft: 0, fontSize: 12}}
                     buttonStyle={{
@@ -888,7 +1209,14 @@ const AddBusinessScreen = props => {
                       width: '48%',
                       height: '100%',
                     }}
-                    onPress={() => (visiting != '' ? getMyImage(1) : null)}>
+                    onPress={
+                      visiting != undefined
+                        ? () => {
+                            getMyImage(1);
+                            // setOne();
+                          }
+                        : null
+                    }>
                     <Image
                       style={{
                         width: '100%',
@@ -897,7 +1225,7 @@ const AddBusinessScreen = props => {
                         backgroundColor: '#F2F2F2',
                       }}
                       source={
-                        visiting == ''
+                        visiting == '' || visiting == undefined
                           ? AppImages.MEMBER_IMAGE
                           : {
                               uri:
@@ -920,7 +1248,9 @@ const AddBusinessScreen = props => {
                       width: '48%',
                       height: '100%',
                     }}
-                    onPress={() => (visitingOne != '' ? getMyImage(2) : null)}>
+                    onPress={() =>
+                      visitingOne != undefined ? getMyImage(2) : null
+                    }>
                     <Image
                       style={{
                         marginHorizontal: 5,
@@ -930,9 +1260,14 @@ const AddBusinessScreen = props => {
                         backgroundColor: '#F2F2F2',
                       }}
                       source={
-                        visitingOne == ''
+                        visitingOne == '' || visitingOne == undefined
                           ? AppImages.MEMBER_IMAGE
-                          : {uri: visitingOne?.uri}
+                          : {
+                              uri:
+                                visitingOne?.uri == undefined
+                                  ? visitingOne
+                                  : visitingOne?.uri,
+                            }
                       }
                     />
                     {visitingOne != '' && (
@@ -1099,23 +1434,22 @@ const AddBusinessScreen = props => {
                   }}
                   isLoading={loading}
                   buttonPress={() => {
-                    if (selectedCategory == null) {
-                      showMessage('Please select category');
-                    } else if (firm == undefined || firm?.trim() == '') {
-                      ShowMessage('Please enter firm name');
-                    } else if (owner1 == undefined || owner1?.trim() == '') {
-                      ShowMessage('Please enter owner name');
-                    } else if (address == undefined || address?.trim() == '') {
-                      ShowMessage('Please enter address');
-                    } else if (selectedCity == null) {
-                      ShowMessage('Please select villiage');
-                    } else if (visiting == undefined) {
-                      ShowMessage('Please upload visiting card');
-                    } else {
-                      bussinessItem == undefined
-                        ? addNewBusiness()
-                        : updateBusiness();
-                    }
+                    // if (selectedCategory == null) {
+                    //   showMessage('Please select category');
+                    // } else if (firm == undefined || firm?.trim() == '') {
+                    //   ShowMessage('Please enter firm name');
+                    // } else if (owner1 == undefined || owner1?.trim() == '') {
+                    //   ShowMessage('Please enter owner name');
+                    // } else if (address == undefined || address?.trim() == '') {
+                    //   ShowMessage('Please enter address');
+                    // } else if (selectedCity == null) {
+                    //   ShowMessage('Please select villiage');
+                    // } else if (visiting == undefined) {
+                    //   ShowMessage('Please upload visiting card');
+                    // } else {
+                    AddBusiness();
+                    // : updateBusiness();
+                    // }
                   }}
                 />
               )}

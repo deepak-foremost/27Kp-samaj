@@ -197,7 +197,7 @@ export const BusinessDirectoryCell = props => {
         }}
         activeOpacity={AppConstValue.ButtonOpacity}>
         <Image
-          source={{uri: props?.item?.visting_card_photo}}
+          source={{uri: props?.item?.images[0]?.visting_card_photo}}
           style={{
             marginLeft: 10,
             marginRight: 10,

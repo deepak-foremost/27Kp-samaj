@@ -154,7 +154,6 @@ const AboutUsScreen = props => {
               setValueId(response?.data[i]?.id);
             }
           }
-
           setRange(data);
         }
       },
@@ -305,28 +304,43 @@ const AboutUsScreen = props => {
                 <ListMember styles={{height: 45}} />
               </View>
             ) : (
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{
-                  paddingBottom: 10,
-                }}
-                data={members == null ? [] : members}
-                renderItem={({item, index}) => (
-                  <AboutCell
-                    index={index}
-                    item={item}
-                    onClick={() => {
-                      // printLog('AboutCell', JSON.stringify(item));
-                      RootNavigation.push(
-                        props?.navigation,
-                        AppScreens.ABOUT_US_DETAIL_SCREEN,
-                        {item: item},
-                      );
+              <View>
+                {members?.length == 0 && karobari?.length == 0 ? (
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: AppColors.LightText,
+                      alignSelf: 'center',
+                      marginTop: 50,
+                      fontFamily: AppFonts.semiBold,
+                    }}>
+                    No Data Found
+                  </Text>
+                ) : (
+                  <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                      paddingBottom: 10,
                     }}
+                    data={members == null ? [] : members}
+                    renderItem={({item, index}) => (
+                      <AboutCell
+                        index={index}
+                        item={item}
+                        onClick={() => {
+                          // printLog('AboutCell', JSON.stringify(item));
+                          RootNavigation.push(
+                            props?.navigation,
+                            AppScreens.ABOUT_US_DETAIL_SCREEN,
+                            {item: item},
+                          );
+                        }}
+                      />
+                    )}
                   />
                 )}
-              />
+              </View>
             )}
             {show && karobari?.length != 0 ? (
               <View

@@ -405,7 +405,7 @@ const BusinessDetaiLScreen = props => {
                     }}
                     source={
                       // require('../../../assets/images/directory_image.png')
-                      {uri: item?.visting_card_photo}
+                      {uri: item?.images[0]?.visting_card_photo}
                     }
                   />
                 </TouchableOpacity>
@@ -423,11 +423,11 @@ const BusinessDetaiLScreen = props => {
                       borderRadius: 15,
                     }}
                     source={
-                      item?.visting_card_photo_two == '' ||
-                      item?.visting_card_photo_two == undefined
+                      item?.images[1]?.visting_card_photo == '' ||
+                      item?.images[1]?.visting_card_photo == undefined
                         ? AppImages.MEMBER_IMAGE
                         : // require('../../../assets/images/directory_image.png')
-                          {uri: item?.visting_card_photo_two}
+                          {uri: item?.images[1]?.visting_card_photo}
                     }
                   />
                 </TouchableOpacity>

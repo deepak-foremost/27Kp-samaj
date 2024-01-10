@@ -58,13 +58,13 @@ const VerifyScreen = props => {
     props?.route?.params?.codeConformation,
   );
   const [otp, setOtp] = useState('');
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(120);
   const [resendLoad, setLoad] = useState(false);
 
   const formatTime = seconds => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 61;
-    return `${remainingSeconds}`;
+    return `0${minutes}:${remainingSeconds}`;
   };
 
   useEffect(() => {
@@ -150,7 +150,8 @@ const VerifyScreen = props => {
                     lineHeight: 25,
                     width: '90%',
                   }}>
-                  Please enter the verification code sent to your phone number
+                  {'Please enter the verification code sent to' + '  '}
+                  {country_code + phone}
                 </Text>
               </View>
             </View>

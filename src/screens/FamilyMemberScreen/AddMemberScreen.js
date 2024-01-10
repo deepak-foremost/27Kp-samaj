@@ -40,7 +40,11 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import BorderView from '../../components/BorderView';
 import LoaderView from '../../utils/LoaderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {getCities, getRelation} from '../../networking/CallApi';
+import {
+  getCities,
+  getRelation,
+  updateFamilyImage,
+} from '../../networking/CallApi';
 import {Api} from '../../networking/Api';
 import {showMessage} from 'react-native-flash-message';
 import axios from 'axios';
@@ -90,9 +94,9 @@ const AddMemberScreen = props => {
   const [foriegn_country_code, setForeignCountryCode] = useState('+91');
   const [foriegn_number, setForeignNumber] = useState('');
   const [foreign_country_name, setForeignCountry] = useState('');
-  const [imageOne, setOne] = useState();
-  const [imageTwo, setTwo] = useState();
-  const [imageThree, setThree] = useState();
+  const [imageOne, setOne] = useState(null);
+  const [imageTwo, setTwo] = useState(null);
+  const [imageThree, setThree] = useState(null);
 
   const [imageList, setImageList] = useState([]);
 
@@ -142,16 +146,46 @@ const AddMemberScreen = props => {
     );
   }, []);
 
-  const imageLinkToParam = imageLink => {
-    let filename = '';
-    let filePath = '';
-    filePath =
-      Platform.OS == 'android' ? imageLink : imageLink.replace('file://', '');
-    filename = imageLink
-      .substring(imageLink.lastIndexOf('/') + 1, imageLink.length)
-      .replaceAll('%20', '_');
-    printLog('imageLinkToParam ::::: ', filename);
-    return {uri: filePath, name: filename, type: 'image/jpg'};
+  const updateImage = async (src, id) => {
+    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+    var payload = new FormData();
+    if (src != undefined) {
+      payload.append('id', id);
+      payload.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? src?.uri
+            : src?.uri.replace('file://', ''),
+        name: src?.fileName,
+        type: src?.type,
+      });
+    }
+    fetch(Api.UPDATE_IMAGE, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization:
+          'Bearer ' +
+          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        // return responseJson
+        printLog('UpdateImage', JSON.stringify(responseJson));
+        ShowMessage('Image Update Successfully');
+        // if (responseJson?.status) {
+        //   RootNavigation?.goBack();
+        // }
+        setLoading(false);
+      })
+      .catch(error => {
+        ShowMessage(JSON.stringify(error));
+        printLog('Update Error', JSON.stringify(error));
+        setLoading(false);
+      });
   };
 
   const getMyImage = first => {
@@ -172,10 +206,21 @@ const AddMemberScreen = props => {
           // setVisiting(response?.assets[0]);
           if (first == 1) {
             setImage(response?.assets[0]);
+            if (imageOne != null) {
+              updateImage(response?.assets[0], imageOne);
+            }
           } else if (first == 2) {
             setVisitingOne(response?.assets[0]);
+            if (imageTwo != null) {
+              console.warn('check');
+              updateImage(response?.assets[0], imageTwo);
+            }
           } else {
             setVisitingTwo(response?.assets[0]);
+            if (imageThree != null) {
+              console.warn('check');
+              updateImage(response?.assets[0], imageThree);
+            }
             console.log('imageList', JSON.stringify(imageList));
           }
         }
@@ -186,7 +231,7 @@ const AddMemberScreen = props => {
   useEffect(() => {
     // console.log('detail', memberItem);
     if (memberItem != undefined && memberItem != null) {
-      // console.log('phone', memberItem?.phone);
+      console.log('phone', memberItem?.foreign_number);
       setCity(memberItem?.city);
       setFamilyMember(memberItem?.name);
       setGender(memberItem?.gender);
@@ -205,14 +250,16 @@ const AddMemberScreen = props => {
       setImage(memberItem?.images[0]?.image);
       setVisitingOne(memberItem?.images[1]?.image);
       setVisitingTwo(memberItem?.images[2]?.image);
-      // setOne(memberItem?.images[0]?.image);
-      // setTwo(memberItem?.images[1]?.image);
-      // setThree(memberItem?.images[2]?.image);
+      setForeignNumber(memberItem?.foreign_number);
+      setOne(memberItem?.images[0]?.id);
+      setTwo(memberItem?.images[1]?.id);
+      setThree(memberItem?.images[2]?.id);
       setBlood(memberItem?.blood_group);
       setDOB(new Date(memberItem?.dob));
       setRelation(memberItem?.family_main_member_with_relation);
       setStatus(memberItem?.marital_status);
       setForeignCountry(memberItem?.foreign_country_name);
+      setForeignCountryCode(memberItem?.foriegn_country_code);
       Setjeevan_sahay_nubmer(memberItem?.jeevan_sahay_nubmer);
       setsasru(memberItem?.sasru);
       setBoomi_nubmer(memberItem?.boomi_nubmer);
@@ -317,6 +364,8 @@ const AddMemberScreen = props => {
             country_code: country_code,
             phone: phone,
             foreign_country_name: foreign_country_name,
+            foreign_number: foriegn_number,
+            foriegn_country_code: foriegn_country_code,
             jeevan_sahay_nubmer: jeevan_sahay_nubmer,
             sasru: sasru,
             boomi_nubmer: boomi_nubmer,
@@ -346,57 +395,13 @@ const AddMemberScreen = props => {
             country_code: country_code,
             phone: phone,
             foreign_country_name: foreign_country_name,
+            foriegn_country_code: foriegn_country_code,
             jeevan_sahay_nubmer: jeevan_sahay_nubmer,
             sasru: sasru,
             boomi_nubmer: boomi_nubmer,
             dob: moment(dob).format('YYYY-MM-DD'),
             ...uploadImageList,
           };
-
-    // if (memberItem != undefined) {
-    //   payload.append('id', memberItem?.id);
-    // }
-    // payload.append('name', familyMember);
-    // payload.append('email', email);
-    // payload.append('gender', gender);
-    // payload.append('city', city);
-    // payload.append('height', height);
-    // payload.append('weight', weigth);
-    // payload.append('age', age);
-    // payload.append('blood_group', blood);
-    // payload.append('family_main_member_with_relation', relation);
-    // payload.append('marital_status', status);
-    // payload.append('study', study);
-    // payload.append('business', business);
-    // payload.append('business_address', businessAddress);
-    // payload.append('current_address', homeAddress);
-    // payload.append('mosal', mosal);
-    // payload.append('shakh', hobby);
-    // payload.append('country_code', country_code);
-    // payload.append('phone', phone);
-    // payload.append('foreign_country_name', foreign_country_name);
-    // payload.append('jeevan_sahay_nubmer', jeevan_sahay_nubmer);
-    // payload.append('sasru', sasru);
-    // payload.append('boomi_nubmer', boomi_nubmer);
-    // payload.append('dob', moment(dob).format('YYYY-MM-DD'));
-
-    // // payload.append(`imagemultiple`,imageList)
-    // imageList.forEach((image, index) => {
-    //   // const uriParts = image.uri.split('.');
-    //   // const fileType = uriParts[uriParts.length - 1];
-    //   payload.append(`imagemultiple[${image}]`, {
-    //     uri: image.uri,
-    //     type: image.type, // Adjust the type based on your API requirements
-    //     // name: `image${index + 1}.jpg`,
-    //     name: image.fileName,
-    //   });
-    // });
-    // // printLog('PARAMS', JSON.stringify(payload));
-    // printLog(
-    //   'params data---->',
-    //   token?.token == undefined ? JSON.parse(token)?.token : token?.token,
-    // );
-    // return;
 
     const API_BASE_URL =
       memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER;
@@ -892,6 +897,18 @@ const AddMemberScreen = props => {
               />
               <MyMobileNumber
                 contact={true}
+                label={`ફોરેન Number`}
+                defaultText={foriegn_number}
+                countryCode={foriegn_country_code}
+                phone={foriegn_number}
+                type={'numeric'}
+                setCountryCode={item => {
+                  setCountryCode(item?.name);
+                }}
+                onChangeText={setForeignNumber}
+              />
+              {/* <MyMobileNumber
+                contact={true}
                 label={`ફોરેન Number : `}
                 countryCode={foriegn_country_code}
                 phone={foriegn_number}
@@ -900,7 +917,7 @@ const AddMemberScreen = props => {
                   setForeignCountryCode(item?.name);
                 }}
                 onChangeText={setForeignNumber}
-              />
+              /> */}
               <HorizontalTextInput
                 label={`ભુમિ સભાસદ નં:`}
                 defaultText={boomi_nubmer}
@@ -1016,9 +1033,12 @@ const AddMemberScreen = props => {
                   </Text>
                   <AppButton
                     buttonPress={() => {
-                      if (image == undefined) {
+                      if (image == undefined || image == '') {
                         getMyImage(1);
-                      } else if (visitingOne == undefined) {
+                      } else if (
+                        visitingOne == undefined ||
+                        visitingOne == ''
+                      ) {
                         getMyImage(2);
                       } else {
                         getMyImage(3);
@@ -1080,7 +1100,14 @@ const AddMemberScreen = props => {
                       width: '30%',
                       height: '100%',
                     }}
-                    onPress={() => (image != undefined ? getMyImage(1) : null)}>
+                    onPress={
+                      image != undefined
+                        ? () => {
+                            getMyImage(1);
+                            setOne();
+                          }
+                        : null
+                    }>
                     <Image
                       style={{
                         width: '100%',
@@ -1089,7 +1116,7 @@ const AddMemberScreen = props => {
                         backgroundColor: '#F2F2F2',
                       }}
                       source={
-                        image == undefined
+                        image == undefined || image == ''
                           ? AppImages.MEMBER_IMAGE
                           : {
                               uri: image?.uri == undefined ? image : image?.uri,
@@ -1155,7 +1182,7 @@ const AddMemberScreen = props => {
                         backgroundColor: '#F2F2F2',
                       }}
                       source={
-                        visitingOne == undefined
+                        visitingOne == undefined || visitingOne == ''
                           ? AppImages.MEMBER_IMAGE
                           : {
                               uri:
@@ -1221,7 +1248,7 @@ const AddMemberScreen = props => {
                         backgroundColor: '#F2F2F2',
                       }}
                       source={
-                        VisitingTwo == undefined
+                        VisitingTwo == undefined || VisitingTwo == ''
                           ? AppImages.MEMBER_IMAGE
                           : {
                               uri:
@@ -1279,7 +1306,7 @@ const AddMemberScreen = props => {
               ) : (
                 <AppButton
                   width={'50%'}
-                  text={memberItem == undefined ? `Submit` : `Update`}
+                  text={memberItem == undefined ? `Submit` : ``}
                   buttonStyle={{
                     width: '50%',
                     height: 40,

@@ -88,6 +88,16 @@ export const getKarobari = (params, onSuccess, onFailure) => {
   );
 };
 
+export const getServiceDetail = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.SERVICE_DETAIL}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
 export const checkPhoneNumber = (params, onSuccess, onFailure) => {
   CallApi(
     Api.CHECK_PHONE_EXISTS,
@@ -115,6 +125,20 @@ export const getSearch = (params, onSuccess, onFailure) => {
 export const updatePassword = (params, onSuccess, onFailure) => {
   CallApi(
     Api.POST_UPDATE_PASSWORD,
+    RequestType.post,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
+export const updateFamilyImage = (params, onSuccess, onFailure) => {
+  CallApi(Api.UPDATE_IMAGE, RequestType.post, params, onSuccess, onFailure);
+};
+
+export const updateBusinessImage = (params, onSuccess, onFailure) => {
+  CallApi(
+    Api.UPDATE_BUSINESS_IMAGE,
     RequestType.post,
     params,
     onSuccess,

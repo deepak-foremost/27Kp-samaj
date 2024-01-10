@@ -321,7 +321,8 @@ const LinkDetails = props => {
                             RootNavigation.navigate(
                               AppScreens.SERVICE_DETAILS,
                               {
-                                text: item.title,
+                                text: item?.service,
+                                id: item?.id,
                               },
                             )
                           }
@@ -386,12 +387,12 @@ const LinkDetails = props => {
                           <FileCell item={item} index={index} />
                         ) : null
                       }
-                      refreshControl={
-                        <RefreshControl
-                          refreshing={refreshing}
-                          onRefresh={onRefresh}
-                        />
-                      }
+                      // refreshControl={
+                      //   <RefreshControl
+                      //     refreshing={refreshing}
+                      //     onRefresh={onRefresh}
+                      //   />
+                      // }
                     />
                   </View>
                   <FlatList
@@ -431,9 +432,12 @@ const LinkDetails = props => {
                         />
                       ) : null
                     }
-                    //   refreshControl={
-                    //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                    //   }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
                   />
                 </View>
               )}
