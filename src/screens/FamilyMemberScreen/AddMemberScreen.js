@@ -48,6 +48,7 @@ import {
 import {Api} from '../../networking/Api';
 import {showMessage} from 'react-native-flash-message';
 import axios from 'axios';
+import ImageUpload from '../../components/ImageUpload';
 
 const AddMemberScreen = props => {
   const inset = useSafeAreaInsets();
@@ -97,10 +98,15 @@ const AddMemberScreen = props => {
   const [imageOne, setOne] = useState(null);
   const [imageTwo, setTwo] = useState(null);
   const [imageThree, setThree] = useState(null);
-
   const [imageList, setImageList] = useState([]);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [lastYear, setLast] = useState();
 
   useEffect(() => {
+    var d = new Date();
+    var pastYear = d.getFullYear() - 1;
+    d.setFullYear(pastYear);
+    setLast(d);
     getString(AsyncStorageConst.user, res => {
       setUser(res);
       printLog('USER', JSON.stringify(res));
@@ -147,45 +153,52 @@ const AddMemberScreen = props => {
   }, []);
 
   const updateImage = async (src, id) => {
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-    var payload = new FormData();
-    if (src != undefined) {
-      payload.append('id', id);
-      payload.append('image', {
-        uri:
-          Platform.OS === 'android'
-            ? src?.uri
-            : src?.uri.replace('file://', ''),
-        name: src?.fileName,
-        type: src?.type,
-      });
-    }
-    fetch(Api.UPDATE_IMAGE, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization:
-          'Bearer ' +
-          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-      },
-      body: payload,
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        // return responseJson
-        printLog('UpdateImage', JSON.stringify(responseJson));
-        ShowMessage('Image Update Successfully');
-        // if (responseJson?.status) {
-        //   RootNavigation?.goBack();
-        // }
-        setLoading(false);
+    if (!imageLoading) {
+      setImageLoading(true);
+      let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      var payload = new FormData();
+      if (src != undefined) {
+        payload.append('id', id);
+        payload.append('image', {
+          uri:
+            Platform.OS === 'android'
+              ? src?.uri
+              : src?.uri.replace('file://', ''),
+          name: src?.fileName,
+          type: src?.type,
+        });
+      }
+      fetch(Api.UPDATE_IMAGE, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization:
+            'Bearer ' +
+            (token?.token == undefined
+              ? JSON.parse(token)?.token
+              : token?.token),
+        },
+        body: payload,
       })
-      .catch(error => {
-        ShowMessage(JSON.stringify(error));
-        printLog('Update Error', JSON.stringify(error));
-        setLoading(false);
-      });
+        .then(response => response.json())
+        .then(responseJson => {
+          // return responseJson
+          printLog('UpdateImage', JSON.stringify(responseJson));
+          setImageLoading(false);
+          ShowMessage('Image Update Successfully');
+          // if (responseJson?.status) {
+          //   RootNavigation?.goBack();
+          // }
+          setLoading(false);
+        })
+        .catch(error => {
+          // ShowMessage(JSON.stringify(error));
+          printLog('Update Error', JSON.stringify(error));
+          setImageLoading(false);
+          updateImage(src, id);
+        });
+    }
   };
 
   const getMyImage = first => {
@@ -232,6 +245,7 @@ const AddMemberScreen = props => {
     // console.log('detail', memberItem);
     if (memberItem != undefined && memberItem != null) {
       console.log('phone', memberItem?.foreign_number);
+      console.log('date', new Date(memberItem?.dob) + new Date());
       setCity(memberItem?.city);
       setFamilyMember(memberItem?.name);
       setGender(memberItem?.gender);
@@ -255,7 +269,7 @@ const AddMemberScreen = props => {
       setTwo(memberItem?.images[1]?.id);
       setThree(memberItem?.images[2]?.id);
       setBlood(memberItem?.blood_group);
-      setDOB(new Date(memberItem?.dob));
+      setDOB(memberItem?.dob);
       setRelation(memberItem?.family_main_member_with_relation);
       setStatus(memberItem?.marital_status);
       setForeignCountry(memberItem?.foreign_country_name);
@@ -547,7 +561,7 @@ const AddMemberScreen = props => {
         />
         <View style={{flex: 1}}>
           <AppButton
-            text={'Mobile Number : 9999999999'}
+            text={'Mobile Number : ' + user?.country_code + user?.phone}
             textStyle={{marginHorizontal: 5}}
             buttonStyle={{
               width: '85%',
@@ -666,11 +680,12 @@ const AddMemberScreen = props => {
                       setAge(JSON.stringify(calculateAge(i)));
                       setDOB(i);
                     }}
-                    value={dob}
+                    value={dob == null ? new Date('2023-01-01') : new Date(dob)}
+                    minYear={new Date('2023-01-01')}
                     placeholder={
                       dob == null
                         ? 'DD/MM/YYYY'
-                        : moment(dob).format('YYYY-MM-DD')
+                        : moment(dob).format('DD-MM-YYYY')
                     }
                   />
                 </View>
@@ -679,7 +694,7 @@ const AddMemberScreen = props => {
                     diseble={false}
                     label={`ઉંમર`}
                     placeholder={'Select જન્મ તારીખ'}
-                    defaultText={age}
+                    defaultText={age + ' Years'}
                     type="phone-pad"
                     onChangeText={i => setAge(i)}
                   />
@@ -1094,7 +1109,7 @@ const AddMemberScreen = props => {
                     height: 90,
                     paddingTop: 15,
                   }}>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     activeOpacity={1}
                     style={{
                       width: '30%',
@@ -1108,28 +1123,40 @@ const AddMemberScreen = props => {
                           }
                         : null
                     }>
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: 80,
-                        borderRadius: 5,
-                        backgroundColor: '#F2F2F2',
-                      }}
-                      source={
-                        image == undefined || image == ''
-                          ? AppImages.MEMBER_IMAGE
-                          : {
-                              uri: image?.uri == undefined ? image : image?.uri,
-                            }
-                      }
-                    />
+                    {imageLoading ? (
+                      <View>
+                        <LoaderView />
+                      </View>
+                    ) : (
+                      <Image
+                        style={{
+                          width: '100%',
+                          height: 80,
+                          borderRadius: 5,
+                          backgroundColor: '#F2F2F2',
+                        }}
+                        source={
+                          image == undefined || image == ''
+                            ? AppImages.MEMBER_IMAGE
+                            : {
+                                uri:
+                                  image?.uri == undefined ? image : image?.uri,
+                              }
+                        }
+                      />
+                    )}
                     {image != undefined && (
                       <Image
                         style={{position: 'absolute', right: 5, top: 5}}
                         source={require('../../assets/images/cancel_icon.png')}
                       />
                     )}
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+                  <ImageUpload
+                    image={image}
+                    imgPress={() => getMyImage(1)}
+                    imageLoading={imageLoading}
+                  />
                   {/* <TouchableOpacity
                     style={{width: '30%'}}
                     onPress={() => getMyImage(1)}>
@@ -1165,7 +1192,12 @@ const AddMemberScreen = props => {
                       </TouchableOpacity>
                     </ImageBackground>
                   </TouchableOpacity> */}
-                  <TouchableOpacity
+                  <ImageUpload
+                    image={visitingOne}
+                    imgPress={() => getMyImage(2)}
+                    imageLoading={imageLoading}
+                  />
+                  {/* <TouchableOpacity
                     activeOpacity={1}
                     style={{
                       width: '30%',
@@ -1198,7 +1230,8 @@ const AddMemberScreen = props => {
                         source={require('../../assets/images/cancel_icon.png')}
                       />
                     )}
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+
                   {/* <TouchableOpacity
                     style={{width: '30%'}}
                     onPress={() => getMyImage(2)}>
@@ -1306,7 +1339,7 @@ const AddMemberScreen = props => {
               ) : (
                 <AppButton
                   width={'50%'}
-                  text={memberItem == undefined ? `Submit` : ``}
+                  text={memberItem == undefined ? `Submit` : `Update`}
                   buttonStyle={{
                     width: '50%',
                     height: 40,

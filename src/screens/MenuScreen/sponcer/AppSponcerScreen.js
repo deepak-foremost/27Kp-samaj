@@ -80,7 +80,7 @@ const AppSponcerScreen = props => {
   const StatusBarHeight = inset.top;
   const [isLoading, setLoading] = useState(true);
   const [members, setMembers] = useState(null);
-  const status = props?.route?.params.menu;
+  const status = props?.route?.params?.menu;
   const [open, setOpen] = useState(false);
   const [images, setImages] = useState(null);
 
@@ -303,7 +303,7 @@ export default AppSponcerScreen;
 
 export const MemberCell = props => {
   const [open, setOpen] = useState(false);
-  console.log(props?.item);
+
   // const images = [
   //   {
   //     url: props?.items != null && props?.item?.image,
@@ -351,7 +351,7 @@ export const MemberCell = props => {
               props?.item?.sabhy_number == undefined
                 ? props?.item?.boomi_number
                 : props?.item?.sabhy_number
-            }.`
+            }`
           : props?.status + ' નંબર'}
       </Text>
       <Text

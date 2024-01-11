@@ -311,7 +311,11 @@ const MobileLogInScreen = props => {
                 defaultText={password}
               />
 
-              <View
+              <TouchableOpacity
+              activeOpacity={1}
+                onPress={() => {
+                  setCheck(!check);
+                }}
                 style={{
                   flexDirection: 'row',
                   alignSelf: 'flex-start',
@@ -331,9 +335,6 @@ const MobileLogInScreen = props => {
                     borderRadius: 5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    setCheck(!check);
                   }}>
                   {check && (
                     <Text
@@ -361,7 +362,7 @@ const MobileLogInScreen = props => {
                   }}>
                   Remember Password{' '}
                 </Text>
-              </View>
+              </TouchableOpacity>
 
               <TouchableOpacity
                 style={{alignSelf: 'flex-start'}}

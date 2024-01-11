@@ -571,7 +571,6 @@ export const BoxTextInput = props => {
 
 export const DateSelection = props => {
   const [openDatePicker, setDatePicker] = useState(false);
-  const [dob, setDOB] = useState(null);
 
   return (
     <View
@@ -615,43 +614,16 @@ export const DateSelection = props => {
           }}>
           {props?.placeholder}
         </Text>
-        {/* <Image
-          style={{
-            width: 1.5,
-            height: '80%',
-            marginHorizontal: 5,
-            backgroundColor: AppColors.fade,
-          }}
-        /> */}
       </TouchableOpacity>
 
-      {/* <DatePicker
-        modal
-        mode="date"
-        open={openDatePicker}
-        maximumDate={new Date()}
-        date={dob == null ? new Date() : dob}
-        onConfirm={date => {
-          setDatePicker(false);
-          setDOB(date);
-        }}
-        onCancel={() => {
-          setDatePicker(false);
-        }}
-      /> */}
       <CustomDatePicker
-        // onChangeDob={i =>
-        //   props?.expiry
-        //     ? setDOB(moment(i).format('MM-YYYY'))
-        //     : // : console.log('dateformat', moment(i).format('DD-MM-YYYY'))
-        //       setDOB(moment(i).format('DD-MM-YYYY'))
-        // }
         onChangeDob={props?.onChangeDob}
         isOpened={openDatePicker}
         onClose={() => setDatePicker(false)}
         title={props.title}
         expiry={props?.expiry}
         value={props?.value}
+        minYear={props?.minYear}
       />
     </View>
   );

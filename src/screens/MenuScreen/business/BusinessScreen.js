@@ -240,7 +240,7 @@ const BusinessScreen = props => {
                   paddingHorizontal: 10,
                   paddingVertical: 20,
                   justifyContent: 'center',
-                  flex:1
+                  flex: 1,
                 }}>
                 {pos == 0 ? (
                   categories?.map((item, index) => (

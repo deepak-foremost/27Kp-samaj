@@ -20,6 +20,7 @@ import {AppScreens} from '../../../utils/AppScreens';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
 import AsyncStorage from '@react-native-community/async-storage';
+import {getProfile} from '../../../networking/CallApi';
 
 const ProfileScreen = () => {
   const [modelOpen, setModelOpen] = useState(false);
@@ -27,17 +28,36 @@ const ProfileScreen = () => {
   const [data, setData] = useState();
   const inset = useSafeAreaInsets();
   const [screen, setScreen] = useState('');
+  const [id, setId] = useState('');
   const StatusBarHeight = inset.top;
 
   useEffect(() => {
     async function check() {
       let Details = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      console.log('Status', JSON.parse(Details)?.data?.id);
       setData(JSON.parse(Details)?.data);
+      setId(JSON.parse(Details)?.data?.id);
       let token = await AsyncStorage.getItem(AsyncStorageConst.screen);
       setScreen(token);
-      // console.log('details', JSON.parse(Details)?.data?.phone);
+      console.log('details', JSON.parse(Details)?.data?.phone);
     }
     check();
+    // getProfile(
+    //   {
+    //     id: id,
+    //   },
+    //   response => {
+    //     if (response.status) {
+    //       console.log(response);
+    //       setData(response);
+    //     } else {
+    //       console.log('failed');
+    //     }
+    //   },
+    //   error => {
+    //     console.log('error', error);
+    //   },
+    // );
   }, []);
   return (
     <View

@@ -58,6 +58,7 @@ const AddBusinessScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   var bussinessItem = props?.route?.params?.item;
+  const TopPhone = props?.route?.params?.phone;
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState(null);
   const [selectedCategory, setCategory] = useState('');
@@ -87,11 +88,12 @@ const AddBusinessScreen = props => {
   const [openDatePicker, setDatePicker] = useState(false);
   const [dob, setDOB] = useState(null);
   const [startAdd, setStartAdd] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [owner_name_4, setOwner_name_4] = useState('');
   const [imageOne, setImageOne] = useState(null);
   const [imageTwo, setImageTwo] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
     getCities(
@@ -240,17 +242,26 @@ const AddBusinessScreen = props => {
             business_hourse: JSON.stringify(week),
             ...uploadImageList,
           };
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(
+        ([key, value]) => value !== '' && value !== null && value !== '-',
+      ),
+    );
+    // console.log('filter', filteredParams);
+    if (filteredParams == {}) {
+      filteredParams = '';
+    }
     const API_BASE_URL =
       bussinessItem == undefined
         ? Api.POST_ADD_BUSINESS
         : Api.POST_UPDATE_BUSINESS;
     const AuthToken =
       token?.token == undefined ? JSON.parse(token)?.token : token?.token;
-    console.log(`PARAMS:::::::`, JSON.stringify(params));
+    console.log(`PARAMS:::::::`, JSON.stringify(filteredParams));
     let formData = new FormData();
-    var myparams = Object.keys(params);
+    var myparams = Object.keys(filteredParams);
     myparams?.map(item => {
-      formData.append(item, params[item]);
+      formData.append(item, filteredParams[item]);
     });
 
     // var payload = new FormData();
@@ -392,17 +403,27 @@ const AddBusinessScreen = props => {
             ...uploadImageList,
           };
 
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(
+        ([key, value]) => value !== '' && value !== null && value !== '-',
+      ),
+    );
+    // console.log('filter', filteredParams);
+    if (filteredParams == {}) {
+      filteredParams = '';
+    }
+
     const API_BASE_URL =
       bussinessItem == undefined
         ? Api.POST_ADD_BUSINESS
         : Api.POST_UPDATE_BUSINESS;
     const AuthToken =
       token?.token == undefined ? JSON.parse(token)?.token : token?.token;
-    console.log(`PARAMS:::::::`, JSON.stringify(params));
+    console.log(`PARAMS:::::::`, JSON.stringify(filteredParams));
     let formData = new FormData();
-    var myparams = Object.keys(params);
+    var myparams = Object.keys(filteredParams);
     myparams?.map(item => {
-      formData.append(item, params[item]);
+      formData.append(item, filteredParams[item]);
     });
 
     setLoading(true);
@@ -630,47 +651,53 @@ const AddBusinessScreen = props => {
   };
 
   const UPDATEIMAGE = async (src, id) => {
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-    var payload = new FormData();
-    if (src != undefined) {
-      payload.append('id', id);
-      payload.append('image', {
-        uri:
-          Platform.OS === 'android'
-            ? src?.uri
-            : src?.uri.replace('file://', ''),
-        name: src?.fileName,
-        type: src?.type,
-      });
-    }
-    fetch(Api.UPDATE_BUSINESS_IMAGE, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization:
-          'Bearer ' +
-          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-      },
-      body: payload,
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        // return responseJson
-        printLog('UpdateImage', JSON.stringify(responseJson));
-        ShowMessage('Image Update Successfully');
-        // if (responseJson?.status) {
-        //   RootNavigation?.goBack();
-        // }
-        setLoading(false);
+    if (!imageLoading) {
+      setImageLoading(true);
+      let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      var payload = new FormData();
+      if (src != undefined) {
+        payload.append('id', id);
+        payload.append('visting_card_photo', {
+          uri:
+            Platform.OS === 'android'
+              ? src?.uri
+              : src?.uri.replace('file://', ''),
+          name: src?.fileName,
+          type: src?.type,
+        });
+      }
+      console.log('params', payload);
+      fetch(Api.UPDATE_BUSINESS_IMAGE, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization:
+            'Bearer ' +
+            (token?.token == undefined
+              ? JSON.parse(token)?.token
+              : token?.token),
+        },
+        body: payload,
       })
-      .catch(error => {
-        ShowMessage(JSON.stringify(error));
-        printLog('Update Error', error);
-        setLoading(false);
-      });
+        .then(response => response.json())
+        .then(responseJson => {
+          // return responseJson
+          printLog('UpdateImage', JSON.stringify(responseJson));
+          ShowMessage('Image Update Successfully');
+          // if (responseJson?.status) {
+          //   RootNavigation?.goBack();
+          // }
+          setLoading(false);
+        })
+        .catch(error => {
+          // ShowMessage(JSON.stringify(error));
+          // printLog('Update Error', error);
+          setImageLoading(false);
+          UPDATEIMAGE(src, id);
+        });
+    }
   };
-
   const getMyImage = first => {
     ImagePicker.launchImageLibrary(
       {
@@ -693,6 +720,7 @@ const AddBusinessScreen = props => {
               UPDATEIMAGE(response?.assets[0], imageOne);
             }
           } else {
+            setVisitingOne(response?.assets[0]);
             if (imageTwo != null) {
               UPDATEIMAGE(response?.assets[0], imageTwo);
             }
@@ -701,12 +729,6 @@ const AddBusinessScreen = props => {
       },
     );
   };
-
-  // useEffect(() => {
-  //   getString('village', response => {
-  //     setAlLCities(response);
-  //   });
-  // }, [allCities, setAlLCities]);
 
   return (
     <View
@@ -733,7 +755,7 @@ const AddBusinessScreen = props => {
         />
         <View style={{flex: 1}}>
           <AppButton
-            text={'Mobile Number : 9999999999'}
+            text={'Mobile Number: ' + TopPhone}
             buttonStyle={{
               width: '90%',
               alignSelf: 'center',
@@ -1103,6 +1125,7 @@ const AddBusinessScreen = props => {
               <DateSelection
                 text={'Bussiness Start Date:'}
                 title={'Select Bussiness Start Date'}
+                value={startDate == null ? new Date() : new Date(startDate)}
                 placeholder={
                   startDate == '' || startDate == null
                     ? 'YYYY-MM-DD'
@@ -1114,6 +1137,7 @@ const AddBusinessScreen = props => {
               <DateSelection
                 text={'Bussiness End Date:'}
                 title={'Select Bussiness End Date'}
+                value={endDate == null ? new Date() : new Date(endDate)}
                 placeholder={
                   endDate == '' || endDate == null ? 'YYYY-MM-DD' : endDate
                 }
@@ -1434,22 +1458,30 @@ const AddBusinessScreen = props => {
                   }}
                   isLoading={loading}
                   buttonPress={() => {
-                    // if (selectedCategory == null) {
-                    //   showMessage('Please select category');
-                    // } else if (firm == undefined || firm?.trim() == '') {
-                    //   ShowMessage('Please enter firm name');
-                    // } else if (owner1 == undefined || owner1?.trim() == '') {
-                    //   ShowMessage('Please enter owner name');
-                    // } else if (address == undefined || address?.trim() == '') {
-                    //   ShowMessage('Please enter address');
-                    // } else if (selectedCity == null) {
-                    //   ShowMessage('Please select villiage');
-                    // } else if (visiting == undefined) {
-                    //   ShowMessage('Please upload visiting card');
-                    // } else {
-                    AddBusiness();
-                    // : updateBusiness();
-                    // }
+                    if (selectedCategory == null) {
+                      showMessage('Please select category');
+                    } else if (firm == undefined || firm?.trim() == '') {
+                      ShowMessage('Please enter firm name');
+                    } else if (owner1 == undefined || owner1?.trim() == '') {
+                      ShowMessage('Please enter owner name');
+                    } else if (address == undefined || address?.trim() == '') {
+                      ShowMessage('Please enter address');
+                    } else if (selectedCity == null) {
+                      ShowMessage('Please select villiage');
+                    } else if (startTime == null) {
+                      ShowMessage('Please select Start Time');
+                    } else if (endTime == null) {
+                      ShowMessage('Please select End Time');
+                    } else if (product == null) {
+                      ShowMessage('Please Enter Description');
+                    } else if (mobile == null) {
+                      ShowMessage('Please enter mobile number');
+                    } else if (email == null) {
+                      ShowMessage('Please enter Email');
+                    } else {
+                      AddBusiness();
+                      // : updateBusiness();
+                    }
                   }}
                 />
               )}

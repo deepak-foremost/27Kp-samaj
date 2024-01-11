@@ -596,13 +596,17 @@ const BusinessDetaiLScreen = props => {
 
                 <SimpleDoubleLine
                   title={'Bussiness Start Date:'}
-                  value={item?.business_start_date}
+                  value={moment(item?.business_start_date).format('DD/MM/YYYY')}
                   containerStyle={{}}
                 />
 
                 <SimpleDoubleLine
                   title={'Bussiness End Date:'}
-                  value={item?.business_end_date}
+                  value={
+                    item?.business_end_date == undefined
+                      ? 'Continue'
+                      : moment(item?.business_end_date).format('DD/MM/YYYY')
+                  }
                   containerStyle={{marginTop: 10}}
                 />
 

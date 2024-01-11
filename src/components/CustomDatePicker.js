@@ -17,9 +17,18 @@ import MonthPicker from 'react-native-month-year-picker';
 
 export const CustomDatePicker = props => {
   const refRBSheet = useRef();
+  const [pastDate, setPastDate] = useState(null);
   const [date, setDate] = useState(
     props?.value == null ? new Date() : props?.value,
   );
+
+  useEffect(() => {
+    const d = new Date();
+    const pastYear = d.getFullYear() - 1;
+    d.setFullYear(pastYear);
+    setPastDate(pastYear);
+  }, []);
+
   useEffect(() => {
     if (props?.isOpened) {
       refRBSheet?.current?.open();
@@ -76,10 +85,11 @@ export const CustomDatePicker = props => {
             dividerHeight={250}
             androidVariant="nativeAndroid"
             mode="date"
-            date={date}
+            date={props?.value}
             theme="light"
             onDateChange={text => setDate(text)}
-            maximumDate={new Date()}
+            maximumDate={props?.minYear == null ? new Date() : props?.minYear}
+
             // customStyles={datepickerCustomStyles}
             // maximumDate={new Date()}
           />

@@ -277,12 +277,12 @@ const FeedBackScreen = props => {
               }}
             /> */}
 
-              <DateSelection
+              {/* <DateSelection
                 text={'Date : '}
                 title={'Select Date'}
                 placeholder={date}
                 onChangeDob={i => setDate(moment(i).format('YYYY-MM-DD'))}
-              />
+              /> */}
 
               <HorizontalSelection
                 label={`Village`}

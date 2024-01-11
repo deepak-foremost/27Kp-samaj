@@ -68,6 +68,16 @@ export const getAboutUsMember = (params, onSuccess, onFailure) => {
   );
 };
 
+export const getProfile = (params, onSuccess, onFailure) => {
+  CallApi(
+    `${Api.GETPROFILE}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
+};
+
 export const getAboutKarobari = (params, onSuccess, onFailure) => {
   CallApi(
     `${Api.GET_ABOUT_KAROBARI}?${params}`,

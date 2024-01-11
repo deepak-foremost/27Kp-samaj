@@ -114,7 +114,9 @@ const FamilyMemberDetailScreen = props => {
           setLoading(false);
         }
       },
-      error => {},
+      error => {
+        console.log(error);
+      },
     );
   };
 

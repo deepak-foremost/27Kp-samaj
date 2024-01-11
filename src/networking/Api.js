@@ -51,6 +51,7 @@ export class Api {
   static UPDATE_IMAGE = `${this.BASE_URL}updateimagemultiple`;
   static SERVICE_DETAIL = `${this.BASE_URL}getservice`;
   static UPDATE_BUSINESS_IMAGE = `${this.BASE_URL}updateBusinesseimages`;
+  static GETPROFILE = `${this.BASE_URL}getuser`;
 }
 
 export const RequestType = {

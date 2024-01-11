@@ -123,7 +123,7 @@ const SearchScreen = props => {
   const [isloading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [nodata, setNoData] = useState(false);
+  const [nodata, setNoData] = useState(true);
 
   // useEffect(() => {
   //   setResult(list);
@@ -210,25 +210,25 @@ const SearchScreen = props => {
   //   );
   // }, []);
 
-  useEffect(() => {
-    setResult(null);
-    getSearch(
-      {page: page},
-      response => {
-        if (response?.status) {
-          printLog('search', JSON.stringify(response));
-          setResult(response?.data);
-          // console.log('details', city + status + gender + from + to);
-        } else {
-          setResult([]);
-        }
-      },
-      error => {
-        // console.log('searchFail', error);
-        setResult([]);
-      },
-    );
-  }, []);
+  // useEffect(() => {
+  //   setResult(null);
+  //   getSearch(
+  //     {page: page},
+  //     response => {
+  //       if (response?.status) {
+  //         printLog('search', JSON.stringify(response));
+  //         setResult(response?.data);
+  //         // console.log('details', city + status + gender + from + to);
+  //       } else {
+  //         setResult([]);
+  //       }
+  //     },
+  //     error => {
+  //       // console.log('searchFail', error);
+  //       setResult([]);
+  //     },
+  //   );
+  // }, []);
 
   return (
     <View

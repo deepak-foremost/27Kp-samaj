@@ -13,7 +13,7 @@ import {
   setString,
 } from '../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {getCities} from '../../networking/CallApi';
+import {getCities, getProfile} from '../../networking/CallApi';
 import {printLog} from '../../utils/AppConstValue';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -22,18 +22,36 @@ const SponserScreen = props => {
   const StatusBarHeight = inset.top;
   var screen_name = AppScreens.FirstScreen;
   const [status, setStatus] = useState(false);
+  const [id, setId] = useState('');
 
   useEffect(() => {
     async function check() {
       let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-      // console.log('Status', JSON.parse(token)?.status);
+      console.log('Status', JSON.parse(token)?.data?.id);
+      setId(JSON.parse(token)?.data?.id);
       if (JSON.parse(token)?.status) {
         setStatus(JSON.parse(token)?.status);
+
         // var status = token?.status;
         // console.log('check--', status);
       }
     }
     check();
+    getProfile(
+      {
+        id: id,
+      },
+      response => {
+        if (response.status) {
+          console.log(response);
+        } else {
+          console.log('failed');
+        }
+      },
+      error => {
+        console.log('error', error);
+      },
+    );
   }, []);
   // useEffect(() => {
   //   getString(AsyncStorageConst.user, user => {

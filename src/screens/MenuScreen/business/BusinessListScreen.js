@@ -90,7 +90,7 @@ const BusinessListScreen = props => {
   const StatusBarHeight = inset.top;
   const [modelOpen, setModelOpen] = useState(false);
   const [businesses, setBusiness] = useState(null);
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -178,12 +178,14 @@ const BusinessListScreen = props => {
           text={'BUSINESS INFORMATION'}
           secondText={'+ADD'}
           secondPress={() =>
-            RootNavigation.navigate(AppScreens.ADD_BUSINESS_SCREEN)
+            RootNavigation.navigate(AppScreens.ADD_BUSINESS_SCREEN, {
+              phone: user?.country_code + user?.phone,
+            })
           }
         />
 
         <AppButton
-          text={'Mobile Number : 9999999999'}
+          text={'Mobile Number : ' + user?.country_code + user?.phone}
           buttonStyle={{
             width: '90%',
             alignSelf: 'center',
@@ -242,7 +244,11 @@ const BusinessListScreen = props => {
                         type == 'view'
                           ? AppScreens.BUSINESS_DETAIL_SCREEN
                           : AppScreens.ADD_BUSINESS_SCREEN,
-                        {item: item, show: true},
+                        {
+                          item: item,
+                          show: true,
+                          phone: user?.country_code + user?.phone,
+                        },
                       );
                     } else if (type == 'delete') {
                       setDeleteItem(item);

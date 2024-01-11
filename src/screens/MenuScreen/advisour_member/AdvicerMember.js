@@ -357,7 +357,7 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '25%',
+            width: '23%',
             color: AppColors.DarkText,
           },
         ]}>
@@ -367,13 +367,26 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '20%',
+            width: '12%',
             color: AppColors.DarkText,
 
             // marginLeft: 5,
           },
         ]}>
         {props?.item ? `${props?.item?.city}` : 'ગામ'}
+      </Text>
+
+      <Text
+        style={[
+          styles.heading,
+          {
+            width: '10%',
+            color: AppColors.DarkText,
+
+            // marginLeft: 5,
+          },
+        ]}>
+        {props?.item ? `${props?.item?.hodo}` : 'હોદો'}
       </Text>
 
       {/* {props?.status != 'drawer' ? (

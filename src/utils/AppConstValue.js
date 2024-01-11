@@ -27,6 +27,7 @@ export const getAge = birthDate => {
 };
 
 export const sendFirebasePhoneOtp = async (phoneNumber, onCode, onError) => {
+  printLog('number',phoneNumber)
   const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
   printLog('sendFirebasePhoneOtp', `${confirmation}`);
   onCode(confirmation);
