@@ -204,7 +204,7 @@ const FeedBackScreen = props => {
                 phone={phone}
                 type={'numeric'}
                 setCountryCode={item => {
-                  setCountryCode(item?.name);
+                  setCountryCode('+' + item?.callingCode);
                 }}
                 onChangeText={setPhone}
               />

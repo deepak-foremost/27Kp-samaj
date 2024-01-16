@@ -160,13 +160,13 @@ const FamilyDetailScreen = props => {
       display: inline-block;
       width: 100%;
       margin-bottom: 40px;
-      
+      height:100
     }
     .profile_img img{
       width: 31%;
       float: left;
       border-radius: 15px;
-      height:200;
+      height:100;
       margin-left:10px
     }
   
@@ -289,6 +289,7 @@ const FamilyDetailScreen = props => {
     <p><label> વ્યવસાય:</label>  ${userData?.business} </p>
     <p><label> વ્યવસાયનું સરનામું:</label>  ${userData?.business_address} </p>
     <p><label> ફોરેન Country નામ:</label>  ${userData?.foreign_country_name} </p>
+    <p><label>ફોરેન Number</label>${userData?.foriegn_country_code + userData?.foreign_number} </p>
     <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${userData?.current_address} </p>
     <p><label> મોબાઈલ નંબર:</label>  ${userData?.phone} </p>
     <p><label> E-Mail ID:</label>  ${userData?.email} </p>
@@ -709,7 +710,7 @@ export const MemberDetailCell = props => {
   return (
     <View
       style={{
-        marginHorizontal: 15,
+        marginHorizontal: 10,
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         paddingVertical: 15,
@@ -949,6 +950,14 @@ export const MemberDetailCell = props => {
           title={'ફોરેન Country નામ :'}
           detailText={props?.item?.foreign_country_name}
         />
+        {props?.item?.foreign_number != null && (
+          <MemberDetail
+            title={'ફોરેન Number :'}
+            detailText={
+              props?.item?.foriegn_country_code + props?.item?.foreign_number
+            }
+          />
+        )}
         <MemberDetail
           title={'હાલ ના રહેઠાણ નુ સરનામું :'}
           detailText={props?.item?.current_address}
@@ -962,7 +971,7 @@ export const MemberDetailCell = props => {
           <MemberDetail
             styles={{flex: 0}}
             title={'મોબાઇલ નંબર :'}
-            detailText={props?.item?.country_code + ' ' + props?.item?.phone}
+            detailText={props?.item?.country_code + props?.item?.phone}
             contact
           />
 
@@ -1088,6 +1097,9 @@ export const MemberDetailCell = props => {
           style={{
             alignSelf: 'flex-end',
             marginTop: 10,
+            width:'50%',
+            alignItems:'flex-end',
+            justifyContent:'flex-end'
           }}>
           <Image source={require('../../../assets/images/save_icon.png')} />
         </TouchableOpacity>

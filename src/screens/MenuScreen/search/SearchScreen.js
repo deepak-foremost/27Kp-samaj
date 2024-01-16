@@ -265,7 +265,7 @@ const SearchScreen = props => {
         leadIcon={AppImages.BACK_ICON}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-        <View>
+        <View style={{flex:0.9,}}>
           <View
             style={{
               marginTop: -40,

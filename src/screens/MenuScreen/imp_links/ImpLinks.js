@@ -31,7 +31,7 @@ const ImPLINKS = () => {
       <View style={{flex: 1, backgroundColor: '#F3F3F3'}}>
         <ScreenToolbar text={'IMP.LINKS'} />
 
-        <View style={{flex: 0.9, padding: 15}}>
+        <View style={{flex: 0.9, padding: 5,paddingHorizontal:15}}>
           <LinksButton
             textfirst={'eBook'}
             textsecond={'Click Here'}

@@ -376,7 +376,7 @@ export const MemberCell = props => {
         {props?.item ? `${props?.item?.city}` : 'ગામ'}
       </Text>
 
-      <Text
+      {/* <Text
         style={[
           styles.heading,
           {
@@ -387,9 +387,9 @@ export const MemberCell = props => {
           },
         ]}>
         {props?.item ? `${props?.item?.hodo}` : 'હોદો'}
-      </Text>
+      </Text> */}
 
-      {/* {props?.status != 'drawer' ? (
+      {props?.status != 'drawer' ? (
         <Text
           style={[
             styles.heading,
@@ -405,7 +405,7 @@ export const MemberCell = props => {
               : 'હોદો'
             : null}
         </Text>
-      ) : null} */}
+      ) : null}
       <View
         style={{
           flexDirection: 'row',

@@ -59,20 +59,6 @@ const MobileLogInScreen = props => {
 
   useEffect(() => {
     async function check() {
-      let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-      // console.log('Status', JSON.parse(token)?.status);
-      if (screen != 'User Signin') {
-        if (JSON.parse(token)?.status) {
-          setStatus('second');
-
-          // var status = token?.status;
-          // console.log('check--', status);
-        } else {
-          setStatus('first');
-          // console.warn('first');
-        }
-      } else {
-      }
       let rember = await AsyncStorage.getItem(screen);
       // console.log('rember', JSON.parse(rember).number);
       if (JSON.parse(rember)?.screen == screen) {
@@ -312,7 +298,7 @@ const MobileLogInScreen = props => {
               />
 
               <TouchableOpacity
-              activeOpacity={1}
+                activeOpacity={1}
                 onPress={() => {
                   setCheck(!check);
                 }}

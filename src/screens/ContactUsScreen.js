@@ -69,7 +69,7 @@ const ContactUsScreen = props => {
               borderRadius: 15,
               alignSelf: 'center',
               marginTop: -30,
-              flex: 1,
+              flex: 0.9,
             }}
             showsVerticalScrollIndicator={false}>
             <View

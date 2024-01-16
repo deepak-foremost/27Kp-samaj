@@ -69,13 +69,7 @@ export const getAboutUsMember = (params, onSuccess, onFailure) => {
 };
 
 export const getProfile = (params, onSuccess, onFailure) => {
-  CallApi(
-    `${Api.GETPROFILE}`,
-    RequestType.get,
-    params,
-    onSuccess,
-    onFailure,
-  );
+  CallApi(`${Api.GETPROFILE}`, RequestType.get, params, onSuccess, onFailure);
 };
 
 export const getAboutKarobari = (params, onSuccess, onFailure) => {
@@ -183,13 +177,7 @@ export const getServices = (params, onSuccess, onFailure) => {
 };
 
 export const getFamilies = (params, onSuccess, onFailure) => {
-  CallApi(
-    `${Api.GET_FAMILIES}?city_id=${params?.city_id}`,
-    RequestType.get,
-    params,
-    onSuccess,
-    onFailure,
-  );
+  CallApi(`${Api.GET_FAMILIES}`, RequestType.get, params, onSuccess, onFailure);
 };
 
 export const getVillageMembers = (params, onSuccess, onFailure) => {

@@ -10,26 +10,34 @@ const ImageUpload = props => {
       style={{
         width: '30%',
         height: '100%',
+        ...props.styles
       }}
       onPress={props?.image != undefined ? props?.imgPress : null}>
-      <Image
-        style={{
-          width: '100%',
-          height: 80,
-          borderRadius: 5,
-          backgroundColor: '#F2F2F2',
-        }}
-        source={
-          props?.image == undefined || props?.image == ''
-            ? AppImages.MEMBER_IMAGE
-            : {
-                uri:
-                  props?.image?.uri == undefined
-                    ? props?.image
-                    : props?.image?.uri,
-              }
-        }
-      />
+      {props?.imageLoading ? (
+        <View style={{alignSelf:'center'}}>
+          <LoaderView />
+        </View>
+      ) : (
+        <Image
+          style={{
+            width: '100%',
+            height: 80,
+            borderRadius: 5,
+            backgroundColor: '#F2F2F2',
+            ...props.imgStyle
+          }}
+          source={
+            props?.image == undefined || props?.image == ''
+              ? AppImages.MEMBER_IMAGE
+              : {
+                  uri:
+                    props?.image?.uri == undefined
+                      ? props?.image
+                      : props?.image?.uri,
+                }
+          }
+        />
+      )}
 
       {props?.image != undefined && (
         <Image

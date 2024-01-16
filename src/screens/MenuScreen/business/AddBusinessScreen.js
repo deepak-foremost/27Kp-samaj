@@ -50,6 +50,7 @@ import {showMessage} from 'react-native-flash-message';
 import LoaderView from '../../../utils/LoaderView';
 import moment from 'moment';
 import axios from 'axios';
+import ImageUpload from '../../../components/ImageUpload';
 
 // import LoaderView from '../../../utils/LoaderView';
 // import {set} from 'react-native-reanimated';
@@ -93,7 +94,7 @@ const AddBusinessScreen = props => {
   const [owner_name_4, setOwner_name_4] = useState('');
   const [imageOne, setImageOne] = useState(null);
   const [imageTwo, setImageTwo] = useState(null);
-  const [imageLoading, setImageLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(null);
 
   useEffect(() => {
     getCities(
@@ -650,9 +651,9 @@ const AddBusinessScreen = props => {
       });
   };
 
-  const UPDATEIMAGE = async (src, id) => {
-    if (!imageLoading) {
-      setImageLoading(true);
+  const UPDATEIMAGE = async (src, id, first) => {
+    if (imageLoading == null) {
+      setImageLoading(first);
       let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
       var payload = new FormData();
       if (src != undefined) {
@@ -688,12 +689,13 @@ const AddBusinessScreen = props => {
           // if (responseJson?.status) {
           //   RootNavigation?.goBack();
           // }
-          setLoading(false);
+          // setLoading(false);
+          setImageLoading(null);
         })
         .catch(error => {
           // ShowMessage(JSON.stringify(error));
           // printLog('Update Error', error);
-          setImageLoading(false);
+          setImageLoading(null);
           UPDATEIMAGE(src, id);
         });
     }
@@ -717,12 +719,12 @@ const AddBusinessScreen = props => {
           if (first == 1) {
             setVisiting(response?.assets[0]);
             if (imageOne != null) {
-              UPDATEIMAGE(response?.assets[0], imageOne);
+              UPDATEIMAGE(response?.assets[0], imageOne, first);
             }
           } else {
             setVisitingOne(response?.assets[0]);
             if (imageTwo != null) {
-              UPDATEIMAGE(response?.assets[0], imageTwo);
+              UPDATEIMAGE(response?.assets[0], imageTwo, first);
             }
           }
         }
@@ -1110,7 +1112,7 @@ const AddBusinessScreen = props => {
                 phone={mobile}
                 defaultText={mobile}
                 setCountryCode={item => {
-                  setCode(item?.name);
+                  setCode('+' + item?.callingCode);
                 }}
                 onChangeText={setMobile}
               />
@@ -1122,10 +1124,25 @@ const AddBusinessScreen = props => {
                 defaultText={email}
               />
 
+              {/* <DateSelection
+                text={'જન્મ તારીખ:'}
+                title={'જન્મ તારીખ'}
+                onChangeDob={i => {
+                  setAge(JSON.stringify(calculateAge(i)));
+                  setDOB(i);
+                }}
+                value={dob == null ? new Date('2023-01-01') : new Date(dob)}
+                minYear={new Date('2023-01-01')}
+                placeholder={
+                  dob == null ? 'DD/MM/YYYY' : moment(dob).format('DD-MM-YYYY')
+                }
+              /> */}
+
               <DateSelection
                 text={'Bussiness Start Date:'}
                 title={'Select Bussiness Start Date'}
                 value={startDate == null ? new Date() : new Date(startDate)}
+                minYear={new Date()}
                 placeholder={
                   startDate == '' || startDate == null
                     ? 'YYYY-MM-DD'
@@ -1138,6 +1155,7 @@ const AddBusinessScreen = props => {
                 text={'Bussiness End Date:'}
                 title={'Select Bussiness End Date'}
                 value={endDate == null ? new Date() : new Date(endDate)}
+                minYear={new Date()}
                 placeholder={
                   endDate == '' || endDate == null ? 'YYYY-MM-DD' : endDate
                 }
@@ -1227,7 +1245,7 @@ const AddBusinessScreen = props => {
                     paddingHorizontal: 5,
                     paddingTop: 20,
                   }}>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     activeOpacity={1}
                     style={{
                       width: '48%',
@@ -1265,8 +1283,16 @@ const AddBusinessScreen = props => {
                         source={require('../../../assets/images/cancel_icon.png')}
                       />
                     )}
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                  </TouchableOpacity> */}
+                  <ImageUpload
+                    image={visiting}
+                    styles={{width: '48%', height: '100%'}}
+                    imgStyle={{height: 50}}
+                    imgPress={() => getMyImage(1)}
+                    imageLoading={imageLoading == 1 && true}
+                  />
+
+                  {/* <TouchableOpacity
                     activeOpacity={1}
                     style={{
                       width: '48%',
@@ -1300,7 +1326,14 @@ const AddBusinessScreen = props => {
                         source={require('../../../assets/images/cancel_icon.png')}
                       />
                     )}
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+                  <ImageUpload
+                    styles={{width: '48%'}}
+                    imgStyle={{height: 50}}
+                    image={visitingOne}
+                    imgPress={() => getMyImage(2)}
+                    imageLoading={imageLoading == 2 && true}
+                  />
                 </View>
               </View>
 
@@ -1478,6 +1511,8 @@ const AddBusinessScreen = props => {
                       ShowMessage('Please enter mobile number');
                     } else if (email == null) {
                       ShowMessage('Please enter Email');
+                    } else if (startDate == null) {
+                      ShowMessage('Please select business start date');
                     } else {
                       AddBusiness();
                       // : updateBusiness();

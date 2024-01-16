@@ -121,14 +121,15 @@ const BusinessDetaiLScreen = props => {
       display: inline-block;
       width: 100%;
       margin-bottom: 40px;
-      
+      height:150
+      margin-left:25px
     }
     .profile_img img{
-      width: 33.33%;
-      float: left;
+      width: 48%;
+      
       border-radius: 15px;
+      height:150
     }
-  
     .profile_textdiv1 p{
       margin: 0px;
       color: #ABABAB;
@@ -211,11 +212,10 @@ const BusinessDetaiLScreen = props => {
     }
   </style>
     <body>
-    <div class="container">	
+    <div class="container">	  
 	<div class="profile_img">
-		<img src=${item?.visting_card_photo}>
-		<img src="images/default_image.png">
-		<img src="images/default_image.png">
+		<img src=${item?.images[0]?.visting_card_photo}>
+		<img src=${item?.images[1]?.visting_card_photo}>
 	</div>
 	<div class="profile_textdiv1">
 		<h3>${item?.firm}</h3>
@@ -270,7 +270,9 @@ const BusinessDetaiLScreen = props => {
 	</div>
 	<div class="address_textbox" style="border-bottom: 0px;">
 		<p><label> Website :</label>  ${item?.website}</p>		
-		<p><label> Mobile No. :</label>  ${item?.business_phone}</p>		
+		<p><label> Mobile No. :</label>  ${
+      item?.country_code + ' ' + item?.business_phone
+    }</p>		
 		<p><label> E-Mail Id :</label>  ${item?.business_email}</p>		
 	</div>
 </div>
@@ -404,8 +406,9 @@ const BusinessDetaiLScreen = props => {
                       borderRadius: 15,
                     }}
                     source={
-                      // require('../../../assets/images/directory_image.png')
-                      {uri: item?.images[0]?.visting_card_photo}
+                      item?.images[0]?.visting_card_photo == undefined
+                        ? AppImages.MEMBER_IMAGE
+                        : {uri: item?.images[0]?.visting_card_photo}
                     }
                   />
                 </TouchableOpacity>

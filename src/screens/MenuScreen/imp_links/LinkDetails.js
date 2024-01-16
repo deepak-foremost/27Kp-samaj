@@ -209,15 +209,68 @@ const LinkDetails = props => {
         <ScreenToolbar text={headerText} />
         <View style={{flex: 0.9}}>
           {headerText == 'eBOOK' && (
-            <View style={{flex: 1}}>
+            // <View style={{flex: 1}}>
+            //   {isLoading ? (
+            //     <View
+            //       style={{
+            //         flex: 1,
+            //         backgroundColor: AppColors.backgroundColor,
+            //         alignItems: 'center',
+            //         paddingHorizontal: 10,
+            //         paddingTop: 15,
+            //       }}>
+            //       <ListMember styles={{height: 45}} />
+            //       <ListMember styles={{height: 45}} />
+            //       <ListMember styles={{height: 45}} />
+            //       <ListMember styles={{height: 45}} />
+            //       <ListMember styles={{height: 45}} />
+            //     </View>
+            //   ) : (
+            //     <View style={{flex: 1, paddingTop: 15}}>
+            //       {files?.length == 0 ? (
+            //         <View
+            //           style={{
+            //             flex: 1,
+            //             justifyContent: 'center',
+            //             alignItems: 'center',
+            //           }}>
+            //           <Text
+            //             style={{
+            //               fontFamily: AppFonts.semiBold,
+            //               fontSize: 15,
+            //               color: AppColors?.lineColor,
+            //             }}>
+            //             No List Found
+            //           </Text>
+            //         </View>
+            //       ) : (
+            //         <FlatList
+            //           showsVerticalScrollIndicator={false}
+            //           showsHorizontalScrollIndicator={false}
+            //           contentContainerStyle={{paddingBottom: 20}}
+            //           data={files == null ? [] : files}
+            //           renderItem={({item, index}) => (
+            //             <FileCell item={item} index={index} />
+            //           )}
+            //           refreshControl={
+            //             <RefreshControl
+            //               refreshing={refreshing}
+            //               onRefresh={onRefresh}
+            //             />
+            //           }
+            //         />
+            //       )}
+            //     </View>
+            //   )}
+            // </View>
+            <View style={{flex: 1, paddingTop: 5}}>
               {isLoading ? (
                 <View
                   style={{
                     flex: 1,
-                    backgroundColor: AppColors.backgroundColor,
+                    // backgroundColor: AppColors.BackgroundColor,
                     alignItems: 'center',
                     paddingHorizontal: 10,
-                    paddingTop: 15,
                   }}>
                   <ListMember styles={{height: 45}} />
                   <ListMember styles={{height: 45}} />
@@ -225,56 +278,100 @@ const LinkDetails = props => {
                   <ListMember styles={{height: 45}} />
                   <ListMember styles={{height: 45}} />
                 </View>
+              ) : files?.length == 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.semiBold,
+                      fontSize: 15,
+                      color: AppColors?.line_color,
+                    }}>
+                    No List Found
+                  </Text>
+                </View>
               ) : (
-                <View style={{flex: 1, paddingTop: 15}}>
-                  {files?.length == 0 ? (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Text
-                        style={{
-                          fontFamily: AppFonts.semiBold,
-                          fontSize: 15,
-                          color: AppColors?.lineColor,
-                        }}>
-                        No List Found
-                      </Text>
-                    </View>
-                  ) : (
+                <View style={{flex: 1}}>
+                  <View>
                     <FlatList
                       showsVerticalScrollIndicator={false}
                       showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{paddingBottom: 20}}
+                      contentContainerStyle={{paddingBottom: 5}}
                       data={files == null ? [] : files}
-                      renderItem={({item, index}) => (
-                        <FileCell item={item} index={index} />
-                      )}
-                      refreshControl={
-                        <RefreshControl
-                          refreshing={refreshing}
-                          onRefresh={onRefresh}
-                        />
+                      renderItem={({item, index}) =>
+                        item?.file != undefined && item?.link == null ? (
+                          <FileCell item={item} index={index} />
+                        ) : null
                       }
+                      // refreshControl={
+                      //   <RefreshControl
+                      //     refreshing={refreshing}
+                      //     onRefresh={onRefresh}
+                      //   />
+                      // }
                     />
-                  )}
+                  </View>
+                  <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{alignItems: 'center'}}
+                    data={files == null ? [] : files}
+                    renderItem={({item, index}) =>
+                      // <AppButton
+                      //   buttonStyle={{
+                      //     width: '90%',
+                      //     marginHorizontal: 15,
+                      //     borderRadius: 30,
+                      //     marginTop: 10,
+                      //     height: 40,
+                      //   }}
+                      //   // item={item} index={index}
+                      //   text={item.title}
+                      // />
+                      item?.link != undefined ? (
+                        <LinksButton
+                          textfirst={item.name.toUpperCase()}
+                          textsecond={'LINK TO VISIT'}
+                          mainStyle={{paddingLeft: 0}}
+                          buttonStyle={{
+                            width: '90%',
+                            marginHorizontal: 15,
+                            elevation: 5,
+                          }}
+                          buttonPress={() => Linking.openURL(`${item?.link}`)}
+                          // buttonPress={() =>
+                          //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
+                          //     text: 'SERVICES',
+                          //   })
+                          // }
+                          // src={require('../../../assets/images/service_icon.png')}
+                        />
+                      ) : null
+                    }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
+                  />
                 </View>
               )}
             </View>
           )}
 
           {headerText == 'SERVICES' && (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, paddingTop: 5}}>
               {isLoading ? (
                 <View
                   style={{
                     flex: 1,
-                    backgroundColor: AppColors.BackgroundColor,
                     alignItems: 'center',
                     paddingHorizontal: 10,
-                    paddingTop: 15,
                   }}>
                   <ListMember styles={{height: 45}} />
                   <ListMember styles={{height: 45}} />
@@ -283,7 +380,7 @@ const LinkDetails = props => {
                   <ListMember styles={{height: 45}} />
                 </View>
               ) : (
-                <View style={{flex: 1, paddingTop: 5}}>
+                <View style={{flex: 1}}>
                   {services?.length == 0 ? (
                     <View
                       style={{
@@ -342,15 +439,13 @@ const LinkDetails = props => {
           )}
 
           {headerText == 'JOB' && (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, paddingTop: 5}}>
               {isLoading ? (
                 <View
                   style={{
                     flex: 1,
-                    backgroundColor: AppColors.backgroundColor,
                     alignItems: 'center',
                     paddingHorizontal: 10,
-                    paddingTop: 5,
                   }}>
                   <ListMember styles={{height: 45}} />
                   <ListMember styles={{height: 45}} />
@@ -455,7 +550,7 @@ const LinkDetails = props => {
 
 export default LinkDetails;
 
-const FileCell = props => {
+export const FileCell = props => {
   return (
     <TouchableOpacity
       activeOpacity={AppConstValue.ButtonOpacity}

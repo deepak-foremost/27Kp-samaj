@@ -14,6 +14,10 @@ import {LinksButton} from './ImpLinks';
 import BorderView from '../../../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getServiceDetail} from '../../../networking/CallApi';
+import { ListMember } from '../advisour_member/AdvicerMember';
+import { AppFonts } from '../../../utils/AppFonts';
+import { FileCell } from './LinkDetails';
+
 
 const listSecond = [
   {
@@ -79,7 +83,108 @@ const ServiceDetails = ({route}) => {
       <View style={{flex: 1, backgroundColor: '#F3F3f3'}}>
         <ScreenToolbar text={headerText?.toUpperCase()} />
 
-        <View style={{flex: 0.9, paddingTop: 15}}>
+        <View style={{flex: 0.9,paddingTop:5}}>
+              {isLoading ? (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: AppColors.backgroundColor,
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    paddingTop: 5,
+                  }}>
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                  <ListMember styles={{height: 45}} />
+                </View>
+              ) : information?.length == 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: AppFonts.semiBold,
+                      fontSize: 15,
+                      color: AppColors?.line_color,
+                    }}>
+                    No List Found
+                  </Text>
+                </View>
+              ) : (
+                <View style={{flex: 1}}>
+                  <View>
+                    <FlatList
+                      showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{paddingBottom: 5}}
+                      data={information == null ? [] : information}
+                      renderItem={({item, index}) =>
+                        item?.file != undefined && item?.link == null ? (
+                          <FileCell item={item} index={index} />
+                        ) : null
+                      }
+                      // refreshControl={
+                      //   <RefreshControl
+                      //     refreshing={refreshing}
+                      //     onRefresh={onRefresh}
+                      //   />
+                      // }
+                    />
+                  </View>
+                  <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{alignItems: 'center'}}
+                    data={information == null ? [] : information}
+                    renderItem={({item, index}) =>
+                      // <AppButton
+                      //   buttonStyle={{
+                      //     width: '90%',
+                      //     marginHorizontal: 15,
+                      //     borderRadius: 30,
+                      //     marginTop: 10,
+                      //     height: 40,
+                      //   }}
+                      //   // item={item} index={index}
+                      //   text={item.title}
+                      // />
+                      item?.link != undefined ? (
+                        <LinksButton
+                          textfirst={item.name.toUpperCase()}
+                          textsecond={'LINK TO VISIT'}
+                          mainStyle={{paddingLeft: 0}}
+                          buttonStyle={{
+                            width: '90%',
+                            marginHorizontal: 15,
+                            elevation: 5,
+                          }}
+                          buttonPress={() => Linking.openURL(`${item.link}`)}
+                          // buttonPress={() =>
+                          //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
+                          //     text: 'SERVICES',
+                          //   })
+                          // }
+                          // src={require('../../../assets/images/service_icon.png')}
+                        />
+                      ) : null
+                    }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
+                  />
+                </View>
+              )}
+            </View>
+
+        {/* <View style={{flex: 0.9, paddingTop: 15}}>
           <View>
             <FlatList
               showsVerticalScrollIndicator={false}
@@ -107,9 +212,7 @@ const ServiceDetails = ({route}) => {
             renderItem={({item, index}) => (
               <LinksButton
                 textfirst={
-                  headerText == 'Railway Information'
-                    ? 'Railway PNR Check'
-                    : item?.name
+                  item?.name
                 }
                 buttonPress={() => Linking.openURL(`${item?.link}`)}
                 textsecond={'LINK TO VISIT'}
@@ -126,7 +229,7 @@ const ServiceDetails = ({route}) => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           />
-        </View>
+        </View> */}
 
         <BorderView
           backgroundColor={AppColors.BackgroundSecondColor}

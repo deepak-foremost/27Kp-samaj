@@ -78,7 +78,6 @@ const FamilyMemberDetailScreen = props => {
       response => {
         if (response?.status) {
           var temp = [];
-
           for (let i = 0; i < response?.data?.length; i++) {
             temp.push({
               name: response?.data[i]?.name,
@@ -115,7 +114,7 @@ const FamilyMemberDetailScreen = props => {
         }
       },
       error => {
-        console.log(error);
+        console.log(JSON.stringify(error));
       },
     );
   };
@@ -219,7 +218,7 @@ const FamilyMemberDetailScreen = props => {
                 data={cities}
                 value={value}
                 onItemSelect={item => {
-                  printLog(JSON.stringify(item?.name + '---' + item?.id));
+                  printLog('city',JSON.stringify(item?.name + '---' + item?.id));
                   setValue(item?.name);
                   setCityId(item?.id);
                   getList(item?.id);

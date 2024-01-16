@@ -93,13 +93,13 @@ const AddMemberScreen = props => {
   const [visitingOne, setVisitingOne] = useState('');
   const [VisitingTwo, setVisitingTwo] = useState('');
   const [foriegn_country_code, setForeignCountryCode] = useState('+91');
-  const [foriegn_number, setForeignNumber] = useState('');
+  const [foreign_number, setForeignNumber] = useState('');
   const [foreign_country_name, setForeignCountry] = useState('');
   const [imageOne, setOne] = useState(null);
   const [imageTwo, setTwo] = useState(null);
   const [imageThree, setThree] = useState(null);
   const [imageList, setImageList] = useState([]);
-  const [imageLoading, setImageLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(null);
   const [lastYear, setLast] = useState();
 
   useEffect(() => {
@@ -152,9 +152,9 @@ const AddMemberScreen = props => {
     );
   }, []);
 
-  const updateImage = async (src, id) => {
-    if (!imageLoading) {
-      setImageLoading(true);
+  const updateImage = async (src, id, first) => {
+    if (imageLoading == null) {
+      setImageLoading(first);
       let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
       var payload = new FormData();
       if (src != undefined) {
@@ -185,17 +185,17 @@ const AddMemberScreen = props => {
         .then(responseJson => {
           // return responseJson
           printLog('UpdateImage', JSON.stringify(responseJson));
-          setImageLoading(false);
           ShowMessage('Image Update Successfully');
+          setImageLoading(null);
           // if (responseJson?.status) {
           //   RootNavigation?.goBack();
           // }
-          setLoading(false);
+          // setLoading(false);
         })
         .catch(error => {
           // ShowMessage(JSON.stringify(error));
           printLog('Update Error', JSON.stringify(error));
-          setImageLoading(false);
+          setImageLoading(null);
           updateImage(src, id);
         });
     }
@@ -220,19 +220,19 @@ const AddMemberScreen = props => {
           if (first == 1) {
             setImage(response?.assets[0]);
             if (imageOne != null) {
-              updateImage(response?.assets[0], imageOne);
+              updateImage(response?.assets[0], imageOne, first);
             }
           } else if (first == 2) {
             setVisitingOne(response?.assets[0]);
             if (imageTwo != null) {
               console.warn('check');
-              updateImage(response?.assets[0], imageTwo);
+              updateImage(response?.assets[0], imageTwo, first);
             }
           } else {
             setVisitingTwo(response?.assets[0]);
             if (imageThree != null) {
               console.warn('check');
-              updateImage(response?.assets[0], imageThree);
+              updateImage(response?.assets[0], imageThree, first);
             }
             console.log('imageList', JSON.stringify(imageList));
           }
@@ -288,217 +288,223 @@ const AddMemberScreen = props => {
   // }, [cities, setCities]);
 
   const addMembers = async () => {
-    setLoading(true);
-    var list = [];
-    if (image?.uri != undefined) {
-      list?.push(image);
-    }
+    if (!loading) {
+      setLoading(true);
+      var list = [];
+      if (image?.uri != undefined) {
+        list?.push(image);
+      }
 
-    if (visitingOne?.uri != undefined) {
-      list?.push(visitingOne);
-    }
+      if (visitingOne?.uri != undefined) {
+        list?.push(visitingOne);
+      }
 
-    if (VisitingTwo?.uri != undefined) {
-      list?.push(VisitingTwo);
-    }
+      if (VisitingTwo?.uri != undefined) {
+        list?.push(VisitingTwo);
+      }
 
-    var uploadImageList = {};
-    list?.map((item, index) => {
-      uploadImageList = {
-        ...uploadImageList,
-        [`imagemultiple[${index}]`]: {
-          uri:
-            Platform.OS === 'android'
-              ? item?.uri
-              : item?.uri?.replace('file://', ''),
-          name: item?.fileName,
-          type: item?.type,
-        },
-      };
-    });
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-    let imageParams = {};
-    var imageObject = {};
-    // if (image?.uri != undefined) {
+      var uploadImageList = {};
+      list?.map((item, index) => {
+        uploadImageList = {
+          ...uploadImageList,
+          [`imagemultiple[${index}]`]: {
+            uri:
+              Platform.OS === 'android'
+                ? item?.uri
+                : item?.uri?.replace('file://', ''),
+            name: item?.fileName,
+            type: item?.type,
+          },
+        };
+      });
+      let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
+      let imageParams = {};
+      var imageObject = {};
+      // if (image?.uri != undefined) {
 
-    //   const imageList = [
-    //     {
-    //       uri:
-    //         Platform.OS === 'android'
-    //           ? image?.uri
-    //           : image?.uri.replace('file://', ''),
-    //       name: image?.fileName,
-    //       type: image?.type,
-    //     },
-    //     {
-    //       uri:
-    //         Platform.OS === 'android'
-    //           ? visitingOne?.uri
-    //           : visitingOne?.uri.replace('file://', ''),
-    //       name: visitingOne?.fileName,
-    //       type: visitingOne?.type,
-    //     },
-    //     {
-    //       uri:
-    //         Platform.OS === 'android'
-    //           ? VisitingTwo?.uri
-    //           : VisitingTwo?.uri.replace('file://', ''),
-    //       name: VisitingTwo?.fileName,
-    //       type: VisitingTwo?.type,
-    //     },
-    //   ];
+      //   const imageList = [
+      //     {
+      //       uri:
+      //         Platform.OS === 'android'
+      //           ? image?.uri
+      //           : image?.uri.replace('file://', ''),
+      //       name: image?.fileName,
+      //       type: image?.type,
+      //     },
+      //     {
+      //       uri:
+      //         Platform.OS === 'android'
+      //           ? visitingOne?.uri
+      //           : visitingOne?.uri.replace('file://', ''),
+      //       name: visitingOne?.fileName,
+      //       type: visitingOne?.type,
+      //     },
+      //     {
+      //       uri:
+      //         Platform.OS === 'android'
+      //           ? VisitingTwo?.uri
+      //           : VisitingTwo?.uri.replace('file://', ''),
+      //       name: VisitingTwo?.fileName,
+      //       type: VisitingTwo?.type,
+      //     },
+      //   ];
 
-    //   imageList.map((item, index) => {
-    //     let tamp = imageLinkToParam(item.uri);
-    //     imageObject = {...imageObject, [`${index}`]: tamp};
-    //     imageParams = {...imageParams, ...imageObject};
-    //   });
-    // }
+      //   imageList.map((item, index) => {
+      //     let tamp = imageLinkToParam(item.uri);
+      //     imageObject = {...imageObject, [`${index}`]: tamp};
+      //     imageParams = {...imageParams, ...imageObject};
+      //   });
+      // }
 
-    const params =
-      memberItem != undefined
-        ? {
-            id: memberItem?.id,
-            name: familyMember,
-            email: email,
-            gender: gender,
-            city: city,
-            height: height,
-            weight: weigth,
-            age: age,
-            blood_group: blood,
-            family_main_member_with_relation: relation,
-            marital_status: status,
-            study: study,
-            business: business,
-            business_address: businessAddress,
-            current_address: homeAddress,
-            mosal: mosal,
-            shakh: hobby,
-            country_code: country_code,
-            phone: phone,
-            foreign_country_name: foreign_country_name,
-            foreign_number: foriegn_number,
-            foriegn_country_code: foriegn_country_code,
-            jeevan_sahay_nubmer: jeevan_sahay_nubmer,
-            sasru: sasru,
-            boomi_nubmer: boomi_nubmer,
-            dob: moment(dob).format('YYYY-MM-DD'),
-            image_id_one: imageOne,
-            image_id_two: imageTwo,
-            image_id_three: imageThree,
-            ...uploadImageList,
-          }
-        : {
-            name: familyMember,
-            email: email,
-            gender: gender,
-            city: city,
-            height: height,
-            weight: weigth,
-            age: age,
-            blood_group: blood,
-            family_main_member_with_relation: relation,
-            marital_status: status,
-            study: study,
-            business: business,
-            business_address: businessAddress,
-            current_address: homeAddress,
-            mosal: mosal,
-            shakh: hobby,
-            country_code: country_code,
-            phone: phone,
-            foreign_country_name: foreign_country_name,
-            foriegn_country_code: foriegn_country_code,
-            jeevan_sahay_nubmer: jeevan_sahay_nubmer,
-            sasru: sasru,
-            boomi_nubmer: boomi_nubmer,
-            dob: moment(dob).format('YYYY-MM-DD'),
-            ...uploadImageList,
-          };
+      const params =
+        memberItem != undefined
+          ? {
+              id: memberItem?.id,
+              name: familyMember,
+              email: email,
+              gender: gender,
+              city: city,
+              height: height,
+              weight: weigth,
+              age: age,
+              blood_group: blood,
+              family_main_member_with_relation: relation,
+              marital_status: status,
+              study: study,
+              business: business,
+              business_address: businessAddress,
+              current_address: homeAddress,
+              mosal: mosal,
+              shakh: hobby,
+              country_code: country_code,
+              phone: phone,
+              foreign_country_name: foreign_country_name,
+              // foreign_number: foreign_number,
+              foriegn_country_code: foriegn_country_code,
+              foreign_number: foreign_number,
+              jeevan_sahay_nubmer: jeevan_sahay_nubmer,
+              sasru: sasru,
+              boomi_nubmer: boomi_nubmer,
+              dob: moment(dob).format('YYYY-MM-DD'),
+              image_id_one: imageOne,
+              image_id_two: imageTwo,
+              image_id_three: imageThree,
+              ...uploadImageList,
+            }
+          : {
+              name: familyMember,
+              email: email,
+              gender: gender,
+              city: city,
+              height: height,
+              weight: weigth,
+              age: age,
+              blood_group: blood,
+              family_main_member_with_relation: relation,
+              marital_status: status,
+              study: study,
+              business: business,
+              business_address: businessAddress,
+              current_address: homeAddress,
+              mosal: mosal,
+              shakh: hobby,
+              country_code: country_code,
+              phone: phone,
+              foreign_country_name: foreign_country_name,
+              foreign_number: foreign_number,
+              foriegn_country_code: foriegn_country_code,
+              jeevan_sahay_nubmer: jeevan_sahay_nubmer,
+              sasru: sasru,
+              boomi_nubmer: boomi_nubmer,
+              dob: moment(dob).format('YYYY-MM-DD'),
+              ...uploadImageList,
+            };
 
-    const API_BASE_URL =
-      memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER;
-    const AuthToken =
-      token?.token == undefined ? JSON.parse(token)?.token : token?.token;
-    console.log(`PARAMS:::::::`, JSON.stringify(params));
-    let formData = new FormData();
-    var myparams = Object.keys(params);
-    myparams?.map(item => {
-      formData.append(item, params[item]);
-    });
-
-    setLoading(true);
-    axios({
-      method: 'POST',
-      url: API_BASE_URL,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${AuthToken}`,
-        Accept: 'Application/json',
-      },
-      data: formData, // Use 'data' property for POST requests
-    })
-      .then(response => {
-        setLoading(false);
-        if (response?.data?.status) {
-          ShowMessage(response?.data?.message);
-          RootNavigation?.goBack();
-          printLog(`callApi`, `Success : ${JSON.stringify(response)}`);
-        } else {
-          ShowMessage(response?.data?.message);
-        }
-        // Handle the success case here
-      })
-      .catch(error => {
-        setLoading(false);
-        printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
-        ShowMessage(error?.message);
+      const API_BASE_URL =
+        memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER;
+      const AuthToken =
+        token?.token == undefined ? JSON.parse(token)?.token : token?.token;
+      console.log(`PARAMS:::::::`, JSON.stringify(params));
+      let formData = new FormData();
+      var myparams = Object.keys(params);
+      myparams?.map(item => {
+        formData.append(item, params[item]);
       });
 
-    //   fetch(
-    //     memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER,
-    //     {
-    //       method: 'POST',
-    //       headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'multipart/form-data',
-    //         Authorization:
-    //           'Bearer ' +
-    //           (token?.token == undefined
-    //             ? JSON.parse(token)?.token
-    //             : token?.token),
-    //       },
-    //       body: payload,
-    //     },
-    //   )
-    //     .then(response => response.json())
-    //     .then(responseJson => {
-    //       // return responseJson
-    //       ShowMessage(responseJson?.message);
-    //       printLog('responseJson1,2,3--', JSON.stringify(responseJson));
-    //       if (responseJson?.status) {
-    //         RootNavigation?.goBack();
-    //       }
-    //       setLoading(false);
-    //     })
-    //     .catch(error => {
-    //       printLog('responseJson Error', JSON.stringify(error));
-    //       ShowMessage(error);
-    //       setLoading(false);
-    //     });
-    // };
+      setLoading(true);
+      axios({
+        method: 'POST',
+        url: API_BASE_URL,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${AuthToken}`,
+          Accept: 'Application/json',
+        },
+        data: formData, // Use 'data' property for POST requests
+      })
+        .then(response => {
+          setLoading(false);
+          if (response?.data?.status) {
+            ShowMessage(response?.data?.message);
+            RootNavigation?.goBack();
+            printLog(`callApi`, `Success : ${JSON.stringify(response)}`);
+          } else {
+            ShowMessage(response?.data?.message);
+            setLoading(false);
+          }
+          // Handle the success case here
+        })
+        .catch(error => {
+          setLoading(false);
+          printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
+          setLoading(false);
+          addMembers();
+        });
 
-    // const imageLinkToParam = imageLink => {
-    //   let filename = '';
-    //   let filePath = '';
-    //   filePath =
-    //     Platform.OS == 'android' ? imageLink : imageLink.replace('file://', '');
-    //   filename = imageLink
-    //     .substring(imageLink.lastIndexOf('/') + 1, imageLink.length)
-    //     .replaceAll('%20', '_');
-    //   printLog('imageLinkToParam ::::: ', filename);
-    //   return {uri: filePath, name: filename, type: 'image/jpeg'};
+      //   fetch(
+      //     memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER,
+      //     {
+      //       method: 'POST',
+      //       headers: {
+      //         Accept: 'application/json',
+      //         'Content-Type': 'multipart/form-data',
+      //         Authorization:
+      //           'Bearer ' +
+      //           (token?.token == undefined
+      //             ? JSON.parse(token)?.token
+      //             : token?.token),
+      //       },
+      //       body: payload,
+      //     },
+      //   )
+      //     .then(response => response.json())
+      //     .then(responseJson => {
+      //       // return responseJson
+      //       ShowMessage(responseJson?.message);
+      //       printLog('responseJson1,2,3--', JSON.stringify(responseJson));
+      //       if (responseJson?.status) {
+      //         RootNavigation?.goBack();
+      //       }
+      //       setLoading(false);
+      //     })
+      //     .catch(error => {
+      //       printLog('responseJson Error', JSON.stringify(error));
+      //       ShowMessage(error);
+      //       setLoading(false);
+      //     });
+      // };
+
+      // const imageLinkToParam = imageLink => {
+      //   let filename = '';
+      //   let filePath = '';
+      //   filePath =
+      //     Platform.OS == 'android' ? imageLink : imageLink.replace('file://', '');
+      //   filename = imageLink
+      //     .substring(imageLink.lastIndexOf('/') + 1, imageLink.length)
+      //     .replaceAll('%20', '_');
+      //   printLog('imageLinkToParam ::::: ', filename);
+      //   return {uri: filePath, name: filename, type: 'image/jpeg'};
+    }
   };
 
   const calculateAge = birthdate => {
@@ -889,9 +895,9 @@ const AddMemberScreen = props => {
                 phone={phone}
                 type={'numeric'}
                 setCountryCode={item => {
-                  setCountryCode(item?.name);
+                  setCountryCode('+' + item?.callingCode);
                 }}
-                onChangeText={setPhone}
+                onChangeText={i => setPhone(i)}
               />
               <HorizontalTextInput
                 label={`Email ID`}
@@ -913,14 +919,14 @@ const AddMemberScreen = props => {
               <MyMobileNumber
                 contact={true}
                 label={`ફોરેન Number`}
-                defaultText={foriegn_number}
+                defaultText={foreign_number}
                 countryCode={foriegn_country_code}
-                phone={foriegn_number}
+                phone={foreign_number}
                 type={'numeric'}
                 setCountryCode={item => {
-                  setCountryCode(item?.name);
+                  setForeignCountryCode('+' + item?.callingCode);
                 }}
-                onChangeText={setForeignNumber}
+                onChangeText={i => setForeignNumber(i)}
               />
               {/* <MyMobileNumber
                 contact={true}
@@ -1155,7 +1161,7 @@ const AddMemberScreen = props => {
                   <ImageUpload
                     image={image}
                     imgPress={() => getMyImage(1)}
-                    imageLoading={imageLoading}
+                    imageLoading={imageLoading == 1 && true}
                   />
                   {/* <TouchableOpacity
                     style={{width: '30%'}}
@@ -1195,7 +1201,7 @@ const AddMemberScreen = props => {
                   <ImageUpload
                     image={visitingOne}
                     imgPress={() => getMyImage(2)}
-                    imageLoading={imageLoading}
+                    imageLoading={imageLoading == 2 && true}
                   />
                   {/* <TouchableOpacity
                     activeOpacity={1}
@@ -1264,7 +1270,8 @@ const AddMemberScreen = props => {
                       </TouchableOpacity>
                     </ImageBackground>
                   </TouchableOpacity> */}
-                  <TouchableOpacity
+
+                  {/* <TouchableOpacity
                     activeOpacity={1}
                     style={{
                       width: '30%',
@@ -1297,7 +1304,12 @@ const AddMemberScreen = props => {
                         source={require('../../assets/images/cancel_icon.png')}
                       />
                     )}
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+                  <ImageUpload
+                    image={VisitingTwo}
+                    imgPress={() => getMyImage(3)}
+                    imageLoading={imageLoading == 3 && true}
+                  />
 
                   {/* <TouchableOpacity
                     style={{

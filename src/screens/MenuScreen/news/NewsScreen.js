@@ -299,7 +299,7 @@ const NewsScreen = props => {
                 flex: 0.8,
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: AppColors.BackgroundColor,
+                // backgroundColor: AppColors.BackgroundColor,
               }}>
               <Text
                 style={{

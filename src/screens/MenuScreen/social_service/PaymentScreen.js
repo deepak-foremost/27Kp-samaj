@@ -197,7 +197,7 @@ const PaymentScreen = ({route}) => {
                 countryCode={code}
                 phone={phone}
                 setCountryCode={item => {
-                  setCode(item?.name);
+                  setCode('+' + item?.callingCode);
                 }}
                 onChangeText={setPhone}
               />

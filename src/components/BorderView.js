@@ -14,6 +14,7 @@ const BorderView = props => {
         position: 'absolute',
         bottom: 0,
         width: '100%',
+        paddingTop:5,
         ...props.borderStyle,
       }}>
       <View

@@ -178,7 +178,7 @@ export class staticArray {
       screen: AppScreens.VARIOUS_BUSINESS,
       src: require('../assets/images/bhumi_icon.png'),
     },
-   
+
     {
       index: 5,
       menu: 'Privacy Policy',
@@ -252,6 +252,15 @@ export class staticArray {
     {label: 'Australia', value: 'Australia', name: 'Australia'},
     {label: 'China', value: 'China', name: 'China'},
     {label: 'New Zealand', value: 'New Zealand', name: 'New Zealand'},
+    {label: 'United States', value: 'United States', name: 'United States'},
+    {label: 'Russia', value: 'Russia', name: 'Russia'},
+    {label: 'Brazil', value: 'Brazil', name: 'Brazil'},
+    {label: 'Indonesia', value: 'Indonesia', name: 'Indonesia'},
+    {label: 'Pakistan', value: 'Pakistan', name: 'Pakistan'},
+    {label: 'Nigeria', value: 'Nigeria', name: 'Nigeria'},
+    {label: 'Bangladesh', value: 'Bangladesh', name: 'Bangladesh'},
+    {label: 'Mexico', value: 'Mexico', name: 'Mexico'},
+    {label: 'South Africa', value: 'South Africa', name: 'South Africa'},
   ];
 
   static lifeSupportNumbers = [

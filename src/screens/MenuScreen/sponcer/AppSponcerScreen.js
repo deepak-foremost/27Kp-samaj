@@ -400,14 +400,14 @@ export const MemberCell = props => {
           alignItems: 'center',
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
-          {props?.item ? `${props?.item?.phone}` : 'મોબાઈલ નંબર'}
+          {props?.item ? `${props?.item?.country_code+props?.item?.phone}` : 'મોબાઈલ નંબર'}
         </Text>
         {!props?.change ? (
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               activeOpacity={1}
               style={{paddingHorizontal: 2.5, paddingBottom: 2.5}}
-              onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
+              onPress={() => Linking.openURL(`tel:${props?.item?.country_code+props?.item?.phone}`)}>
               <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -420,7 +420,7 @@ export const MemberCell = props => {
               }}
               onPress={() =>
                 Linking.openURL(
-                  `whatsapp://send?phone=${props?.item?.phone}`,
+                  `whatsapp://send?phone=${props?.item?.country_code+props?.item?.phone}`,
                   // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
                 )
               }>

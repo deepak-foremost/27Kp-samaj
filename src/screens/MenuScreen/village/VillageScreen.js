@@ -31,7 +31,7 @@ import {getString} from '../../../utils/AsyncStorageHelper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getCities, getVillageMembers} from '../../../networking/CallApi';
 
-const list = [
+const member = [
   {
     name: 'પટેલ ધવલ વિષ્ણુભાઈ ',
     city: 'શંકરપુરા',
@@ -116,9 +116,9 @@ const VillageScreen = props => {
           setMember([]);
         },
       );
-    }else{
+    } else {
       getVillageMembers(
-       '',
+        '',
         response => {
           printLog('getVillageMembers', JSON.stringify(response?.data));
           if (response?.status) {
@@ -132,7 +132,6 @@ const VillageScreen = props => {
           setMember([]);
         },
       );
-
     }
   }, [cityId]);
 
@@ -475,7 +474,11 @@ const AboutCell = props => {
         <TouchableOpacity
           style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}
           activeOpacity={0.9}
-          onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
+          onPress={() =>
+            Linking.openURL(
+              `tel:${props?.item?.country_code + props?.item?.phone}`,
+            )
+          }>
           <Text
             style={{
               color: AppColors.DarkText,
@@ -484,7 +487,7 @@ const AboutCell = props => {
               flex: 1,
               textAlign: 'center',
             }}>
-            {props?.item?.phone}
+            {props?.item?.country_code + props?.item?.phone}
           </Text>
           <Image
             source={AppImages.CIRCLE_CALL_ICON}
@@ -501,7 +504,9 @@ const AboutCell = props => {
             }}
             onPress={() =>
               Linking.openURL(
-                `whatsapp://send?phone=${props?.item?.phone}`,
+                `whatsapp://send?phone=${
+                  props?.item?.country_code + props?.item?.phone
+                }`,
                 // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
               )
             }>

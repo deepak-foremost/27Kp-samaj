@@ -422,7 +422,7 @@ export const MyMobileNumber = props => {
               fontFamily: AppFonts.regular,
               color: AppColors.black,
             }}>
-            {country}
+            {props?.countryCode}
           </Text>
           <Image
             style={[{marginLeft: 5}, props?.icon]}
@@ -465,6 +465,7 @@ export const MyMobileNumber = props => {
         }}
         onSelect={cod => {
           setCountry('+' + cod.callingCode);
+          props?.setCountryCode(cod);
           setVisible(false);
         }}
         onClose={() => setVisible(false)}

@@ -21,43 +21,49 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {AsyncStorageConst, getString} from '../../../utils/AsyncStorageHelper';
 import AsyncStorage from '@react-native-community/async-storage';
 import {getProfile} from '../../../networking/CallApi';
+import {ListMember} from '../advisour_member/AdvicerMember';
 
 const ProfileScreen = () => {
   const [modelOpen, setModelOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const inset = useSafeAreaInsets();
   const [screen, setScreen] = useState('');
   const [id, setId] = useState('');
+  const [isLoading, setLoading] = useState(false);
   const StatusBarHeight = inset.top;
 
   useEffect(() => {
     async function check() {
       let Details = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
       console.log('Status', JSON.parse(Details)?.data?.id);
-      setData(JSON.parse(Details)?.data);
+      // setData(JSON.parse(Details)?.data);
       setId(JSON.parse(Details)?.data?.id);
+      setLoading(true);
+      getProfile(
+        {
+          id: JSON.parse(Details)?.data?.id,
+        },
+        response => {
+          if (response.status) {
+            console.log('profile', response);
+            setData(response?.data);
+            setLoading(false);
+          } else {
+            console.log('failed');
+            setLoading(false);
+          }
+        },
+        error => {
+          console.log('error', error);
+          setLoading(false);
+        },
+      );
       let token = await AsyncStorage.getItem(AsyncStorageConst.screen);
       setScreen(token);
       console.log('details', JSON.parse(Details)?.data?.phone);
     }
     check();
-    // getProfile(
-    //   {
-    //     id: id,
-    //   },
-    //   response => {
-    //     if (response.status) {
-    //       console.log(response);
-    //       setData(response);
-    //     } else {
-    //       console.log('failed');
-    //     }
-    //   },
-    //   error => {
-    //     console.log('error', error);
-    //   },
-    // );
   }, []);
   return (
     <View
@@ -126,27 +132,39 @@ const ProfileScreen = () => {
               }}>
               Profile Details
             </Text>
-
-            <ProfileText
-              firstText={
-                screen == 'User Signin'
-                  ? 'Guest Sign-In'
-                  : 'Sign In Using Your Register Mobile Number'
-              }
-              firstStyle={{fontSize: screen == 'User Signin' ? 13 : 12}}
-              secondText={data?.country_code + ' ' + data?.phone}
-              src={AppImages.PHONE_SMALL_ICON}
-            />
-            <ProfileText
-              firstText={'Member Name'}
-              secondText={data?.name}
-              src={AppImages.NAME_SMALL_ICON}
-            />
-            <ProfileText
-              firstText={'Village'}
-              secondText={data?.city}
-              src={AppImages.LOCATION_ICON}
-            />
+            {isLoading ? (
+              <View style={{paddingRight: 50, width: '100%'}}>
+                <ListMember styles={{width: '90%', height: 15}} />
+                <ListMember styles={{width: '50%', height: 15, marginTop: 0}} />
+                <ListMember styles={{width: '70%', height: 15}} />
+                <ListMember styles={{width: '50%', height: 15, marginTop: 0}} />
+                <ListMember styles={{width: '60%', height: 15}} />
+                <ListMember styles={{width: '50%', height: 15, marginTop: 0}} />
+              </View>
+            ) : (
+              <View style={{width: '100%'}}>
+                <ProfileText
+                  firstText={
+                    screen == 'User Signin'
+                      ? 'Guest Sign-In'
+                      : 'Sign In Using Your Register Mobile Number'
+                  }
+                  firstStyle={{fontSize: screen == 'User Signin' ? 13 : 12}}
+                  secondText={data[0]?.country_code + ' ' + data[0]?.phone}
+                  src={AppImages.PHONE_SMALL_ICON}
+                />
+                <ProfileText
+                  firstText={'Member Name'}
+                  secondText={data[0]?.name}
+                  src={AppImages.NAME_SMALL_ICON}
+                />
+                <ProfileText
+                  firstText={'Village'}
+                  secondText={data[0]?.city}
+                  src={AppImages.LOCATION_ICON}
+                />
+              </View>
+            )}
             <TouchableOpacity
               activeOpacity={1}
               style={{position: 'absolute', right: 20, bottom: 20}}
