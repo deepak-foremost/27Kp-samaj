@@ -781,7 +781,7 @@ const SearchScreen = props => {
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
-                              marginLeft: 10,
+                              
                             }}>
                             નામ
                           </Text>
@@ -887,7 +887,7 @@ const AboutCell = props => {
         </Text>
         <Text
           style={{
-            flex: 1.5,
+            flex: 1.4,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
@@ -907,7 +907,7 @@ const AboutCell = props => {
         /> */}
         <Text
           style={{
-            flex: 0.9,
+            flex: 1,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,

@@ -72,6 +72,10 @@ export const getProfile = (params, onSuccess, onFailure) => {
   CallApi(`${Api.GETPROFILE}`, RequestType.get, params, onSuccess, onFailure);
 };
 
+export const getContactUs = (params, onSuccess, onFailure) => {
+  CallApi(`${Api.GET_CONTACT_US}`, RequestType.get, params, onSuccess, onFailure);
+};
+
 export const getAboutKarobari = (params, onSuccess, onFailure) => {
   CallApi(
     `${Api.GET_ABOUT_KAROBARI}?${params}`,
@@ -83,13 +87,7 @@ export const getAboutKarobari = (params, onSuccess, onFailure) => {
 };
 
 export const getKarobari = (params, onSuccess, onFailure) => {
-  CallApi(
-    `${Api.GET_KAROBARI}?${params}`,
-    RequestType.get,
-    params,
-    onSuccess,
-    onFailure,
-  );
+  CallApi(`${Api.GET_KAROBARI}`, RequestType.get, params, onSuccess, onFailure);
 };
 
 export const getServiceDetail = (params, onSuccess, onFailure) => {

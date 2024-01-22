@@ -310,6 +310,9 @@ const MobileLogInScreen = props => {
                 }}>
                 <TouchableOpacity
                   activeOpacity={1}
+                  onPress={() => {
+                    setCheck(!check);
+                  }}
                   style={{
                     borderColor:
                       screen == 'User Signin'

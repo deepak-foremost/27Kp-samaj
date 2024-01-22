@@ -38,6 +38,7 @@ import {
   getKarobariRange,
 } from '../../../networking/CallApi';
 import {ListMember} from '../advisour_member/AdvicerMember';
+import ZoomImage from '../../../components/ZoomImage';
 
 const myList = [
   {
@@ -75,6 +76,10 @@ const VariousBusiness = props => {
   const [karobariRange, setKarobariRange] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [members, setMembers] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [images, setImages] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   // useEffect(() => {
   //   getCities(
   //     response => {
@@ -100,6 +105,12 @@ const VariousBusiness = props => {
   //     },
   //   );
   // }, []);
+
+  const LoadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -131,7 +142,7 @@ const VariousBusiness = props => {
   useEffect(() => {
     setLoading(true);
     getKarobari(
-      `range_id=${valueId}`,
+      {range_id: valueId, page: page},
       response => {
         printLog('getAboutUsMember', JSON.stringify(response));
         if (response?.status) {
@@ -185,6 +196,11 @@ const VariousBusiness = props => {
             }}>
             <ScreenToolbar text={'વિવિધ શહેર કારોબારી'} />
           </View>
+          <ZoomImage
+            visible={open}
+            images={images}
+            dismiss={() => setOpen(false)}
+          />
           <View style={{flex: 1}}>
             <View
               style={{
@@ -310,7 +326,8 @@ const VariousBusiness = props => {
                             fontSize: 8,
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
-                            width: '4%',
+                            // width: '4%',
+                            flex:0.4,
                           }}>
                           {'ક્રમ'}
                         </Text>
@@ -319,7 +336,8 @@ const VariousBusiness = props => {
                             fontSize: 9,
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
-                            width: '25%',
+                            // width: '25%',
+                            flex:2,
                           }}>
                           નામ
                         </Text>
@@ -328,7 +346,9 @@ const VariousBusiness = props => {
                             fontSize: 9,
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
-                            width: '15%',
+                            // width: '15%',
+                            flex:1.75,
+                            paddingLeft:3
                           }}>
                           ગામ
                         </Text>
@@ -337,7 +357,9 @@ const VariousBusiness = props => {
                             fontSize: 9,
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
-                            width: '12%',
+                            // width: '15%',
+                            flex:1.75,
+                            paddingLeft:3
                           }}>
                           હોદો
                         </Text>
@@ -346,7 +368,8 @@ const VariousBusiness = props => {
                             fontSize: 9,
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
-                            width: '30%',
+                            // width: '25%',
+                            flex:2.5,
                           }}>
                           મોબાઈલ નંબર
                         </Text>
@@ -355,8 +378,9 @@ const VariousBusiness = props => {
                             fontSize: 9,
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
-                            width: '5%',
-                            textAlign: 'right',
+                            // width: '5%',
+                            flex:0.5,
+                            // textAlign: 'right',
                           }}>
                           ફોટો
                         </Text>
@@ -393,7 +417,8 @@ const VariousBusiness = props => {
                       style={[
                         styles.heading,
                         {
-                          width: '4%',
+                          // width: '4%',
+                          flex:0.4,
                           color: AppColors.DarkText,
                         },
                       ]}>
@@ -403,7 +428,8 @@ const VariousBusiness = props => {
                       style={[
                         styles.heading,
                         {
-                          width: '25%',
+                          // width: '20%',
+                          flex:2,
                           color: AppColors.DarkText,
                         },
                       ]}>
@@ -413,8 +439,10 @@ const VariousBusiness = props => {
                       style={[
                         styles.heading,
                         {
-                          width: '15%',
+                          // width: '15%',
+                          flex:1.75,
                           color: AppColors.DarkText,
+                          paddingLeft:3
                         },
                       ]}>
                       {item ? `${item?.city}` : 'ગામ'}
@@ -423,8 +451,10 @@ const VariousBusiness = props => {
                       style={[
                         styles.heading,
                         {
-                          width: '12%',
+                          // width: '15%',
+                          flex:1.75,
                           color: AppColors.DarkText,
+                          paddingLeft:3
                         },
                       ]}>
                       {item ? `${item?.layakat}` : 'હોદો'}
@@ -433,23 +463,25 @@ const VariousBusiness = props => {
                     <TouchableOpacity
                       activeOpacity={1}
                       style={{
-                        flexDirection: 'row',
-                        width: '30%',
+                        // flexDirection: 'row',
+                        // width: '25%',
+                        flex:2.5,
                         // marginLeft: 10,
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        // alignItems: 'center',
+                        // justifyContent: 'center',
                       }}
-                      onPress={() => Linking.openURL(`tel:${item?.phone}`)}>
+                      // onPress={() => Linking.openURL(`tel:${item?.phone}`)}
+                      >
                       <Text
                         style={[styles.heading, {color: AppColors.DarkText}]}>
                         {item
                           ? `${item?.country_code + item?.phone}`
                           : 'મોબાઈલ નંબર'}
                       </Text>
-                      <View style={{flexDirection: 'row'}}>
+                      <View style={{flexDirection: 'row',justifyContent:'center'}}>
                         <TouchableOpacity
                           activeOpacity={1}
-                          style={{paddingHorizontal: 2, marginBottom: 2.5}}
+                          style={{paddingRight: 4, marginBottom: 2.5}}
                           onPress={() =>
                             Linking.openURL(
                               `tel:${item?.country_code + item?.phone}`,
@@ -457,13 +489,13 @@ const VariousBusiness = props => {
                           }>
                           <Image source={AppImages.CIRCLE_CALL_ICON} />
                         </TouchableOpacity>
-                      </View>
-                      <TouchableOpacity
+
+                        <TouchableOpacity
                         activeOpacity={1}
                         style={{
                           justifyContent: 'center',
                           alignItems: 'center',
-                          paddingHorizontal: 2,
+                          paddingLeft: 4,
                           marginBottom: 2.5,
                         }}
                         onPress={() =>
@@ -476,11 +508,19 @@ const VariousBusiness = props => {
                         }>
                         <Image source={AppImages.WHATSAPP_ICON} />
                       </TouchableOpacity>
+                      </View>
+                   
                     </TouchableOpacity>
 
-                    <View
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={() => {
+                        setImages([{url: item?.image}]);
+                        setOpen(item?.image == '' ? false : true);
+                      }}
                       style={{
-                        width: '5%',
+                        // width: '5%',
+                        flex:0.4,
                         // justifyContent: 'center',
                         alignItems: 'flex-end',
                         paddingBottom: 2.5,
@@ -508,7 +548,7 @@ const VariousBusiness = props => {
                     //   ફોટો
                     // </Text> */}
                       {/* //   )} */}
-                    </View>
+                    </TouchableOpacity>
 
                     {/* <Text
                     style={[

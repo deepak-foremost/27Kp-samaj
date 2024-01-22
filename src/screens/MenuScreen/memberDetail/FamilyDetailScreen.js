@@ -950,7 +950,7 @@ export const MemberDetailCell = props => {
           title={'ફોરેન Country નામ :'}
           detailText={props?.item?.foreign_country_name}
         />
-        {props?.item?.foreign_number != null && (
+        {props?.item?.foreign_number != undefined && (
           <MemberDetail
             title={'ફોરેન Number :'}
             detailText={

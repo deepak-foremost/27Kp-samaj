@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -22,10 +22,27 @@ import {staticArray} from '../utils/staticArray';
 import ScreenToolbar from '../components/ScreenToolbar';
 import BorderView from '../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getContactUs} from '../networking/CallApi';
 
 const ContactUsScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
+  const [contacts, setContacts] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    getContactUs('', response => {
+      if (response?.status) {
+        console.log('contact', response);
+        setContacts(response);
+        setLoading(false);
+      } else {
+        setContacts(null);
+        setLoading(false);
+      }
+    });
+  }, []);
   return (
     <View
       style={{
@@ -119,10 +136,14 @@ const ContactUsScreen = props => {
 
               <FlatList
                 scrollEnabled={false}
-                contentContainerStyle={{alignItems: 'center', marginTop: 10}}
+                contentContainerStyle={{
+                  alignItems: 'center',
+                  marginTop: 10,
+                  width: '100%',
+                }}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                data={staticArray.ContactPerson}
+                data={contacts?.data}
                 renderItem={(item, index) => (
                   <ContactCell item={item} index={index} />
                 )}
@@ -189,14 +210,15 @@ const ContactUsScreen = props => {
                 <Text
                   style={[
                     {
-                      fontSize: 11,
+                      fontSize: 10,
                       fontFamily: AppFonts.bold,
                       color: AppColors.DarkText,
-                      alignSelf: 'flex-start',
-                      marginLeft: 10,
+                      alignSelf: 'center',
+                      textAlign: 'center',
+                      width: '98%',
                     },
                   ]}>
-                  Office Address: Full Address-Nikol, Ahmedabad
+                  Office Address : {contacts?.DeveloperContacts[0]?.address}
                 </Text>
               </View>
 
@@ -230,19 +252,27 @@ const ContactUsScreen = props => {
                     width: '85%',
                     textAlign: 'center',
                   }}>
-                  Website / Mobile Application Developer Contact Number : Dhaval
-                  Patel : +91 : 9510135458{' '}
+                  Website / Mobile Application Developer Contact Number :
+                  {contacts?.DeveloperContacts[0]?.name +
+                    contacts?.DeveloperContacts[0]?.country_code +
+                    contacts?.DeveloperContacts[0]?.phone}
                 </Text>
 
                 {
                   <TouchableOpacity
                     activeOpacity={1}
                     style={{marginLeft: 5, marginBottom: 5}}
-                    onPress={() => Linking.openURL(`tel:${'9510135458'}`)}>
+                    onPress={() =>
+                      Linking.openURL(
+                        `tel:${
+                          contacts?.DeveloperContacts[0]?.country_code +
+                          contacts?.DeveloperContacts[0]?.phone
+                        }`,
+                      )
+                    }>
                     <Image source={AppImages.CIRCLE_CALL_ICON} />
                   </TouchableOpacity>
                 }
-
                 <TouchableOpacity
                   activeOpacity={1}
                   style={{
@@ -254,7 +284,10 @@ const ContactUsScreen = props => {
                   }}
                   onPress={() =>
                     Linking.openURL(
-                      `whatsapp://send?text=hello&phone=${'9510135458'}`,
+                      `whatsapp://send?text=hello&phone=${
+                        contacts?.DeveloperContacts[0]?.country_code +
+                        contacts?.DeveloperContacts[0]?.phone
+                      }`,
                     )
                   }>
                   {<Image source={AppImages.WHATSAPP_ICON} />}
@@ -304,10 +337,11 @@ const ContactCell = props => {
   return (
     <View
       style={{
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
+
         alignItems: 'center',
         height: 45,
-        width: '92%',
+        width: '100%',
         flexDirection: 'row',
         // borderBottomWidth: 1,
         borderColor: props?.item?.item?.id == 3 ? '#fff' : AppColors.line_color,
@@ -321,7 +355,9 @@ const ContactCell = props => {
           color: AppColors.DarkText,
           fontSize: 11,
           fontFamily: AppFonts.semiBold,
-          marginLeft: 10,
+          // marginLeft: 10,
+          paddingLeft: 10,
+          flex: 0.7,
         }}>
         {props?.item?.item?.name}
       </Text>
@@ -330,16 +366,18 @@ const ContactCell = props => {
           color: AppColors.DarkText,
           fontSize: 11,
           fontFamily: AppFonts.semiBold,
+          flex: 0.7,
         }}>
-        {props?.item?.item?.city}
+        {props?.item?.item?.village}
       </Text>
       <Text
         style={{
           color: AppColors.DarkText,
           fontSize: 11,
           fontFamily: AppFonts.semiBold,
+          flex: 0.7,
         }}>
-        {props?.item?.item?.designation}
+        {props?.item?.item?.hodo}
       </Text>
 
       <View
@@ -347,6 +385,7 @@ const ContactCell = props => {
           flexDirection: 'row',
           paddingVertical: 5,
           alignItems: 'center',
+          flex: 1.8,
         }}>
         <Text
           style={{
@@ -354,7 +393,7 @@ const ContactCell = props => {
             fontSize: 11,
             fontFamily: AppFonts.semiBold,
           }}>
-          {`${props?.item?.item?.code} ${props?.item?.item?.phone}`}
+          {`${props?.item?.item?.country_code} ${props?.item?.item?.phone}`}
         </Text>
 
         {/* <TouchableOpacity

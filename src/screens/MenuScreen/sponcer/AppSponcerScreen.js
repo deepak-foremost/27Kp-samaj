@@ -83,7 +83,7 @@ const AppSponcerScreen = props => {
   const status = props?.route?.params?.menu;
   const [open, setOpen] = useState(false);
   const [images, setImages] = useState(null);
-
+  
   useEffect(() => {
     if (status == 'ભુમિ સભાસદ સભ્ય') {
       getBhumiSlah(response => {
@@ -105,6 +105,11 @@ const AppSponcerScreen = props => {
       });
     }
   }, []);
+
+  // useEffect(()=>{
+    
+
+  // },[])
 
   // console.warn(status)
 
@@ -188,7 +193,8 @@ const AppSponcerScreen = props => {
                 fontSize: 8,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
-                width: '20%',
+                // width: '20%',
+                flex:1.6
               }}>
               {status + ' નંબર'}
             </Text>
@@ -197,7 +203,9 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
-                width: '28%',
+                // width: '25%',
+                paddingLeft:5,
+                flex:2
               }}>
               નામ
             </Text>
@@ -206,7 +214,9 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
-                width: '15%',
+                // width: '13%',
+                flex:1,
+                marginLeft:5
               }}>
               ગામ
             </Text>
@@ -215,7 +225,8 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
-                width: '25%',
+                // width: '30%',
+                flex:2.5
               }}>
               મોબાઈલ નંબર
             </Text>
@@ -224,6 +235,8 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
+                // width:'7%'
+                flex:0.7
               }}>
               ફોટો
             </Text>
@@ -340,7 +353,8 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '20%',
+            // width: '20%',
+            flex:1.6,
             color: AppColors.DarkText,
             // textAlign: props?.item ? 'center' : 'auto',
             // paddingLeft: props?.item ? 0 : '2%',
@@ -358,7 +372,8 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '25%',
+            // width: '25%',
+            flex:2,
             color: AppColors.DarkText,
           },
         ]}>
@@ -368,7 +383,8 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '13%',
+            // width: '13%',
+            flex:1,
             color: AppColors.DarkText,
             marginLeft: 5,
           },
@@ -396,7 +412,8 @@ export const MemberCell = props => {
       <View
         style={{
           flexDirection: 'row',
-          width: '30%',
+          // width: '30%',
+          flex:2.5,
           alignItems: 'center',
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
@@ -446,8 +463,9 @@ export const MemberCell = props => {
       </View>
       <View
         style={{
-          width: '7%',
-          // justifyContent: 'center',
+          // width: '7%',
+          flex:0.6,
+          justifyContent: 'center',
           alignItems: 'flex-end',
           // marginLeft: 10,
         }}>
@@ -462,6 +480,7 @@ export const MemberCell = props => {
                 // borderColor: 'black',
                 // borderWidth: 1,
                 borderRadius: 10,
+                marginBottom:2
               }}
               source={
                 props?.item?.image == ''

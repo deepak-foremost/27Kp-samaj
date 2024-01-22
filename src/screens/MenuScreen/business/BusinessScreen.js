@@ -87,6 +87,8 @@ const BusinessScreen = props => {
   const [categories, setCategories] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   const onRefresh = () => {
     pos == 0
@@ -120,6 +122,12 @@ const BusinessScreen = props => {
         );
   };
 
+  const LoadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     pos == 0
@@ -139,8 +147,9 @@ const BusinessScreen = props => {
         )
       : console.log('itemId--', catItem?.id);
     getBusinessAllList(
-      {category_id: catItem?.id == undefined ? 0 : catItem?.id},
+      {category_id: catItem?.id == undefined ? 0 : catItem?.id, page: page},
       response => {
+        setTotalPage(response?.last_page);
         printLog('getBusinessList', JSON.stringify(response));
         if (response?.status) {
           setBusinsesses(response?.data);
@@ -273,6 +282,9 @@ const BusinessScreen = props => {
                   <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
+                    onEndReached={() => {
+                      LoadMore();
+                    }}
                     // refreshControl={
                     //   refreshing=refreshing
                     // }

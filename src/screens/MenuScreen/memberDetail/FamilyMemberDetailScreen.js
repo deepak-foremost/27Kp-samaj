@@ -218,7 +218,10 @@ const FamilyMemberDetailScreen = props => {
                 data={cities}
                 value={value}
                 onItemSelect={item => {
-                  printLog('city',JSON.stringify(item?.name + '---' + item?.id));
+                  printLog(
+                    'city',
+                    JSON.stringify(item?.name + '---' + item?.id),
+                  );
                   setValue(item?.name);
                   setCityId(item?.id);
                   getList(item?.id);

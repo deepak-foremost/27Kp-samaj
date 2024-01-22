@@ -23,7 +23,6 @@ import {AsyncStorageConst} from '../../utils/AsyncStorageHelper';
 const FirstScreen = () => {
   // let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
   // console.log('Status',token);
- 
 
   return (
     <View
@@ -77,6 +76,7 @@ const FirstScreen = () => {
             style={{
               flex: 0.5,
               alignItems: 'center',
+              // justifyContent: 'center',
               paddingTop: 50,
             }}>
             <MainButton
@@ -89,7 +89,7 @@ const FirstScreen = () => {
               src={require('../../assets/images/register_icon.png')}
               buttonStyle={{marginTop: 1}}
             />
-            <MainButton
+            {/* <MainButton
               buttonPress={() =>
                 RootNavigation.navigate(AppScreens.MOILE_LOGIN_SCREEN, {
                   screen: 'User Signin',
@@ -100,7 +100,7 @@ const FirstScreen = () => {
               imgStyle={{tintColor: 'black'}}
               src={require('../../assets/images/guest_icon.png')}
               buttonStyle={{backgroundColor: AppColors.Red, marginTop: 15}}
-            />
+            /> */}
             <MainButton
               buttonPress={() =>
                 RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {pay: 'pay'})

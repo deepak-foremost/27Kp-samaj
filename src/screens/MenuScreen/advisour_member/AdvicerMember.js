@@ -216,6 +216,79 @@ const AdvicerMember = props => {
           images={images}
           dismiss={() => setOpen(false)}
         />
+        {/* <View
+          style={{
+            flex: 0.88,
+            marginTop: '5%',
+            width: '90%',
+            alignItems: 'center',
+            alignSelf: 'center',
+            backgroundColor: AppColors.backgroundColor,
+            borderRadius: 10,
+            paddingBottom: 10,
+            backgroundColor: 'white',
+            ...Platform.select({
+              ios: {
+                shadowColor: '#D5D5D5',
+                shadowOffset: {width: 0, height: -1},
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+              },
+              android: {
+                elevation: 5,
+              },
+            }),
+          }}>
+          <View style={{paddingHorizontal: 5, width: '100%'}}>
+          
+            <MemberCell status={status} />
+          </View>
+          <View
+            style={{
+              backgroundColor: AppColors.line_color,
+              height: 1,
+              width: '100%',
+            }}
+          />
+
+          {isLoading && members == null ? (
+            <View style={{marginTop: 15}}>
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+              <ListMember />
+            </View>
+          ) : members?.length == 0 ? (
+            <View>
+              <Text
+                style={{
+                  padding: 50,
+                  marginTop: 20,
+                  fontSize: 14,
+                  fontFamily: fontProximaNova.semiBold,
+                  color: AppColors.light_grey,
+                }}>
+                No Members Available
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              style={{width: '100%'}}
+              data={members}
+              renderItem={({item, index}) => (
+                <MemberCell item={item} index={index} status={status} />
+              )}
+            />
+          )}
+        </View> */}
+
         <View
           style={{
             // marginTop: '5%',
@@ -225,34 +298,14 @@ const AdvicerMember = props => {
             borderRadius: 10,
             paddingBottom: 15,
             flex: 0.9,
-
-            // backgroundColor: 'red',
-            // ...Platform.select({
-            //   ios: {
-            //     shadowColor: '#D5D5D5',
-            //     shadowOffset: {width: 0, height: -1},
-            //     shadowOpacity: 0.9,
-            //     shadowRadius: 3,
-            //   },
-            //   android: {
-            //     elevation: 5,
-            //   },
-            // }),
           }}>
           <View style={{width: '100%', paddingHorizontal: 15}}>
-            <MemberCell
+            <AboutKarobariCell
               change={true}
               status={status}
               style={{paddingVertical: 5}}
             />
           </View>
-          {/* <View
-            style={{
-              backgroundColor: AppColors.LightText,
-              height: 1,
-              width: '100%',
-            }}
-          /> */}
 
           {isLoading && members == null ? (
             <View style={{marginTop: 15, width: '95%', alignItems: 'center'}}>
@@ -287,20 +340,34 @@ const AdvicerMember = props => {
               style={{width: '100%'}}
               data={members}
               renderItem={({item, index}) => (
-                <MemberCell
-                  item={item}
-                  index={index}
-                  status={status}
-                  imgPress={() => {
-                    setItem(item);
-                    setOpen(item?.image == '' ? false : true);
-                  }}
-                />
+                <View>
+                  {status == 'drawer' ? (
+                    <AboutKarobariCell
+                      item={item}
+                      index={index}
+                      status={status}
+                      imgPress={() => {
+                        setItem(item);
+                        setOpen(item?.image == '' ? false : true);
+                      }}
+                    />
+                  ) : (
+                    <AboutKarobariCell
+                      item={item}
+                      index={index}
+                      status={status}
+                      imgPress={() => {
+                        setItem(item);
+                        setOpen(item?.image == '' ? false : true);
+                      }}
+                    />
+                  )}
+                </View>
               )}
             />
           )}
         </View>
-        {/* <FooterTextCell title={`સમાજ ના હીત માં રહેવુ મારો અધિકાર છે`} /> */}
+
         <BorderView
           text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
@@ -312,7 +379,171 @@ const AdvicerMember = props => {
 
 export default AdvicerMember;
 
-export const MemberCell = props => {
+// export const MemberCell = props => {
+//   return (
+//     <View
+//       style={{
+//         flexDirection: 'row',
+//         paddingVertical: props?.item ? 10 : 15,
+//         paddingHorizontal: 5,
+//         // borderBottomColor: '#e2e2e2',
+//         // borderBottomWidth: props?.item ? 1 : 0,
+//         justifyContent: 'space-between',
+//         alignItems: 'center',
+//         backgroundColor: props?.change ? AppColors.fadeBackground : '#fff',
+//         marginTop: 15,
+//         borderRadius: 8,
+//         ...props.style,
+//         ...Platform.select({
+//           ios: {
+//             shadowColor: '#D5D5D5',
+//             shadowOffset: {width: 0, height: -1},
+//             shadowOpacity: props?.change ? 0 : 0.9,
+//             shadowRadius: 3,
+//           },
+//           android: {
+//             elevation: props?.change ? 0 : 3,
+//           },
+//         }),
+//       }}>
+//       <Text
+//         style={[
+//           styles.heading,
+//           {
+//             width: '5%',
+
+//             color: AppColors.DarkText,
+
+//             // textAlign: props?.item ? 'center' : 'auto',
+//             // paddingLeft: props?.item ? 0 : '2%',
+//           },
+//         ]}>
+//         {props?.item ? `${props?.index + 1}.` : 'ક્રમ'}
+//       </Text>
+//       <Text
+//         style={[
+//           styles.heading,
+//           {
+//             width: '30%',
+//             color: AppColors.DarkText,
+//           },
+//         ]}>
+//         {props?.item ? `${props?.item?.name}` : 'નામ'}
+//       </Text>
+//       <Text
+//         style={[
+//           styles.heading,
+//           {
+//             width: '23%',
+//             color: AppColors.DarkText,
+//             // marginLeft: 5,
+//           },
+//         ]}>
+//         {props?.item ? `${props?.item?.city}` : 'ગામ'}
+//       </Text>
+//       <View
+//         style={{
+//           flexDirection: 'row',
+//           width: '27%',
+//           // marginLeft: 10,
+//           marginRight: 5,
+//           alignItems: 'center',
+//         }}>
+//         <Text
+//           style={[styles.heading, {color: AppColors.DarkText, fontSize: 9}]}>
+//           {props?.item
+//             ? `${props?.item?.country_code + props?.item?.phone}`
+//             : 'મોબાઈલ નંબર'}
+//         </Text>
+//         {!props?.change ? (
+//           <View
+//             style={{
+//               flexDirection: 'row',
+//               alignItems: 'center',
+//               paddingBottom: 2.5,
+//             }}>
+//             <TouchableOpacity
+//               activeOpacity={1}
+//               style={{paddingHorizontal: 2.5, marginLeft: 3}}
+//               onPress={() =>
+//                 Linking.openURL(
+//                   `tel:${props?.item?.country_code + props?.item?.phone}`,
+//                 )
+//               }>
+//               <Image source={AppImages.CIRCLE_CALL_ICON} />
+//             </TouchableOpacity>
+//             <TouchableOpacity
+//               style={{
+//                 padding: 5,
+//                 justifyContent: 'center',
+//                 alignItems: 'center',
+//               }}
+//               activeOpacity={1}
+//               onPress={() =>
+//                 Linking.openURL(
+//                   `whatsapp://send?phone=${
+//                     props?.item?.country_code + props?.item?.phone
+//                   }`,
+//                   // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+//                 )
+//               }>
+//               <Image source={AppImages.WHATSAPP_ICON} />
+//             </TouchableOpacity>
+//           </View>
+//         ) : null}
+//       </View>
+//       <TouchableOpacity
+//         activeOpacity={1}
+//         style={{
+//           width: '7%',
+//           justifyContent: 'center',
+//           alignItems: 'center',
+//           marginLeft: 10,
+//           paddingBottom: 2.5,
+//         }}
+//         onPress={props?.imgPress}>
+//         {props?.item ? (
+//           <Image
+//             style={{
+//               height: 15,
+//               width: 15,
+//               // borderColor: 'black',
+//               // borderWidth: 1,
+//               borderRadius: 10,
+//               backgroundColor: '#F2F2F2',
+//               // resizeMode:'contain'
+//             }}
+//             source={
+//               props?.item?.image == ''
+//                 ? AppImages.MEMBER_IMAGE
+//                 : {uri: props?.item?.image}
+//             }
+//           />
+//         ) : (
+//           <Text
+//             style={[
+//               styles.heading,
+//               {color: AppColors.DarkText, marginRight: 5},
+//             ]}>
+//             ફોટો
+//           </Text>
+//         )}
+//       </TouchableOpacity>
+
+//       {/* <Text
+//         style={[
+//           styles.heading,
+//           {
+
+//           },
+//         ]}>
+//         {props?.item ? `${props?.item?.city}` : 'Photo'}
+//       </Text> */}
+//     </View>
+//   );
+// };
+
+export const AboutKarobariCell = props => {
   return (
     <View
       style={{
@@ -343,12 +574,12 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '5%',
-
+            // width: '5%',
+            flex:0.4,
+            fontSize: 9,
             color: AppColors.DarkText,
-
             // textAlign: props?.item ? 'center' : 'auto',
-            // paddingLeft: props?.item ? 0 : '2%',
+            paddingRight: props?.item ? 0 : 5,
           },
         ]}>
         {props?.item ? `${props?.index + 1}.` : 'ક્રમ'}
@@ -357,8 +588,11 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '23%',
+            // width: props?.status == 'drawer'? '30%':'25%',
+            flex: props?.status == 'drawer'? 2.5:2,
             color: AppColors.DarkText,
+            fontSize: 9,
+            paddingRight:3
           },
         ]}>
         {props?.item ? `${props?.item?.name}` : 'નામ'}
@@ -367,54 +601,42 @@ export const MemberCell = props => {
         style={[
           styles.heading,
           {
-            width: '12%',
+            // width:props?.status == 'drawer'? '20%':'15%',
+            flex: props?.status == 'drawer'? 2:1.5,
             color: AppColors.DarkText,
-
+            fontSize: 9,
             // marginLeft: 5,
           },
         ]}>
         {props?.item ? `${props?.item?.city}` : 'ગામ'}
       </Text>
-
-      {/* <Text
-        style={[
-          styles.heading,
-          {
-            width: '10%',
-            color: AppColors.DarkText,
-
-            // marginLeft: 5,
-          },
-        ]}>
-        {props?.item ? `${props?.item?.hodo}` : 'હોદો'}
-      </Text> */}
-
       {props?.status != 'drawer' ? (
         <Text
           style={[
             styles.heading,
             {
-              width: '15%',
+              // width: '20%',
+              flex:2,
               color: AppColors.DarkText,
-              // marginLeft: 5,
+              fontSize: 9,
             },
           ]}>
-          {props?.status != 'drawer'
-            ? props?.item
-              ? `${props?.item?.hodo}`
-              : 'હોદો'
-            : null}
+          {props?.item ? `${props?.item?.hodo}` : 'હોદો'}
         </Text>
       ) : null}
       <View
         style={{
-          flexDirection: 'row',
-          width: '33%',
+          flexDirection:props?.status == 'drawer'? 'row':'',
+          // width:props?.status == 'drawer'? '35%':'26%',
+          flex: props?.status == 'drawer'? 3.5:2.5,
           // marginLeft: 10,
-          alignItems: 'center',
+          paddingLeft:5
         }}>
-        <Text style={[styles.heading, {color: AppColors.DarkText}]}>
-          {props?.item ? `${'+91 ' + props?.item?.phone}` : 'મોબાઈલ નંબર'}
+        <Text
+          style={[styles.heading, {color: AppColors.DarkText, fontSize: 9}]}>
+          {props?.item
+            ? `${props?.item?.country_code + props?.item?.phone}`
+            : 'મોબાઈલ નંબર'}
         </Text>
         {!props?.change ? (
           <View
@@ -422,25 +644,31 @@ export const MemberCell = props => {
               flexDirection: 'row',
               alignItems: 'center',
               paddingBottom: 2.5,
+              justifyContent:'center'
             }}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{paddingHorizontal: 2.5, marginLeft: 3}}
+              style={{paddingHorizontal: 2.5, paddingLeft: 3}}
               onPress={() =>
-                Linking.openURL(`tel:${'+91 ' + props?.item?.phone}`)
+                Linking.openURL(
+                  `tel:${props?.item?.country_code + props?.item?.phone}`,
+                )
               }>
               <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                padding: 5,
+                // padding: 5,
                 justifyContent: 'center',
                 alignItems: 'center',
+                paddingLeft:5
               }}
               activeOpacity={1}
               onPress={() =>
                 Linking.openURL(
-                  `whatsapp://send?phone=${props?.item?.phone}`,
+                  `whatsapp://send?phone=${
+                    props?.item?.country_code + props?.item?.phone
+                  }`,
                   // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
                 )
               }>
@@ -452,7 +680,160 @@ export const MemberCell = props => {
       <TouchableOpacity
         activeOpacity={1}
         style={{
-          width: '7%',
+          // width: '7%',
+          flex:0.7,
+          justifyContent: 'center',
+          alignItems: 'center',
+          // marginLeft: 5,
+          paddingBottom: 2.5,
+        }}
+        onPress={props?.imgPress}>
+        {props?.item ? (
+          <Image
+            style={{
+              height: 15,
+              width: 15,
+              // borderColor: 'black',
+              // borderWidth: 1,
+              borderRadius: 10,
+              backgroundColor: '#F2F2F2',
+              // resizeMode:'contain'
+            }}
+            source={
+              props?.item?.image == ''
+                ? AppImages.MEMBER_IMAGE
+                : {uri: props?.item?.image}
+            }
+          />
+        ) : (
+          <Text
+            style={[
+              styles.heading,
+              {color: AppColors.DarkText, marginRight: 5},
+            ]}>
+            ફોટો
+          </Text>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const MemberCell = props => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        paddingVertical: props?.item ? 13 : 10,
+        borderBottomColor: '#e2e2e2',
+        borderBottomWidth: props?.item ? 1 : 0,
+      }}>
+      <Text
+        style={[
+          styles.heading,
+          {
+            flex: 0.6,
+            textAlign: props?.item ? 'center' : 'auto',
+            paddingLeft: props?.item ? 0 : '2%',
+          },
+        ]}>
+        {props?.item ? `${props?.index + 1}` : 'ક્રમ.'}
+      </Text>
+      <Text
+        style={[
+          styles.heading,
+          {
+            flex: props?.status != 'drawer' ? 2 : 2.5,
+            paddingLeft: props?.item ? '3%' : 0,
+          },
+        ]}>
+        {props?.item ? `${props?.item?.name}` : 'નામ'}
+      </Text>
+
+      <Text
+        style={[
+          styles.heading,
+          {
+            flex: 1.5,
+            marginLeft: 5,
+          },
+        ]}>
+        {props?.item ? `${props?.item?.city}` : 'ગામ'}
+      </Text>
+      {props?.status != 'drawer' ? (
+        <Text
+          style={[
+            styles.heading,
+            {
+              flex: 1.6,
+              marginHorizontal: 2,
+            },
+          ]}>
+          {props?.item ? `${props?.item?.hodo}` : 'હોદો'}
+        </Text>
+      ) : (
+        <></>
+      )}
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 2.9,
+          alignItems: 'center',
+          // paddingLeft: props?.item ? '3%' : 0,
+        }}>
+        <Text
+          style={[
+            styles.heading,
+            {
+              paddingLeft: props?.item ? '3%' : 0,
+              fontSize: 9,
+            },
+          ]}>
+          {props?.item
+            ? `${props?.item?.country_code + props?.item?.phone}`
+            : 'મોબાઈલ નંબર'}
+        </Text>
+
+        {props?.item && props?.item?.phone !== 'NA' ? (
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => {
+                Linking.openURL(
+                  `tel:${props?.item?.country_code + props?.item?.phone}`,
+                );
+              }}>
+              <Image
+                source={AppImages.CIRCLE_CALL_ICON}
+                style={{marginStart: 5}}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                Linking.openURL(
+                  `whatsapp://send?phone=${
+                    props?.item?.country_code + props?.item?.phone
+                  }`,
+                  // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                );
+              }}>
+              <Image
+                source={AppImages.WHATSAPP_ICON}
+                style={{marginStart: 5}}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <></>
+        )}
+      </View>
+
+      <TouchableOpacity
+        activeOpacity={1}
+        style={{
+          flex: 0.9,
           justifyContent: 'center',
           alignItems: 'center',
           marginLeft: 10,
@@ -486,16 +867,6 @@ export const MemberCell = props => {
           </Text>
         )}
       </TouchableOpacity>
-
-      {/* <Text
-        style={[
-          styles.heading,
-          {
-            
-          },
-        ]}>
-        {props?.item ? `${props?.item?.city}` : 'Photo'}
-      </Text> */}
     </View>
   );
 };
