@@ -73,7 +73,13 @@ export const getProfile = (params, onSuccess, onFailure) => {
 };
 
 export const getContactUs = (params, onSuccess, onFailure) => {
-  CallApi(`${Api.GET_CONTACT_US}`, RequestType.get, params, onSuccess, onFailure);
+  CallApi(
+    `${Api.GET_CONTACT_US}`,
+    RequestType.get,
+    params,
+    onSuccess,
+    onFailure,
+  );
 };
 
 export const getAboutKarobari = (params, onSuccess, onFailure) => {
@@ -220,11 +226,11 @@ export const getMyFamilies = (onSuccess, onFailure) => {
   CallApi(Api.GET_FAMILY_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
 };
 
-export const getJevanSlah = (onSuccess, onFailure) => {
-  CallApi(Api.GET_JEVAN_SLAH, RequestType.get, NaN, onSuccess, onFailure);
+export const getJevanSlah = (params, onSuccess, onFailure) => {
+  CallApi(Api.GET_JEVAN_SLAH, RequestType.get, params, onSuccess, onFailure);
 };
-export const getBhumiSlah = (onSuccess, onFailure) => {
-  CallApi(Api.GET_BHUMI_SLAH, RequestType.get, NaN, onSuccess, onFailure);
+export const getBhumiSlah = (params, onSuccess, onFailure) => {
+  CallApi(Api.GET_BHUMI_SLAH, RequestType.get, params, onSuccess, onFailure);
 };
 
 export const getMyBusinesses = (onSuccess, onFailure) => {

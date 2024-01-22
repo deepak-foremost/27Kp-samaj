@@ -56,9 +56,11 @@ export const CustomDatePicker = props => {
           container: {
             alignSelf: 'center',
             justifyContent: 'center',
-            marginBottom: 10,
-            width: '95%',
-            borderRadius: 20,
+            // marginBottom: 10,
+            width: '100%',
+            // borderRadius: 20,
+            borderTopLeftRadius:20,
+            borderTopRightRadius:20
           },
         }}>
         <Text

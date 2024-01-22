@@ -71,7 +71,7 @@ const ParichayFileScreen = props => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getParipatr(
-      {page:page},
+      {page: page},
       onSuccess => {
         printLog('getParipatr', JSON.stringify(onSuccess));
         printLog('getStatus', onSuccess?.status);
@@ -96,6 +96,7 @@ const ParichayFileScreen = props => {
       {page: page},
       onSuccess => {
         printLog('getParipatr', JSON.stringify(onSuccess));
+        setTotalPage(onSuccess?.last_page);
         if (onSuccess?.status) {
           var list = files == null ? [] : [...files];
           if (page == 1) {
@@ -137,8 +138,8 @@ const ParichayFileScreen = props => {
                 backgroundColor: AppColors.backgroundColor,
                 alignItems: 'center',
                 paddingTop: 15,
-                width:'95%',
-                alignSelf:'center'
+                width: '95%',
+                alignSelf: 'center',
               }}>
               <ListMember styles={{height: 45}} />
               <ListMember styles={{height: 45}} />

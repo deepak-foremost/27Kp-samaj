@@ -35,7 +35,6 @@ export class Api {
   static DELETE_MEMBER = `${this.BASE_URL}deleteFamilyMember`;
   static DELETE_ACCOUNT = `${this.BASE_URL}deleteAccount`;
   static LOGOUT = `${this.BASE_URL}logout`;
-
   // Add Details
   static POST_ADD_MEMBER = `${this.BASE_URL}addFamilyMember`;
   static POST_ADD_BUSINESS = `${this.BASE_URL}addBusiness`;

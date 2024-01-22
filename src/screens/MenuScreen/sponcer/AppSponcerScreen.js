@@ -83,10 +83,19 @@ const AppSponcerScreen = props => {
   const status = props?.route?.params?.menu;
   const [open, setOpen] = useState(false);
   const [images, setImages] = useState(null);
-  
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+
+  const LoadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
+
   useEffect(() => {
     if (status == 'ભુમિ સભાસદ સભ્ય') {
-      getBhumiSlah(response => {
+      getBhumiSlah({page: page}, response => {
+        setTotalPage(response?.last_page);
         if (response?.status) {
           setMembers(response?.data);
         }
@@ -95,7 +104,8 @@ const AppSponcerScreen = props => {
         };
       });
     } else {
-      getJevanSlah(response => {
+      getJevanSlah({page: page}, response => {
+        setTotalPage(response?.last_page);
         if (response?.status) {
           setMembers(response?.data);
         }
@@ -107,7 +117,6 @@ const AppSponcerScreen = props => {
   }, []);
 
   // useEffect(()=>{
-    
 
   // },[])
 
@@ -194,7 +203,7 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '20%',
-                flex:1.6
+                flex: 1.6,
               }}>
               {status + ' નંબર'}
             </Text>
@@ -204,8 +213,8 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '25%',
-                paddingLeft:5,
-                flex:2
+                paddingLeft: 5,
+                flex: 2,
               }}>
               નામ
             </Text>
@@ -215,8 +224,8 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '13%',
-                flex:1,
-                marginLeft:5
+                flex: 1.5,
+                marginLeft: 5,
               }}>
               ગામ
             </Text>
@@ -226,7 +235,7 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '30%',
-                flex:2.5
+                flex: 2,
               }}>
               મોબાઈલ નંબર
             </Text>
@@ -236,7 +245,7 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width:'7%'
-                flex:0.7
+                flex: 0.7,
               }}>
               ફોટો
             </Text>
@@ -262,10 +271,6 @@ const AppSponcerScreen = props => {
               <ListMember styles={{height: 45}} />
               <ListMember styles={{height: 45}} />
               <ListMember styles={{height: 45}} />
-              <ListMember styles={{height: 45}} />
-              <ListMember styles={{height: 45}} />
-              <ListMember styles={{height: 45}} />
-              <ListMember styles={{height: 45}} />
             </View>
           ) : members?.length == 0 ? (
             <View>
@@ -285,6 +290,7 @@ const AppSponcerScreen = props => {
               contentContainerStyle={{paddingBottom: 10, paddingHorizontal: 15}}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
+              onEndReached={() => LoadMore()}
               style={{width: '100%'}}
               data={members}
               renderItem={({item, index}) => (
@@ -354,7 +360,7 @@ export const MemberCell = props => {
           styles.heading,
           {
             // width: '20%',
-            flex:1.6,
+            flex: 1.6,
             color: AppColors.DarkText,
             // textAlign: props?.item ? 'center' : 'auto',
             // paddingLeft: props?.item ? 0 : '2%',
@@ -373,7 +379,7 @@ export const MemberCell = props => {
           styles.heading,
           {
             // width: '25%',
-            flex:2,
+            flex: 2,
             color: AppColors.DarkText,
           },
         ]}>
@@ -384,7 +390,7 @@ export const MemberCell = props => {
           styles.heading,
           {
             // width: '13%',
-            flex:1,
+            flex: 1.5,
             color: AppColors.DarkText,
             marginLeft: 5,
           },
@@ -411,20 +417,26 @@ export const MemberCell = props => {
       ) : null} */}
       <View
         style={{
-          flexDirection: 'row',
+          // flexDirection: 'row',
           // width: '30%',
-          flex:2.5,
-          alignItems: 'center',
+          flex: 2,
+          // alignItems: 'center',
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
-          {props?.item ? `${props?.item?.country_code+props?.item?.phone}` : 'મોબાઈલ નંબર'}
+          {props?.item
+            ? `${props?.item?.country_code + props?.item?.phone}`
+            : 'મોબાઈલ નંબર'}
         </Text>
         {!props?.change ? (
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{paddingHorizontal: 2.5, paddingBottom: 2.5}}
-              onPress={() => Linking.openURL(`tel:${props?.item?.country_code+props?.item?.phone}`)}>
+              style={{paddingHorizontal: 4, paddingBottom: 2.5}}
+              onPress={() =>
+                Linking.openURL(
+                  `tel:${props?.item?.country_code + props?.item?.phone}`,
+                )
+              }>
               <Image source={AppImages.CIRCLE_CALL_ICON} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -432,12 +444,14 @@ export const MemberCell = props => {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingHorizontal: 2.5,
+                paddingHorizontal: 4,
                 paddingBottom: 2.5,
               }}
               onPress={() =>
                 Linking.openURL(
-                  `whatsapp://send?phone=${props?.item?.country_code+props?.item?.phone}`,
+                  `whatsapp://send?phone=${
+                    props?.item?.country_code + props?.item?.phone
+                  }`,
                   // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
                 )
               }>
@@ -464,7 +478,7 @@ export const MemberCell = props => {
       <View
         style={{
           // width: '7%',
-          flex:0.6,
+          flex: 0.6,
           justifyContent: 'center',
           alignItems: 'flex-end',
           // marginLeft: 10,
@@ -480,7 +494,7 @@ export const MemberCell = props => {
                 // borderColor: 'black',
                 // borderWidth: 1,
                 borderRadius: 10,
-                marginBottom:2
+                marginBottom: 2,
               }}
               source={
                 props?.item?.image == ''

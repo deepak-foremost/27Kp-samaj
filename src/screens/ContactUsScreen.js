@@ -23,6 +23,7 @@ import ScreenToolbar from '../components/ScreenToolbar';
 import BorderView from '../components/BorderView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getContactUs} from '../networking/CallApi';
+import {ListMember} from './MenuScreen/advisour_member/AdvicerMember';
 
 const ContactUsScreen = props => {
   const inset = useSafeAreaInsets();
@@ -99,7 +100,6 @@ const ContactUsScreen = props => {
                 alignSelf: 'center',
                 paddingTop: 15,
                 paddingHorizontal: 5,
-
                 ...Platform.select({
                   ios: {
                     shadowColor: '#D5D5D5',
@@ -134,21 +134,29 @@ const ContactUsScreen = props => {
                 }}
               /> */}
 
-              <FlatList
-                scrollEnabled={false}
-                contentContainerStyle={{
-                  alignItems: 'center',
-                  marginTop: 10,
-                  width: '100%',
-                }}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                data={contacts?.data}
-                renderItem={(item, index) => (
-                  <ContactCell item={item} index={index} />
-                )}
-              />
-
+              {isLoading ? (
+                <View>
+                  <ListMember />
+                  <ListMember />
+                  <ListMember />
+                  <ListMember />
+                </View>
+              ) : (
+                <FlatList
+                  scrollEnabled={false}
+                  contentContainerStyle={{
+                    alignItems: 'center',
+                    marginTop: 10,
+                    width: '100%',
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
+                  data={contacts?.data}
+                  renderItem={(item, index) => (
+                    <ContactCell item={item} index={index} />
+                  )}
+                />
+              )}
               {/* <Image
               style={{
                 height: 2,
@@ -237,61 +245,78 @@ const ContactUsScreen = props => {
                   width: '95%',
                   borderRadius: 10,
                   justifyContent: 'center',
-                  alignItems: 'flex-end',
+                  // alignItems: 'flex-end',
                   paddingVertical: 10,
                   marginTop: 15,
                   marginBottom: 30,
-                  flexDirection: 'row',
+                  // flexDirection: 'row',
                 }}>
                 <Text
                   numberOfLines={2}
                   style={{
-                    fontSize: 11,
+                    fontSize: 9,
                     fontFamily: AppFonts.semiBold,
                     color: '#fff',
-                    width: '85%',
+                    width: '100%',
                     textAlign: 'center',
                   }}>
-                  Website / Mobile Application Developer Contact Number :
-                  {contacts?.DeveloperContacts[0]?.name +
+                  Website/Mobile Application Developer Contact Number :
+                  {/* {contacts?.DeveloperContacts[0]?.name +
                     contacts?.DeveloperContacts[0]?.country_code +
-                    contacts?.DeveloperContacts[0]?.phone}
+                    contacts?.DeveloperContacts[0]?.phone} */}
                 </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 9,
+                      fontFamily: AppFonts.semiBold,
+                      color: '#fff',
+                    }}>
+                    {contacts?.DeveloperContacts[0]?.name +' : '+
+                      contacts?.DeveloperContacts[0]?.country_code +
+                      contacts?.DeveloperContacts[0]?.phone}
+                  </Text>
 
-                {
+                  {
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      style={{marginLeft: 5, marginBottom: 2.5}}
+                      onPress={() =>
+                        Linking.openURL(
+                          `tel:${
+                            contacts?.DeveloperContacts[0]?.country_code +
+                            contacts?.DeveloperContacts[0]?.phone
+                          }`,
+                        )
+                      }>
+                      <Image source={AppImages.CIRCLE_CALL_ICON} />
+                    </TouchableOpacity>
+                  }
                   <TouchableOpacity
                     activeOpacity={1}
-                    style={{marginLeft: 5, marginBottom: 5}}
+                    style={{
+                      paddingHorizontal: 2.5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginLeft: 5,
+                      marginBottom: 2.5,
+                    }}
                     onPress={() =>
                       Linking.openURL(
-                        `tel:${
+                        `whatsapp://send?text=hello&phone=${
                           contacts?.DeveloperContacts[0]?.country_code +
                           contacts?.DeveloperContacts[0]?.phone
                         }`,
                       )
                     }>
-                    <Image source={AppImages.CIRCLE_CALL_ICON} />
+                    {<Image source={AppImages.WHATSAPP_ICON} />}
                   </TouchableOpacity>
-                }
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={{
-                    paddingHorizontal: 2.5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft: 5,
-                    marginBottom: 5,
-                  }}
-                  onPress={() =>
-                    Linking.openURL(
-                      `whatsapp://send?text=hello&phone=${
-                        contacts?.DeveloperContacts[0]?.country_code +
-                        contacts?.DeveloperContacts[0]?.phone
-                      }`,
-                    )
-                  }>
-                  {<Image source={AppImages.WHATSAPP_ICON} />}
-                </TouchableOpacity>
+                </View>
               </TouchableOpacity>
 
               {/* <AppButton
@@ -338,10 +363,9 @@ const ContactCell = props => {
     <View
       style={{
         // justifyContent: 'space-between',
-
         alignItems: 'center',
         height: 45,
-        width: '100%',
+        width: '93%',
         flexDirection: 'row',
         // borderBottomWidth: 1,
         borderColor: props?.item?.item?.id == 3 ? '#fff' : AppColors.line_color,
@@ -356,8 +380,9 @@ const ContactCell = props => {
           fontSize: 11,
           fontFamily: AppFonts.semiBold,
           // marginLeft: 10,
+          // flex: 0.25,
+          width: '30%',
           paddingLeft: 10,
-          flex: 0.7,
         }}>
         {props?.item?.item?.name}
       </Text>
@@ -366,7 +391,9 @@ const ContactCell = props => {
           color: AppColors.DarkText,
           fontSize: 11,
           fontFamily: AppFonts.semiBold,
-          flex: 0.7,
+          // flex: 0.15,
+          width: '20%',
+          paddingHorizontal: 5,
         }}>
         {props?.item?.item?.village}
       </Text>
@@ -375,17 +402,20 @@ const ContactCell = props => {
           color: AppColors.DarkText,
           fontSize: 11,
           fontFamily: AppFonts.semiBold,
-          flex: 0.7,
+          // flex: 0.15,
+          width: '20%',
         }}>
         {props?.item?.item?.hodo}
       </Text>
 
       <View
         style={{
-          flexDirection: 'row',
+          // flexDirection: 'row',
           paddingVertical: 5,
           alignItems: 'center',
-          flex: 1.8,
+          // flex: 0.45,
+          width: '35%',
+          // paddingRight: 10,
         }}>
         <Text
           style={{
@@ -407,13 +437,13 @@ const ContactCell = props => {
             style={{height: 20, width: 20}}
           />
         </TouchableOpacity> */}
-
+         <View style={{flexDirection:'row'}}>
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{paddingStart: 10, paddingEnd: 5, paddingBottom: 2.5}}
+          style={{paddingStart: 2, paddingBottom: 2.5, paddingRight: 4}}
           onPress={() =>
             Linking.openURL(
-              `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              `tel:${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
             )
           }>
           <Image source={AppImages.CIRCLE_CALL_ICON} style={{}} />
@@ -421,15 +451,16 @@ const ContactCell = props => {
 
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{paddingStart: 5, paddingBottom: 2.5}}
+          style={{paddingStart: 4, paddingBottom: 2.5, paddingEnd: 3}}
           onPress={() =>
             Linking.openURL(
-              `whatsapp://send?phone=${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              `whatsapp://send?phone=${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
               // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
             )
           }>
           <Image source={AppImages.WHATSAPP_ICON} style={{}} />
         </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
