@@ -86,6 +86,8 @@ const AdvicerMember = props => {
   const karobari = props?.route?.params?.karobari;
   const [items, setItem] = useState();
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   const images = [
     {
@@ -93,6 +95,12 @@ const AdvicerMember = props => {
       props: {source: items != null && items?.image},
     },
   ];
+
+  const LoadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
 
   // useEffect(() => {
   //   getYearRange(
@@ -124,12 +132,20 @@ const AdvicerMember = props => {
     setLoading(true);
     if (status == 'drawer') {
       getSalahkarMember(
+        {page: page},
         response => {
           printLog('AdvicerMember', JSON.stringify(response));
-          if (!response?.status) {
-            setMembers([]);
+          setTotalPage(response?.last_page);
+          if (response?.status) {
+            var list = members == null ? [] : [...members];
+            if (page == 1) {
+              setMembers(response?.data);
+            } else {
+              setMembers([...list, ...response?.data]);
+            }
+            // setMembers([]);
           } else {
-            setMembers(response?.data);
+            setMembers([]);
           }
           setLoading(false);
         },
@@ -166,7 +182,7 @@ const AdvicerMember = props => {
       //   },
       // );
     }
-  }, []);
+  }, [page]);
 
   // useEffect(() => {
   //   setLoading(true);
@@ -334,9 +350,15 @@ const AdvicerMember = props => {
             </View>
           ) : (
             <FlatList
-              contentContainerStyle={{paddingBottom: 10, paddingHorizontal: 15}}
+              contentContainerStyle={{
+                paddingBottom: 10,
+                paddingHorizontal: 15,
+              }}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
+              onEndReached={() => {
+                LoadMore();
+              }}
               style={{width: '100%'}}
               data={members}
               renderItem={({item, index}) => (
@@ -575,7 +597,7 @@ export const AboutKarobariCell = props => {
           styles.heading,
           {
             // width: '5%',
-            flex:0.4,
+            flex: 0.4,
             fontSize: 9,
             color: AppColors.DarkText,
             // textAlign: props?.item ? 'center' : 'auto',
@@ -589,10 +611,10 @@ export const AboutKarobariCell = props => {
           styles.heading,
           {
             // width: props?.status == 'drawer'? '30%':'25%',
-            flex: props?.status == 'drawer'? 2.5:2,
+            flex: props?.status == 'drawer' ? 2.5 : 2,
             color: AppColors.DarkText,
             fontSize: 9,
-            paddingRight:3
+            paddingRight: 3,
           },
         ]}>
         {props?.item ? `${props?.item?.name}` : 'નામ'}
@@ -602,7 +624,7 @@ export const AboutKarobariCell = props => {
           styles.heading,
           {
             // width:props?.status == 'drawer'? '20%':'15%',
-            flex: props?.status == 'drawer'? 2:1.5,
+            flex: props?.status == 'drawer' ? 2 : 1.5,
             color: AppColors.DarkText,
             fontSize: 9,
             // marginLeft: 5,
@@ -616,7 +638,7 @@ export const AboutKarobariCell = props => {
             styles.heading,
             {
               // width: '20%',
-              flex:2,
+              flex: 2,
               color: AppColors.DarkText,
               fontSize: 9,
             },
@@ -626,11 +648,11 @@ export const AboutKarobariCell = props => {
       ) : null}
       <View
         style={{
-          flexDirection:props?.status == 'drawer'? 'row':'',
+          flexDirection: props?.status == 'drawer' ? 'row' : '',
           // width:props?.status == 'drawer'? '35%':'26%',
-          flex: props?.status == 'drawer'? 3.5:2.5,
+          flex: props?.status == 'drawer' ? 3.5 : 2.5,
           // marginLeft: 10,
-          paddingLeft:5
+          paddingLeft: 5,
         }}>
         <Text
           style={[styles.heading, {color: AppColors.DarkText, fontSize: 9}]}>
@@ -644,7 +666,7 @@ export const AboutKarobariCell = props => {
               flexDirection: 'row',
               alignItems: 'center',
               paddingBottom: 2.5,
-              justifyContent:'center'
+              justifyContent: 'center',
             }}>
             <TouchableOpacity
               activeOpacity={1}
@@ -661,7 +683,7 @@ export const AboutKarobariCell = props => {
                 // padding: 5,
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingLeft:5
+                paddingLeft: 5,
               }}
               activeOpacity={1}
               onPress={() =>
@@ -681,7 +703,7 @@ export const AboutKarobariCell = props => {
         activeOpacity={1}
         style={{
           // width: '7%',
-          flex:0.7,
+          flex: 0.7,
           justifyContent: 'center',
           alignItems: 'center',
           // marginLeft: 5,

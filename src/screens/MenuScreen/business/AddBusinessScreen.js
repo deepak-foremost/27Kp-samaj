@@ -1114,7 +1114,7 @@ const AddBusinessScreen = props => {
                 setCountryCode={item => {
                   setCode('+' + item?.callingCode);
                 }}
-                onChangeText={setMobile}
+                onChangeText={i => setMobile(i)}
               />
 
               <HorizontalTextInput

@@ -157,6 +157,7 @@ export const GridListComponent = props => {
             color: '#FFF',
             position: 'absolute',
             bottom: 0,
+            textAlign:'center'
           }}>
           {props?.item?.name}
         </Text>

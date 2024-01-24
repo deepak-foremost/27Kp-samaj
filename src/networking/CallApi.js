@@ -1,7 +1,7 @@
 import {Keyboard} from 'react-native';
 import {RequestType, Api} from './Api';
 import AsyncStorage from '@react-native-community/async-storage';
-import {AsyncStorageConst} from '../utils/AsyncStorageHelper';
+import {AsyncStorageConst, flushAllData} from '../utils/AsyncStorageHelper';
 import * as RootNavigation from '../utils/RootNavigation';
 import {printLog} from '../utils/AppConstValue';
 
@@ -214,16 +214,16 @@ export const getAboutUsListById = (params, onSuccess, onFailure) => {
   );
 };
 
-export const getSalahkarMember = (onSuccess, onFailure) => {
-  CallApi(Api.GET_SALAHKAR_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
+export const getSalahkarMember = (params,onSuccess, onFailure) => {
+  CallApi(Api.GET_SALAHKAR_MEMBER, RequestType.get, params, onSuccess, onFailure);
 };
 
 // export const getAboutKarobari = (onSuccess, onFailure) => {
 //   CallApi(Api.GET_ABOUT_KAROBARI, RequestType.get, NaN, onSuccess, onFailure);
 // };
 
-export const getMyFamilies = (onSuccess, onFailure) => {
-  CallApi(Api.GET_FAMILY_MEMBER, RequestType.get, NaN, onSuccess, onFailure);
+export const getMyFamilies = (params,onSuccess, onFailure) => {
+  CallApi(Api.GET_FAMILY_MEMBER, RequestType.get, params, onSuccess, onFailure);
 };
 
 export const getJevanSlah = (params, onSuccess, onFailure) => {

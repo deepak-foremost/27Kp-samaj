@@ -413,6 +413,7 @@ export const MyMobileNumber = props => {
             flexDirection: 'row',
             alignItems: 'center',
             marginLeft: 10,
+            ...props?.iconStyle,
           }}
           onPress={() => setVisible(!Visible)}
           activeOpacity={0.9}>
@@ -424,10 +425,12 @@ export const MyMobileNumber = props => {
             }}>
             {props?.countryCode}
           </Text>
-          <Image
-            style={[{marginLeft: 5}, props?.icon]}
-            source={AppImages.DROP_DOWN_ICON}
-          />
+          {!props?.icon && (
+            <Image
+              style={[{marginLeft: 5}, props?.icon]}
+              source={AppImages.DROP_DOWN_ICON}
+            />
+          )}
         </TouchableOpacity>
 
         <TextInput
@@ -457,7 +460,7 @@ export const MyMobileNumber = props => {
         containerButtonStyle={{width: '0%', height: 0}}
         withFilter
         withAlphaFilter
-        withCallingCode={true}
+        withCallingCode={props?.icon ? false : true}
         theme={{
           fontSize: 14,
           color: 'white',

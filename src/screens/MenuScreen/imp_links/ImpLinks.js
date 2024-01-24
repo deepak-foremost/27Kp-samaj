@@ -79,6 +79,7 @@ export const LinksButton = props => {
         marginTop: 10,
         alignItems: 'center',
         elevation: 5,
+        alignSelf:'center',
         ...props.buttonStyle,
       }}>
       <MainButton

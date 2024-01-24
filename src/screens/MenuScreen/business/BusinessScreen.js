@@ -152,7 +152,15 @@ const BusinessScreen = props => {
         setTotalPage(response?.last_page);
         printLog('getBusinessList', JSON.stringify(response));
         if (response?.status) {
-          setBusinsesses(response?.data);
+          if (response?.status) {
+            var list = businsesses == null ? [] : [...businsesses];
+            if (page == 1) {
+              setBusinsesses(response?.data);
+            } else {
+              setBusinsesses([...list, ...response?.data]);
+            }
+          }
+          // setBusinsesses(response?.data);
         } else {
           setBusinsesses([]);
         }

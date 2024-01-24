@@ -139,11 +139,34 @@ const VariousBusiness = props => {
     );
   }, []);
 
+  // const getList = valueId => {
+  //   getKarobari(
+  //     {range_id: valueId, page: page},
+  //     response => {
+  //       setTotalPage(response?.last_page);
+  //       printLog('getAboutUsMember', JSON.stringify(response));
+  //       if (response?.status) {
+  //         setMembers(response?.data);
+  //         setLoading(false);
+  //       } else {
+  //         setMembers([]);
+  //         setLoading(false);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('getAboutUsMembererroe', error);
+  //       setMembers([]);
+  //       setLoading(false);
+  //     },
+  //   );
+  // };
+
   useEffect(() => {
     setLoading(true);
     getKarobari(
       {range_id: valueId, page: page},
       response => {
+        setTotalPage(response?.last_page);
         printLog('getAboutUsMember', JSON.stringify(response));
         if (response?.status) {
           setMembers(response?.data);
@@ -160,6 +183,35 @@ const VariousBusiness = props => {
       },
     );
   }, [valueId]);
+
+  useEffect(() => {
+    // setLoading(true);
+    getKarobari(
+      {range_id: valueId, page: page},
+      response => {
+        setTotalPage(response?.last_page);
+        printLog('getAboutUsMember', JSON.stringify(response));
+        if (response?.status) {
+          var list = members == null ? [] : [...members];
+          if (page == 1) {
+            setMembers(response?.data);
+          } else {
+            setMembers([...list, ...response?.data]);
+          }
+          // setMembers(response?.data);
+          // setLoading(false);
+        } else {
+          setMembers([]);
+          setLoading(false);
+        }
+      },
+      error => {
+        printLog('getAboutUsMembererroe', error);
+        setMembers([]);
+        setLoading(false);
+      },
+    );
+  }, [page]);
 
   return (
     <View
@@ -268,6 +320,9 @@ const VariousBusiness = props => {
                     printLog(JSON.stringify(item?.name + '---' + item?.id));
                     setValue(item?.name);
                     setValueId(item?.id);
+                    setTotalPage(1);
+                    setPage(1);
+                    // getList(item?.id);
 
                     // getList(item?.id);
                   }}
@@ -296,6 +351,7 @@ const VariousBusiness = props => {
                   paddingBottom: 20,
                   width: '100%',
                 }}
+                onEndReached={() => LoadMore()}
                 data={members == null ? [] : members}
                 ListHeaderComponent={
                   <View>
@@ -327,7 +383,7 @@ const VariousBusiness = props => {
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
                             // width: '4%',
-                            flex:0.4,
+                            flex: 0.4,
                           }}>
                           {'ક્રમ'}
                         </Text>
@@ -337,7 +393,7 @@ const VariousBusiness = props => {
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
                             // width: '25%',
-                            flex:2,
+                            flex: 2,
                           }}>
                           નામ
                         </Text>
@@ -347,8 +403,8 @@ const VariousBusiness = props => {
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
                             // width: '15%',
-                            flex:1.75,
-                            paddingLeft:3
+                            flex: 1.75,
+                            paddingLeft: 3,
                           }}>
                           ગામ
                         </Text>
@@ -358,8 +414,8 @@ const VariousBusiness = props => {
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
                             // width: '15%',
-                            flex:1.75,
-                            paddingLeft:3
+                            flex: 1.75,
+                            paddingLeft: 3,
                           }}>
                           હોદો
                         </Text>
@@ -369,7 +425,7 @@ const VariousBusiness = props => {
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
                             // width: '25%',
-                            flex:2.5,
+                            flex: 2.5,
                           }}>
                           મોબાઈલ નંબર
                         </Text>
@@ -379,7 +435,7 @@ const VariousBusiness = props => {
                             fontFamily: AppFonts.semiBold,
                             color: AppColors.DarkText,
                             // width: '5%',
-                            flex:0.5,
+                            flex: 0.5,
                             // textAlign: 'right',
                           }}>
                           ફોટો
@@ -418,7 +474,7 @@ const VariousBusiness = props => {
                         styles.heading,
                         {
                           // width: '4%',
-                          flex:0.4,
+                          flex: 0.4,
                           color: AppColors.DarkText,
                         },
                       ]}>
@@ -429,7 +485,7 @@ const VariousBusiness = props => {
                         styles.heading,
                         {
                           // width: '20%',
-                          flex:2,
+                          flex: 2,
                           color: AppColors.DarkText,
                         },
                       ]}>
@@ -440,9 +496,9 @@ const VariousBusiness = props => {
                         styles.heading,
                         {
                           // width: '15%',
-                          flex:1.75,
+                          flex: 1.75,
                           color: AppColors.DarkText,
-                          paddingLeft:3
+                          paddingLeft: 3,
                         },
                       ]}>
                       {item ? `${item?.city}` : 'ગામ'}
@@ -452,9 +508,9 @@ const VariousBusiness = props => {
                         styles.heading,
                         {
                           // width: '15%',
-                          flex:1.75,
+                          flex: 1.75,
                           color: AppColors.DarkText,
-                          paddingLeft:3
+                          paddingLeft: 3,
                         },
                       ]}>
                       {item ? `${item?.layakat}` : 'હોદો'}
@@ -465,20 +521,24 @@ const VariousBusiness = props => {
                       style={{
                         // flexDirection: 'row',
                         // width: '25%',
-                        flex:2.5,
+                        flex: 2.5,
                         // marginLeft: 10,
                         // alignItems: 'center',
                         // justifyContent: 'center',
                       }}
                       // onPress={() => Linking.openURL(`tel:${item?.phone}`)}
-                      >
+                    >
                       <Text
                         style={[styles.heading, {color: AppColors.DarkText}]}>
                         {item
                           ? `${item?.country_code + item?.phone}`
                           : 'મોબાઈલ નંબર'}
                       </Text>
-                      <View style={{flexDirection: 'row',justifyContent:'center'}}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                        }}>
                         <TouchableOpacity
                           activeOpacity={1}
                           style={{paddingRight: 4, marginBottom: 2.5}}
@@ -491,25 +551,24 @@ const VariousBusiness = props => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                        activeOpacity={1}
-                        style={{
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          paddingLeft: 4,
-                          marginBottom: 2.5,
-                        }}
-                        onPress={() =>
-                          Linking.openURL(
-                            `whatsapp://send?phone=${
-                              item?.country_code + item?.phone
-                            }`,
-                            // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
-                          )
-                        }>
-                        <Image source={AppImages.WHATSAPP_ICON} />
-                      </TouchableOpacity>
+                          activeOpacity={1}
+                          style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            paddingLeft: 4,
+                            marginBottom: 2.5,
+                          }}
+                          onPress={() =>
+                            Linking.openURL(
+                              `whatsapp://send?phone=${
+                                item?.country_code + item?.phone
+                              }`,
+                              // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                            )
+                          }>
+                          <Image source={AppImages.WHATSAPP_ICON} />
+                        </TouchableOpacity>
                       </View>
-                   
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -520,7 +579,7 @@ const VariousBusiness = props => {
                       }}
                       style={{
                         // width: '5%',
-                        flex:0.4,
+                        flex: 0.4,
                         // justifyContent: 'center',
                         alignItems: 'flex-end',
                         paddingBottom: 2.5,

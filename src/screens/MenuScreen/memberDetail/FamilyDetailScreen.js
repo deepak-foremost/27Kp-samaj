@@ -160,14 +160,15 @@ const FamilyDetailScreen = props => {
       display: inline-block;
       width: 100%;
       margin-bottom: 40px;
-      height:100
+      height:200
     }
     .profile_img img{
       width: 31%;
       float: left;
       border-radius: 15px;
-      height:100;
-      margin-left:10px
+      margin-left:10px;
+      object-fit: cover;
+      height:200
     }
   
     .profile_textdiv1 p{
@@ -242,7 +243,7 @@ const FamilyDetailScreen = props => {
         list-style-type: none;
         float: left;
         font-weight: bold;
-        color: #363663;
+        color: #000;
         margin: 0px;
         font-size: 16px;
         margin-bottom: 6px;
@@ -283,27 +284,28 @@ const FamilyDetailScreen = props => {
   </ul>
   </div>
   <div class="profile_textdiv">
-		<p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  ${userData?.family_main_member_with_relation} </p>	
+		<p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  ${
+      userData?.family_main_member_with_relation
+    } </p>	
 		<p><label> લગ્ન સ્થિતિ:</label>  ${userData?.marital_status} </p>	
     <p><label> અભ્યાસ:</label>  ${userData?.study} </p>
     <p><label> વ્યવસાય:</label>  ${userData?.business} </p>
     <p><label> વ્યવસાયનું સરનામું:</label>  ${userData?.business_address} </p>
-    <p><label> ફોરેન Country નામ:</label>  ${userData?.foreign_country_name} </p>
-    <p><label>ફોરેન Number</label>${userData?.foriegn_country_code + userData?.foreign_number} </p>
-    <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${userData?.current_address} </p>
+    <p><label> ફોરેન Country નામ:</label>  ${
+      userData?.foreign_country_name
+    } </p>
+    <p><label>ફોરેન Number</label>${
+      userData?.foriegn_country_code + userData?.foreign_number
+    } </p>
+    <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${
+      userData?.current_address
+    } </p>
     <p><label> મોબાઈલ નંબર:</label>  ${userData?.phone} </p>
     <p><label> E-Mail ID:</label>  ${userData?.email} </p>
-    <p><label> જીવન સહાય સભાસદ નં:</label>  ${userData?.jeevan_sahay_nubmer} </p>
+    <p><label> જીવન સહાય સભાસદ નં:</label>  ${
+      userData?.jeevan_sahay_nubmer
+    } </p>
     <p><label> ભુમિ સભાસદ નં:</label>  ${userData?.boomi_nubmer} </p>
-	</div>
-	<div class="address_textbox">
-		
-	</div>
-	<div class="address_textbox">
-		
-	</div>
-	<div class="address_textbox" style="border-bottom: 0px;">
-	
 	</div>
 </div>
 </body>
@@ -1017,51 +1019,54 @@ export const MemberDetailCell = props => {
         </View>
 
         <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
-
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <MemberDetail
-            styles={{flex: 0}}
-            title={'જીવન સહાય સભાસદ નં :'}
-            detailText={props?.item?.jeevan_sahay_nubmer}
-            style={{}}
-          />
-          <TouchableOpacity
-            activeOpacity={AppConstValue.ButtonOpacity}
-            onPress={() =>
-              RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
-                status: 'main',
-              })
-            }
-            style={{
-              marginLeft: 10,
-              backgroundColor: '#FFFFFF',
-              justifyContent: 'center',
-              borderRadius: 8,
-              alignItems: 'center',
-              paddingBottom: 2.5,
-            }}>
-            <LinearGradient
-              colors={['#FF56AE', '#FF56AE', '#FF56AE']}
-              style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
-              <Text
-                style={{
-                  fontFamily: AppFonts.bold,
-                  fontSize: 6,
-                  color: 'white',
-                }}>
-                ePay Now
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <MemberDetail
-            title={'ભુમિ સભાસદ નં:'}
-            detailText={props?.item?.boomi_nubmer}
-            style={{}}
-          />
-          {/* <TouchableOpacity
+        {props?.item?.jeevan_sahay_nubmer != undefined ? (
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MemberDetail
+              styles={{flex: 0}}
+              title={'જીવન સહાય સભાસદ નં :'}
+              detailText={props?.item?.jeevan_sahay_nubmer}
+              style={{}}
+            />
+            <TouchableOpacity
+              activeOpacity={AppConstValue.ButtonOpacity}
+              onPress={() =>
+                RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
+                  status: 'main',
+                  number: props?.item?.jeevan_sahay_nubmer,
+                  name: props?.item?.name,
+                })
+              }
+              style={{
+                marginLeft: 10,
+                backgroundColor: '#FFFFFF',
+                justifyContent: 'center',
+                borderRadius: 8,
+                alignItems: 'center',
+                paddingBottom: 2.5,
+              }}>
+              <LinearGradient
+                colors={['#FF56AE', '#FF56AE', '#FF56AE']}
+                style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
+                <Text
+                  style={{
+                    fontFamily: AppFonts.bold,
+                    fontSize: 6,
+                    color: 'white',
+                  }}>
+                  ePay Now
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+        {props?.item?.boomi_nubmer != undefined ? (
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MemberDetail
+              title={'ભુમિ સભાસદ નં:'}
+              detailText={props?.item?.boomi_nubmer}
+              style={{}}
+            />
+            {/* <TouchableOpacity
             activeOpacity={AppConstValue.ButtonOpacity}
             onPress={() =>
               RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
@@ -1088,7 +1093,8 @@ export const MemberDetailCell = props => {
               </Text>
             </LinearGradient>
           </TouchableOpacity> */}
-        </View>
+          </View>
+        ) : null}
       </View>
       {!props?.notShow && (
         <TouchableOpacity
@@ -1097,9 +1103,9 @@ export const MemberDetailCell = props => {
           style={{
             alignSelf: 'flex-end',
             marginTop: 10,
-            width:'50%',
-            alignItems:'flex-end',
-            justifyContent:'flex-end'
+            width: '50%',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
           }}>
           <Image source={require('../../../assets/images/save_icon.png')} />
         </TouchableOpacity>

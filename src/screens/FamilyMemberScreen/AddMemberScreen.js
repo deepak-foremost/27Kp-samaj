@@ -420,15 +420,25 @@ const AddMemberScreen = props => {
               ...uploadImageList,
             };
 
+      const filteredParams = Object.fromEntries(
+        Object.entries(params).filter(
+          ([key, value]) => value !== '' && value !== null && value !== '-',
+        ),
+      );
+      // console.log('filter', filteredParams);
+      if (filteredParams == {}) {
+        filteredParams = '';
+      }
+
       const API_BASE_URL =
         memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER;
       const AuthToken =
         token?.token == undefined ? JSON.parse(token)?.token : token?.token;
       console.log(`PARAMS:::::::`, JSON.stringify(params));
       let formData = new FormData();
-      var myparams = Object.keys(params);
+      var myparams = Object.keys(filteredParams);
       myparams?.map(item => {
-        formData.append(item, params[item]);
+        formData.append(item, filteredParams[item]);
       });
 
       setLoading(true);
@@ -767,7 +777,7 @@ const AddMemberScreen = props => {
                     placeholder={`KG`}
                     type="phone-pad"
                     defaultText={weigth}
-                    onChangeText={setWeight}
+                    onChangeText={i => setWeight(i)}
                   />
                 </View>
               </View>
@@ -905,7 +915,7 @@ const AddMemberScreen = props => {
                 type="email-address"
                 onChangeText={setEmail}
               />
-              <HorizontalSelection
+              {/* <HorizontalSelection
                 label={`ફોરેન Country Name`}
                 placeholder={`ફોરેન Country Name`}
                 defaultText={``}
@@ -915,7 +925,29 @@ const AddMemberScreen = props => {
                   // printLog(JSON.stringify(item?.item));
                   setForeignCountry(item?.name);
                 }}
+              /> */}
+
+              <MyMobileNumber
+                contact={true}
+                label={`ફોરેન Country Name`}
+                icon={true}
+                defaultText={foreign_number}
+                iconStyle={{width: '100%'}}
+                countryCode={
+                  foreign_country_name == ''
+                    ? 'Select ફોરેન Country'
+                    : foreign_country_name
+                }
+                phone={foreign_number}
+                type={'numeric'}
+                setCountryCode={item => {
+                  console.log(item);
+                  setForeignCountry(item?.name);
+                  setForeignCountryCode('+' + item?.callingCode);
+                }}
+                onChangeText={i => setForeignNumber(i)}
               />
+
               <MyMobileNumber
                 contact={true}
                 label={`ફોરેન Number`}
@@ -1360,20 +1392,46 @@ const AddMemberScreen = props => {
                     marginVertical: 20,
                   }}
                   buttonPress={() => {
-                    //   if (city == null) {
-                    //     showMessage('Please Select City');
-                    //   } else if (familyMember?.trim() == '') {
-                    //     ShowMessage('Please enter name');
-                    //   } else if (gender == null) {
-                    //     ShowMessage('Please select gender');
-                    //   } else if (dob == null) {
-                    //     ShowMessage('Please select Date of Birth');
-                    //   } else if (image == undefined || image == null) {
-                    //     ShowMessage('Please selcet photo');
-                    //   } else {
-                    //     setAdding(true);
-                    addMembers();
-                    //   }
+                    if (city == null) {
+                      showMessage('Please Select City');
+                    } else if (familyMember?.trim() == '') {
+                      ShowMessage('Please enter name');
+                    } else if (gender == null) {
+                      ShowMessage('Please select gender');
+                    } else if (hobby == '') {
+                      ShowMessage('Please enter શાખ');
+                    } else if (mosal == '') {
+                      ShowMessage('Please enter મોસાળ');
+                    } else if (sasru == '') {
+                      ShowMessage('Please enter સાસરું');
+                    } else if (dob == null) {
+                      ShowMessage('Please select Date of Birth');
+                    } else if (blood == '') {
+                      ShowMessage('Please select Blood Group');
+                    } else if (height == '') {
+                      ShowMessage('Please enter Height ');
+                    } else if (weigth == '') {
+                      ShowMessage('Please enter Weight ');
+                    } else if (relation == null) {
+                      ShowMessage('Please enter કુટુંબ ના વડા સાથે નો સંબંધ');
+                    } else if (status == null) {
+                      ShowMessage('Please select લગ્ન સ્થિતિ ');
+                    } else if (study == null) {
+                      ShowMessage('Please select અભ્યાસ ');
+                    } else if (homeAddress == '') {
+                      ShowMessage('Please enter હાલ ના રહેઠાણનું સરનામું ');
+                    } else if (business == '') {
+                      ShowMessage('Please enter વ્યવસાય ');
+                    } else if (businessAddress == null) {
+                      ShowMessage('Please enter વ્યવસાયનું સરનામું ');
+                    } else if (phone == '') {
+                      ShowMessage('Please enter Mobile No. ');
+                    } else if (email == '') {
+                      ShowMessage('Please enter email address ');
+                    } else {
+                      //     setAdding(true);
+                      addMembers();
+                    }
                   }}
                   // isLoading={loading}
                 />

@@ -206,7 +206,7 @@ const FeedBackScreen = props => {
                 setCountryCode={item => {
                   setCountryCode('+' + item?.callingCode);
                 }}
-                onChangeText={setPhone}
+                onChangeText={i => setPhone(i)}
               />
 
               {/* <View

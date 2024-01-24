@@ -199,7 +199,7 @@ const PaymentScreen = ({route}) => {
                 setCountryCode={item => {
                   setCode('+' + item?.callingCode);
                 }}
-                onChangeText={setPhone}
+                onChangeText={i => setPhone(i)}
               />
 
               {/* <HorizontalTextInput

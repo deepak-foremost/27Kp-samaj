@@ -121,14 +121,28 @@ const BusinessDetaiLScreen = props => {
       display: inline-block;
       width: 100%;
       margin-bottom: 40px;
-      height:150
+      height:250
       margin-left:25px
     }
     .profile_img img{
       width: 48%;
-      
       border-radius: 15px;
       height:150
+      float: left;
+      border-radius: 15px;
+      margin-left:10px;
+      object-fit: cover;
+      height:250
+    }
+    .profile_img default{
+      width: 48%;
+      border-radius: 15px;
+      height:150
+      float: left;
+      border-radius: 15px;
+      margin-left:10px;
+      object-fit: contain;
+      height:250
     }
     .profile_textdiv1 p{
       margin: 0px;
@@ -214,8 +228,18 @@ const BusinessDetaiLScreen = props => {
     <body>
     <div class="container">	  
 	<div class="profile_img">
-		<img src=${item?.images[0]?.visting_card_photo}>
-		<img src=${item?.images[1]?.visting_card_photo}>
+		<img class=${
+      item?.images[0]?.visting_card_photo != undefined ? 'default' : 'img'
+    } src=${
+      item?.images[0]?.visting_card_photo == undefined
+        ? 'https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png'
+        : item?.images[0]?.visting_card_photo
+    }>
+		<img src=${
+      item?.images[1]?.visting_card_photo == undefined
+        ? 'https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png'
+        : item?.images[1]?.visting_card_photo
+    }>
 	</div>
 	<div class="profile_textdiv1">
 		<h3>${item?.firm}</h3>

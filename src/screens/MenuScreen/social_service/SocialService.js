@@ -23,7 +23,11 @@ const SocialService = ({route}) => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const [btnOpacity, setBtnOpacity] = useState('life');
-  const [value, setValue] = useState('1234 - Dhaval Ahm');
+  const number = route?.params?.number;
+  const name = route?.params?.name;
+  const [value, setValue] = useState(
+    name == undefined ? '1234-Dhaval ahm' : number + '-' + name,
+  );
   const [valueId, setValueId] = useState('');
   const [text, setText] = useState('જીવન સહાય સભાસદ સભ્ય');
   const pay = route?.params?.pay;
@@ -72,7 +76,6 @@ const SocialService = ({route}) => {
                 paddingVertical: 5,
                 alignSelf: 'center',
                 height: 40,
-
                 // opacity: btnOpacity == 'life' ? 1 : 0.5,
               }}
               onPress={() => {
@@ -128,8 +131,8 @@ const SocialService = ({route}) => {
               fontSize: 14,
               fontFamily: AppFonts.semiBold,
               alignSelf: 'center',
-              marginTop:40,
-              marginBottom:20
+              marginTop: 40,
+              marginBottom: 20,
             }}>
             Select જીવન સહાય સભાસદ સભ્ય નંબર{' '}
           </Text>

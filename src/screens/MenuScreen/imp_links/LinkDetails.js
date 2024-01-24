@@ -91,18 +91,33 @@ const LinkDetails = props => {
   const [services, setServices] = useState(null);
   const [jobs, setJobs] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   const headerText = props?.route?.params?.text;
 
   const [refreshing, setRefreshing] = React.useState(false);
 
+  const LoadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
+
   useEffect(() => {
     if (headerText == 'eBOOK') {
       setLoading(true);
-      getEbook('', response => {
+      getEbook({page: page}, response => {
+        setTotalPage(response?.last_page);
         if (response?.status) {
           console.log('ebook', JSON.stringify(response?.data));
-          setFiles(response?.data);
+          var list = files == null ? [] : [...files];
+          if (page == 1) {
+            setFiles(response?.data);
+          } else {
+            setFiles([...list, ...response?.data]);
+          }
+          // setFiles(response?.data);
           setLoading(false);
         } else {
           setLoading(false);
@@ -114,9 +129,16 @@ const LinkDetails = props => {
       });
     } else if (headerText == 'JOB') {
       setLoading(true);
-      getJOB('', response => {
+      getJOB({page: page}, response => {
+        setTotalPage(response?.last_page);
         if (response?.status) {
-          setJobs(response?.data);
+          var list = jobs == null ? [] : [...jobs];
+          if (page == 1) {
+            setJobs(response?.data);
+          } else {
+            setJobs([...list, ...response?.data]);
+          }
+          // setJobs(response?.data);
           setLoading(false);
         } else {
           setLoading(false);
@@ -128,9 +150,15 @@ const LinkDetails = props => {
       });
     } else {
       setLoading(true);
-      getServices('', response => {
+      getServices({page: page}, response => {
         if (response?.status) {
-          setServices(response?.data);
+          var list = services == null ? [] : [...services];
+          if (page == 1) {
+            setServices(response?.data);
+          } else {
+            setServices([...list, ...response?.data]);
+          }
+          // setServices(response?.data);
           setLoading(false);
         } else {
           setLoading(false);
@@ -143,15 +171,20 @@ const LinkDetails = props => {
       // setServices(listOne);
     }
     // setFiles(list);
-  }, []);
+  }, [page]);
 
   const onRefresh = React.useCallback(() => {
     if (headerText == 'eBOOK') {
       setRefreshing(true);
-      getEbook('', response => {
+      getEbook({page: page}, response => {
         if (response?.status) {
           console.log('ebook', JSON.stringify(response?.data));
-          setFiles(response?.data);
+          var list = files == null ? [] : [...files];
+          if (page == 1) {
+            setFiles(response?.data);
+          } else {
+            setFiles([...list, ...response?.data]);
+          }
           setRefreshing(false);
         } else {
           setRefreshing(false);
@@ -165,7 +198,12 @@ const LinkDetails = props => {
       setRefreshing(true);
       getJOB('', response => {
         if (response?.status) {
-          setJobs(response?.data);
+          var list = jobs == null ? [] : [...jobs];
+          if (page == 1) {
+            setJobs(response?.data);
+          } else {
+            setJobs([...list, ...response?.data]);
+          }
           setRefreshing(false);
         } else {
           setRefreshing(false);
@@ -179,7 +217,12 @@ const LinkDetails = props => {
       setRefreshing(true);
       getServices('', response => {
         if (response?.status) {
-          setServices(response?.data);
+          var list = services == null ? [] : [...services];
+          if (page == 1) {
+            setServices(response?.data);
+          } else {
+            setServices([...list, ...response?.data]);
+          }
           setRefreshing(false);
         } else {
           setRefreshing(false);
@@ -296,26 +339,39 @@ const LinkDetails = props => {
                 </View>
               ) : (
                 <View style={{flex: 1}}>
-                  <View>
-                    <FlatList
-                      showsVerticalScrollIndicator={false}
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{paddingBottom: 5}}
-                      data={files == null ? [] : files}
-                      renderItem={({item, index}) =>
-                        item?.file != undefined && item?.link == null ? (
-                          <FileCell item={item} index={index} />
-                        ) : null
-                      }
-                      // refreshControl={
-                      //   <RefreshControl
-                      //     refreshing={refreshing}
-                      //     onRefresh={onRefresh}
-                      //   />
-                      // }
-                    />
-                  </View>
                   <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom: 5}}
+                    onEndReached={() => LoadMore()}
+                    data={files == null ? [] : files}
+                    renderItem={({item, index}) =>
+                      item?.file != undefined && item?.link == null ? (
+                        <FileCell item={item} index={index} />
+                      ) : (
+                        <LinksButton
+                          textfirst={item.name.toUpperCase()}
+                          textsecond={'LINK TO VISIT'}
+                          mainStyle={{paddingLeft: 0}}
+                          buttonStyle={{
+                            width: '90%',
+                            marginHorizontal: 15,
+                            elevation: 5,
+                            marginTop: 10,
+                          }}
+                          buttonPress={() => Linking.openURL(`${item?.link}`)}
+                        />
+                      )
+                    }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
+                  />
+
+                  {/* <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{alignItems: 'center'}}
@@ -343,22 +399,10 @@ const LinkDetails = props => {
                             elevation: 5,
                           }}
                           buttonPress={() => Linking.openURL(`${item?.link}`)}
-                          // buttonPress={() =>
-                          //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
-                          //     text: 'SERVICES',
-                          //   })
-                          // }
-                          // src={require('../../../assets/images/service_icon.png')}
                         />
                       ) : null
                     }
-                    refreshControl={
-                      <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                      />
-                    }
-                  />
+                  /> */}
                 </View>
               )}
             </View>
@@ -471,26 +515,38 @@ const LinkDetails = props => {
                 </View>
               ) : (
                 <View style={{flex: 1}}>
-                  <View>
-                    <FlatList
-                      showsVerticalScrollIndicator={false}
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{paddingBottom: 5}}
-                      data={jobs == null ? [] : jobs}
-                      renderItem={({item, index}) =>
-                        item?.file != undefined && item?.link == null ? (
-                          <FileCell item={item} index={index} />
-                        ) : null
-                      }
-                      // refreshControl={
-                      //   <RefreshControl
-                      //     refreshing={refreshing}
-                      //     onRefresh={onRefresh}
-                      //   />
-                      // }
-                    />
-                  </View>
                   <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom: 5}}
+                    onEndReached={() => LoadMore()}
+                    data={jobs == null ? [] : jobs}
+                    renderItem={({item, index}) =>
+                      item?.file != undefined && item?.link == null ? (
+                        <FileCell item={item} index={index} />
+                      ) : (
+                        <LinksButton
+                          textfirst={item.name.toUpperCase()}
+                          textsecond={'LINK TO VISIT'}
+                          mainStyle={{paddingLeft: 0}}
+                          buttonStyle={{
+                            width: '90%',
+                            marginHorizontal: 15,
+                            elevation: 5,
+                          }}
+                          buttonPress={() => Linking.openURL(`${item.link}`)}
+                        />
+                      )
+                    }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
+                  />
+
+                  {/* <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{alignItems: 'center'}}
@@ -518,12 +574,6 @@ const LinkDetails = props => {
                             elevation: 5,
                           }}
                           buttonPress={() => Linking.openURL(`${item.link}`)}
-                          // buttonPress={() =>
-                          //   RootNavigation.navigate(AppScreens.LINK_DETAILS, {
-                          //     text: 'SERVICES',
-                          //   })
-                          // }
-                          // src={require('../../../assets/images/service_icon.png')}
                         />
                       ) : null
                     }
@@ -533,7 +583,7 @@ const LinkDetails = props => {
                         onRefresh={onRefresh}
                       />
                     }
-                  />
+                  /> */}
                 </View>
               )}
             </View>

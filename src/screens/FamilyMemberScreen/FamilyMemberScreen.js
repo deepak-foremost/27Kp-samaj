@@ -109,16 +109,25 @@ const FamilyMembersScreen = props => {
   const [modelOpen, setModelOpen] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   // useEffect(() => {
   //   setFamilies(list);
   // });
 
+  const LoadMore = () => {
+    if (totalPage > page) {
+      setPage(page + 1);
+    }
+  };
+
   const getData = () => {
     getMyFamilies(
+      '',
       response => {
         printLog('FamilyMembersScreen', JSON.stringify(response));
-
+        setTotalPage(response?.last_page);
         if (response?.status) {
           setFamilies(response?.data);
         } else {
@@ -167,9 +176,11 @@ const FamilyMembersScreen = props => {
     getData();
   }, []);
 
-  useEffect(() => {
-    // console.log('change list----->', families);
-  }, [families]);
+  // useEffect(() => {
+  //   setPage(1);
+  //   setTotalPage(1);
+  //   // console.log('change list----->', families);
+  // }, [families]);
 
   return (
     <View
@@ -193,9 +204,11 @@ const FamilyMembersScreen = props => {
         <ScreenToolbar
           text={'EDIT FAMILY MEMBER'}
           secondText={'+ADD'}
-          secondPress={() =>
-            RootNavigation.navigate(AppScreens.ADD_MEMBER_SCREEN)
-          }
+          secondPress={() => {
+            setTotalPage(1);
+            setPage(1);
+            RootNavigation.navigate(AppScreens.ADD_MEMBER_SCREEN);
+          }}
         />
         <View style={{flex: 0.9}}>
           {families == null ? (
@@ -254,6 +267,8 @@ const FamilyMembersScreen = props => {
                       setModelOpen(true);
                     }}
                     editClick={() => {
+                      setTotalPage(1);
+                      setPage(1);
                       RootNavigation.push(
                         props?.navigation,
                         AppScreens.ADD_MEMBER_SCREEN,

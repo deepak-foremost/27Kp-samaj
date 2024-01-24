@@ -245,6 +245,12 @@ export class staticArray {
       value: 'Management in Eng',
       name: 'Management in Eng',
     },
+    {
+      label: 'Hotel Management',
+      value: 'Hotel Management',
+      name: 'Hotel Management',
+    },
+    {label: 'MSC MLT', value: 'MSC MLT', name: 'MSC MLT'},
   ];
 
   static foriegnCountry = [

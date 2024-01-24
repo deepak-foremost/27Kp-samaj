@@ -97,24 +97,41 @@ const AppSponcerScreen = props => {
       getBhumiSlah({page: page}, response => {
         setTotalPage(response?.last_page);
         if (response?.status) {
-          setMembers(response?.data);
+          var list = members == null ? [] : [...members];
+          if (page == 1) {
+            setMembers(response?.data);
+          } else {
+            setMembers([...list, ...response?.data]);
+          }
+          // setMembers(response?.data);
+          setLoading(false);
         }
         response => {
           console.log('error', response);
         };
       });
     } else {
-      getJevanSlah({page: page}, response => {
-        setTotalPage(response?.last_page);
-        if (response?.status) {
-          setMembers(response?.data);
-        }
+      getJevanSlah(
+        {page: page},
+        response => {
+          setTotalPage(response?.last_page);
+          if (response?.status) {
+            var list = members == null ? [] : [...members];
+            if (page == 1) {
+              setMembers(response?.data);
+            } else {
+              setMembers([...list, ...response?.data]);
+            }
+            // setMembers(response?.data);
+            setLoading(false);
+          }
+        },
         response => {
           console.log('error', response);
-        };
-      });
+        },
+      );
     }
-  }, []);
+  }, [page]);
 
   // useEffect(()=>{
 
@@ -421,6 +438,7 @@ export const MemberCell = props => {
           // width: '30%',
           flex: 2,
           // alignItems: 'center',
+          paddingLeft:5
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
           {props?.item
