@@ -171,7 +171,37 @@ const BusinessScreen = props => {
         setBusinsesses([]);
       },
     );
-  }, [pos]);
+  }, [catItem]);
+
+  useEffect(() => {
+    if (pos != 0 && page > 1) {
+      getBusinessAllList(
+        {category_id: catItem?.id == undefined ? 0 : catItem?.id, page: page},
+        response => {
+          setTotalPage(response?.last_page);
+          printLog('getBusinessList', JSON.stringify(response));
+          if (response?.status) {
+            if (response?.status) {
+              var list = businsesses == null ? [] : [...businsesses];
+              if (page == 1) {
+                setBusinsesses(response?.data);
+              } else {
+                setBusinsesses([...list, ...response?.data]);
+              }
+            }
+            // setBusinsesses(response?.data);
+          } else {
+            setBusinsesses([]);
+          }
+          setLoading(false);
+        },
+        error => {
+          printLog('getBusinessList', error);
+          setBusinsesses([]);
+        },
+      );
+    }
+  }, [page]);
 
   return (
     <View

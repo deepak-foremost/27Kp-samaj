@@ -171,6 +171,9 @@ const AboutUsScreen = props => {
         printLog('getAboutUsMember', JSON.stringify(response));
         if (response?.status) {
           setMembers(response?.data);
+          if (response?.exists != 0) {
+            setShow(true);
+          }
           setLoading(false);
         } else {
           setMembers([]);
@@ -185,29 +188,29 @@ const AboutUsScreen = props => {
     );
   }, [valueId]);
 
-  useEffect(() => {
-    setLoading(true);
-    getAboutKarobari(
-      `range_id=${valueId}`,
-      response => {
-        printLog('getAboutUskarobari', JSON.stringify(response));
-        if (response?.status) {
-          setKarobari(response?.data);
-          setShow(true);
-          setLoading(false);
-        } else {
-          setKarobari(null);
-          setLoading(false);
-          setShow(false);
-        }
-      },
-      error => {
-        printLog('getAboutUsKarobarieror', error);
-        setKarobari(null);
-        setLoading(false);
-      },
-    );
-  }, [valueId]);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   getAboutKarobari(
+  //     `range_id=${valueId}`,
+  //     response => {
+  //       printLog('getAboutUskarobari', JSON.stringify(response));
+  //       if (response?.status) {
+  //         setKarobari(response?.data);
+  //         setShow(true);
+  //         setLoading(false);
+  //       } else {
+  //         setKarobari(null);
+  //         setLoading(false);
+  //         setShow(false);
+  //       }
+  //     },
+  //     error => {
+  //       printLog('getAboutUsKarobarieror', error);
+  //       setKarobari(null);
+  //       setLoading(false);
+  //     },
+  //   );
+  // }, [valueId]);
 
   return (
     <View
@@ -305,7 +308,7 @@ const AboutUsScreen = props => {
               </View>
             ) : (
               <View>
-                {members?.length == 0 && karobari?.length == 0 ? (
+                {members?.length == 0 && !show ? (
                   <Text
                     style={{
                       fontSize: 14,

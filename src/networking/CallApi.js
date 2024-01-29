@@ -84,7 +84,7 @@ export const getContactUs = (params, onSuccess, onFailure) => {
 
 export const getAboutKarobari = (params, onSuccess, onFailure) => {
   CallApi(
-    `${Api.GET_ABOUT_KAROBARI}?${params}`,
+    `${Api.GET_ABOUT_KAROBARI}`,
     RequestType.get,
     params,
     onSuccess,

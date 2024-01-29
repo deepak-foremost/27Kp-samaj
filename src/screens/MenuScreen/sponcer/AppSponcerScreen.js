@@ -263,6 +263,7 @@ const AppSponcerScreen = props => {
                 color: AppColors.DarkText,
                 // width:'7%'
                 flex: 0.7,
+                textAlign: 'center',
               }}>
               ફોટો
             </Text>
@@ -438,7 +439,7 @@ export const MemberCell = props => {
           // width: '30%',
           flex: 2,
           // alignItems: 'center',
-          paddingLeft:5
+          paddingLeft: 5,
         }}>
         <Text style={[styles.heading, {color: AppColors.DarkText}]}>
           {props?.item

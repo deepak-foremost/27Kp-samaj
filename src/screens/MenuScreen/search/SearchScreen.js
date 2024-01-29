@@ -265,7 +265,7 @@ const SearchScreen = props => {
         leadIcon={AppImages.BACK_ICON}
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
-        <View style={{flex:0.9,}}>
+        <View style={{flex: 0.9}}>
           <View
             style={{
               marginTop: -40,
@@ -781,7 +781,6 @@ const SearchScreen = props => {
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
-                              
                             }}>
                             નામ
                           </Text>

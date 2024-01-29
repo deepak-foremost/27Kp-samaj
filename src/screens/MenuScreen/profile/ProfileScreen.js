@@ -133,7 +133,7 @@ const ProfileScreen = () => {
               Profile Details
             </Text>
             {isLoading ? (
-              <View style={{paddingRight: 50, width: '100%'}}>
+              <View style={{paddingRight: 50, width: '100%',marginTop:-20}}>
                 <ListMember styles={{width: '90%', height: 15}} />
                 <ListMember styles={{width: '50%', height: 15, marginTop: 0}} />
                 <ListMember styles={{width: '70%', height: 15}} />
@@ -142,7 +142,7 @@ const ProfileScreen = () => {
                 <ListMember styles={{width: '50%', height: 15, marginTop: 0}} />
               </View>
             ) : (
-              <View style={{width: '100%'}}>
+              <View style={{width: '100%', marginTop: -20}}>
                 <ProfileText
                   firstText={
                     screen == 'User Signin'

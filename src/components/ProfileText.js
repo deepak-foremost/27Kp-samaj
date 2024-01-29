@@ -5,7 +5,7 @@ import {AppColors} from '../utils/AppColors';
 
 const ProfileText = props => {
   return (
-    <View style={{alignSelf: 'flex-start'}}>
+    <View style={{alignSelf: 'flex-start',marginTop:15}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Image
           style={{tintColor: AppColors.BackgroundSecondColor}}
@@ -28,7 +28,7 @@ const ProfileText = props => {
           fontSize: 13,
           color: AppColors.DarkText,
           marginLeft: 25,
-          marginTop: 5,
+          // marginTop: 5,
         }}>
         {props?.secondText}
       </Text>

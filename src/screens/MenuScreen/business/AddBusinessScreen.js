@@ -700,6 +700,7 @@ const AddBusinessScreen = props => {
         });
     }
   };
+  
   const getMyImage = first => {
     ImagePicker.launchImageLibrary(
       {
@@ -1505,11 +1506,11 @@ const AddBusinessScreen = props => {
                       ShowMessage('Please select Start Time');
                     } else if (endTime == null) {
                       ShowMessage('Please select End Time');
-                    } else if (product == null) {
+                    } else if (product == '') {
                       ShowMessage('Please Enter Description');
-                    } else if (mobile == null) {
+                    } else if (mobile == '') {
                       ShowMessage('Please enter mobile number');
-                    } else if (email == null) {
+                    } else if (email == '') {
                       ShowMessage('Please enter Email');
                     } else if (startDate == null) {
                       ShowMessage('Please select business start date');

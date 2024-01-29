@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Platform,
+  Linking,
 } from 'react-native';
 // import {AppDrawerHeader} from '../../../../components/AppDrawerHeader';
 import {AppImages} from '../../../utils/AppImages';
@@ -15,6 +16,7 @@ import * as RootNavigation from '../../../utils/RootNavigation';
 import {AppColors} from '../../../utils/AppColors';
 import {AppFonts} from '../../../utils/AppFonts';
 import {
+  DoubleLineButton,
   LinkCell,
   SimpleDoubleLine,
   WeekDayCell,
@@ -387,7 +389,7 @@ const BusinessDetaiLScreen = props => {
                 marginHorizontal: 15,
                 borderRadius: 8,
                 paddingVertical: 15,
-
+                paddingBottom: 25,
                 marginTop: 15,
                 flex: 1,
                 alignSelf: 'center',
@@ -639,20 +641,31 @@ const BusinessDetaiLScreen = props => {
 
                 <DeviderLine Style={{marginTop: 15, marginBottom: 15}} />
 
-                <SimpleDoubleLine
+                <DoubleLineButton
                   title={'Website :'}
-                  value={item?.website}
+                  value={item?.business_end_date == undefined ?'N/A':
+                    item?.website}
                   containerStyle={{marginTop: 10}}
+                  // textStyles={{color: '#0000EE'}}
+                  press={() => Linking.openURL(`https://${item?.website}`)}
                 />
-                <SimpleDoubleLine
+                <DoubleLineButton
                   title={'Mobile No : '}
                   value={item?.country_code + ' ' + item?.business_phone}
                   containerStyle={{marginTop: 10}}
+                  press={() =>
+                    Linking.openURL(
+                      `tel:${item?.country_code + item?.business_phone}`,
+                    )
+                  }
                 />
-                <SimpleDoubleLine
+                <DoubleLineButton
                   title={'E-Mail ID : '}
                   value={item?.business_email}
                   containerStyle={{marginTop: 10}}
+                  press={() =>
+                    Linking.openURL(`mailto:${item?.business_email}`)
+                  }
                 />
               </View>
               {!DoNotShow && (

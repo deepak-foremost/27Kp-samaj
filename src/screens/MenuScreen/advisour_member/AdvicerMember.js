@@ -80,7 +80,7 @@ const AdvicerMember = props => {
   const status = props?.route?.params.status;
   const [value, setValue] = useState('Select year');
   const [valueId, setValueId] = useState('');
-  const [range, setRange] = useState([]);
+
   const [members, setMembers] = useState(null);
   const rangeid = props?.route?.params?.range;
   const karobari = props?.route?.params?.karobari;
@@ -88,6 +88,7 @@ const AdvicerMember = props => {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [range, setRange] = useState(props?.route?.params?.range);
 
   const images = [
     {
@@ -155,6 +156,30 @@ const AdvicerMember = props => {
         },
       );
     } else {
+      getAboutKarobari(
+        {range_id: range, page: page},
+        response => {
+          printLog('getAboutUskarobari', JSON.stringify(response));
+          setTotalPage(response?.last_page);
+          if (response?.status) {
+            var list = members == null ? [] : [...members];
+            if (page == 1) {
+              setMembers(response?.data);
+            } else {
+              setMembers([...list, ...response?.data]);
+            }
+            setLoading(false);
+          } else {
+            setMembers(null);
+            setLoading(false);
+          }
+        },
+        error => {
+          printLog('getAboutUsKarobarieror', error);
+          setKarobari(null);
+          setLoading(false);
+        },
+      );
       console.log('karobari', karobari);
       setMembers(karobari);
       // console.warn(rangeid);

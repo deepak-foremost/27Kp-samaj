@@ -625,6 +625,9 @@ export const FileCell = props => {
             elevation: 5,
           },
         }),
+      }}
+      onPress={() => {
+        Linking.openURL(props?.item?.file);
       }}>
       <TouchableOpacity
         activeOpacity={1}

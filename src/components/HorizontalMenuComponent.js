@@ -157,7 +157,7 @@ export const GridListComponent = props => {
             color: '#FFF',
             position: 'absolute',
             bottom: 0,
-            textAlign:'center'
+            textAlign: 'center',
           }}>
           {props?.item?.name}
         </Text>
@@ -168,7 +168,8 @@ export const GridListComponent = props => {
 
 export const BusinessDirectoryCell = props => {
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={1}
       style={{
         justifyContent: 'center',
         alignItems: 'center',
@@ -188,7 +189,8 @@ export const BusinessDirectoryCell = props => {
             elevation: 3,
           },
         }),
-      }}>
+      }}
+      onPress={() => props?.onClicked()}>
       <TouchableOpacity
         onPress={() => props?.onClicked('view')}
         style={{
@@ -296,13 +298,14 @@ export const BusinessDirectoryCell = props => {
           )}
         </View>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export const SimpleDoubleLine = props => {
   return (
     <View
+      activeOpacity={1}
       style={{
         flexDirection: 'row',
         ...props?.containerStyle,
@@ -324,11 +327,45 @@ export const SimpleDoubleLine = props => {
           fontSize: 12,
           color: '#B7B7B7',
           ...props?.textStyles,
-          maxWidth: '70%',
+          flex: 1,
         }}>
         {props?.value}
       </Text>
     </View>
+  );
+};
+
+export const DoubleLineButton = props => {
+  return (
+    <TouchableOpacity
+      activeOpacity={1}
+      style={{
+        flexDirection: 'row',
+        ...props?.containerStyle,
+      }}
+      onPress={props?.press}>
+      <Text
+        style={{
+          fontFamily: AppFonts.semiBold,
+          fontSize: 12,
+          marginRight: 5,
+          color: AppColors.black,
+          textTransform: 'capitalize',
+        }}>
+        {props?.title}
+      </Text>
+      <Text
+        numberOfLines={5}
+        style={{
+          fontFamily: AppFonts.semiBold,
+          fontSize: 12,
+          color: '#B7B7B7',
+          ...props?.textStyles,
+          maxWidth: '70%',
+        }}>
+        {props?.value}
+      </Text>
+    </TouchableOpacity>
   );
 };
 

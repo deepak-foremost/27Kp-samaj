@@ -543,7 +543,7 @@ const FamilyDetailScreen = props => {
               contentContainerStyle={{paddingVertical: 15}}
               data={members == null ? [] : members}
               renderItem={({item, index}) => {
-                printLog(`ITEM$${index}`, JSON.stringify(item?.item));
+                // printLog(`ITEM$${index}`, JSON.stringify(item?.item));
                 return (
                   <View style={{}}>
                     <FamilyMermberCell
@@ -948,10 +948,12 @@ export const MemberDetailCell = props => {
           title={'વ્યવસાયનું સરનામું :'}
           detailText={props?.item?.business_address}
         />
-        <MemberDetail
-          title={'ફોરેન Country નામ :'}
-          detailText={props?.item?.foreign_country_name}
-        />
+        {props?.item?.foreign_country_name != undefined && (
+          <MemberDetail
+            title={'ફોરેન Country નામ :'}
+            detailText={props?.item?.foreign_country_name}
+          />
+        )}
         {props?.item?.foreign_number != undefined && (
           <MemberDetail
             title={'ફોરેન Number :'}
