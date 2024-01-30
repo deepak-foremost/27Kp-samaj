@@ -204,31 +204,35 @@ const ContactUsScreen = props => {
                   marginTop: 20,
                 }}
               />
-              <View
-                style={[
-                  AppStyles.boxStyle,
-                  {
-                    height: 45,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '95%',
-                    marginTop: 10,
-                  },
-                ]}>
-                <Text
+              {!isLoading ? (
+                <View
                   style={[
+                    AppStyles.boxStyle,
                     {
-                      fontSize: 10,
-                      fontFamily: AppFonts.bold,
-                      color: AppColors.DarkText,
-                      alignSelf: 'center',
-                      textAlign: 'center',
-                      width: '98%',
+                      height: 45,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '95%',
+                      marginTop: 10,
                     },
                   ]}>
-                  Office Address : {contacts?.DeveloperContacts[0]?.address}
-                </Text>
-              </View>
+                  <Text
+                    style={[
+                      {
+                        fontSize: 10,
+                        fontFamily: AppFonts.bold,
+                        color: AppColors.DarkText,
+                        alignSelf: 'center',
+                        textAlign: 'center',
+                        width: '98%',
+                      },
+                    ]}>
+                    Office Address : {contacts?.DeveloperContacts[0]?.address}
+                  </Text>
+                </View>
+              ) : (
+                <ListMember styles={{height:45}}/>
+              )}
 
               <Image
                 style={{
@@ -238,86 +242,91 @@ const ContactUsScreen = props => {
                   marginTop: 10,
                 }}
               />
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{
-                  backgroundColor: AppColors.BackgroundSecondColor,
-                  width: '95%',
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  // alignItems: 'flex-end',
-                  paddingVertical: 10,
-                  marginTop: 15,
-                  marginBottom: 30,
-                  // flexDirection: 'row',
-                }}>
-                <Text
-                  numberOfLines={2}
+              {!isLoading? (
+                <TouchableOpacity
+                  activeOpacity={1}
                   style={{
-                    fontSize: 9,
-                    fontFamily: AppFonts.semiBold,
-                    color: '#fff',
-                    width: '100%',
-                    textAlign: 'center',
-                  }}>
-                  Website/Mobile Application Developer Contact Number :
-                  {/* {contacts?.DeveloperContacts[0]?.name +
-                    contacts?.DeveloperContacts[0]?.country_code +
-                    contacts?.DeveloperContacts[0]?.phone} */}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
+                    backgroundColor: AppColors.BackgroundSecondColor,
+                    width: '95%',
+                    borderRadius: 10,
                     justifyContent: 'center',
-                    alignItems: 'center',
+                    // alignItems: 'flex-end',
+                    paddingVertical: 10,
+                    marginTop: 15,
+                    marginBottom: 30,
+                    // flexDirection: 'row',
                   }}>
                   <Text
+                    numberOfLines={2}
                     style={{
                       fontSize: 9,
                       fontFamily: AppFonts.semiBold,
                       color: '#fff',
+                      width: '100%',
+                      textAlign: 'center',
                     }}>
-                    {contacts?.DeveloperContacts[0]?.name +' : '+
-                      contacts?.DeveloperContacts[0]?.country_code +
-                      contacts?.DeveloperContacts[0]?.phone}
+                    Website/Mobile Application Developer Contact Number :
+                    {/* {contacts?.DeveloperContacts[0]?.name +
+                    contacts?.DeveloperContacts[0]?.country_code +
+                    contacts?.DeveloperContacts[0]?.phone} */}
                   </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 9,
+                        fontFamily: AppFonts.semiBold,
+                        color: '#fff',
+                      }}>
+                      {contacts?.DeveloperContacts[0]?.name +
+                        ' : ' +
+                        contacts?.DeveloperContacts[0]?.country_code +
+                        contacts?.DeveloperContacts[0]?.phone}
+                    </Text>
 
-                  {
+                    {
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={{marginLeft: 5, marginBottom: 2.5}}
+                        onPress={() =>
+                          Linking.openURL(
+                            `tel:${
+                              contacts?.DeveloperContacts[0]?.country_code +
+                              contacts?.DeveloperContacts[0]?.phone
+                            }`,
+                          )
+                        }>
+                        <Image source={AppImages.CIRCLE_CALL_ICON} />
+                      </TouchableOpacity>
+                    }
                     <TouchableOpacity
                       activeOpacity={1}
-                      style={{marginLeft: 5, marginBottom: 2.5}}
+                      style={{
+                        paddingHorizontal: 2.5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginLeft: 5,
+                        marginBottom: 2.5,
+                      }}
                       onPress={() =>
                         Linking.openURL(
-                          `tel:${
+                          `whatsapp://send?text=hello&phone=${
                             contacts?.DeveloperContacts[0]?.country_code +
                             contacts?.DeveloperContacts[0]?.phone
                           }`,
                         )
                       }>
-                      <Image source={AppImages.CIRCLE_CALL_ICON} />
+                      {<Image source={AppImages.WHATSAPP_ICON} />}
                     </TouchableOpacity>
-                  }
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      paddingHorizontal: 2.5,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginLeft: 5,
-                      marginBottom: 2.5,
-                    }}
-                    onPress={() =>
-                      Linking.openURL(
-                        `whatsapp://send?text=hello&phone=${
-                          contacts?.DeveloperContacts[0]?.country_code +
-                          contacts?.DeveloperContacts[0]?.phone
-                        }`,
-                      )
-                    }>
-                    {<Image source={AppImages.WHATSAPP_ICON} />}
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <ListMember styles={{height:50}}/>
+              )}
 
               {/* <AppButton
                 text={
@@ -437,29 +446,29 @@ const ContactCell = props => {
             style={{height: 20, width: 20}}
           />
         </TouchableOpacity> */}
-         <View style={{flexDirection:'row'}}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={{paddingStart: 2, paddingBottom: 2.5, paddingRight: 4}}
-          onPress={() =>
-            Linking.openURL(
-              `tel:${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
-            )
-          }>
-          <Image source={AppImages.CIRCLE_CALL_ICON} style={{}} />
-        </TouchableOpacity>
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={{paddingStart: 2, paddingBottom: 2.5, paddingRight: 4}}
+            onPress={() =>
+              Linking.openURL(
+                `tel:${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
+              )
+            }>
+            <Image source={AppImages.CIRCLE_CALL_ICON} style={{}} />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={{paddingStart: 4, paddingBottom: 2.5, paddingEnd: 3}}
-          onPress={() =>
-            Linking.openURL(
-              `whatsapp://send?phone=${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
-              // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
-            )
-          }>
-          <Image source={AppImages.WHATSAPP_ICON} style={{}} />
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={{paddingStart: 4, paddingBottom: 2.5, paddingEnd: 3}}
+            onPress={() =>
+              Linking.openURL(
+                `whatsapp://send?phone=${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
+                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+              )
+            }>
+            <Image source={AppImages.WHATSAPP_ICON} style={{}} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

@@ -164,6 +164,7 @@ const AboutUsScreen = props => {
   }, []);
 
   useEffect(() => {
+    setShow(false)
     setLoading(true);
     getAboutUsMember(
       `range_id=${valueId}`,
@@ -285,7 +286,7 @@ const AboutUsScreen = props => {
                 // printLog(JSON.stringify(item?.item));
                 setValue(item?.name);
                 setValueId(item?.id);
-                setShow(false);
+                // setShow(false);
               }}
             />
           </View>

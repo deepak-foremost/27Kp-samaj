@@ -636,7 +636,7 @@ export const AboutKarobariCell = props => {
           styles.heading,
           {
             // width: props?.status == 'drawer'? '30%':'25%',
-            flex: props?.status == 'drawer' ? 2.5 : 2,
+            flex: props?.status == 'drawer' ? 3.2 : 2,
             color: AppColors.DarkText,
             fontSize: 9,
             paddingRight: 3,
@@ -673,9 +673,9 @@ export const AboutKarobariCell = props => {
       ) : null}
       <View
         style={{
-          flexDirection: props?.status == 'drawer' ? 'row' : '',
+          flexDirection: props?.status == 'drawer' ? '' : '',
           // width:props?.status == 'drawer'? '35%':'26%',
-          flex: props?.status == 'drawer' ? 3.5 : 2.5,
+          flex: props?.status == 'drawer' ? 2 : 2.5,
           // marginLeft: 10,
           paddingLeft: 5,
         }}>
@@ -695,7 +695,7 @@ export const AboutKarobariCell = props => {
             }}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{paddingHorizontal: 2.5, paddingLeft: 3}}
+              style={{paddingHorizontal: 3}}
               onPress={() =>
                 Linking.openURL(
                   `tel:${props?.item?.country_code + props?.item?.phone}`,
@@ -731,7 +731,7 @@ export const AboutKarobariCell = props => {
           flex: 0.7,
           justifyContent: 'center',
           alignItems: 'center',
-          // marginLeft: 5,
+          marginLeft:props?.status == 'drawer' ? 5:0,
           paddingBottom: 2.5,
         }}
         onPress={props?.imgPress}>
