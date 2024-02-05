@@ -79,7 +79,7 @@ const AddBusinessScreen = props => {
   const [code, setCode] = useState('+91');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
-  const [website, setWebsite] = useState('');
+  const [website, setWebsite] = useState(null);
   const [visiting, setVisiting] = useState('');
   const [visitingOne, setVisitingOne] = useState('');
   const [allCities, setAlLCities] = useState([]);
@@ -167,165 +167,6 @@ const AddBusinessScreen = props => {
       error => {},
     );
   }, [selectedCategory, setCategory]);
-
-  const addNewBusiness = async () => {
-    setLoading(true);
-    var list = [];
-    if (visiting?.uri != undefined) {
-      list?.push(visiting);
-    }
-
-    if (visitingOne?.uri != undefined) {
-      list?.push(visitingOne);
-    }
-
-    var uploadImageList = {};
-    list?.map((item, index) => {
-      uploadImageList = {
-        ...uploadImageList,
-        [`visting_card_photo[${index}]`]: {
-          uri:
-            Platform.OS === 'android'
-              ? item?.uri
-              : item?.uri?.replace('file://', ''),
-          name: item?.fileName,
-          type: item?.type,
-        },
-      };
-    });
-    let imageParams = {};
-    var imageObject = {};
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-    const params =
-      bussinessItem != undefined
-        ? {
-            business_id: bussinessItem?.id,
-            category_id: catId,
-            firm: firm,
-            business_type: business_type,
-            owner_name_1: owner1,
-            owner_name_2: owner2,
-            owner_name_3: owner3,
-            owner_name_4: owner4,
-            address: address,
-            products: product,
-            country_code: code,
-            business_phone: mobile,
-            business_email: email,
-            website: website,
-            from_time: startTime,
-            to_time: endTime,
-            city: selectedCity,
-            business_start_date: startDate,
-            business_end_date: endDate,
-            business_hourse: JSON.stringify(week),
-            ...uploadImageList,
-          }
-        : {
-            category_id: catId,
-            firm: firm,
-            business_type: business_type,
-            owner_name_1: owner1,
-            owner_name_2: owner2,
-            owner_name_3: owner3,
-            owner_name_4: owner4,
-            address: address,
-            products: product,
-            country_code: code,
-            business_phone: mobile,
-            business_email: email,
-            website: website,
-            from_time: startTime,
-            to_time: endTime,
-            city: selectedCity,
-            business_start_date: startDate,
-            business_end_date: endDate,
-            business_hourse: JSON.stringify(week),
-            ...uploadImageList,
-          };
-    const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(
-        ([key, value]) => value !== '' && value !== null && value !== '-',
-      ),
-    );
-    // console.log('filter', filteredParams);
-    if (filteredParams == {}) {
-      filteredParams = '';
-    }
-    const API_BASE_URL =
-      bussinessItem == undefined
-        ? Api.POST_ADD_BUSINESS
-        : Api.POST_UPDATE_BUSINESS;
-    const AuthToken =
-      token?.token == undefined ? JSON.parse(token)?.token : token?.token;
-    console.log(`PARAMS:::::::`, JSON.stringify(filteredParams));
-    let formData = new FormData();
-    var myparams = Object.keys(filteredParams);
-    myparams?.map(item => {
-      formData.append(item, filteredParams[item]);
-    });
-
-    // var payload = new FormData();
-
-    printLog('tokenPrint----', token);
-
-    // payload.append('category_id', catId);
-    // payload.append('firm', firm);
-    // payload.append('business_type', business_type);
-    // payload.append('owner_name_1', owner1);
-    // payload.append('owner_name_2', owner2);
-    // payload.append('owner_name_3', owner3);
-    // payload.append('owner_name_4', owner4);
-    // payload.append('address', address);
-    // payload.append('products', product);
-    // payload.append('country_code', code);
-    // payload.append('business_phone', mobile);
-    // payload.append('business_email', email);
-    // payload.append('website', website);
-    // payload.append('from_time', startTime);
-    // payload.append('to_time', endTime);
-    // payload.append('city', selectedCity);
-    // payload.append('business_start_date', startDate);
-    // payload.append('business_end_date', endDate);
-    // payload.append('business_hourse', JSON.stringify(week));
-
-    // payload.append('visting_card_photo', {
-    //   uri:
-    //     Platform.OS === 'android'
-    //       ? visiting?.uri
-    //       : visiting?.uri.replace('file://', ''),
-    //   name: visiting?.fileName,
-    //   type: visiting?.type,
-    // });
-    // printLog('PARAMS', JSON.stringify(payload));
-    setLoading(true);
-    axios({
-      method: 'POST',
-      url: API_BASE_URL,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${AuthToken}`,
-        Accept: 'Application/json',
-      },
-      data: formData, // Use 'data' property for POST requests
-    })
-      .then(response => {
-        setLoading(false);
-        if (response?.data?.status) {
-          ShowMessage(response?.data?.message);
-          RootNavigation?.goBack();
-          printLog(`callApi`, `Success : ${JSON.stringify(response)}`);
-        } else {
-          ShowMessage(response?.data?.message);
-        }
-        // Handle the success case here
-      })
-      .catch(error => {
-        setLoading(false);
-        printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
-        ShowMessage(error?.message);
-      });
-  };
 
   const AddBusiness = async () => {
     setLoading(true);
@@ -500,157 +341,6 @@ const AddBusinessScreen = props => {
     //   return {uri: filePath, name: filename, type: 'image/jpeg'};
   };
 
-  //   fetch(Api.POST_ADD_BUSINESS, {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'multipart/form-data',
-  //       Authorization:
-  //         'Bearer ' +
-  //         (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-  //     },
-  //     body: formData,
-  //   })
-  //     .then(response => response.json())
-  //     .then(responseJson => {
-  //       // return responseJson
-  //       printLog('responseJson-->', JSON.stringify(responseJson));
-  //       ShowMessage(responseJson?.message);
-  //       if (responseJson?.status) {
-  //         RootNavigation?.goBack();
-  //       }
-  //       setLoading(false);
-  //     })
-  //     .catch(error => {
-  //       ShowMessage(JSON.stringify(error));
-  //       printLog('responseJson Error', JSON.stringify(error));
-  //       setLoading(false);
-  //     });
-  // };
-
-  //
-
-  const updateBusiness = async () => {
-    setLoading(true);
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-    printLog(JSON.stringify(selectedCategory?.id));
-    var payload = new FormData();
-    if (startDate != null) {
-      payload.append('business_start_date', startDate);
-    }
-    if (endDate != null) {
-      payload.append('business_end_date', endDate);
-    }
-
-    payload.append('business_id', bussinessItem?.id);
-    payload.append('category_id', catId);
-    payload.append('business_type', business_type);
-    payload.append('firm', firm);
-    {
-      owner1 != null && payload.append('owner_name_1', owner1);
-    }
-    {
-      owner2 != null && payload.append('owner_name_2', owner2);
-    }
-    {
-      owner3 != null && payload.append('owner_name_3', owner3);
-    }
-    {
-      owner4 != null && payload.append('owner_name_4', owner4);
-    }
-    payload.append('address', address);
-    payload.append('products', product);
-    payload.append('country_code', code);
-    payload.append('business_phone', mobile);
-    payload.append('business_email', email);
-    payload.append('website', website);
-    payload.append('city', selectedCity);
-    payload.append('from_time', startTime);
-    payload.append('to_time', endTime);
-
-    payload.append('business_hourse', JSON.stringify(week));
-
-    if (visiting?.uri != undefined)
-      payload.append('visting_card_photo', {
-        uri:
-          Platform.OS === 'android'
-            ? visiting?.uri
-            : visiting?.uri.replace('file://', ''),
-        name: visiting?.fileName,
-        type: visiting?.type,
-      });
-    printLog('PARAMS', JSON.stringify(payload));
-
-    fetch(Api.POST_UPDATE_BUSINESS, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization:
-          'Bearer ' +
-          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-      },
-      body: payload,
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        // return responseJson
-        printLog('responseJson', JSON.stringify(responseJson));
-        ShowMessage(responseJson?.message);
-        if (responseJson?.status) {
-          RootNavigation?.goBack();
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        ShowMessage(JSON.stringify(error));
-        printLog('responseJson Error', JSON.stringify(error));
-        setLoading(false);
-      });
-  };
-
-  const updateImage = async (src, id) => {
-    let token = await AsyncStorage.getItem(AsyncStorageConst.allDetails);
-    var payload = new FormData();
-    if (src != undefined) {
-      payload.append('id', id);
-      payload.append('image', {
-        uri:
-          Platform.OS === 'android'
-            ? src?.uri
-            : src?.uri.replace('file://', ''),
-        name: src?.fileName,
-        type: src?.type,
-      });
-    }
-    fetch(Api.UPDATE_BUSINESS_IMAGE, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization:
-          'Bearer ' +
-          (token?.token == undefined ? JSON.parse(token)?.token : token?.token),
-      },
-      body: payload,
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        // return responseJson
-        printLog('UpdateImage', JSON.stringify(responseJson));
-        ShowMessage('Image Update Successfully');
-        // if (responseJson?.status) {
-        //   RootNavigation?.goBack();
-        // }
-        setLoading(false);
-      })
-      .catch(error => {
-        ShowMessage(error);
-        printLog('Update Error', JSON.stringify(error));
-        setLoading(false);
-      });
-  };
-
   const UPDATEIMAGE = async (src, id, first) => {
     if (imageLoading == null) {
       setImageLoading(first);
@@ -700,7 +390,7 @@ const AddBusinessScreen = props => {
         });
     }
   };
-  
+
   const getMyImage = first => {
     ImagePicker.launchImageLibrary(
       {
@@ -901,7 +591,7 @@ const AddBusinessScreen = props => {
                     alignItems: 'center',
                     marginLeft: 15,
                   }}
-                  onPress={() => setBusiness_type('partnership')}>
+                  onPress={() => setBusiness_type('Partnership')}>
                   <Text
                     style={{
                       fontFamily: AppFonts.semiBold,
@@ -924,7 +614,7 @@ const AddBusinessScreen = props => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    {business_type == 'partnership' && (
+                    {business_type == 'Partnership' && (
                       <View
                         style={{
                           height: 9,
@@ -954,11 +644,11 @@ const AddBusinessScreen = props => {
                 onChangeText={setOwner3}
                 defaultText={owner3}
               />
-              <HorizontalTextInput
+              {/* <HorizontalTextInput
                 label={`Owner Name 4`}
                 onChangeText={setOwner4}
                 defaultText={owner4}
-              />
+              /> */}
 
               <HorizontalSelection
                 label={`Village`}
@@ -1112,8 +802,8 @@ const AddBusinessScreen = props => {
                 countryCode={code}
                 phone={mobile}
                 defaultText={mobile}
-                setCountryCode={item => {
-                  setCode('+' + item?.callingCode);
+                onItemSelect={item => {
+                  setCode('+' + item?.country);
                 }}
                 onChangeText={i => setMobile(i)}
               />
@@ -1139,7 +829,7 @@ const AddBusinessScreen = props => {
                 }
               /> */}
 
-              <DateSelection
+              {/* <DateSelection
                 text={'Bussiness Start Date:'}
                 title={'Select Bussiness Start Date'}
                 value={startDate == null ? new Date() : new Date(startDate)}
@@ -1150,9 +840,9 @@ const AddBusinessScreen = props => {
                     : startDate
                 }
                 onChangeDob={i => setStartDate(moment(i).format('YYYY-MM-DD'))}
-              />
+              /> */}
 
-              <DateSelection
+              {/* <DateSelection
                 text={'Bussiness End Date:'}
                 title={'Select Bussiness End Date'}
                 value={endDate == null ? new Date() : new Date(endDate)}
@@ -1161,7 +851,8 @@ const AddBusinessScreen = props => {
                   endDate == '' || endDate == null ? 'YYYY-MM-DD' : endDate
                 }
                 onChangeDob={i => setEndDate(moment(i).format('YYYY-MM-DD'))}
-              />
+              /> */}
+
               {/* <HorizontalTextInput
               label={`Bussiness Start Date`}
               onChangeText={setWebsite}
@@ -1473,54 +1164,42 @@ const AddBusinessScreen = props => {
               )}
             </View> */}
 
-              {loading ? (
-                <LoaderView
-                  color={AppColors.BackgroundSecondColor}
-                  style={{width: '50%', height: 35, marginVertical: 20}}
-                />
-              ) : (
-                // <></>
-                <AppButton
-                  width={'50%'}
-                  text={bussinessItem != undefined ? 'Update' : `Submit`}
-                  buttonStyle={{
-                    marginVertical: 20,
-                    alignSelf: 'center',
-                    borderRadius: 20,
-                    width: '50%',
-                    height: 40,
-                  }}
-                  isLoading={loading}
-                  buttonPress={() => {
-                    if (selectedCategory == null) {
-                      showMessage('Please select category');
-                    } else if (firm == undefined || firm?.trim() == '') {
-                      ShowMessage('Please enter firm name');
-                    } else if (owner1 == undefined || owner1?.trim() == '') {
-                      ShowMessage('Please enter owner name');
-                    } else if (address == undefined || address?.trim() == '') {
-                      ShowMessage('Please enter address');
-                    } else if (selectedCity == null) {
-                      ShowMessage('Please select villiage');
-                    } else if (startTime == null) {
-                      ShowMessage('Please select Start Time');
-                    } else if (endTime == null) {
-                      ShowMessage('Please select End Time');
-                    } else if (product == '') {
-                      ShowMessage('Please Enter Description');
-                    } else if (mobile == '') {
-                      ShowMessage('Please enter mobile number');
-                    } else if (email == '') {
-                      ShowMessage('Please enter Email');
-                    } else if (startDate == null) {
-                      ShowMessage('Please select business start date');
-                    } else {
-                      AddBusiness();
-                      // : updateBusiness();
-                    }
-                  }}
-                />
-              )}
+              <AppButton
+                width={'50%'}
+                color={'#fff'}
+                text={bussinessItem != undefined ? 'Update' : `Submit`}
+                buttonStyle={{
+                  marginVertical: 20,
+                  alignSelf: 'center',
+                  borderRadius: 20,
+                  width: '50%',
+                  height: 40,
+                }}
+                loading={loading}
+                buttonPress={() => {
+                  if (selectedCategory == null) {
+                    showMessage('Please select category');
+                  } else if (firm == undefined || firm?.trim() == '') {
+                    ShowMessage('Please enter firm name');
+                  } else if (owner1 == undefined || owner1?.trim() == '') {
+                    ShowMessage('Please enter owner name');
+                  } else if (address == undefined || address?.trim() == '') {
+                    ShowMessage('Please enter address');
+                  } else if (selectedCity == null) {
+                    ShowMessage('Please select villiage');
+                  } else if (startTime == null) {
+                    ShowMessage('Please select Start Time');
+                  } else if (endTime == null) {
+                    ShowMessage('Please select End Time');
+                  } else if (mobile == '') {
+                    ShowMessage('Please enter mobile number');
+                  } else {
+                    AddBusiness();
+                    // : updateBusiness();
+                  }
+                }}
+              />
+
               {/* </View> */}
             </View>
             <BorderView

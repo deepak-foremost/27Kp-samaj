@@ -304,10 +304,10 @@ const NewsScreen = props => {
               <Text
                 style={{
                   fontFamily: AppFonts.bold,
-                  color: AppColors.black,
+                  color:AppColors.LightText,
                   fontSize: 15,
                 }}>
-                No List Found
+                No Data Found
               </Text>
             </View>
           ) : (

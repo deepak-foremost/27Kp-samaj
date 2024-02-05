@@ -662,25 +662,38 @@ const SearchScreen = props => {
                 if (filteredParams == {}) {
                   filteredParams = '';
                 }
-
-                setResult(null);
-                getSearch(
-                  filteredParams,
-                  response => {
-                    if (response?.status) {
-                      setNoData(false);
-                      setTotalPage(response?.last_page);
-                      printLog('search', JSON.stringify(response));
-                      setResult(response?.data);
-                    } else {
+                console.log('filterParams', filteredParams);
+                if (
+                  city == '' &&
+                  status == '' &&
+                  gender == '' &&
+                  from == '' &&
+                  to == '' &&
+                  study == '' &&
+                  bloodGroup == '' &&
+                  country == ''
+                ) {
+                  ShowMessage('Please Select Filter');
+                } else {
+                  setResult(null);
+                  getSearch(
+                    filteredParams,
+                    response => {
+                      if (response?.status) {
+                        setNoData(false);
+                        setTotalPage(response?.last_page);
+                        printLog('search', JSON.stringify(response));
+                        setResult(response?.data);
+                      } else {
+                        setResult([]);
+                      }
+                    },
+                    error => {
+                      // console.log('searchFail', error);
                       setResult([]);
-                    }
-                  },
-                  error => {
-                    // console.log('searchFail', error);
-                    setResult([]);
-                  },
-                );
+                    },
+                  );
+                }
               }}
             />
           </View>
@@ -768,7 +781,7 @@ const SearchScreen = props => {
                           }}>
                           <Text
                             style={{
-                              width: 15,
+                              flex: 0.4,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -777,7 +790,7 @@ const SearchScreen = props => {
                           </Text>
                           <Text
                             style={{
-                              flex: 1.4,
+                              flex: 3.2,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -786,7 +799,7 @@ const SearchScreen = props => {
                           </Text>
                           <Text
                             style={{
-                              flex: 1,
+                              flex: 2,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -795,7 +808,7 @@ const SearchScreen = props => {
                           </Text>
                           <Text
                             style={{
-                              flex: 1.3,
+                              flex: 2.5,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -804,7 +817,7 @@ const SearchScreen = props => {
                           </Text>
                           <Text
                             style={{
-                              flex: 0.8,
+                              flex: 0.7,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -877,7 +890,7 @@ const AboutCell = props => {
         }}>
         <Text
           style={{
-            width: 15,
+            flex: 0.4,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
@@ -886,11 +899,12 @@ const AboutCell = props => {
         </Text>
         <Text
           style={{
-            flex: 1.4,
+            flex: 3.2,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
-            marginLeft: 5,
+            paddingRight: 5,
+            // marginLeft: 5,
           }}>
           {props?.item?.name}
         </Text>
@@ -906,11 +920,11 @@ const AboutCell = props => {
         /> */}
         <Text
           style={{
-            flex: 1,
+            flex: 2,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
-            marginLeft: 10,
+            // marginLeft: 10,
           }}>
           {props?.item?.city}
         </Text>
@@ -941,7 +955,7 @@ const AboutCell = props => {
           /> */}
         {/* </TouchableOpacity> */}
         <View
-          style={{flexDirection: 'row', alignItems: 'center'}}
+          style={{alignItems: 'center', flex: 2.5, paddingLeft: 3}}
           activeOpacity={1}>
           <Text
             style={{
@@ -954,42 +968,44 @@ const AboutCell = props => {
               ? ''
               : props?.item?.country_code + props?.item?.phone}
           </Text>
-          <TouchableOpacity
-            activeOpacity={1}
-            style={{paddingHorizontal: 3}}
-            onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
-            <Image
-              style={{
-                marginHorizontal: 5,
-                marginBottom: 2.5,
-                backgroundColor: '#F2F2F2',
-              }}
-              source={AppImages.CIRCLE_CALL_ICON}
-            />
-          </TouchableOpacity>
-        </View>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{paddingHorizontal: 3}}
+              onPress={() => Linking.openURL(`tel:${props?.item?.phone}`)}>
+              <Image
+                style={{
+                  marginHorizontal: 5,
+                  marginBottom: 2.5,
+                  backgroundColor: '#F2F2F2',
+                }}
+                source={AppImages.CIRCLE_CALL_ICON}
+              />
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{
-            paddingBottom: 2.5,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onPress={() =>
-            Linking.openURL(
-              `whatsapp://send?text=hello&phone=${props?.item?.phone}`,
-            )
-          }>
-          <Image
-            style={{height: 10, width: 10}}
-            source={require('../../../assets/images/whatsapp_icon.png')}
-          />
-        </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{
+                paddingBottom: 2.5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={() =>
+                Linking.openURL(
+                  `whatsapp://send?text=hello&phone=${props?.item?.phone}`,
+                )
+              }>
+              <Image
+                style={{height: 10, width: 10}}
+                source={require('../../../assets/images/whatsapp_icon.png')}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <View
           style={{
-            flex: 0.8,
+            flex: 0.7,
             justifyContent: 'center',
             alignItems: 'center',
             paddingBottom: 2.5,

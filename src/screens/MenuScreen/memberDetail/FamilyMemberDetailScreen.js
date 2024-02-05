@@ -258,7 +258,7 @@ const FamilyMemberDetailScreen = props => {
                   color: AppColors.LightText,
                   fontSize: 14,
                 }}>
-                No List Found
+                No Data Found
               </Text>
             </View>
           ) : (

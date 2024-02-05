@@ -33,12 +33,20 @@ const PaymentScreen = ({route}) => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
   const headerText = route?.params?.text;
-  const mobileNumber = route?.params?.value.split('-')[0];
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [village, setVillage] = useState('');
+  const item = route?.params?.item;
+
+  const [sabhy_number, setSabhayNUmber] = useState(
+    item?.sabhy_number == undefined
+      ? item?.jeevan_sahay_nubmer
+      : item?.sabhy_number,
+  );
+  const [name, setName] = useState(item?.name);
+  const [phone, setPhone] = useState(item?.phone);
+  const [village, setVillage] = useState();
   const [cities, setCities] = useState([]);
-  const [city, setCity] = useState('');
+  const [city, setCity] = useState(
+    item?.village == undefined ? item?.city : item?.village,
+  );
   const [cityId, setCityId] = useState('');
   const [method, setMethod] = useState('card');
   const [cardNo, setCardNo] = useState('');
@@ -49,7 +57,7 @@ const PaymentScreen = ({route}) => {
   const [upi, setUpi] = useState('');
   const [check, setCheck] = useState(false);
   const [value, setValue] = useState('');
-  const [code, setCode] = useState('+91');
+  const [code, setCode] = useState(item?.country_code);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState('');
 
@@ -145,10 +153,11 @@ const PaymentScreen = ({route}) => {
               marginHorizontal: 15,
               marginVertical: 15,
             }}>
-            {headerText + ' > Payment Method'}
+            {'જીવન સહાય સભાસદ સભ્ય > Payment Method'}
           </Text>
 
           <KeyboardAwareScrollView
+          keyboardShouldPersistTaps='handled'
             contentContainerStyle={{
               // width: '100%',
               // alignSelf: 'center',
@@ -191,13 +200,14 @@ const PaymentScreen = ({route}) => {
 
               <MyMobileNumber
                 // placeholder={'vjbrb'}
+                defaultText={phone}
                 contact={true}
                 type={'numeric'}
                 label={`Mobile No`}
                 countryCode={code}
                 phone={phone}
-                setCountryCode={item => {
-                  setCode('+' + item?.callingCode);
+                onItemSelect={item => {
+                  setCode('+' + item?.country);
                 }}
                 onChangeText={i => setPhone(i)}
               />
@@ -220,8 +230,8 @@ const PaymentScreen = ({route}) => {
               />
               <HorizontalTextInput
                 label={`જીવન સહાય સભાસદ સભ્ય નંબર.`}
-                defaultText={mobileNumber}
-                onChangeText={setName}
+                defaultText={sabhy_number}
+                onChangeText={setSabhayNUmber}
               />
 
               <View

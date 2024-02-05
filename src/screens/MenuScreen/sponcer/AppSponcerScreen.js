@@ -300,7 +300,7 @@ const AppSponcerScreen = props => {
                   fontFamily: AppFonts.semiBold,
                   color: AppColors.LightText,
                 }}>
-                No Members Available
+                No Data Found
               </Text>
             </View>
           ) : (
@@ -494,6 +494,7 @@ export const MemberCell = props => {
           <></>
         )} */}
       </View>
+
       <View
         style={{
           // width: '7%',

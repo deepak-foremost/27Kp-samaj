@@ -33,6 +33,7 @@ import {MemberDetailCell} from '../MenuScreen/memberDetail/FamilyDetailScreen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {deleteMyMember, getMyFamilies} from '../../networking/CallApi';
 import LoaderView from '../../utils/LoaderView';
+import ZoomImage from '../../components/ZoomImage';
 
 const list = [
   {
@@ -108,9 +109,26 @@ const FamilyMembersScreen = props => {
   const [deleteItem, setDeleteItem] = useState(null);
   const [modelOpen, setModelOpen] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [images, setImages] = useState([]);
+  // const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [imageList, setImageLIst] = useState(null);
+  const [count, setCount] = useState('');
+
+  const images = [
+    {
+      url:
+        count == 0 && imageList != null
+          ? imageList[0]?.image
+          : count == 1 && imageList != null
+          ? imageList[1]?.image
+          : count == 2 && imageList != null && imageList[2]?.image,
+      // url:number==1 && imageList[1]?.image,
+      // url:number==2 && imageList[2]?.image
+      // props: {source: items != null && items?.image},
+    },
+  ];
 
   // useEffect(() => {
   //   setFamilies(list);
@@ -201,6 +219,11 @@ const FamilyMembersScreen = props => {
         }
       /> */}
       <View style={{flex: 1, backgroundColor: AppColors.fadeBackground}}>
+        <ZoomImage
+          visible={open}
+          images={images}
+          dismiss={() => setOpen(false)}
+        />
         <ScreenToolbar
           text={'EDIT FAMILY MEMBER'}
           secondText={'+ADD'}
@@ -236,7 +259,7 @@ const FamilyMembersScreen = props => {
                   fontSize: 15,
                   color: AppColors?.LightText,
                 }}>
-                No List Found
+                No Data Found
               </Text>
             </View>
           ) : (
@@ -274,6 +297,11 @@ const FamilyMembersScreen = props => {
                         AppScreens.ADD_MEMBER_SCREEN,
                         {item: item},
                       );
+                    }}
+                    imgPress={i => {
+                      setOpen(true);
+                      setCount(i);
+                      setImageLIst(item?.images);
                     }}
                     // onClick={type => {
                     //   if (type == 'edit' || type == 'view') {
@@ -433,7 +461,11 @@ const FamilyMermberCell = props => {
         </TouchableOpacity>
       </View>
       {props?.item?.is_selected ? (
-        <MemberDetailCell item={props?.item} notShow={true} />
+        <MemberDetailCell
+          item={props?.item}
+          notShow={true}
+          imgPress={props?.imgPress}
+        />
       ) : null}
     </TouchableOpacity>
   );

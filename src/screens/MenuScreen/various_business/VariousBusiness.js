@@ -284,7 +284,7 @@ const VariousBusiness = props => {
                   alignSelf: 'flex-start',
                   marginLeft: 10,
                 }}>
-                Please select વિવિધ શહેર કારોબારી
+                Please Select વિવિધ શહેર કારોબારી
               </Text>
 
               <View
@@ -364,7 +364,7 @@ const VariousBusiness = props => {
                           marginTop: 50,
                           fontFamily: AppFonts.semiBold,
                         }}>
-                        No data found
+                       No Data Found
                       </Text>
                     ) : (
                       <View

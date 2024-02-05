@@ -140,13 +140,15 @@ const ContactUsScreen = props => {
                   <ListMember />
                   <ListMember />
                   <ListMember />
+                  <ListMember />
+                  <ListMember />
                 </View>
               ) : (
                 <FlatList
                   scrollEnabled={false}
                   contentContainerStyle={{
                     alignItems: 'center',
-                    marginTop: 10,
+                    marginTop: 5,
                     width: '100%',
                   }}
                   showsVerticalScrollIndicator={false}
@@ -201,7 +203,7 @@ const ContactUsScreen = props => {
                   height: 1,
                   backgroundColor: AppColors.line_color,
                   width: '95%',
-                  marginTop: 20,
+                  marginTop: 15,
                 }}
               />
               {!isLoading ? (
@@ -231,7 +233,7 @@ const ContactUsScreen = props => {
                   </Text>
                 </View>
               ) : (
-                <ListMember styles={{height:45}}/>
+                <ListMember styles={{height: 45}} />
               )}
 
               <Image
@@ -242,7 +244,7 @@ const ContactUsScreen = props => {
                   marginTop: 10,
                 }}
               />
-              {!isLoading? (
+              {!isLoading ? (
                 <TouchableOpacity
                   activeOpacity={1}
                   style={{
@@ -253,7 +255,7 @@ const ContactUsScreen = props => {
                     // alignItems: 'flex-end',
                     paddingVertical: 10,
                     marginTop: 15,
-                    marginBottom: 30,
+                    marginBottom: 15,
                     // flexDirection: 'row',
                   }}>
                   <Text
@@ -325,7 +327,7 @@ const ContactUsScreen = props => {
                   </View>
                 </TouchableOpacity>
               ) : (
-                <ListMember styles={{height:50}}/>
+                <ListMember styles={{height: 50}} />
               )}
 
               {/* <AppButton

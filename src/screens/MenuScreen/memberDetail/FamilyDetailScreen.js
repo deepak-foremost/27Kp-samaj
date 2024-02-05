@@ -129,18 +129,26 @@ const FamilyDetailScreen = props => {
   const [open, setOpen] = useState(false);
   const [imageList, setImageLIst] = useState(null);
   const [pdfLoad, setPdfLoad] = useState(false);
+  const [number, setNumber] = useState('');
   // const [images, setImages] = useState();
 
-  // const images = [
-  //   {
-  //     url: items != null && items?.image,
-  //     props: {source: items != null && items?.image},
-  //   },
-  // ];
+  const images = [
+    {
+      url:
+        number == 0 && imageList != null
+          ? imageList[0]?.image
+          : number == 1 && imageList != null
+          ? imageList[1]?.image
+          : number == 2 && imageList != null && imageList[2]?.image,
+      // url:number==1 && imageList[1]?.image,
+      // url:number==2 && imageList[2]?.image
+      // props: {source: items != null && items?.image},
+    },
+  ];
 
-  const images = imageList?.map(item => ({
-    url: item?.image,
-  }));
+  // const images = imageList?.map((item, index) => ({
+  //   url: item?.image,
+  // }));
 
   // useEffect(() => {
   //   setMembers(list);
@@ -284,27 +292,17 @@ const FamilyDetailScreen = props => {
   </ul>
   </div>
   <div class="profile_textdiv">
-		<p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  ${
-      userData?.family_main_member_with_relation
-    } </p>	
+		<p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  ${userData?.family_main_member_with_relation} </p>	
 		<p><label> લગ્ન સ્થિતિ:</label>  ${userData?.marital_status} </p>	
     <p><label> અભ્યાસ:</label>  ${userData?.study} </p>
     <p><label> વ્યવસાય:</label>  ${userData?.business} </p>
     <p><label> વ્યવસાયનું સરનામું:</label>  ${userData?.business_address} </p>
-    <p><label> ફોરેન Country નામ:</label>  ${
-      userData?.foreign_country_name
-    } </p>
-    <p><label>ફોરેન Number</label>${
-      userData?.foriegn_country_code + userData?.foreign_number
-    } </p>
-    <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${
-      userData?.current_address
-    } </p>
+    <p><label> ફોરેન Country નામ:</label>  ${userData?.foreign_country_name} </p>
+    
+    <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${userData?.current_address} </p>
     <p><label> મોબાઈલ નંબર:</label>  ${userData?.phone} </p>
     <p><label> E-Mail ID:</label>  ${userData?.email} </p>
-    <p><label> જીવન સહાય સભાસદ નં:</label>  ${
-      userData?.jeevan_sahay_nubmer
-    } </p>
+    <p><label> જીવન સહાય સભાસદ નં:</label>  ${userData?.jeevan_sahay_nubmer} </p>
     <p><label> ભુમિ સભાસદ નં:</label>  ${userData?.boomi_nubmer} </p>
 	</div>
 </div>
@@ -530,10 +528,10 @@ const FamilyDetailScreen = props => {
               <Text
                 style={{
                   fontFamily: AppFonts.bold,
-                  color: AppColors.black,
+                  color: AppColors.LightText,
                   fontSize: 15,
                 }}>
-                No List Found
+                No Data Found
               </Text>
             </View>
           ) : (
@@ -551,8 +549,9 @@ const FamilyDetailScreen = props => {
                         setPdfLoad(true);
                         handleGeneratePDF(item);
                       }}
-                      imgPress={() => {
+                      imgPress={i => {
                         setOpen(true);
+                        setNumber(i);
                         setImageLIst(item?.images);
                       }}
                       index={index}
@@ -773,10 +772,10 @@ export const MemberDetailCell = props => {
           <TouchableOpacity
             activeOpacity={1}
             style={{width: '31%', height: 80, borderRadius: 10}}
-            onPress={
+            onPress={() =>
               props?.item?.images[0]?.image == undefined
                 ? null
-                : props?.imgPress
+                : props?.imgPress(0)
             }>
             <Image
               source={
@@ -802,10 +801,10 @@ export const MemberDetailCell = props => {
               borderRadius: 10,
               marginHorizontal: 15,
             }}
-            onPress={
+            onPress={() =>
               props?.item?.images[1]?.image == undefined
                 ? null
-                : props?.imgPress
+                : props?.imgPress(1)
             }>
             <Image
               source={
@@ -826,10 +825,10 @@ export const MemberDetailCell = props => {
           <TouchableOpacity
             activeOpacity={1}
             style={{width: '31%', height: 80, borderRadius: 10}}
-            onPress={
+            onPress={() =>
               props?.item?.images[2]?.image == undefined
                 ? null
-                : props?.imgPress
+                : props?.imgPress(2)
             }>
             <Image
               source={
@@ -954,14 +953,14 @@ export const MemberDetailCell = props => {
             detailText={props?.item?.foreign_country_name}
           />
         )}
-        {props?.item?.foreign_number != undefined && (
+        {/* {props?.item?.foreign_number != undefined && (
           <MemberDetail
             title={'ફોરેન Number :'}
             detailText={
               props?.item?.foriegn_country_code + props?.item?.foreign_number
             }
           />
-        )}
+        )} */}
         <MemberDetail
           title={'હાલ ના રહેઠાણ નુ સરનામું :'}
           detailText={props?.item?.current_address}
@@ -1021,7 +1020,7 @@ export const MemberDetailCell = props => {
         </View>
 
         <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
-        {props?.item?.jeevan_sahay_nubmer != undefined ? (
+        {props?.item?.jeevan_sahay_nubmer != '' ? (
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <MemberDetail
               styles={{flex: 0}}
@@ -1034,6 +1033,7 @@ export const MemberDetailCell = props => {
               onPress={() =>
                 RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
                   status: 'main',
+                  item: props?.item,
                   number: props?.item?.jeevan_sahay_nubmer,
                   name: props?.item?.name,
                 })
@@ -1061,7 +1061,7 @@ export const MemberDetailCell = props => {
             </TouchableOpacity>
           </View>
         ) : null}
-        {props?.item?.boomi_nubmer != undefined ? (
+        {props?.item?.boomi_nubmer != '' ? (
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <MemberDetail
               title={'ભુમિ સભાસદ નં:'}

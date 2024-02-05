@@ -141,6 +141,7 @@ const FeedBackScreen = props => {
 
         <KeyboardAwareScrollView
           enableOnAndroid={true}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={{flexGrow: 1, paddingBottom: -250}}
           showsVerticalScrollIndicator={false}>
           {/* <HorizontalSelection
@@ -203,8 +204,8 @@ const FeedBackScreen = props => {
                 countryCode={country_code}
                 phone={phone}
                 type={'numeric'}
-                setCountryCode={item => {
-                  setCountryCode('+' + item?.callingCode);
+                onItemSelect={item => {
+                  setCountryCode('+' + item?.country);
                 }}
                 onChangeText={i => setPhone(i)}
               />

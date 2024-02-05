@@ -39,6 +39,7 @@ const BusinessDetaiLScreen = props => {
   const DoNotShow = props?.route?.params?.show;
   const [days, setDayes] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isVisible, setVisible] = useState(false);
 
   // const generatePDF = async userData => {
   //   const htmlContent = `
@@ -247,13 +248,13 @@ const BusinessDetaiLScreen = props => {
 		<h3>${item?.firm}</h3>
 		<p><label> Category</label>  ${item?.category_name}</p>	
 		<p><label> Firm</label>  ${item?.firm}</p>
-		<p><label> Business Type</label>  ${item?.business_type}</p>
+		<p><label> Business Type</label>  ${item?.business_type + ' Business'}</p>
 	</div>
 	<div class="profile_textdiv">
 		<p><label> Owner Name 1</label>  ${item?.owner_name_1} </p>	
 		<p><label> Owner Name 2</label>  ${item?.owner_name_2} </p>	
 		<p><label> Owner Name 3</label>  ${item?.owner_name_3} </p>		
-		<p><label> Owner Name 4</label>  ${item?.owner_name_4} </p>		
+	
 		<p><label> Village</label>  ${item?.city}</p>
 	</div>
 	<div class="address_textbox">
@@ -289,10 +290,6 @@ const BusinessDetaiLScreen = props => {
       item?.business_hours[6]?.status == 1 ? '  ✓ ' : '  ╳ '
     } </li>
 		</ul>		
-	</div>
-	<div class="address_textbox">
-		<p><label> Bussiness Start Date :</label>  ${item?.business_start_date}</p>
-		<p><label> Bussiness End Date :</label>  ${item?.business_end_date}</p>
 	</div>
 	<div class="address_textbox" style="border-bottom: 0px;">
 		<p><label> Website :</label>  ${item?.website}</p>		
@@ -353,6 +350,19 @@ const BusinessDetaiLScreen = props => {
 
   //   printLog('ITEM_OD_BUSIESS', JSON.stringify(item));
   //   var week = JSON.parse(item?.business_hourse);
+  // const images = item?.images?.map((item, index) => ({
+  //   url: item?.visting_card_photo,
+  // }));
+  const [one, setOne] = useState(null);
+  const images = [
+    {
+      url:
+        one == 1
+          ? item?.images[0]?.visting_card_photo
+          : item?.images[1]?.visting_card_photo,
+    },
+  ];
+  // const [images, setImages] = useState([{url: images[0]?.visting_card_photo}]);
   return (
     <View
       style={[
@@ -368,6 +378,11 @@ const BusinessDetaiLScreen = props => {
         leadIconClick={() => RootNavigation.goBack()}
       /> */}
       <View style={{backgroundColor: AppColors.fadeBackground, flex: 1}}>
+        <ZoomImage
+          visible={open}
+          images={images}
+          dismiss={() => setOpen(false)}
+        />
         <ScreenToolbar text={item?.firm.toUpperCase()} />
         {/* <ZoomImage visible={open} items={item} dismiss={() => setOpen(false)} /> */}
         <View style={{flex: 0.9}}>
@@ -417,9 +432,11 @@ const BusinessDetaiLScreen = props => {
                 <TouchableOpacity
                   style={{width: '47%', marginRight: 5}}
                   activeOpacity={1}
-                  onPress={() =>
-                    item?.visting_card_photo != null && setOpen(true)
-                  }>
+                  onPress={() => {
+                    setOne(1);
+                    item?.images[0]?.visting_card_photo != null &&
+                      setOpen(true);
+                  }}>
                   <Image
                     style={{
                       alignSelf: 'center',
@@ -440,7 +457,12 @@ const BusinessDetaiLScreen = props => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{width: '47%', marginLeft: 10}}
-                  activeOpacity={1}>
+                  activeOpacity={1}
+                  onPress={() => {
+                    setOne(2);
+                    item?.images[1]?.visting_card_photo != null &&
+                      setOpen(true);
+                  }}>
                   <Image
                     style={{
                       alignSelf: 'center',
@@ -484,37 +506,37 @@ const BusinessDetaiLScreen = props => {
                 />
                 <SimpleDoubleLine
                   title={'Business Type'}
-                  value={item?.business_type}
+                  value={item?.business_type + ' Business'}
                   containerStyle={{marginTop: 10, marginBottom: 10}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 1  :'}
                   value={
-                    item?.owner_name_1 == null ? 'N/A' : item?.owner_name_1
+                    item?.owner_name_1 == null ? 'Null' : item?.owner_name_1
                   }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 2 :'}
                   value={
-                    item?.owner_name_2 == null ? 'N/A' : item?.owner_name_2
+                    item?.owner_name_2 == null ? 'Null' : item?.owner_name_2
                   }
                   containerStyle={{}}
                 />
                 <SimpleDoubleLine
                   title={'Owner Name 3 :'}
                   value={
-                    item?.owner_name_3 == null ? 'N/A' : item?.owner_name_3
+                    item?.owner_name_3 == null ? 'Null' : item?.owner_name_3
                   }
                   containerStyle={{}}
                 />
-                <SimpleDoubleLine
+                {/* <SimpleDoubleLine
                   title={'Owner Name 4 :'}
                   value={
                     item?.owner_name_4 == null ? 'N/A' : item?.owner_name_4
                   }
                   containerStyle={{}}
-                />
+                /> */}
                 <SimpleDoubleLine
                   title={'Village : '}
                   value={item?.city}
@@ -621,7 +643,7 @@ const BusinessDetaiLScreen = props => {
                   />
                 </View>
 
-                <DeviderLine Style={{marginTop: 15, marginBottom: 15}} />
+                {/* <DeviderLine Style={{marginTop: 15, marginBottom: 15}} />
 
                 <SimpleDoubleLine
                   title={'Bussiness Start Date:'}
@@ -637,17 +659,19 @@ const BusinessDetaiLScreen = props => {
                       : moment(item?.business_end_date).format('DD/MM/YYYY')
                   }
                   containerStyle={{marginTop: 10}}
-                />
+                /> */}
 
                 <DeviderLine Style={{marginTop: 15, marginBottom: 15}} />
 
                 <DoubleLineButton
                   title={'Website :'}
-                  value={item?.business_end_date == undefined ?'N/A':
-                    item?.website}
+                  value={item?.website == undefined ? 'Null' : item?.website}
                   containerStyle={{marginTop: 10}}
                   // textStyles={{color: '#0000EE'}}
-                  press={() => Linking.openURL(`https://${item?.website}`)}
+                  // press={() =>
+                  //   item?.website != undefined &&
+                  //   Linking.openURL(`https://${item?.website}`)
+                  // }
                 />
                 <DoubleLineButton
                   title={'Mobile No : '}

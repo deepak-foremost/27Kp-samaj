@@ -318,7 +318,7 @@ const AboutUsScreen = props => {
                       marginTop: 50,
                       fontFamily: AppFonts.semiBold,
                     }}>
-                    No Data Found
+                   No Data Found
                   </Text>
                 ) : (
                   <FlatList

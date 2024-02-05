@@ -104,65 +104,120 @@ export const HorizontalMenuComponent = props => {
   );
 };
 
+// export const GridListComponent = props => {
+//   return (
+//     <View
+//       style={{
+//         width: '33%',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//       }}>
+//       <TouchableOpacity
+//         activeOpacity={AppConstValue.ButtonOpacity}
+//         onPress={props?.onSelectItem}
+//         style={{
+//           width: '93%',
+//           height: 100,
+//           justifyContent: 'center',
+//           alignItems: 'center',
+//           marginBottom: 10,
+//           borderRadius: 10,
+//           backgroundColor: 'black',
+//           ...Platform.select({
+//             ios: {
+//               shadowColor: '#D5D5D5',
+//               shadowOffset: {width: 0, height: -1},
+//               shadowOpacity: 0.9,
+//               shadowRadius: 3,
+//             },
+//             android: {
+//               elevation: 3,
+//             },
+//           }),
+//         }}>
+//         <Image
+//           source={{uri: props?.item?.icon}}
+//           // source={require('../assets/images/jwellry_image.png')}
+//           style={{
+//             height: '100%',
+//             width: '100%',
+//             resizeMode: 'cover',
+//             borderRadius: 10,
+//             opacity: 0.8,
+//             // backgroundColor:'#F2F2F2'
+//           }}
+//         />
+
+//         <Text
+//           style={{
+//             fontFamily: AppFonts.bold,
+//             fontSize: 9,
+//             marginBottom: 8,
+//             marginHorizontal: 14,
+//             color: '#FFF',
+//             position: 'absolute',
+//             bottom: 0,
+//             textAlign: 'center',
+//           }}>
+//           {props?.item?.name}
+//         </Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+
 export const GridListComponent = props => {
   return (
-    <View
+    <TouchableOpacity
+    activeOpacity={1}
       style={{
-        width: '33%',
+        width: '30%',
+        height: 95,
         justifyContent: 'center',
         alignItems: 'center',
-      }}>
-      <TouchableOpacity
-        activeOpacity={AppConstValue.ButtonOpacity}
-        onPress={props?.onSelectItem}
+        marginBottom: 10,
+        borderRadius: 10,
+        marginHorizontal:'1.5%',
+        backgroundColor: '#fff',
+        ...Platform.select({
+          ios: {
+            shadowColor: '#D5D5D5',
+            shadowOffset: {width: 0, height: -1},
+            shadowOpacity: 0.9,
+            shadowRadius: 3,
+          },
+          android: {
+            elevation: 3,
+          },
+        }),
+      }} onPress={props?.onSelectItem}>
+      <Image
+        source={{uri: props?.item?.icon}}
+        // source={require('../assets/images/jwellry_image.png')}
         style={{
-          width: '93%',
-          height: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: 10,
+          height: '60%',
+          width: '60%',
+          resizeMode: 'cover',
           borderRadius: 10,
-          backgroundColor: 'black',
-          ...Platform.select({
-            ios: {
-              shadowColor: '#D5D5D5',
-              shadowOffset: {width: 0, height: -1},
-              shadowOpacity: 0.9,
-              shadowRadius: 3,
-            },
-            android: {
-              elevation: 3,
-            },
-          }),
+          // opacity: 0.8,
+          // backgroundColor:'#F2F2F2'
+        }}
+      />
+      <Text
+        style={{
+          fontFamily: AppFonts.bold,
+          fontSize: 9,
+          marginBottom: 8,
+          marginHorizontal: 14,
+          color: AppColors.DarkText,
+          // position: 'absolute',
+          // bottom: 0,
+          textAlign: 'center',
+          // marginTop:5
         }}>
-        <Image
-          source={{uri: props?.item?.icon}}
-          // source={require('../assets/images/jwellry_image.png')}
-          style={{
-            height: '100%',
-            width: '100%',
-            resizeMode: 'cover',
-            borderRadius: 10,
-            opacity: 0.8,
-            // backgroundColor:'#F2F2F2'
-          }}
-        />
-
-        <Text
-          style={{
-            fontFamily: AppFonts.bold,
-            fontSize: 9,
-            marginBottom: 8,
-            marginHorizontal: 14,
-            color: '#FFF',
-            position: 'absolute',
-            bottom: 0,
-            textAlign: 'center',
-          }}>
-          {props?.item?.name}
-        </Text>
-      </TouchableOpacity>
-    </View>
+        {props?.item?.name}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
@@ -236,7 +291,8 @@ export const BusinessDirectoryCell = props => {
             title={'Category :'}
             value={props?.item?.category_name}
           />
-          <SimpleDoubleLine title={'Address :'} value={props?.item?.address} />
+          {/* <SimpleDoubleLine title={'Address :'} value={props?.item?.address} /> */}
+          <SimpleDoubleLine title={'Village :'} value={props?.item?.city} />
           <SimpleDoubleLine
             title={'Mobile No :'}
             value={

@@ -128,10 +128,10 @@ const ServiceDetails = ({route}) => {
               <Text
                 style={{
                   fontFamily: AppFonts.semiBold,
-                  fontSize: 15,
-                  color: AppColors?.line_color,
+                  fontSize: 12,
+                  color:AppColors.LightText,
                 }}>
-                No List Found
+                No Data Found
               </Text>
             </View>
           ) : (

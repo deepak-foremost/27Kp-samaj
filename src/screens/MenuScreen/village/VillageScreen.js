@@ -83,10 +83,10 @@ const VillageScreen = props => {
               name: response?.data[i]?.name,
               id: response?.data[i]?.id,
             });
-            // if (i == 0) {
-            //   setValue(response?.data[i]?.name);
-            //   setCityId(response?.data[i]?.id);
-            // }
+            if (i == 0) {
+              setValue(response?.data[i]?.name);
+              setCityId(response?.data[i]?.id);
+            }
           }
           setCities(temp);
         }
@@ -117,21 +117,21 @@ const VillageScreen = props => {
         },
       );
     } else {
-      getVillageMembers(
-        '',
-        response => {
-          printLog('getVillageMembers', JSON.stringify(response?.data));
-          if (response?.status) {
-            setMember(response?.data);
-          } else {
-            setMember([]);
-          }
-        },
-        error => {
-          printLog('getVillageMembers', error);
-          setMember([]);
-        },
-      );
+      // getVillageMembers(
+      //   '',
+      //   response => {
+      //     printLog('getVillageMembers', JSON.stringify(response?.data));
+      //     if (response?.status) {
+      //       setMember(response?.data);
+      //     } else {
+      //       setMember([]);
+      //     }
+      //   },
+      //   error => {
+      //     printLog('getVillageMembers', error);
+      //     setMember([]);
+      //   },
+      // );
     }
   }, [cityId]);
 
@@ -332,11 +332,11 @@ const VillageScreen = props => {
                 <Text
                   style={{
                     fontFamily: AppFonts.bold,
-                    color: AppColors.black,
-                    fontSize: 15,
+                    color: AppColors.LightText,
+                    fontSize: 12,
                     marginTop: 50,
                   }}>
-                  No List Found
+                  No Data Found
                 </Text>
               ) : (
                 <FlatList

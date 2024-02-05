@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   TextInput,
@@ -7,6 +7,9 @@ import {
   Text,
   FlatList,
   Platform,
+  Modal,
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {AppColors} from '../utils/AppColors';
@@ -19,6 +22,12 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import CountryPicker from 'react-native-country-picker-modal';
 import {CustomDatePicker} from './CustomDatePicker';
+import LoaderView, {CircleIndicator} from '../utils/LoaderView';
+import {staticArray} from '../utils/staticArray';
+import {search} from 'react-native-country-picker-modal/lib/CountryService';
+import {ScrollView} from 'react-native-gesture-handler';
+import {JevanMember} from '../screens/MenuScreen/social_service/SocialService';
+import {ListMember} from '../screens/MenuScreen/sponcer/AppSponcerScreen';
 
 export const MySelection = props => {
   const ref = useRef();
@@ -123,6 +132,7 @@ export const MySelection = props => {
           style={{width: '100%'}}
           contentContainerStyle={{paddingHorizontal: 15, paddingTop: 10}}
           data={props?.data == null ? [] : props?.data}
+          onEndReached={props?.endReached}
           renderItem={({item, index}) => {
             // printLog('FlatList', JSON.stringify(item));
             return (
@@ -186,6 +196,7 @@ export const HorizontalDetailInput = props => {
 
 export const HorizontalSelection = props => {
   const ref = useRef();
+
   return (
     <View
       style={{
@@ -382,6 +393,38 @@ export const HorizontalTextInput = props => {
 export const MyMobileNumber = props => {
   const [Visible, setVisible] = useState(false);
   const [country, setCountry] = useState('+91');
+  const [data, setData] = useState(staticArray.countryCodes);
+  const [filteredData, setFilteredData] = useState(staticArray.countryCodes);
+  const [searchText, setSearchText] = useState('');
+  const Search = text => {
+    // setSearchText(text);
+    // Filter the data based on the search text
+    const filtered = data.filter(item =>
+      item.code.toLowerCase().includes(text.toLowerCase()),
+    );
+
+    setFilteredData(filtered);
+  };
+  // useEffect(() => {
+  //   Keyboard.dismiss();
+  // }, [data]);
+  // const Search = txt => {
+  //   let filterTracks = staticArray.countryCodes.filter(item => {
+  //     let text = txt.toLowerCase();
+  //     if (item.code.toLowerCase().match(text)) {
+  //       Data.push(item)
+  //       // return setData({item});
+  //       // return console.log('itemNew', item);
+  //     }
+  //   });
+  // };
+  //   const newData = staticArray.countryCodes.filter(function (item) {
+  //     const itemData = item?.code ? item?.code.toUpperCase() : ''.toUpperCase;
+  //     const textData = text.toUpperCase;
+  //     return itemData.indexOf(textData) > -1;
+  //   });
+  // };
+  const ref = useRef();
   return (
     <View
       style={{
@@ -415,7 +458,8 @@ export const MyMobileNumber = props => {
             marginLeft: 10,
             ...props?.iconStyle,
           }}
-          onPress={() => setVisible(!Visible)}
+          // onPress={() => setVisible(!Visible)}
+          onPress={() => ref?.current?.open()}
           activeOpacity={0.9}>
           <Text
             style={{
@@ -454,8 +498,160 @@ export const MyMobileNumber = props => {
           keyboardType={props?.type ? props?.type : 'default'}
         />
       </View>
+      {/* <Modal visible={Visible}> */}
+      <RBSheet
+        ref={ref}
+        openDuration={250}
+        height={350}
+        customStyles={{
+          container: {
+            width: '100%',
+            justifyContent: 'center',
+            // alignItems: 'center',
+          },
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 45,
+            color: AppColors.black,
+            borderBottomColor: AppColors.light_grey,
+            borderBottomWidth: 1,
+            alignItems: 'center',
+          }}>
+          <Text
+            numberOfLines={1}
+            style={{
+              fontFamily: AppFonts.bold,
+              fontSize: 16,
+              flex: 1,
+              textAlignVertical: 'center',
+              paddingStart: 20,
+              color: AppColors.black,
+            }}>
+            {props?.placeholder ? props?.placeholder : 'Select Option'}
+          </Text>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              setFilteredData(data);
+              ref?.current?.close();
+            }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontFamily: AppFonts.bold,
+                fontSize: 16,
+                textAlignVertical: 'center',
+                paddingHorizontal: 20,
+                color: AppColors.black,
+              }}>
+              {'Close'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            borderWidth: 1,
+            borderColor: AppColors.line_color,
+            alignItems: 'center',
+            paddingLeft: 15,
+          }}>
+          <Image
+            style={{height: 15, width: 15, tintColor: AppColors.LightText}}
+            source={AppImages.SEARCH_ICON}
+          />
+          <TextInput
+            style={{
+              height: 35,
+              color: AppColors.DarkText,
+              fontSize: 12,
+              flex: 1,
+              margin: 5,
+            }}
+            placeholder="Search Country"
+            placeholderTextColor={AppColors.LightText}
+            onChangeText={i => Search(i)}
+          />
+        </View>
+        <View style={{flex: 1}}>
+          {/* <View
+            style={{
+              height: 45,
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              borderBottomColor: AppColors.line_color,
+              borderBottomWidth: 1,
+              paddingHorizontal: 15,
+            }}>
+            <Text style={{fontSize: 16, color: AppColors.DarkText}}>
+              Select Country Code
+            </Text>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => setVisible(false)}>
+              <Image
+                style={{height: 15, width: 15}}
+                source={AppImages.ICON_CLOSE}
+              />
+            </TouchableOpacity>
+          </View> */}
+          <FlatList
+            contentContainerStyle={{}}
+            data={filteredData}
+            keyboardShouldPersistTaps="handled"
+            // keyExtractor={item => item}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  height: 40,
+                  justifyContent: 'flex-start',
+                  borderBottomColor: AppColors.line_color,
+                  borderBottomWidth: 1,
+                }}
+                onPress={() => {
+                  props?.onItemSelect(item);
+                  ref?.current?.close();
+                  setFilteredData(data);
+                  Keyboard.dismiss();
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: AppColors.DarkText,
+                    marginLeft: 15,
+                    fontFamily: AppFonts.medium,
+                  }}>
+                  {item.code}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: AppColors.DarkText,
+                    fontFamily: AppFonts.medium,
+                    marginLeft: 15,
+                  }}>
+                  {'+' + item.country}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </RBSheet>
+      {/* </Modal> */}
 
-      <CountryPicker
+      {/* <CountryPicker
         visible={Visible}
         containerButtonStyle={{width: '0%', height: 0}}
         withFilter
@@ -472,7 +668,7 @@ export const MyMobileNumber = props => {
           setVisible(false);
         }}
         onClose={() => setVisible(false)}
-      />
+      /> */}
     </View>
   );
 };
@@ -629,6 +825,135 @@ export const DateSelection = props => {
         value={props?.value}
         minYear={props?.minYear}
       />
+    </View>
+  );
+};
+
+export const JevanSelection = props => {
+  const ref = useRef();
+  return (
+    <View
+      style={{
+        width: '100%',
+        flexDirection: 'row',
+
+        height: 40,
+        alignItems: 'center',
+      }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          ref?.current?.open();
+        }}
+        style={{
+          flexDirection: 'row',
+          height: 40,
+          flex: 1,
+          alignItems: 'center',
+          borderBottomWidth: 1,
+          borderBottomColor: AppColors.line_color,
+          paddingHorizontal: 15,
+        }}>
+        <Text
+          style={{
+            fontFamily: AppFonts.semiBold,
+            fontSize: 10,
+            flex: 1,
+            color: props?.value ? AppColors.black : AppColors.DarkText,
+          }}>
+          {props?.value ? props?.value : props?.placeholder}
+        </Text>
+        <Image
+          style={{resizeMode: 'contain', height: 10, width: 10}}
+          source={AppImages.DROP_DOWN_ICON}
+        />
+      </TouchableOpacity>
+
+      <RBSheet
+        ref={ref}
+        openDuration={250}
+        height={350}
+        customStyles={{
+          container: {
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 45,
+            color: AppColors.black,
+            borderBottomColor: AppColors.light_grey,
+            borderBottomWidth: 1,
+            alignItems: 'center',
+          }}>
+          <Text
+            numberOfLines={1}
+            style={{
+              fontFamily: AppFonts.bold,
+              fontSize: 16,
+              flex: 1,
+              textAlignVertical: 'center',
+              paddingStart: 20,
+              color: AppColors.black,
+            }}>
+            {props?.placeholder ? props?.placeholder : 'Select Option'}
+          </Text>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => ref?.current?.close()}>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontFamily: AppFonts.bold,
+                fontSize: 16,
+                textAlignVertical: 'center',
+                paddingHorizontal: 20,
+                color: AppColors.black,
+              }}>
+              {'Close'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {props?.loading ? (
+          <View style={{flex: 1}}>
+            <ListMember />
+            <ListMember />
+            <ListMember />
+            <ListMember />
+            <ListMember />
+          </View>
+        ) : (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            style={{width: '100%'}}
+            contentContainerStyle={{paddingHorizontal: 15, paddingTop: 10}}
+            onEndReached={props?.onEnd}
+            data={props?.data == null ? [] : props?.data}
+            renderItem={({item, index}) => {
+              return (
+                <JevanMember
+                  item={item}
+                  select={() => {
+                    props?.onItemSelect(item);
+                    ref?.current?.close();
+                  }}
+                />
+              );
+            }}
+          />
+        )}
+        {props?.more && (
+          <ActivityIndicator style={{}} color={AppColors.DarkText} />
+        )}
+      </RBSheet>
     </View>
   );
 };

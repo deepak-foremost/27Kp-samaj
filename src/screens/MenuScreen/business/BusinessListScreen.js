@@ -95,6 +95,7 @@ const BusinessListScreen = props => {
 
   const [refreshing, setRefreshing] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   setBusiness(list);
@@ -118,6 +119,7 @@ const BusinessListScreen = props => {
   }, []);
 
   const getMyBusinessesList = () => {
+    setLoading(true);
     getMyBusinesses(
       response => {
         printLog('BusinessListScreen', JSON.stringify(response));
@@ -126,6 +128,7 @@ const BusinessListScreen = props => {
         } else {
           setBusiness([]);
         }
+        setLoading(false);
         setRefreshing(false);
       },
       error => {
@@ -184,7 +187,7 @@ const BusinessListScreen = props => {
           }
         />
 
-        <AppButton
+        {/* <AppButton
           text={'Mobile Number : ' + user?.country_code + user?.phone}
           buttonStyle={{
             width: '90%',
@@ -193,9 +196,9 @@ const BusinessListScreen = props => {
             borderRadius: 20,
             height: 40,
           }}
-        />
-        <View style={{flex: 0.9}}>
-          {businesses == null ? (
+        /> */}
+        <View style={{flex: 0.9, paddingTop: 10, paddingHorizontal: 10}}>
+          {isLoading ? (
             <View
               style={{
                 flex: 1,
@@ -218,9 +221,9 @@ const BusinessListScreen = props => {
                 style={{
                   fontFamily: AppFonts.semiBold,
                   fontSize: 15,
-                  color: AppColors?.black,
+                  color: AppColors.LightText,
                 }}>
-                No List Found
+                No Data Found
               </Text>
             </View>
           ) : (

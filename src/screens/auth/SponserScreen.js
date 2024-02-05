@@ -120,8 +120,10 @@ const SponserScreen = props => {
         textStyle={{color: 'black'}}
         buttonPress={() =>
           status
-            ? RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, '')
-            : RootNavigation.push(props?.navigation, screen_name, '')
+           ? RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, {
+                status: status,
+              })
+            :RootNavigation.navigate(screen_name,{status:status})
         }
       />
     </View>

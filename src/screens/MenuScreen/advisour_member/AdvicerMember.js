@@ -370,7 +370,7 @@ const AdvicerMember = props => {
                   fontFamily: AppFonts.semiBold,
                   color: AppColors.LightText,
                 }}>
-                No Members Available
+                No Data Found
               </Text>
             </View>
           ) : (
@@ -731,7 +731,7 @@ export const AboutKarobariCell = props => {
           flex: 0.7,
           justifyContent: 'center',
           alignItems: 'center',
-          marginLeft:props?.status == 'drawer' ? 5:0,
+          marginLeft: props?.status == 'drawer' ? 5 : 0,
           paddingBottom: 2.5,
         }}
         onPress={props?.imgPress}>
@@ -841,7 +841,7 @@ const MemberCell = props => {
             : 'મોબાઈલ નંબર'}
         </Text>
 
-        {props?.item && props?.item?.phone !== 'NA' ? (
+        {props?.item && props?.item?.phone !== 'Null' ? (
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               activeOpacity={0.9}
@@ -938,7 +938,7 @@ export const ListMember = props => {
 
 export const BusinessBox = props => {
   return (
-    <View style={{width: '30%', height: 100, margin: 5, ...props?.styles}}>
+    <View style={{width: '30%', height: 90, margin: 5, ...props?.styles}}>
       <ShimmerCustomView />
     </View>
   );

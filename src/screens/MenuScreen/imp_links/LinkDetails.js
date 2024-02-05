@@ -332,9 +332,9 @@ const LinkDetails = props => {
                     style={{
                       fontFamily: AppFonts.semiBold,
                       fontSize: 15,
-                      color: AppColors?.line_color,
+                      color: AppColors.LightText,
                     }}>
-                    No List Found
+                    No Data Found
                   </Text>
                 </View>
               ) : (
@@ -436,9 +436,9 @@ const LinkDetails = props => {
                         style={{
                           fontFamily: AppFonts.semiBold,
                           fontSize: 15,
-                          color: AppColors?.line_color,
+                          color: AppColors.LightText,
                         }}>
-                        No List Found
+                        No Data Found
                       </Text>
                     </View>
                   ) : (
@@ -508,9 +508,9 @@ const LinkDetails = props => {
                     style={{
                       fontFamily: AppFonts.semiBold,
                       fontSize: 15,
-                      color: AppColors?.lineColor,
+                      color: AppColors.LightText,
                     }}>
-                    No List Found
+                    No Data Found
                   </Text>
                 </View>
               ) : (

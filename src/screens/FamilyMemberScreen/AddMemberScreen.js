@@ -80,7 +80,7 @@ const AddMemberScreen = props => {
   const [mosal, setMosal] = useState('');
   const [hobby, setHobby] = useState('');
   const [sasru, setsasru] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(null);
   const [jeevan_sahay_nubmer, Setjeevan_sahay_nubmer] = useState('');
   const [boomi_nubmer, setBoomi_nubmer] = useState('');
   const [image, setImage] = useState('');
@@ -425,7 +425,7 @@ const AddMemberScreen = props => {
           ([key, value]) => value !== '' && value !== null && value !== '-',
         ),
       );
-      // console.log('filter', filteredParams);
+      console.log('filter', filteredParams);
       if (filteredParams == {}) {
         filteredParams = '';
       }
@@ -434,7 +434,7 @@ const AddMemberScreen = props => {
         memberItem == undefined ? Api.POST_ADD_MEMBER : Api.POST_UPDATE_MEMBER;
       const AuthToken =
         token?.token == undefined ? JSON.parse(token)?.token : token?.token;
-      console.log(`PARAMS:::::::`, JSON.stringify(params));
+      console.log(`PARAMS:::::::`, JSON.stringify(filteredParams));
       let formData = new FormData();
       var myparams = Object.keys(filteredParams);
       myparams?.map(item => {
@@ -468,7 +468,7 @@ const AddMemberScreen = props => {
           setLoading(false);
           printLog(`callApi`, `Error : ${JSON.stringify(error?.message)}`);
           setLoading(false);
-          addMembers();
+          // addMembers();
         });
 
       //   fetch(
@@ -696,8 +696,8 @@ const AddMemberScreen = props => {
                       setAge(JSON.stringify(calculateAge(i)));
                       setDOB(i);
                     }}
-                    value={dob == null ? new Date('2023-01-01') : new Date(dob)}
-                    minYear={new Date('2023-01-01')}
+                    value={dob == null ? new Date() : new Date(dob)}
+                    minYear={new Date()}
                     placeholder={
                       dob == null
                         ? 'DD/MM/YYYY'
@@ -877,7 +877,7 @@ const AddMemberScreen = props => {
               />
 
               <BoxTextInput
-                styles={{flexDirection: 'coloum', minHeight: 120}}
+                styles={{flexDirection: 'coloum'}}
                 textStyle={{marginBottom: 10}}
                 label={`હાલ ના રહેઠાણ નુ સરનામું`}
                 defaultText={homeAddress}
@@ -904,8 +904,8 @@ const AddMemberScreen = props => {
                 countryCode={country_code}
                 phone={phone}
                 type={'numeric'}
-                setCountryCode={item => {
-                  setCountryCode('+' + item?.callingCode);
+                onItemSelect={item => {
+                  setCountryCode('+' + item?.country);
                 }}
                 onChangeText={i => setPhone(i)}
               />
@@ -915,7 +915,7 @@ const AddMemberScreen = props => {
                 type="email-address"
                 onChangeText={setEmail}
               />
-              {/* <HorizontalSelection
+              <HorizontalSelection
                 label={`ફોરેન Country Name`}
                 placeholder={`ફોરેન Country Name`}
                 defaultText={``}
@@ -925,9 +925,9 @@ const AddMemberScreen = props => {
                   // printLog(JSON.stringify(item?.item));
                   setForeignCountry(item?.name);
                 }}
-              /> */}
+              />
 
-              <MyMobileNumber
+              {/* <MyMobileNumber
                 contact={true}
                 label={`ફોરેન Country Name`}
                 icon={true}
@@ -946,9 +946,9 @@ const AddMemberScreen = props => {
                   setForeignCountryCode('+' + item?.callingCode);
                 }}
                 onChangeText={i => setForeignNumber(i)}
-              />
+              /> */}
 
-              <MyMobileNumber
+              {/* <MyMobileNumber
                 contact={true}
                 label={`ફોરેન Number`}
                 defaultText={foreign_number}
@@ -959,7 +959,8 @@ const AddMemberScreen = props => {
                   setForeignCountryCode('+' + item?.callingCode);
                 }}
                 onChangeText={i => setForeignNumber(i)}
-              />
+              /> */}
+
               {/* <MyMobileNumber
                 contact={true}
                 label={`ફોરેન Number : `}
@@ -972,16 +973,17 @@ const AddMemberScreen = props => {
                 onChangeText={setForeignNumber}
               /> */}
               <HorizontalTextInput
-                label={`ભુમિ સભાસદ નં:`}
-                defaultText={boomi_nubmer}
-                type="numeric"
-                onChangeText={setBoomi_nubmer}
-              />
-              <HorizontalTextInput
                 label={`જીવન સહાય સભાસદ નં:`}
                 defaultText={jeevan_sahay_nubmer}
                 type="numeric"
                 onChangeText={Setjeevan_sahay_nubmer}
+              />
+
+              <HorizontalTextInput
+                label={`ભુમિ સભાસદ નં:`}
+                defaultText={boomi_nubmer}
+                type="numeric"
+                onChangeText={setBoomi_nubmer}
               />
 
               {/* <HorizontalTextInput
@@ -1375,67 +1377,60 @@ const AddMemberScreen = props => {
                 </View>
               </View>
 
-              {loading ? (
-                <LoaderView
-                  color={AppColors.BackgroundSecondColor}
-                  style={{width: '50%', height: 35, marginVertical: 20}}
-                />
-              ) : (
-                <AppButton
-                  width={'50%'}
-                  text={memberItem == undefined ? `Submit` : `Update`}
-                  buttonStyle={{
-                    width: '50%',
-                    height: 40,
-                    borderRadius: 20,
-                    alignSelf: 'center',
-                    marginVertical: 20,
-                  }}
-                  buttonPress={() => {
-                    if (city == null) {
-                      showMessage('Please Select City');
-                    } else if (familyMember?.trim() == '') {
-                      ShowMessage('Please enter name');
-                    } else if (gender == null) {
-                      ShowMessage('Please select gender');
-                    } else if (hobby == '') {
-                      ShowMessage('Please enter શાખ');
-                    } else if (mosal == '') {
-                      ShowMessage('Please enter મોસાળ');
-                    } else if (sasru == '') {
-                      ShowMessage('Please enter સાસરું');
-                    } else if (dob == null) {
-                      ShowMessage('Please select Date of Birth');
-                    } else if (blood == '') {
-                      ShowMessage('Please select Blood Group');
-                    } else if (height == '') {
-                      ShowMessage('Please enter Height ');
-                    } else if (weigth == '') {
-                      ShowMessage('Please enter Weight ');
-                    } else if (relation == null) {
-                      ShowMessage('Please enter કુટુંબ ના વડા સાથે નો સંબંધ');
-                    } else if (status == null) {
-                      ShowMessage('Please select લગ્ન સ્થિતિ ');
-                    } else if (study == null) {
-                      ShowMessage('Please select અભ્યાસ ');
-                    } else if (homeAddress == '') {
-                      ShowMessage('Please enter હાલ ના રહેઠાણનું સરનામું ');
-                    } else if (business == '') {
-                      ShowMessage('Please enter વ્યવસાય ');
-                    } else if (businessAddress == null) {
-                      ShowMessage('Please enter વ્યવસાયનું સરનામું ');
-                    } else if (phone == '') {
-                      ShowMessage('Please enter Mobile No. ');
-                    } else if (email == '') {
-                      ShowMessage('Please enter email address ');
-                    } else {
-                      //     setAdding(true);
-                      addMembers();
-                    }
-                  }}
-                  // isLoading={loading}
-                />
-              )}
+              <AppButton
+                width={'50%'}
+                loading={loading}
+                color={'#fff'}
+                text={memberItem == undefined ? `Submit` : `Update`}
+                buttonStyle={{
+                  width: '50%',
+                  height: 40,
+                  borderRadius: 20,
+                  alignSelf: 'center',
+                  marginVertical: 20,
+                }}
+                buttonPress={() => {
+                  if (city == null) {
+                    showMessage('Please Select City');
+                  } else if (familyMember?.trim() == '') {
+                    ShowMessage('Please enter name');
+                  } else if (gender == null) {
+                    ShowMessage('Please select gender');
+                  } else if (hobby == '') {
+                    ShowMessage('Please enter શાખ');
+                  } else if (mosal == '') {
+                    ShowMessage('Please enter મોસાળ');
+                  } else if (sasru == '') {
+                    ShowMessage('Please enter સાસરું');
+                  } else if (dob == null) {
+                    ShowMessage('Please select Date of Birth');
+                  } else if (blood == '') {
+                    ShowMessage('Please select Blood Group');
+                  } else if (height == '') {
+                    ShowMessage('Please enter Height ');
+                  } else if (weigth == '') {
+                    ShowMessage('Please enter Weight ');
+                  } else if (relation == null) {
+                    ShowMessage('Please enter કુટુંબ ના વડા સાથે નો સંબંધ');
+                  } else if (status == null) {
+                    ShowMessage('Please select લગ્ન સ્થિતિ ');
+                  } else if (study == null) {
+                    ShowMessage('Please select અભ્યાસ ');
+                  } else if (homeAddress == '') {
+                    ShowMessage('Please enter હાલ ના રહેઠાણનું સરનામું ');
+                  } else if (business == '') {
+                    ShowMessage('Please enter વ્યવસાય ');
+                  } else if (businessAddress == null) {
+                    ShowMessage('Please enter વ્યવસાયનું સરનામું ');
+                  } else if (phone == '') {
+                    ShowMessage('Please enter Mobile No. ');
+                  } else {
+                    //     setAdding(true);
+                    addMembers();
+                  }
+                }}
+                // isLoading={loading}
+              />
             </View>
             <BorderView
               text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}

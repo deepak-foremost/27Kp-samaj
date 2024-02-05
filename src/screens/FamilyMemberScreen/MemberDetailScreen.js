@@ -62,7 +62,7 @@ const MembersDetailScreen = props => {
   // printLog('MembersDetailScreen', JSON.stringify(item));
   const [member, setMember] = useState(item);
   const [isVisible, setVisible] = useState(false);
-  const [imageList, setImageList] = useState();
+  const [imageList, setImageList] = useState(null);
   // const [images, setImages] = useState([]);
 
   //   useEffect(() => {
@@ -109,9 +109,28 @@ const MembersDetailScreen = props => {
   //     },
   //   ];
   // }
-  const images = imageList?.map(item => ({
-    url: item?.image,
-  }));
+  const [one, setOne] = useState(null);
+  // const images = [
+  //   {
+  //     url: one == 1 ? imageList[0]?.image : imageList[1]?.image,
+  //   },
+  // ];
+  const images = [
+    {
+      url:
+        one == 0 && imageList != null
+          ? imageList[0]?.image
+          : one == 1 && imageList != null
+          ? imageList[1]?.image
+          : one == 2 && imageList != null && imageList[2]?.image,
+      // url:number==1 && imageList[1]?.image,
+      // url:number==2 && imageList[2]?.image
+      // props: {source: items != null && items?.image},
+    },
+  ];
+  // const images = imageList?.map(item => ({
+  //   url: item?.image,
+  // }));
 
   return (
     <View
@@ -224,7 +243,8 @@ const MembersDetailScreen = props => {
                 item={item}
                 notShow={true}
                 styles={{paddingVertical: -15}}
-                imgPress={() => {
+                imgPress={i => {
+                  setOne(i);
                   setImageList(item?.images);
                   setVisible(true);
                 }}

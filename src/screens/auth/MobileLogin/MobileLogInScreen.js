@@ -260,9 +260,8 @@ const MobileLogInScreen = props => {
               <AppInputView
                 close={() => setVisible(false)}
                 code={country}
-                selectCode={cod => {
-                  setCountry('+' + cod.callingCode);
-                  setVisible(false);
+                onItemSelect={item => {
+                  setCountry('+' + item?.country);
                 }}
                 Visible={Visible}
                 open={() => setVisible(true)}

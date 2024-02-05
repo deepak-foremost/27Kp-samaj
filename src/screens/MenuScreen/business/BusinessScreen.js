@@ -243,7 +243,16 @@ const BusinessScreen = props => {
                 }}>
                 {pos == 0 ? (
                   <View
-                    style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
+                    style={{
+                      flexDirection: 'row',
+                      flex: 1,
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                    }}>
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
+                    <BusinessBox />
                     <BusinessBox />
                     <BusinessBox />
                     <BusinessBox />
@@ -283,7 +292,7 @@ const BusinessScreen = props => {
                 style={{
                   flexDirection: 'row',
                   flexWrap: 'wrap',
-                  paddingTop: 17,
+                  paddingTop: 10,
                   paddingHorizontal: 10,
                   paddingVertical: 20,
                   justifyContent: 'center',
@@ -306,6 +315,8 @@ const BusinessScreen = props => {
                       flex: 1,
                       justifyContent: 'center',
                       alignItems: 'center',
+                      alignSelf: 'center',
+                      height: 400,
                     }}>
                     <Text
                       style={{
@@ -313,7 +324,7 @@ const BusinessScreen = props => {
                         color: AppColors.LightText,
                         fontSize: 14,
                       }}>
-                      No List Found
+                      No Data Found
                     </Text>
                   </View>
                 ) : (
