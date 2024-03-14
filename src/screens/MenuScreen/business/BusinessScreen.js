@@ -222,6 +222,8 @@ const BusinessScreen = props => {
           onChange={value => {
             setPos(value);
             setCatItem(null);
+            setPage(1);
+            setTotalPage(1);
           }}
         />
         <View style={{flex: 0.9, paddingTop: 10}}>
@@ -363,7 +365,7 @@ const BusinessScreen = props => {
           </ScrollView>
         </View>
         <BorderView
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          text={ pos == 0?'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ':'સેવા કરવી તે મારી અમુલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

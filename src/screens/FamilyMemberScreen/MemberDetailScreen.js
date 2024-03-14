@@ -32,6 +32,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MemberDetailCell} from '../MenuScreen/memberDetail/FamilyDetailScreen';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ZoomImage from '../../components/ZoomImage';
+import {handleGeneratePDF} from '../../utils/PdfGenerate';
 
 const member = [
   {
@@ -63,58 +64,8 @@ const MembersDetailScreen = props => {
   const [member, setMember] = useState(item);
   const [isVisible, setVisible] = useState(false);
   const [imageList, setImageList] = useState(null);
-  // const [images, setImages] = useState([]);
 
-  //   useEffect(() => {
-  //     const willFocusSubscription = props.navigation.addListener('focus', () => {
-  //       getMemberDetail();
-  //     });
-
-  //     return () => {
-  //       willFocusSubscription;
-  //     };
-  //   }, []);
-
-  //   const getMemberDetail = () => {
-  //     getSingleFamilies(
-  //       {id: item?.id},
-  //       response => {
-  //         printLog('MembersDetailScreen', JSON.stringify(response));
-  //         if (response?.status) {
-  //           setMember(response?.data);
-  //         } else {
-  //           setMember([]);
-  //         }
-  //       },
-  //       error => {
-  //         setMember([]);
-  //       },
-  //     );
-  //   };
-
-  //   useEffect(() => {
-  //     getMemberDetail();
-  //   }, []);
-
-  // useEffect(() => {
-  //   var data = [];
-  //   item?.map((item, index) => data?.push({url: item?.image}));
-  //   setImages(data);
-  // }, []);
-  // if (item?.image != '') {
-  //   const images = [
-  //     {
-  //       url: item?.image,
-  //       props: {source: item?.image},
-  //     },
-  //   ];
-  // }
   const [one, setOne] = useState(null);
-  // const images = [
-  //   {
-  //     url: one == 1 ? imageList[0]?.image : imageList[1]?.image,
-  //   },
-  // ];
   const images = [
     {
       url:
@@ -123,14 +74,8 @@ const MembersDetailScreen = props => {
           : one == 1 && imageList != null
           ? imageList[1]?.image
           : one == 2 && imageList != null && imageList[2]?.image,
-      // url:number==1 && imageList[1]?.image,
-      // url:number==2 && imageList[2]?.image
-      // props: {source: items != null && items?.image},
     },
   ];
-  // const images = imageList?.map(item => ({
-  //   url: item?.image,
-  // }));
 
   return (
     <View
@@ -203,8 +148,8 @@ const MembersDetailScreen = props => {
             alignItems: 'flex-start',
             alignSelf: 'center',
             backgroundColor: AppColors.BackgroundColor,
-            padding: 15,
-            paddingVertical: 25,
+            // padding: 15,
+            // paddingVertical: 25,
             borderRadius: 10,
             backgroundColor: 'white',
             ...Platform.select({
@@ -241,7 +186,8 @@ const MembersDetailScreen = props => {
               style={{width: '100%'}}>
               <MemberDetailCell
                 item={item}
-                notShow={true}
+                notShow={false}
+                saveButton={() => handleGeneratePDF(item)}
                 styles={{paddingVertical: -15}}
                 imgPress={i => {
                   setOne(i);
@@ -254,7 +200,7 @@ const MembersDetailScreen = props => {
         </View>
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <BorderView
-            text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+            text={'સેવા કરવી તે મારી અમુલ્ય ફરજ છે'}
             backgroundColor={AppColors.BackgroundSecondColor}
           />
         </View>

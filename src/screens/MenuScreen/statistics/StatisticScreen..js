@@ -136,7 +136,10 @@ const StatisticScreen = props => {
         if (response?.status) {
           setCount([
             {name: 'ટોટલ ગામ', count: response?.data?.total_city},
-            {name: 'ટોટલ રજીસ્ટર\n ફૅમિલી ', count: response?.data?.total_family},
+            {
+              name: 'ટોટલ રજીસ્ટર\n ફૅમિલી ',
+              count: response?.data?.total_family,
+            },
             {name: 'ટોટલ સભ્યો', count: response?.data?.total_member},
             {name: 'ટોટલ પુરુષ', count: response?.data?.total_male},
             {name: 'ટોટલ સ્ત્રી', count: response?.data?.total_female},
@@ -383,7 +386,7 @@ const StatisticScreen = props => {
                   contentContainerStyle={{
                     paddingBottom: 20,
                     // paddingStart: 15,
-                    paddingTop: 20,
+                    paddingTop: 15,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -400,10 +403,10 @@ const StatisticScreen = props => {
             </View>
           </ScrollView>
         </View>
-        {/* <BorderView
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+        <BorderView
+          text={'સમાજના સભ્યો સાથે રહેવું એજ મારી ફરજ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
-        /> */}
+        />
 
         {/* <FooterTextCell title={`સમાજ એજ મારુ પરિવાર છે`} /> */}
       </View>
@@ -432,7 +435,7 @@ export const MenuComponent = props => {
           borderRadius: 10,
           flex: 1,
           margin: 10,
-          backgroundColor: AppColors.BackgroundColor,
+          backgroundColor: AppColors.BackgroundSecondColor,
           ...Platform.select({
             ios: {
               shadowColor: 'gray',
@@ -447,11 +450,11 @@ export const MenuComponent = props => {
         }}>
         <Text
           style={{
-            color: AppColors.DarkText,
+            color: '#fff',
             textAlign: 'center',
             textAlignVertical: 'center',
-            fontFamily: AppFonts.semiBold,
-            fontSize: 29,
+            fontFamily: AppFonts.bold,
+            fontSize: 28,
             marginTop: Platform.OS == 'ios' ? 15 : 10,
             alignSelf: 'center',
           }}>
@@ -459,14 +462,15 @@ export const MenuComponent = props => {
         </Text>
         <Text
           style={{
-            color: AppColors.DarkText,
+            color: '#fff',
             textAlign: 'center',
-            fontFamily: AppFonts.regular,
-            fontSize: 10,
+            fontFamily: AppFonts.bold,
+            fontSize: 11,
             marginTop: -5,
-            width: '70%',
+            width: '100%',
             flex: 1,
             marginTop: Platform.OS == 'ios' ? 10 : 0,
+            marginBottom:3
           }}>
           {props?.item?.item?.name}
         </Text>

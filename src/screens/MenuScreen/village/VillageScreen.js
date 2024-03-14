@@ -319,10 +319,9 @@ const VillageScreen = props => {
                     flex: 1,
                     alignItems: 'center',
                     alignSelf: 'center',
-                    paddingTop: 15,
+                    paddingVertical: 15,
                     width: '100%',
                   }}>
-                  <ListMember styles={{height: 35}} />
                   <ListMember styles={{height: 35}} />
                   <ListMember styles={{height: 35}} />
                   <ListMember styles={{height: 35}} />
@@ -391,7 +390,7 @@ const VillageScreen = props => {
         </View>
 
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'સમાજ ના વિકાસ માટે અમુક કામ ભેગા મળીને કરીયે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
 
@@ -415,9 +414,10 @@ const AboutCell = props => {
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        height: 30,
+        minHeight: 30,
         marginTop: 10,
         elevation: 5,
+        // paddingVertical:5
         // borderBottomColor: AppColors.light_grey,
         // borderBottomWidth: 1,
       }}>
@@ -472,7 +472,7 @@ const AboutCell = props => {
           }}
         />
         <TouchableOpacity
-          style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}
+          style={{flexDirection: 'row', flex: 1, alignItems: 'center',paddingVertical:2,}}
           activeOpacity={0.9}
           onPress={() =>
             Linking.openURL(
@@ -491,7 +491,7 @@ const AboutCell = props => {
           </Text>
           <Image
             source={AppImages.CIRCLE_CALL_ICON}
-            style={{marginRight: 5, marginBottom: 2.5}}
+            style={{marginRight: 5, marginBottom: 2.5,resizeMode:'contain',height:9,width:9,}}
           />
           <TouchableOpacity
             activeOpacity={1}

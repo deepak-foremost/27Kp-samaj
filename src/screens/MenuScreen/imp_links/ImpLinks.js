@@ -60,7 +60,7 @@ const ImPLINKS = () => {
           />
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'મારો ૨૭ સમાજ... મારી ફરજ'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

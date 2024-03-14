@@ -41,7 +41,8 @@ const PaymentScreen = ({route}) => {
       : item?.sabhy_number,
   );
   const [name, setName] = useState(item?.name);
-  const [phone, setPhone] = useState(item?.phone);
+  const [shakh, setShakh] = useState(item?.shakh);
+  const [phone, setPhone] = useState('');
   const [village, setVillage] = useState();
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState(
@@ -52,6 +53,7 @@ const PaymentScreen = ({route}) => {
   const [cardNo, setCardNo] = useState('');
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [payment,setPayment]=useState('')
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
   const [upi, setUpi] = useState('');
@@ -153,11 +155,11 @@ const PaymentScreen = ({route}) => {
               marginHorizontal: 15,
               marginVertical: 15,
             }}>
-            {'જીવન સહાય સભાસદ સભ્ય > Payment Method'}
+            {'પરિવાર સુરક્ષા સહાય સભ્ય > Payment Method'}
           </Text>
 
           <KeyboardAwareScrollView
-          keyboardShouldPersistTaps='handled'
+            keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               // width: '100%',
               // alignSelf: 'center',
@@ -198,20 +200,6 @@ const PaymentScreen = ({route}) => {
                 onChangeText={setName}
               />
 
-              <MyMobileNumber
-                // placeholder={'vjbrb'}
-                defaultText={phone}
-                contact={true}
-                type={'numeric'}
-                label={`Mobile No`}
-                countryCode={code}
-                phone={phone}
-                onItemSelect={item => {
-                  setCode('+' + item?.country);
-                }}
-                onChangeText={i => setPhone(i)}
-              />
-
               {/* <HorizontalTextInput
                 label={`Mobile No`}
                 defaultText={phone}
@@ -228,10 +216,38 @@ const PaymentScreen = ({route}) => {
                   setCity(item?.name);
                 }}
               />
+
               <HorizontalTextInput
-                label={`જીવન સહાય સભાસદ સભ્ય નંબર.`}
+                label={`શાખ`}
+                defaultText={shakh}
+                onChangeText={setShakh}
+              />
+              <HorizontalTextInput
+                label={`પરિવાર સુરક્ષા સહાય સભ્ય નંબર.`}
                 defaultText={sabhy_number}
                 onChangeText={setSabhayNUmber}
+              />
+
+              <MyMobileNumber
+                // placeholder={'vjbrb'}
+                defaultText={phone}
+                contact={true}
+                type={'numeric'}
+                label={`Mobile No`}
+                countryCode={code}
+                phone={phone}
+                onItemSelect={item => {
+                  setCode('+' + item?.country);
+                }}
+                onChangeText={i => setPhone(i)}
+              />
+
+              <HorizontalTextInput
+                label={`Payment`}
+                defaultText={payment}
+                onChangeText={setPayment}
+                placeholder={'Enter amount'}
+                type={'numeric'}
               />
 
               <View
@@ -479,8 +495,8 @@ const PaymentScreen = ({route}) => {
             <BorderView
               style={{flex: 1, alignItems: 'center'}}
               backgroundColor={AppColors.Orange}
-              text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
-              borderStyle={{height: 60, position: ''}}
+              text={'સમાજ માં સેવા કરવી તે મારી અમુલ્ય ભેટ છે'}
+              borderStyle={{height: 65, position: ''}}
             />
           </KeyboardAwareScrollView>
         </View>

@@ -39,4 +39,5 @@ export class AppScreens {
   static SERVICE_DETAILS = 'ServiceDetails';
   static PRIVACY_POLICY = 'PrivacyPolicy';
   static VARIOUS_BUSINESS = 'VariousBusiness';
+  static SPONSER_IMAGE='SponserImage';
 }

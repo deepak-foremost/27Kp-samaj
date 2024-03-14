@@ -329,7 +329,7 @@ const FamilyMembersScreen = props => {
           )}
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          text={'ફેમિલી પરિવારનું હાર્દિક પુર્વક સ્વાગત છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
 
@@ -357,11 +357,10 @@ const FamilyMermberCell = props => {
       activeOpacity={AppConstValue.ButtonOpacity}
       onPress={() => (props?.item?.is_selected ? null : props?.editClick())}
       style={{
-        paddingHorizontal: 14,
+        // paddingHorizontal: 14,
         paddingVertical: 5,
         marginHorizontal: 17,
         justifyContent: 'center',
-
         backgroundColor: AppColors.BackgroundColor,
         marginTop: 15,
         borderRadius: 10,
@@ -377,7 +376,7 @@ const FamilyMermberCell = props => {
           },
         }),
       }}>
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center',paddingHorizontal:14}}>
         <Image
           source={
             props?.item?.images[0]?.image == undefined

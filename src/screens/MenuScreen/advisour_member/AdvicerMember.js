@@ -416,7 +416,11 @@ const AdvicerMember = props => {
         </View>
 
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          text={
+            status == 'drawer'
+              ? 'સૌનો સાથ..સૌનો વિકાસ અને સમાજ નો વિકાસ'
+              : 'સેવા કરવી તે મારી અમુલ્ય ભેટ છે'
+          }
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>
@@ -623,7 +627,7 @@ export const AboutKarobariCell = props => {
           {
             // width: '5%',
             flex: 0.4,
-            fontSize: 9,
+            fontSize: 10,
             color: AppColors.DarkText,
             // textAlign: props?.item ? 'center' : 'auto',
             paddingRight: props?.item ? 0 : 5,
@@ -636,9 +640,9 @@ export const AboutKarobariCell = props => {
           styles.heading,
           {
             // width: props?.status == 'drawer'? '30%':'25%',
-            flex: props?.status == 'drawer' ? 3.2 : 2,
+            flex: props?.status == 'drawer' ? 3.2 : 3,
             color: AppColors.DarkText,
-            fontSize: 9,
+            fontSize: props?.status == 'drawer' ? 10 : 10,
             paddingRight: 3,
           },
         ]}>
@@ -649,9 +653,9 @@ export const AboutKarobariCell = props => {
           styles.heading,
           {
             // width:props?.status == 'drawer'? '20%':'15%',
-            flex: props?.status == 'drawer' ? 2 : 1.5,
+            flex: props?.status == 'drawer' ? 1.8 : 1.5,
             color: AppColors.DarkText,
-            fontSize: 9,
+            // fontSize: 9,
             // marginLeft: 5,
           },
         ]}>
@@ -665,7 +669,7 @@ export const AboutKarobariCell = props => {
               // width: '20%',
               flex: 2,
               color: AppColors.DarkText,
-              fontSize: 9,
+              // fontSize: 9,
             },
           ]}>
           {props?.item ? `${props?.item?.hodo}` : 'હોદો'}
@@ -675,12 +679,11 @@ export const AboutKarobariCell = props => {
         style={{
           flexDirection: props?.status == 'drawer' ? '' : '',
           // width:props?.status == 'drawer'? '35%':'26%',
-          flex: props?.status == 'drawer' ? 2 : 2.5,
+          flex: props?.status == 'drawer' ? 2.2 : 2.5,
           // marginLeft: 10,
           paddingLeft: 5,
         }}>
-        <Text
-          style={[styles.heading, {color: AppColors.DarkText, fontSize: 9}]}>
+        <Text style={[styles.heading, {color: AppColors.DarkText}]}>
           {props?.item
             ? `${props?.item?.country_code + props?.item?.phone}`
             : 'મોબાઈલ નંબર'}
@@ -695,13 +698,14 @@ export const AboutKarobariCell = props => {
             }}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{paddingHorizontal: 3}}
+              style={{paddingHorizontal: 3,padding:2}}
               onPress={() =>
                 Linking.openURL(
                   `tel:${props?.item?.country_code + props?.item?.phone}`,
                 )
               }>
-              <Image source={AppImages.CIRCLE_CALL_ICON} />
+              <Image source={AppImages.CIRCLE_CALL_ICON}
+              style={{height:9,width:9,resizeMode:'contain'}} />
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -709,6 +713,7 @@ export const AboutKarobariCell = props => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 paddingLeft: 5,
+                paddingVertical:2
               }}
               activeOpacity={1}
               onPress={() =>
@@ -724,44 +729,46 @@ export const AboutKarobariCell = props => {
           </View>
         ) : null}
       </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={{
-          // width: '7%',
-          flex: 0.7,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginLeft: props?.status == 'drawer' ? 5 : 0,
-          paddingBottom: 2.5,
-        }}
-        onPress={props?.imgPress}>
-        {props?.item ? (
-          <Image
-            style={{
-              height: 15,
-              width: 15,
-              // borderColor: 'black',
-              // borderWidth: 1,
-              borderRadius: 10,
-              backgroundColor: '#F2F2F2',
-              // resizeMode:'contain'
-            }}
-            source={
-              props?.item?.image == ''
-                ? AppImages.MEMBER_IMAGE
-                : {uri: props?.item?.image}
-            }
-          />
-        ) : (
-          <Text
-            style={[
-              styles.heading,
-              {color: AppColors.DarkText, marginRight: 5},
-            ]}>
-            ફોટો
-          </Text>
-        )}
-      </TouchableOpacity>
+      {props?.status == 'drawer' && (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{
+            // width: '7%',
+            flex: 0.7,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: props?.status == 'drawer' ? 5 : 0,
+            paddingBottom: 2.5,
+          }}
+          onPress={props?.imgPress}>
+          {props?.item ? (
+            <Image
+              style={{
+                height: 15,
+                width: 15,
+                // borderColor: 'black',
+                // borderWidth: 1,
+                borderRadius: 10,
+                backgroundColor: '#F2F2F2',
+                // resizeMode:'contain'
+              }}
+              source={
+                props?.item?.image == ''
+                  ? AppImages.MEMBER_IMAGE
+                  : {uri: props?.item?.image}
+              }
+            />
+          ) : (
+            <Text
+              style={[
+                styles.heading,
+                {color: AppColors.DarkText, marginRight: 5},
+              ]}>
+              ફોટો
+            </Text>
+          )}
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -852,7 +859,7 @@ const MemberCell = props => {
               }}>
               <Image
                 source={AppImages.CIRCLE_CALL_ICON}
-                style={{marginStart: 5}}
+                style={{marginStart: 5,height:9,width:9,resizeMode:'contain'}}
               />
             </TouchableOpacity>
 

@@ -66,6 +66,7 @@ const FeedBackScreen = props => {
   const [date, setDate] = useState('DD/MM/YYYY');
   const [isLoading, setLoading] = useState(false);
   const [country_code, setCountryCode] = useState('+91');
+  const[id,setCityId]=useState('');
 
   // useEffect(() => {
   //   getString('village', response => {
@@ -293,6 +294,7 @@ const FeedBackScreen = props => {
                 onItemSelect={item => {
                   printLog(JSON.stringify(item?.item));
                   setCity(item?.name);
+                  setCityId(item?.id);
                 }}
               />
               {/* <HorizontalTextInput
@@ -349,6 +351,7 @@ const FeedBackScreen = props => {
                           city: city,
                           message: message,
                           country_code: country_code,
+                          city_id:id
                         },
                         response => {
                           ShowMessage(response?.message);
@@ -370,7 +373,7 @@ const FeedBackScreen = props => {
           </View>
           <BorderView
             backgroundColor={AppColors.BackgroundSecondColor}
-            text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+            text={'સમાજને સારું કરવું તેજ મારો અધિકાર છે'}
             borderStyle={{position: ''}}
           />
         </KeyboardAwareScrollView>

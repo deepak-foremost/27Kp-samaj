@@ -86,8 +86,8 @@ const ContactUsScreen = props => {
               width: '95%',
               borderRadius: 15,
               alignSelf: 'center',
-              marginTop: -30,
-              flex: 0.9,
+              marginTop: -40,
+              flex: 0.8,
             }}
             showsVerticalScrollIndicator={false}>
             <View
@@ -145,11 +145,12 @@ const ContactUsScreen = props => {
                 </View>
               ) : (
                 <FlatList
-                  scrollEnabled={false}
+                  // scrollEnabled={false}
                   contentContainerStyle={{
                     alignItems: 'center',
                     marginTop: 5,
                     width: '100%',
+                    paddingBottom:20
                   }}
                   showsVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}
@@ -211,7 +212,7 @@ const ContactUsScreen = props => {
                   style={[
                     AppStyles.boxStyle,
                     {
-                      height: 45,
+                      minHeight: 45,
                       justifyContent: 'center',
                       alignItems: 'center',
                       width: '95%',
@@ -302,7 +303,8 @@ const ContactUsScreen = props => {
                             }`,
                           )
                         }>
-                        <Image source={AppImages.CIRCLE_CALL_ICON} />
+                        <Image source={AppImages.CIRCLE_CALL_ICON}
+                        style={{height:9,width:9,resizeMode:'contain'}} />
                       </TouchableOpacity>
                     }
                     <TouchableOpacity
@@ -358,7 +360,7 @@ const ContactUsScreen = props => {
             </View>
           </View>
           <BorderView
-            text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+            text={'સમાજ એજ મારો પરિવાર છે'}
             backgroundColor={AppColors.BackgroundSecondColor}
           />
         </View>
@@ -457,7 +459,7 @@ const ContactCell = props => {
                 `tel:${props?.item?.item?.country_code}${props?.item?.item?.phone}`,
               )
             }>
-            <Image source={AppImages.CIRCLE_CALL_ICON} style={{}} />
+            <Image source={AppImages.CIRCLE_CALL_ICON} style={{height:9,width:9,resizeMode:'contain'}} />
           </TouchableOpacity>
 
           <TouchableOpacity

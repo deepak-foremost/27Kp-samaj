@@ -108,7 +108,18 @@ const ProfileScreen = () => {
                 },
               }),
             }}>
-            <View style={[AppStyles.AppLogoStyle, {}]}>
+            <View
+              style={[
+                AppStyles.AppLogoStyle,
+                {
+                  height: 150,
+                  width: 150,
+                  backgroundColor: '#F7F7F7',
+                  borderRadius: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              ]}>
               <Image
                 style={{height: 140, width: 140}}
                 source={AppImages.APP_MAIN_ICON}
@@ -133,7 +144,7 @@ const ProfileScreen = () => {
               Profile Details
             </Text>
             {isLoading ? (
-              <View style={{paddingRight: 50, width: '100%',marginTop:-20}}>
+              <View style={{paddingRight: 50, width: '100%', marginTop: -20}}>
                 <ListMember styles={{width: '90%', height: 15}} />
                 <ListMember styles={{width: '50%', height: 15, marginTop: 0}} />
                 <ListMember styles={{width: '70%', height: 15}} />
@@ -177,7 +188,7 @@ const ProfileScreen = () => {
           </View>
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'સમાજની સાથે રહેવું એજ મારી ફરજ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

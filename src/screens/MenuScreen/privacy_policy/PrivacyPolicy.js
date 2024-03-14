@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
           </View>
           <BorderView
             backgroundColor={AppColors.BackgroundSecondColor}
-            text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+            text={'સમાજ એજ મારો પરિવાર છે'}
           />
         </View>
       </View>

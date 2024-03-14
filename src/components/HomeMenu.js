@@ -46,7 +46,7 @@ const HomeMenuButton = props => {
       <Text
         style={{
           fontSize: 10,
-          fontFamily: AppFonts.medium,
+          fontFamily: AppFonts.bold,
           color: AppColors.BackgroundSecondColor,
           textAlign: 'center',
           marginHorizontal: 5,

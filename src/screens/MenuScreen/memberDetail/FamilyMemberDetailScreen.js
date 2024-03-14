@@ -83,11 +83,12 @@ const FamilyMemberDetailScreen = props => {
               name: response?.data[i]?.name,
               id: response?.data[i]?.id,
             });
-            if (i == 0) {
-              setValue(response?.data[i]?.name);
-              setCityId(response?.data[i]?.id);
-            }
+            // if (i == 0) {
+            //   setValue(response?.data[i]?.name);
+            //   setCityId(response?.data[i]?.id);
+            // }
           }
+          setLoading(false);
           setCities(temp);
         }
       },
@@ -282,7 +283,11 @@ const FamilyMemberDetailScreen = props => {
           )}
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={
+            cityId == ''
+              ? 'સમાજના પરિવારમાં ખુબ ખુબ હાર્દિક સ્વાગત છે'
+              : 'ગામના પરિવારનું હાર્દિક પુર્વક સ્વાગત છે'
+          }
           backgroundColor={AppColors.BackgroundSecondColor}
         />
         {/* <FooterTextCell title={`પરિવાર નુ ખુબ ખુબ સ્વાગત છે`} /> */}

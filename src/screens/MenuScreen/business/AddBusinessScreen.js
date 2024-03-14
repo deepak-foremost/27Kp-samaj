@@ -132,6 +132,7 @@ const AddBusinessScreen = props => {
       setClose(bussinessItem?.to_time);
       setCode(bussinessItem?.country_code);
       setSelectedCity(bussinessItem?.city);
+      setCityId(bussinessItem?.city_id);
       setMobile(bussinessItem?.business_phone);
       setEmail(bussinessItem?.business_email);
       setWebsite(bussinessItem?.website);
@@ -217,6 +218,7 @@ const AddBusinessScreen = props => {
             from_time: startTime,
             to_time: endTime,
             city: selectedCity,
+            city_id: selectedCityId,
             business_start_date: startDate,
             business_end_date: endDate,
             business_hourse: JSON.stringify(week),
@@ -239,6 +241,7 @@ const AddBusinessScreen = props => {
             from_time: startTime,
             to_time: endTime,
             city: selectedCity,
+            city_id: selectedCityId,
             business_start_date: startDate,
             business_end_date: endDate,
             business_hourse: JSON.stringify(week),

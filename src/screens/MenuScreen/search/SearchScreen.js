@@ -140,7 +140,7 @@ const SearchScreen = props => {
       response => {
         var temp = [];
         temp.push({
-          name: 'Village',
+          name: 'All Villages',
           id: 0,
         });
         // setCity('Village');
@@ -344,7 +344,7 @@ const SearchScreen = props => {
                   },
                 ]}>
                 <MySelection
-                  label={`Village`}
+                  label={`All Villages`}
                   placeholder={`Select Village`}
                   textStyle={{fontSize: 10}}
                   data={cities == null ? [] : cities}
@@ -553,6 +553,7 @@ const SearchScreen = props => {
                   label={`બલ્ડ ગ્રુપ :`}
                   placeholder={`બલ્ડ ગ્રુપ`}
                   data={staticArray.bloodGroup}
+                  textStyle={{fontSize: 9}}
                   value={bloodGroup}
                   onItemSelect={item => {
                     printLog(item?.name);
@@ -609,6 +610,7 @@ const SearchScreen = props => {
                   label={`Foreign Country :`}
                   placeholder={`Foreign Country`}
                   data={staticArray.foriegnCountry}
+                  country={true}
                   textStyle={{fontSize: 10}}
                   value={country}
                   onItemSelect={item => {
@@ -781,7 +783,7 @@ const SearchScreen = props => {
                           }}>
                           <Text
                             style={{
-                              flex: 0.4,
+                              flex: 0.6,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -790,7 +792,7 @@ const SearchScreen = props => {
                           </Text>
                           <Text
                             style={{
-                              flex: 3.2,
+                              flex: 3.5,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
@@ -803,27 +805,29 @@ const SearchScreen = props => {
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
+                              paddingLeft: 5,
                             }}>
                             ગામ
                           </Text>
-                          <Text
+                          {/* <Text
                             style={{
-                              flex: 2.5,
+                              flex: 2,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
                             }}>
                             મોબાઈલ નંબર
-                          </Text>
+                          </Text> */}
                           <Text
                             style={{
-                              flex: 0.7,
+                              flex: 2,
                               color: AppColors.DarkText,
                               fontFamily: AppFonts.semiBold,
                               fontSize: 10,
                               textAlign: 'center',
+                              paddingHorizontal: 2,
                             }}>
-                            ફોટો
+                            શાખ
                           </Text>
                         </View>
                       )
@@ -848,7 +852,7 @@ const SearchScreen = props => {
           </ScrollView>
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'સમાજ સાથે હળીમળીને રહેવું એજ મારો અધિકાર છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
           style={result?.length == 0 && styles.last}
         />
@@ -890,7 +894,7 @@ const AboutCell = props => {
         }}>
         <Text
           style={{
-            flex: 0.4,
+            flex: 0.6,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
@@ -899,7 +903,7 @@ const AboutCell = props => {
         </Text>
         <Text
           style={{
-            flex: 3.2,
+            flex: 3.5,
             color: AppColors.DarkText,
             fontFamily: AppFonts.semiBold,
             fontSize: 10,
@@ -954,7 +958,7 @@ const AboutCell = props => {
             style={{height: 15, width: 15, resizeMode: 'cover'}}
           /> */}
         {/* </TouchableOpacity> */}
-        <View
+        {/* <View
           style={{alignItems: 'center', flex: 2.5, paddingLeft: 3}}
           activeOpacity={1}>
           <Text
@@ -1001,16 +1005,17 @@ const AboutCell = props => {
               />
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
         <View
           style={{
-            flex: 0.7,
+            flex: 2,
             justifyContent: 'center',
             alignItems: 'center',
-            paddingBottom: 2.5,
+            paddingHorizontal: 2,
+            // paddingBottom: 2.5,
           }}>
-          <Image
+          {/* <Image
             style={{
               height: 15,
               width: 15,
@@ -1022,7 +1027,17 @@ const AboutCell = props => {
                 ? AppImages.MEMBER_IMAGE
                 : {uri: props?.item?.images[0]?.image}
             }
-          />
+          /> */}
+          <Text
+            style={{
+              // flex: 2,
+              color: AppColors.DarkText,
+              fontFamily: AppFonts.semiBold,
+              fontSize: 10,
+              // marginLeft: 10,
+            }}>
+            {props?.item?.shakh}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

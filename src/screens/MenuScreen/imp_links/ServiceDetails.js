@@ -258,7 +258,7 @@ const ServiceDetails = ({route}) => {
 
         <BorderView
           backgroundColor={AppColors.BackgroundSecondColor}
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          text={'સમાજની દરેક માહિતી મારા ભવિષ્ય માટે ઉપયોગી છે'}
         />
       </View>
     </View>

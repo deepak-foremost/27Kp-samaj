@@ -2,19 +2,19 @@ import {View, Text, Platform} from 'react-native';
 import React from 'react';
 import {AppColors} from '../utils/AppColors';
 import {AppFonts} from '../utils/AppFonts';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const BorderView = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.bottom;
- 
+
   return (
     <View
       style={{
         position: 'absolute',
         bottom: 0,
         width: '100%',
-        paddingTop:5,
+        paddingTop: 5,
         ...props.borderStyle,
       }}>
       <View
@@ -32,7 +32,7 @@ const BorderView = props => {
             height: 5,
             borderTopRightRadius: 5,
             borderBottomRightRadius: 5,
-            width: '10%',
+            width: '7%',
           }}></View>
         <Text
           style={{
@@ -40,6 +40,8 @@ const BorderView = props => {
             fontFamily: AppFonts.regular,
             color: '#78789D',
             paddingTop: 2.5,
+            width:'86%',
+            textAlign:'center'
           }}>
           {props?.text}
         </Text>
@@ -49,12 +51,12 @@ const BorderView = props => {
             height: 5,
             borderTopLeftRadius: 5,
             borderBottomLeftRadius: 5,
-            width: '10%',
+            width: '7%',
           }}></View>
       </View>
       <View
         style={{
-          height:Platform.OS=='ios'? StatusBarHeight:25,
+          height: Platform.OS == 'ios' ? StatusBarHeight : 25,
           backgroundColor: props?.backgroundColor,
           width: '100%',
           borderTopLeftRadius: 30,

@@ -381,7 +381,7 @@ const NewsScreen = props => {
           )}
         </View>
         <BorderView
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          text={'સમાજ નો કાર્યોમાં સાથ સહકાર આપવો'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

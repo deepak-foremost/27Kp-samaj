@@ -234,6 +234,7 @@ const AboutUsDetailScreen = ({props, route}) => {
                     Linking.openURL(`tel:${'+91 ' + myList[0]?.phone}`)
                   }
                   iconOne
+                  iconTwo
                 />
               </View>
             ) : (
@@ -244,7 +245,7 @@ const AboutUsDetailScreen = ({props, route}) => {
           </View>
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          text={'સેવા કરવી તે મારી અમુલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>
@@ -300,14 +301,16 @@ export const MemberDetail = props => {
               )
             }>
             {' '}
-            <Image source={AppImages.CIRCLE_CALL_ICON} />
+            <Image source={AppImages.CIRCLE_CALL_ICON} 
+            style={{height:9,width:9,resizeMode:'contain'}}/>
           </TouchableOpacity>
         ) : null}
 
         <Text
           numberOfLines={3}
           style={{
-            color: '#A4A4A4',
+            // color: '#A4A4A4',
+            color: AppColors.BackgroundSecondColor,
             fontFamily: AppFonts.semiBold,
             fontSize: 11,
             // textAlign: 'center',
@@ -394,14 +397,17 @@ export const AboutUsMemberDetail = props => {
               paddingBottom: 2.5,
             }}
             onPress={props?.press}>
-            <Image style={{}} source={AppImages.CIRCLE_CALL_ICON} />
+            <Image style={{height:9,width:9,resizeMode:'contain'}} source={AppImages.CIRCLE_CALL_ICON} />
           </TouchableOpacity>
         ) : null}
         {props?.iconTwo ? (
           <TouchableOpacity
+            activeOpacity={1}
             style={{
               justifyContent: 'center',
               alignItems: 'center',
+              paddingHorizontal: 10,
+              paddingBottom: 2.5,
             }}
             onPress={() =>
               Linking.openURL(

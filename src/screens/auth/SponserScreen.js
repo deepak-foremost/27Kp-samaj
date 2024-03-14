@@ -17,6 +17,21 @@ import {getCities, getProfile} from '../../networking/CallApi';
 import {printLog} from '../../utils/AppConstValue';
 import AsyncStorage from '@react-native-community/async-storage';
 
+const sponserList = [
+  {
+    name: 'પટેલ મફતલાલ જીવરામદાસ (રામદેવ ગ્રુપ, ઠાકરાસણ)',
+  },
+  {
+    name: 'પટેલ હીરાભાઈ જોઈતારામ (લીહોડા, ભુત)',
+  },
+  {
+    name: 'સ્વ.પટેલ જીતેન્દ્રકુમાર બાબુલાલ (ચાણસ્મીયા, હાજીપુર)',
+  },
+  {
+    name: 'પટેલ અલ્પેશકુમાર વીરાભાઈ (સત્વમ ગ્રુપ, મકતુપુર)',
+  },
+];
+
 const SponserScreen = props => {
   const inset = useSafeAreaInsets();
   const StatusBarHeight = inset.top;
@@ -78,12 +93,17 @@ const SponserScreen = props => {
     <View
       style={[
         AppStyles.SplashBackground,
-        {paddingTop: Platform.OS == 'ios' && StatusBarHeight, flex: 1},
+        {
+          paddingTop: Platform.OS == 'ios' && StatusBarHeight,
+          flex: 1,
+          justifyContent: 'space-between',
+          paddingVertical: 30,
+        },
       ]}>
       <StatusBar backgroundColor={AppColors.BackgroundSecondColor} />
       <View style={AppStyles.AppLogoStyle}>
         <Image
-          style={{height: 140, width: 140}}
+          style={{height: 160, width: 160}}
           source={AppImages.APP_MAIN_ICON}
         />
       </View>
@@ -93,11 +113,45 @@ const SponserScreen = props => {
           color: 'white',
           fontFamily: AppFonts.semiBold,
           textAlign: 'center',
-          marginTop: 30,
           width: '80%',
         }}>
         શ્રી સત્તાવીસ કડવા પાટીદાર સમાજ{'\n'} ઊંઝા
       </Text>
+
+      <View>
+        <Text
+          style={{
+            fontSize: 16,
+            color: AppColors.BackgroundSecondColor,
+            backgroundColor: '#fff',
+            fontFamily: AppFonts.semiBold,
+            paddingHorizontal: 25,
+            borderRadius: 20,
+            paddingTop: 7,
+            paddingBottom: 5,
+            marginBottom: 10,
+            textAlign: 'center',
+          }}>
+          પરિવાર પરિચય એપ્લિકેશન સ્પોન્સર
+        </Text>
+        {sponserList.map(item => (
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: AppFonts.semiBold,
+              color: '#fff',
+              borderColor: '#fff',
+              borderWidth: 1,
+              marginTop: 10,
+              paddingHorizontal: 15,
+              textAlign: 'center',
+              paddingTop: 7,
+              paddingBottom: 5,
+            }}>
+            {item.name}
+          </Text>
+        ))}
+      </View>
       <Text
         style={{
           fontSize: 22,
@@ -105,7 +159,6 @@ const SponserScreen = props => {
           fontFamily: AppFonts.semiBold,
           textAlign: 'center',
           lineHeight: 35,
-          marginTop: 50,
         }}>
         Welcome {'\n'} Let’s Get Started!
       </Text>
@@ -114,16 +167,18 @@ const SponserScreen = props => {
         text={'Get Started!'}
         buttonStyle={{
           backgroundColor: '#fff',
-          position: 'absolute',
-          bottom: 30,
         }}
         textStyle={{color: 'black'}}
-        buttonPress={() =>
-          status
-           ? RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, {
-                status: status,
-              })
-            :RootNavigation.navigate(screen_name,{status:status})
+        buttonPress={
+          () =>
+            RootNavigation.navigate(AppScreens.SPONSER_IMAGE, {
+              status: status,
+            })
+          // status
+          //   ? RootNavigation.forcePush(props, AppScreens.HOME_SCREEN, {
+          //       status: status,
+          //     })
+          //   : RootNavigation.navigate(screen_name, {status: status})
         }
       />
     </View>

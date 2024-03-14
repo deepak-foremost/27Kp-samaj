@@ -216,13 +216,13 @@ const AppSponcerScreen = props => {
             }}>
             <Text
               style={{
-                fontSize: 8,
+                fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '20%',
-                flex: 1.6,
+                flex: 1.5,
               }}>
-              {status + ' નંબર'}
+              {'પરિવાર સુરક્ષા સહાય' + ' નંબર'}
             </Text>
             <Text
               style={{
@@ -230,8 +230,8 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '25%',
-                paddingLeft: 5,
-                flex: 2,
+                paddingLeft: 10,
+                flex: 2.0,
               }}>
               નામ
             </Text>
@@ -241,8 +241,8 @@ const AppSponcerScreen = props => {
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
                 // width: '13%',
-                flex: 1.5,
-                marginLeft: 5,
+                flex: 1.75,
+                // marginLeft: 5,
               }}>
               ગામ
             </Text>
@@ -251,12 +251,24 @@ const AppSponcerScreen = props => {
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
                 color: AppColors.DarkText,
+                // width: '13%',
+                flex: 1.75,
+                // marginLeft: 5,
+              }}>
+              શાખ
+            </Text>
+            <Text
+              style={{
+                fontSize: 9,
+                fontFamily: AppFonts.semiBold,
+                color: AppColors.DarkText,
                 // width: '30%',
-                flex: 2,
+                flex: 2.3,
+                paddingLeft:10
               }}>
               મોબાઈલ નંબર
             </Text>
-            <Text
+            {/* <Text
               style={{
                 fontSize: 9,
                 fontFamily: AppFonts.semiBold,
@@ -266,7 +278,7 @@ const AppSponcerScreen = props => {
                 textAlign: 'center',
               }}>
               ફોટો
-            </Text>
+            </Text> */}
           </View>
           {/* <View
             style={{
@@ -328,7 +340,7 @@ const AppSponcerScreen = props => {
 
         {/* <FooterTextCell title={`સમાજ ના હીત માં રહેવુ મારો અધિકાર છે`} /> */}
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          text={'સમાજ સાથે રહીને દાન કરવું તેજ મારી ફરજ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>
@@ -378,7 +390,7 @@ export const MemberCell = props => {
           styles.heading,
           {
             // width: '20%',
-            flex: 1.6,
+            flex: 0.8,
             color: AppColors.DarkText,
             // textAlign: props?.item ? 'center' : 'auto',
             // paddingLeft: props?.item ? 0 : '2%',
@@ -397,7 +409,7 @@ export const MemberCell = props => {
           styles.heading,
           {
             // width: '25%',
-            flex: 2,
+            flex: 2.5,
             color: AppColors.DarkText,
           },
         ]}>
@@ -408,7 +420,7 @@ export const MemberCell = props => {
           styles.heading,
           {
             // width: '13%',
-            flex: 1.5,
+            flex: 1.75,
             color: AppColors.DarkText,
             marginLeft: 5,
           },
@@ -416,6 +428,18 @@ export const MemberCell = props => {
         {props?.item ? `${props?.item?.village}` : 'ગામ'}
       </Text>
 
+      <Text
+        style={[
+          styles.heading,
+          {
+            // width: '13%',
+            flex: 1.75,
+            color: AppColors.DarkText,
+            marginLeft: 5,
+          },
+        ]}>
+        {props?.item ? `${props?.item?.shakh}` : 'ગામ'}
+      </Text>
       {/* {props?.status != 'drawer' ? (
         <Text
           style={[
@@ -437,7 +461,7 @@ export const MemberCell = props => {
         style={{
           // flexDirection: 'row',
           // width: '30%',
-          flex: 2,
+          flex: 2.5,
           // alignItems: 'center',
           paddingLeft: 5,
         }}>
@@ -456,7 +480,8 @@ export const MemberCell = props => {
                   `tel:${props?.item?.country_code + props?.item?.phone}`,
                 )
               }>
-              <Image source={AppImages.CIRCLE_CALL_ICON} />
+              <Image source={AppImages.CIRCLE_CALL_ICON} 
+              style={{height:9,width:9,resizeMode:'contain'}}/>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={1}
@@ -495,13 +520,11 @@ export const MemberCell = props => {
         )} */}
       </View>
 
-      <View
+      {/* <View
         style={{
-          // width: '7%',
           flex: 0.6,
           justifyContent: 'center',
           alignItems: 'flex-end',
-          // marginLeft: 10,
         }}>
         {props?.item ? (
           <TouchableOpacity activeOpacity={1} onPress={props?.imgPress}>
@@ -528,7 +551,7 @@ export const MemberCell = props => {
             ફોટો
           </Text>
         )}
-      </View>
+      </View> */}
 
       {/* <Text
         style={[
@@ -546,7 +569,7 @@ export const MemberCell = props => {
 const styles = StyleSheet.create({
   heading: {
     fontFamily: AppFonts.semiBold,
-    fontSize: 9,
+    fontSize: 10,
     color: AppColors.black,
     justifyContent: 'center',
   },

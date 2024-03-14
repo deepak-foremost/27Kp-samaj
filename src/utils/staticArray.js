@@ -105,39 +105,39 @@ export class staticArray {
     },
     {
       index: 4,
-      menu: 'જીવન સહાય સભાસદ સભ્ય',
+      menu: 'પરિવાર સુરક્ષા સહાય સભ્ય',
       screen: AppScreens.APP_SPONCER_SCREEN,
       detail: 'sponcer',
       src: require('../assets/images/support_member_icon.png'),
     },
-    {
-      index: 5,
-      menu: 'ભુમિ સભાસદ સભ્ય',
-      screen: AppScreens.APP_SPONCER_SCREEN,
-      detail: 'bhumi',
-      src: require('../assets/images/support_member_icon.png'),
-    },
+    // {
+    //   index: 5,
+    //   menu: 'ભુમિ સભાસદ સભ્ય',
+    //   screen: AppScreens.APP_SPONCER_SCREEN,
+    //   detail: 'bhumi',
+    //   src: require('../assets/images/support_member_icon.png'),
+    // },
 
     {
-      index: 6,
+      index: 5,
       menu: 'વિવિધ શહેર કારોબારી',
       screen: AppScreens.VARIOUS_BUSINESS,
       src: require('../assets/images/bhumi_icon.png'),
     },
     {
-      index: 7,
+      index: 6,
       menu: 'Privacy Policy',
       screen: AppScreens.PRIVACY_POLICY,
       src: require('../assets/images/privacy_icon.png'),
     },
     {
-      index: 8,
+      index: 7,
       menu: 'Contact Us',
       screen: AppScreens.CONTACT_US_SCREEN,
       src: require('../assets/images/contact_icon.png'),
     },
     {
-      index: 9,
+      index: 8,
       menu: 'Log Out',
       screen: '',
       src: AppImages.LOGOUT_ICON,
@@ -159,7 +159,7 @@ export class staticArray {
     },
     {
       index: 2,
-      menu: 'જીવન સહાય સભાસદ સભ્ય',
+      menu: 'પરિવાર સુરક્ષા સહાય સભ્ય',
       screen: AppScreens.APP_SPONCER_SCREEN,
       detail: 'sponcer',
       src: require('../assets/images/support_member_icon.png'),
@@ -305,6 +305,7 @@ export class staticArray {
     {label: 'B.S.W.', value: 'B.S.W.', name: 'B.S.W.'},
     {label: 'B.Tech.', value: 'B.Tech.', name: 'B.Tech.'},
     {label: 'B.V.Sc.', value: 'B.V.Sc.', name: 'B.V.Sc.'},
+    {label: 'B.V.Sc. & A.H.', value: 'B.V.Sc. & A.H.', name: 'B.V.Sc. & A.H.'},
     {label: 'C.A.', value: 'C.A.', name: 'C.A.'},
     {label: 'C.S.', value: 'C.S.', name: 'C.S.'},
     {label: 'D.Ed.', value: 'D.Ed.', name: 'D.Ed.'},
@@ -329,6 +330,7 @@ export class staticArray {
     {label: 'L.L.B.', value: 'L.L.B.', name: 'L.L.B.'},
     {label: 'L.L.M.', value: 'L.L.M.', name: 'L.L.M.'},
     {label: 'M.A.', value: 'M.A.', name: 'M.A.'},
+    {label: 'MA.BEd', value: 'MA.BEd', name: 'MA.BEd'},
     {label: 'M.B.A.', value: 'M.B.A.', name: 'M.B.A.'},
     {label: 'M.B.B.S.', value: 'M.B.B.S.', name: 'M.B.B.S.'},
     {label: 'M.C.A.', value: 'M.C.A.', name: 'M.C.A.'},
@@ -350,6 +352,7 @@ export class staticArray {
       name: 'Management in Eng',
     },
     {label: 'N.D.A.', value: 'N.D.A.', name: 'N.D.A.'},
+    {label: 'Nursery', value: 'Nursery', name: 'Nursery'},
     {label: 'Ph.D', value: 'Ph.D', name: 'Ph.D'},
     {label: 'P.T.C.', value: 'P.T.C.', name: 'P.T.C.'},
     {label: 'STD:1', value: 'STD:1', name: 'STD:1'},
@@ -591,6 +594,7 @@ export class staticArray {
     {label: 'O-', value: 'O-', name: 'O-'},
     {label: 'AB+', value: 'AB+', name: 'AB+'},
     {label: 'AB-', value: 'AB-', name: 'AB-'},
+    {label: 'Unknown', value: 'Unknown', name: 'Unknown'},
   ];
 
   static timeList = [

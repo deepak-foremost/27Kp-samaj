@@ -46,6 +46,7 @@ import LinkDetails from '../screens/MenuScreen/imp_links/LinkDetails';
 import ServiceDetails from '../screens/MenuScreen/imp_links/ServiceDetails';
 import PrivacyPolicy from '../screens/MenuScreen/privacy_policy/PrivacyPolicy';
 import VariousBusiness from '../screens/MenuScreen/various_business/VariousBusiness';
+import SponserImage from '../screens/SponserImage';
 
 const RootNavigation = () => {
   return (
@@ -196,6 +197,10 @@ const RootNavigation = () => {
         <Stack.Screen
           name={AppScreens.VARIOUS_BUSINESS}
           component={VariousBusiness}
+        />
+         <Stack.Screen
+          name={AppScreens.SPONSER_IMAGE}
+          component={SponserImage}
         />
       </Stack.Navigator>
     </NavigationContainer>

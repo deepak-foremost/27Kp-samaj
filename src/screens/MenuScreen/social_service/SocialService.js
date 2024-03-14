@@ -239,7 +239,7 @@ const SocialService = ({route}) => {
               }}
               onPress={() => {
                 setBtnOpacity('life');
-                setText('જીવન સહાય સભાસદ સભ્ય');
+                setText('પરિવાર સુરક્ષા સહાય સભ્ય');
               }}>
               <Text
                 style={{
@@ -250,7 +250,7 @@ const SocialService = ({route}) => {
                   textAlign: 'center',
                   lineHeight: 20,
                 }}>
-                જીવન સહાય સભાસદ સભ્ય
+               પરિવાર સુરક્ષા સહાય સભ્ય
               </Text>
             </TouchableOpacity>
 
@@ -293,7 +293,7 @@ const SocialService = ({route}) => {
               marginTop: 40,
               marginBottom: 20,
             }}>
-            Select જીવન સહાય સભાસદ સભ્ય નંબર{' '}
+            Select પરિવાર સુરક્ષા સહાય સભ્ય નંબર{' '}
           </Text>
 
           <View
@@ -391,16 +391,15 @@ const SocialService = ({route}) => {
                     '    ' +
                     SelectedItem?.village +
                     '    ' +
-                    SelectedItem?.country_code +
-                    SelectedItem?.phone
+                    SelectedItem?.shakh 
                   : item?.jeevan_sahay_nubmer +
                     '-' +
                     item?.name +
                     '    ' +
                     item?.city +
                     '    ' +
-                    item?.country_code +
-                    item?.phone
+                    item?.shakh 
+                    
               }
             />
             {/* <MySelection
@@ -458,7 +457,7 @@ const SocialService = ({route}) => {
           </Text>
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+          text={'સમાજને સાથ સહકાર આપી સમાજને આગળ કરવો તે મારી ફરજ છે'}
           backgroundColor={AppColors.Orange}
         />
       </View>
@@ -493,7 +492,7 @@ export const JevanMember = props => {
       </Text>
       <Text
         style={{
-          flex: 1.5,
+          flex: 2.5,
           fontFamily: AppFonts.semiBold,
           fontSize: 9,
           color: AppColors.black,
@@ -503,7 +502,7 @@ export const JevanMember = props => {
       </Text>
       <Text
         style={{
-          flex: 0.7,
+          flex: 1.5,
           fontFamily: AppFonts.semiBold,
           fontSize: 9,
           color: AppColors.black,
@@ -519,7 +518,7 @@ export const JevanMember = props => {
           color: AppColors.black,
           justifyContent: 'center',
         }}>
-        {props?.item?.country_code + props?.item?.phone}
+        {props?.item?.shakh}
       </Text>
     </TouchableOpacity>
   );

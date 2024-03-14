@@ -140,7 +140,6 @@ const HomeScreen = props => {
   const [modelOpen, setModelOpen] = useState(false);
   const [deleteLoader, setLoader] = useState(false);
   const [HeaderPhone, setHeaderPhone] = useState('');
-  
 
   useEffect(() => {
     async function check() {
@@ -392,7 +391,18 @@ const HomeScreen = props => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <View style={[AppStyles.AppLogoStyle, {}]}>
+              <View
+                style={[
+                  AppStyles.AppLogoStyle,
+                  {
+                    height: 150,
+                    width: 150,
+                    backgroundColor: '#F7F7F7',
+                    borderRadius: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
+                ]}>
                 <Image
                   style={{height: 140, width: 140}}
                   source={AppImages.APP_MAIN_ICON}
@@ -459,7 +469,7 @@ const HomeScreen = props => {
                       show={select}
                       // selected={currentMenu}
                       onChange={() => {
-                        if (item?.index == 9 && screen != 'User Signin') {
+                        if (item?.index == 8 && screen != 'User Signin') {
                           setVisible(false);
                           setModelOpen(true);
                         } else if (
@@ -720,7 +730,7 @@ const HomeScreen = props => {
           <BorderView
             borderStyle={{position: ''}}
             backgroundColor={AppColors.BackgroundSecondColor}
-            text={'સમાજ એજ મારો પરિવાર'}
+            text={'સમાજ એજ મારો પરિવાર છે'}
           />
         </ScrollView>
 

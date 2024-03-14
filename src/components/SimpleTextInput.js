@@ -31,6 +31,16 @@ import {ListMember} from '../screens/MenuScreen/sponcer/AppSponcerScreen';
 
 export const MySelection = props => {
   const ref = useRef();
+  const [Data, setData] = useState(props?.data);
+  const [filteredData, setFilteredData] = useState(
+    props?.data == null ? [] : props?.data,
+  );
+  const Search = text => {
+    const filtered = Data.filter(item =>
+      item?.value?.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredData(filtered);
+  };
 
   return (
     <View
@@ -86,52 +96,87 @@ export const MySelection = props => {
             borderTopRightRadius: 30,
           },
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 45,
-            color: AppColors.black,
-            borderBottomColor: AppColors.LightText,
-            borderBottomWidth: 1,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            alignItems: 'center',
-          }}>
-          <Text
-            numberOfLines={1}
+        {!props?.country ? (
+          <View
             style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 16,
-              flex: 1,
-              textAlignVertical: 'center',
-              paddingStart: 20,
+              flexDirection: 'row',
+              height: 45,
               color: AppColors.black,
+              borderBottomColor: AppColors.LightText,
+              borderBottomWidth: 1,
+              borderTopLeftRadius: 30,
+              borderTopRightRadius: 30,
+              alignItems: 'center',
             }}>
-            {props?.placeholder ? props?.placeholder : 'Select Option'}
-          </Text>
-          <TouchableOpacity
-            style={{alignItems: 'center', justifyContent: 'center'}}
-            activeOpacity={1}
-            onPress={() => ref?.current?.close()}>
             <Text
               numberOfLines={1}
               style={{
-                fontFamily: AppFonts.bold,
+                fontFamily: AppFonts.semiBold,
                 fontSize: 16,
+                flex: 1,
                 textAlignVertical: 'center',
-                paddingHorizontal: 20,
-                color: '#303590',
+                paddingStart: 20,
+                color: AppColors.black,
               }}>
-              {'Close'}
+              {props?.placeholder ? props?.placeholder : 'Select Option'}
             </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={{alignItems: 'center', justifyContent: 'center'}}
+              activeOpacity={1}
+              onPress={() => ref?.current?.close()}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontFamily: AppFonts.bold,
+                  fontSize: 16,
+                  textAlignVertical: 'center',
+                  paddingHorizontal: 20,
+                  color: '#303590',
+                }}>
+                {'Close'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              borderWidth: 1,
+              borderColor: AppColors.line_color,
+              alignItems: 'center',
+              paddingLeft: 15,
+            }}>
+            <Image
+              style={{height: 15, width: 15, tintColor: AppColors.LightText}}
+              source={AppImages.SEARCH_ICON}
+            />
+            <TextInput
+              style={{
+                height: 35,
+                color: AppColors.DarkText,
+                fontSize: 12,
+                flex: 1,
+                margin: 5,
+              }}
+              placeholder="Search Country"
+              placeholderTextColor={AppColors.LightText}
+              onChangeText={i => Search(i)}
+            />
+          </View>
+        )}
 
         <FlatList
           showsVerticalScrollIndicator={false}
           style={{width: '100%'}}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={{paddingHorizontal: 15, paddingTop: 10}}
-          data={props?.data == null ? [] : props?.data}
+          data={
+            props?.country
+              ? filteredData
+              : props?.data == null
+              ? []
+              : props?.data
+          }
           onEndReached={props?.endReached}
           renderItem={({item, index}) => {
             // printLog('FlatList', JSON.stringify(item));
@@ -140,6 +185,7 @@ export const MySelection = props => {
                 activeOpacity={1}
                 onPress={() => {
                   props?.onItemSelect(item);
+                  setFilteredData(Data);
                   ref?.current?.close();
                 }}
                 style={{
@@ -196,6 +242,16 @@ export const HorizontalDetailInput = props => {
 
 export const HorizontalSelection = props => {
   const ref = useRef();
+  const [Data, setData] = useState(props?.data);
+  const [filteredData, setFilteredData] = useState(
+    props?.data == null ? [] : props?.data,
+  );
+  const Search = text => {
+    const filtered = Data.filter(item =>
+      item?.value?.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredData(filtered);
+  };
 
   return (
     <View
@@ -256,60 +312,96 @@ export const HorizontalSelection = props => {
             alignItems: 'center',
           },
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 45,
-            color: AppColors.black,
-            borderBottomColor: AppColors.light_grey,
-            borderBottomWidth: 1,
-            alignItems: 'center',
-          }}>
-          <Text
-            numberOfLines={1}
+        {!props?.country ? (
+          <View
             style={{
-              fontFamily: AppFonts.bold,
-              fontSize: 16,
-              flex: 1,
-              textAlignVertical: 'center',
-              paddingStart: 20,
+              flexDirection: 'row',
+              height: 45,
               color: AppColors.black,
-            }}>
-            {props?.placeholder ? props?.placeholder : 'Select Option'}
-          </Text>
-          <TouchableOpacity
-            activeOpacity={1}
-            style={{
-              height: '100%',
+              borderBottomColor: AppColors.light_grey,
+              borderBottomWidth: 1,
               alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onPress={() => ref?.current?.close()}>
+            }}>
             <Text
               numberOfLines={1}
               style={{
                 fontFamily: AppFonts.bold,
                 fontSize: 16,
+                flex: 1,
                 textAlignVertical: 'center',
-                paddingHorizontal: 20,
+                paddingStart: 20,
                 color: AppColors.black,
               }}>
-              {'Close'}
+              {props?.placeholder ? props?.placeholder : 'Select Option'}
             </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() => ref?.current?.close()}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontFamily: AppFonts.bold,
+                  fontSize: 16,
+                  textAlignVertical: 'center',
+                  paddingHorizontal: 20,
+                  color: AppColors.black,
+                }}>
+                {'Close'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              borderWidth: 1,
+              borderColor: AppColors.line_color,
+              alignItems: 'center',
+              paddingLeft: 15,
+            }}>
+            <Image
+              style={{height: 15, width: 15, tintColor: AppColors.LightText}}
+              source={AppImages.SEARCH_ICON}
+            />
+            <TextInput
+              style={{
+                height: 35,
+                color: AppColors.DarkText,
+                fontSize: 12,
+                flex: 1,
+                margin: 5,
+              }}
+              placeholder="Search Country"
+              placeholderTextColor={AppColors.LightText}
+              onChangeText={i => Search(i)}
+            />
+          </View>
+        )}
 
         <FlatList
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           style={{width: '100%'}}
           contentContainerStyle={{paddingHorizontal: 15, paddingTop: 10}}
-          data={props?.data == null ? [] : props?.data}
+          data={
+            props?.country
+              ? filteredData
+              : props?.data == null
+              ? []
+              : props?.data
+          }
           renderItem={({item, index}) => {
             return (
               <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => {
                   props?.onItemSelect(item);
+                  setFilteredData(Data);
                   ref?.current?.close();
                 }}
                 style={{
@@ -397,12 +489,9 @@ export const MyMobileNumber = props => {
   const [filteredData, setFilteredData] = useState(staticArray.countryCodes);
   const [searchText, setSearchText] = useState('');
   const Search = text => {
-    // setSearchText(text);
-    // Filter the data based on the search text
     const filtered = data.filter(item =>
       item.code.toLowerCase().includes(text.toLowerCase()),
     );
-
     setFilteredData(filtered);
   };
   // useEffect(() => {

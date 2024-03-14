@@ -184,7 +184,7 @@ const ParichayFileScreen = props => {
           )}
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'સમાજના કોઈપણ કાર્યોમાં સાથ સહકાર આપવો'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

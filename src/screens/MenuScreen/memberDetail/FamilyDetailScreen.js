@@ -130,7 +130,15 @@ const FamilyDetailScreen = props => {
   const [imageList, setImageLIst] = useState(null);
   const [pdfLoad, setPdfLoad] = useState(false);
   const [number, setNumber] = useState('');
+  const image = require('../../../assets/images/app_main_icon.png');
+const imageUri = Image.resolveAssetSource(image).uri;
   // const [images, setImages] = useState();
+
+  const localImage = {
+    images: [
+      {image: require('../../../assets/images/small_app_icon.png')}, // assuming 'profile.jpg' is your local image file
+    ],
+  };
 
   const images = [
     {
@@ -157,7 +165,59 @@ const FamilyDetailScreen = props => {
   const generatePDF = async userData => {
     const htmlContent = ` <html>
     <style type="text/css">
-    .topname p{
+    .header_div{
+      display: inline-block;
+      width: 102%;
+      background-color: #049AB5;
+      height:85px;
+      margin-top:-10px;
+      margin-left:-8px
+    }
+    .header_div p{
+      margin: 0px;
+      font-size: 25px;
+      text-align: center;
+      color: #fff;
+      font-weight: 700;
+      margin-top:10px
+    }
+    .header_div img{
+      float: left;
+      width: 82px;
+      margin-left: 25px;
+      height:70px;
+      margin-top:10px
+    }
+    .header_div h5{
+      margin: 0px;
+      font-size: 18px;
+      color: #fff;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 10px;
+
+    }
+    .footer_divbox{
+      margin: 0 auto;
+      text-align: center;
+      height:auto;
+      position: fixed;
+      bottom: 0;
+      left:0;
+      right:0;
+      margin-top:10px;
+      width:100%
+    }
+    .footer_divbox h3{
+      max-width: 680px;
+      border: 2px solid #000;
+      border-radius: 50px;
+      padding: 15px 0px;
+      font-size: 21px;
+      color: #000;
+      margin: 0 auto;
+    }
+   .topname p{
       margin: 0;
       color: #0A3C5D;
       font-size: 22px;
@@ -167,179 +227,196 @@ const FamilyDetailScreen = props => {
     .profile_img{
       display: inline-block;
       width: 100%;
-      margin-bottom: 40px;
-      height:200
+      margin-bottom: 20px;
+      margin-top: 20px;
+      text-align: center;
+      height:200px;
+      border-radius: 15px;
     }
     .profile_img img{
-      width: 31%;
-      float: left;
+      width: 24%;
       border-radius: 15px;
-      margin-left:10px;
-      object-fit: cover;
-      height:200
-    }
-  
-    .profile_textdiv1 p{
-      margin: 0px;
-      color: #ABABAB;
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-    .profile_textdiv1 p label{
-      font-weight: bold;
-      color: #363663;
-    }
-    .profile_textdiv1{
-      display: inline-block;
-      width: 100%;
-      margin-bottom: 3px;
-    }
-    .profile_textdiv1 h3{
-      margin: 0px;
-        font-size: 22px;
-        color: #049AB5;    
-        margin-bottom: 15px;
-    }
-  
-    .profile_textdiv p{
-      margin: 0px;
-      color: #ABABAB;
-      font-size: 16px;
-      margin-bottom: 1px;
-    }
-    .profile_textdiv p label{
-      font-weight: bold;
-      color: #000;
-    }
-    .profile_textdiv{
-      display: inline-block;
-      width: 100%;
-      margin-bottom: 20px;
-        border-bottom: 1px solid #E6E6E6;
-        padding-bottom: 20px;
-    }
-    .profile_textdiv h3{
-      margin: 0px;
-        font-size: 22px;
-        color: #049AB5;    
-        margin-bottom: 15px;
+      object-fit: contain;
+      height:200;
     }
     .address_textbox{
       display: inline-block;
       width: 100%;
-      margin-bottom: 20px;
+      align-self: center;
+      /*margin-bottom: 20px;
         border-bottom: 1px solid #E6E6E6;
-        padding-bottom: 20px;
+        padding-bottom: 20px;*/
     }
     .address_textbox p{
       margin: 0px;
-      color: #ABABAB;
+      color: #000;
       font-size: 16px;
       margin-bottom: 1px;
     }
-    .address_textbox p label{
-      font-weight: bold;
-      color: #363663;
+    .address_textbox label{
+        font-weight: bold;
+      color: #000;
+      background-color: #6BE5E8;
+      border: 1px solid #000;
+      padding: 5px 4px;
+      width: 34.2%;
+      text-align: center;
+      float: left;
+      margin-right: 5px;
+    }
+    .address_textbox span{
+      border: 1px solid #000;
+      padding: 5px 2px;
+      width: 59%;
+      display: inline-block;
+      min-height: 18px;
     }
     .address_textbox ul{
       padding: 0px;
       margin: 0px;
-      margin-top: 10px;
+      margin-top: 1px;
+      display: flex;
+      justify-content: center;
     }
     .address_textbox ul li{
-      width: 50%;
-        list-style-type: none;
-        float: left;
-        font-weight: bold;
-        color: #000;
-        margin: 0px;
-        font-size: 16px;
-        margin-bottom: 6px;
-    }	
-    .address_textbox ul li img{
-      width: 20px;
+      width: 43.2%;
+    list-style-type: none;
+    float: left;
+    color: #000;
+    margin: 0px;
+    font-size: 16px;
+    margin-bottom: 1px;
+    }
+    .user_namediv{
+      display: inline-block;
+      width: 100%;
+      margin-top: 30px;
+      text-align: center;
+
+    }
+    .user_namediv span{
+      font-weight: bold;
+      color: #000;
+      background-color: #6BE5E8;
+      border: 0px solid #000;
+      padding: 9px 46px;
+      text-align: center;
+      margin-right: 5px;
+      border-radius: 50px;
+    }
+    .address_textbox1{
+      display: inline-block;
+      width: 100%;
+      align-self: center;
+      /*margin-bottom: 20px;
+        border-bottom: 1px solid #E6E6E6;
+        padding-bottom: 20px;*/
+    }
+    .address_textbox1 p{
+      margin: 0px;
+      color: #000;
+      font-size: 16px;
+      margin-bottom: 1px;
+      display: flex;
+      justify-content: center;
+    }
+    .address_textbox1 label{
+      font-weight: bold;
+      color: #000;
+      background-color: #6BE5E8;
+      border: 1px solid #000;
+      padding: 3px 2px;
+      width:31%;
+      text-align: center;
+      float: left;
+      margin-right: 5px;
+    }
+    .address_textbox1 span{
+      border: 1px solid #000;
+      padding: 3px 2px;
+      width: 53.47%;
+      display: inline-block;
+      margin-top: 2px;
+      min-height: 18px
     }
   </style>
-    <body>
-    <div class="container">	
-	<div class="profile_img">
-		<img src='${userData?.images[0]?.image}'>
-		<img src='${userData?.images[1]?.image}'>
-		<img src='${userData?.images[2]?.image}'>
-   
-	</div>
-	<div class="profile_textdiv1">
-		<h3>${userData?.phone}</h3>
-		<p><label> ગામ:</label>  ${userData?.city}</p>	
-		<p><label> શાખ:</label>  ${userData?.shakh}</p>
-	</div>
-	<div class="profile_textdiv">
-		<p><label> મોસાળ</label>  ${userData?.mosal} </p>	
-		<p><label> સાસરું:</label>  ${userData?.sasru} </p>	
-	</div>
+  <body>
+  <div class="container">
+  <div class="header_div">
+  <img src=${imageUri}>
+    <p>${'શ્રી સત્તાવીસ કડવા પાટીદાર સમાજ, ઊંઝા'}</p>
+    <h5>ફેમિલી માહિતી</h5>
+  </div>
+  <div class="user_namediv">
+  <span>${userData.name.toUpperCase()}</span>
+  <span>${userData?.country_code + ' ' + userData?.phone}</span>
+  </div>
+  <div class="profile_img">
+      <img src="${userData?.images[0]?.image}">
+  </div>
   <div class="address_textbox">
   <ul>
-  <li><label> જન્મ તારીખ:</label>${userData?.dob} </li>
-  <li><label> ઉંમર:</label>${userData?.age} </li>
+    <li><p><label> ગામ:</label>  <span>${userData?.city}</span></p></li>
+    <li><p><label> શાખ:</label>  <span>${userData?.shakh}</span></p></li>
   </ul>
   <ul>
-  <li><label> ઊંચાઈ:</label>${userData?.height} </li>
-  <li><label> વજન:</label>${userData?.weight} </li>
+    <li><p><label>મોસાળ</label>  <span>${userData?.mosal} </span></p></li>
+    <li><p><label>સાસરું:</label>  <span>${userData?.sasru} </span></p></li>
   </ul>
   <ul>
-  <li><label> બ્લડગ્રુપ:</label>${userData?.blood_group} </li>
-  <li><label> લિંગ:</label>${userData?.gender} </li>
+  <li><p><label>જન્મ તારીખ:</label><span>${userData?.dob} </span></p></li>
+  <li><p><label>ઉંમર:</label><span>${userData?.age} </span></p></li>
+  </ul>
+  <ul>
+  <li><p><label> ઊંચાઈ:</label><span>${userData?.height} </span></p></li>
+  <li><p><label> વજન:</label><span>${userData?.weight} </span></p></li>
+  </ul>
+  <ul>
+  <li><p><label> બ્લડગ્રુપ:</label><span>${
+    userData?.blood_group
+  }</span></p> </li>
+  <li><p><label> લિંગ:</label><span>${userData?.gender}</span></p> </li>
   </ul>
   </div>
-  <div class="profile_textdiv">
-		<p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  ${userData?.family_main_member_with_relation} </p>	
-		<p><label> લગ્ન સ્થિતિ:</label>  ${userData?.marital_status} </p>	
-    <p><label> અભ્યાસ:</label>  ${userData?.study} </p>
-    <p><label> વ્યવસાય:</label>  ${userData?.business} </p>
-    <p><label> વ્યવસાયનું સરનામું:</label>  ${userData?.business_address} </p>
-    <p><label> ફોરેન Country નામ:</label>  ${userData?.foreign_country_name} </p>
-    
-    <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  ${userData?.current_address} </p>
-    <p><label> મોબાઈલ નંબર:</label>  ${userData?.phone} </p>
-    <p><label> E-Mail ID:</label>  ${userData?.email} </p>
-    <p><label> જીવન સહાય સભાસદ નં:</label>  ${userData?.jeevan_sahay_nubmer} </p>
-    <p><label> ભુમિ સભાસદ નં:</label>  ${userData?.boomi_nubmer} </p>
-	</div>
-</div>
-</body>
-</html>
-`;
-    // const htmlContent = `
-    //   <html>
-    //     <body>
-    //       <h1>User Details</h1>
-    //       <p style="color:red;">ગામ: ${userData.name}</p>
-    //       <p>શાખ: ${userData.shakh}</p>
-    //       <p>મોસાળ: ${userData.mosal}</p>
-    //       <p>સાસરું: ${userData.sasru}</p>
-    //       <p>જન્મ તારીખ: ${userData.dob}</p>
-    //       <p>ઉંમર: ${userData.age}</p>
-    //       <p>ઊંચાઈ: ${userData.height}</p>
-    //       <p>વજન: ${userData.weight}</p>
-    //       <p>લિંગ: ${userData.gender}</p>
-    //       <p>બ્લડગ્રુપ: ${userData.blood_group}</p>
-    //       <p>કુટુંબના વડા સાથેનો સંબંધ: ${userData.family_main_member_with_relation}</p>
-    //       <p>લગ્ન સ્થિતિ:: ${userData.marital_status}</p>
-    //       <p>અભ્યાસ: ${userData.study}</p>
-    //       <p>વ્યવસાય: ${userData.business}</p>
-    //       <p>વ્યવસાયનું સરનામું: ${userData.business_address}</p>
-    //       <p>ફોરેન Country નામ: ${userData.city}</p>
-    //       <p>હાલ ના રહેઠાણનું સરનામું: ${userData.current_address}</p>
-    //       <p>મોબાઈલ નંબર: ${userData.phone}</p>
-    //       <p>E-Mail ID: ${userData.email}</p>
 
-    //     </body>
-    //   </html>
-    // `;
+  <div class="address_textbox1">
+  <p><label> કુટુંબના વડા સાથેનો સંબંધ:</label>  <span>${
+    userData?.family_main_member_with_relation
+  }</span> </p>
+  <p><label> લગ્ન સ્થિતિ:</label>  <span>${userData?.marital_status}</span> </p>
+  <p><label> અભ્યાસ:</label>  <span>${userData?.study}</span> </p>
+  <p><label> વ્યવસાય:</label>  <span>${userData?.business}</span> </p>
+  <p><label> વ્યવસાયનું સરનામું:</label>  <span>${
+    userData?.business_address
+  }</span> </p>
+  <p><label> ફોરેન Country નામ:</label>  <span>${
+    userData?.foreign_country_name == ''
+      ? 'null'
+      : userData?.foreign_country_name
+  }</span> </p>
+
+  <p><label> હાલ ના રહેઠાણનું સરનામું:</label>  <span>${
+    userData?.current_address
+  }</span> </p>
+  <p><label> મોબાઈલ નંબર:</label>  <span>${userData?.phone}</span> </p>
+  <p><label> E-Mail ID:</label>  <span>${userData?.email}</span> </p>
+  <p><label> પરિવાર સુરક્ષા સહાય સભ્ય નં:</label>  <span>${
+    userData?.jeevan_sahay_nubmer
+  }</span> </p>
+  </div>
+  <div class="footer_divbox">
+  <h3>મારો સમાજ.... મારો ફરજ,<br>સૌનો સાથ.. સૌનો વિશ્વાસ અને સમાજનો વિકાસ</h3>
+  <div style="background-color: #049AB5; width:100%; height:20px; margin-top:20px"; margin-bottom:-20px>
+  </div>
+  </div>
+
+  </div>
+  </body>
+  </html>`;
 
     const options = {
       html: htmlContent,
-      fileName: 'UserDetails',
+      fileName: 'MemberDetails',
       directory: 'Documents',
     };
 
@@ -360,67 +437,9 @@ const FamilyDetailScreen = props => {
   };
 
   const handleGeneratePDF = async userData => {
-    // const userData = {
-    //   name: 'John Doe',
-    //   number: '123-456-7890',
-    //   gender: 'Male',
-    // };
-
     const pdfFilePath = await generatePDF(userData);
     await sharePDF(pdfFilePath);
   };
-
-  // const CreatePdf = async () => {
-  //   const docsDir = await PDFLib.getDocumentsDirectory();
-  //   const pdfPath = `${docsDir}/sample.pdf`;
-  //   PDFDocument.create(pdfPath)
-  //     .addPages(page1)
-  //     .write() // Returns a promise that resolves with the PDF's path
-  //     .then(path => {
-  //       console.log('PDF created at: ' + path);
-  //       // Do stuff with your shiny new PDF!
-  //     });
-  // };
-
-  // const isPermitted = async () => {
-  //   if (Platform.OS === 'android') {
-  //     try {
-  //       const granted = await PermissionsAndroid.request(
-  //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-  //         {
-  //           title: 'External Storage Write Permission',
-  //           message: 'App needs access to Storage data',
-  //         },
-  //       );
-  //       return granted === PermissionsAndroid.RESULTS.GRANTED;
-  //     } catch (err) {
-  //       alert('Write permission err', err);
-  //       return false;
-  //     }
-  //   } else {
-  //     return true;
-  //   }
-  // };
-
-  // const createPDF = async () => {
-  //   if (await isPermitted()) {
-  //     try {
-  //       let options = {
-  //         //Content to print
-  //         html: '<h1 style="text-align: center;"><strong>Hello Guys</strong></h1><p style="text-align: center;">Here is an example of pdf Print in React Native</p><p style="text-align: center;"><strong>Team About React</strong></p>',
-  //         //File Name
-  //         fileName: 'myPdf',
-  //         //File directory
-  //         directory: 'Documents',
-  //       };
-  //       let file = await RNHTMLtoPDF.convert(options);
-  //       console.log(file.filePath);
-  //       setFilePath(file.filePath);
-  //     } catch (error) {
-  //       console.log('error---in file', error);
-  //     }
-  //   }
-  // };
 
   const [visible, setVisible] = useState([]);
   const inset = useSafeAreaInsets();
@@ -584,7 +603,7 @@ const FamilyDetailScreen = props => {
           )}
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'ફેમિલી પરિવારનું હાર્દિક પુર્વક સ્વાગત છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
         {/* <FooterTextCell title={`પરિવાર નુ ખુબ ખુબ અભિનંદન`} /> */}
@@ -714,7 +733,7 @@ export const MemberDetailCell = props => {
         marginHorizontal: 10,
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
-        paddingVertical: 15,
+        paddingBottom: 15,
         marginTop: -2,
         ...props.styles,
         ...Platform.select({
@@ -753,15 +772,275 @@ export const MemberDetailCell = props => {
             {props?.item?.name}
           </Text>
         </View> */}
+        <View style={{flexDirection: 'row', flex: 1}}>
+          <View style={{flex: 1}}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                RootNavigation.navigate(AppScreens.FAMILY_DETAIL_SCREEN, {
+                  item: {...props.item, id: props?.item?.user_id},
+                });
+              }}>
+              <Text
+                style={{
+                  fontFamily: AppFonts.semiBold,
+                  fontSize: 14,
+                  color: AppColors.BackgroundSecondColor,
+                  marginTop: 10,
+                  // marginBottom:5
+                }}>
+                {props?.item?.country_code + ' ' + props?.item?.phone}
+              </Text>
+              {/* <MemberDetail
+                    title={'Family Id :'}
+                    detailText={item?.family_id}
+                    textStyle={{
+                      textDecorationLine: 'underline',
+                      color: 'blue',
+                    }}
+                  /> */}
+            </TouchableOpacity>
 
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            paddingVertical: 3,
-          }}>
-          {/* <Image
+            <MemberDetail
+              style={{marginTop: 0}}
+              title={'ગામ :'}
+              detailText={props?.item?.city}
+              textStyle={{color: AppColors.BackgroundSecondColor}}
+            />
+            <MemberDetail
+              style={{}}
+              title={'શાખ :'}
+              detailText={props?.item?.shakh}
+              textStyle={{color: AppColors.BackgroundSecondColor}}
+            />
+
+            <MemberDetail title={'મોસાળ :'} detailText={props?.item?.mosal} />
+            <MemberDetail title={'સાસરું: '} detailText={props?.item?.sasru} />
+
+            <View style={{flexDirection: 'row'}}>
+              <MemberDetail
+                title={'જન્મ તારીખ :'}
+                styles={{flex: 0}}
+                detailText={
+                  props?.item?.dob != '' && props?.item?.dob != undefined
+                    ? moment(props?.item?.dob, 'YYYY-MM-DD').format(
+                        'DD-MM-YYYY',
+                      )
+                    : ' '
+                }
+              />
+              <MemberDetail
+                style={{marginLeft: 10}}
+                title={'|  ઉંમર :'}
+                detailText={props?.item?.age}
+                styles={{flex: 0}}
+              />
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <MemberDetail
+                style={{}}
+                title={'ઊંચાઈ :'}
+                detailText={props?.item?.height + ' ft.'}
+                styles={{flex: 0}}
+              />
+              <MemberDetail
+                style={{}}
+                title={'  |  વજન :'}
+                detailText={props?.item?.weight + ' Kg'}
+                styles={{flex: 0}}
+              />
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <MemberDetail
+                title={'બ્લડ ગ્રુપ :'}
+                detailText={props?.item?.blood_group}
+                styles={{flex: 0}}
+              />
+              <MemberDetail
+                title={'  |  લિંગ :'}
+                detailText={props?.item?.gender}
+                styles={{flex: 0}}
+              />
+            </View>
+            <MemberDetail
+              title={'કુટુંબ ના વડા સાથે નો સંબંધ :'}
+              detailText={props?.item?.family_main_member_with_relation}
+            />
+            <MemberDetail
+              title={'લગ્ન સ્થિતિ :'}
+              detailText={props?.item?.marital_status}
+            />
+            <MemberDetail title={'અભ્યાસ :'} detailText={props?.item?.study} />
+            <MemberDetail
+              title={'વ્યવસાય :'}
+              detailText={props?.item?.business}
+            />
+
+            <MemberDetail
+              title={'વ્યવસાયનું સરનામું :'}
+              detailText={props?.item?.business_address}
+            />
+            {props?.item?.foreign_country_name != undefined && (
+              <MemberDetail
+                title={'ફોરેન Country નામ :'}
+                detailText={props?.item?.foreign_country_name}
+              />
+            )}
+            {/* {props?.item?.foreign_number != undefined && (
+          <MemberDetail
+            title={'ફોરેન Number :'}
+            detailText={
+              props?.item?.foriegn_country_code + props?.item?.foreign_number
+            }
+          />
+        )} */}
+            <MemberDetail
+              title={'હાલ ના રહેઠાણ નુ સરનામું :'}
+              detailText={props?.item?.current_address}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+              }}>
+              <MemberDetail
+                styles={{flex: 0}}
+                title={'મોબાઇલ નંબર :'}
+                detailText={props?.item?.country_code + props?.item?.phone}
+                contact
+              />
+
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{
+                  paddingBottom: 2.5,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: 10,
+                }}
+                onPress={() =>
+                  Linking.openURL(
+                    `tel:${
+                      props?.item?.country_code + ' ' + props?.item?.phone
+                    }`,
+                    // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                  )
+                }>
+                <Image
+                  style={{
+                    marginHorizontal: 5,
+                    height: 9,
+                    width: 9,
+                    resizeMode: 'contain',
+                  }}
+                  source={AppImages.CIRCLE_CALL_ICON}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{
+                  height: 15,
+                  width: 15,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: 5,
+                  paddingBottom: 2.5,
+                }}
+                onPress={() =>
+                  Linking.openURL(
+                    `whatsapp://send?phone=${
+                      props?.item?.country_code + ' ' + props?.item?.phone
+                    }`,
+                    // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
+                  )
+                }>
+                <Image style={{}} source={AppImages.WHATSAPP_ICON} />
+              </TouchableOpacity>
+            </View>
+
+            <MemberDetail
+              title={'Email ID :'}
+              detailText={props?.item?.email}
+            />
+            {props?.item?.jeevan_sahay_nubmer != null ? (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                {props?.item?.jeevan_sahay_nubmer != '' && (
+                  <MemberDetail
+                    styles={{flex: 0}}
+                    title={'પરિવાર સુરક્ષા સહાય સભ્ય નં :'}
+                    detailText={props?.item?.jeevan_sahay_nubmer}
+                    style={{}}
+                  />
+                )}
+
+                {props?.item?.jeevan_sahay_nubmer != '' && (
+                  <TouchableOpacity
+                    activeOpacity={AppConstValue.ButtonOpacity}
+                    onPress={() =>
+                      RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
+                        status: 'main',
+                        item: props?.item,
+                        number: props?.item?.jeevan_sahay_nubmer,
+                        name: props?.item?.name,
+                      })
+                    }
+                    style={{
+                      marginLeft: 10,
+                      backgroundColor: '#FFFFFF',
+                      justifyContent: 'center',
+                      borderRadius: 8,
+                      alignItems: 'center',
+                      paddingBottom: 2.5,
+                    }}>
+                    <LinearGradient
+                      colors={['#FF56AE', '#FF56AE', '#FF56AE']}
+                      style={{
+                        padding: 3,
+                        borderRadius: 8,
+                        paddingHorizontal: 10,
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: AppFonts.bold,
+                          fontSize: 6,
+                          color: 'white',
+                        }}>
+                        ePay Now
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <></>
+            )}
+            {/* {props?.item?.boomi_nubmer != '' ? (
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MemberDetail
+              title={'ભુમિ સભાસદ નં:'}
+              detailText={props?.item?.boomi_nubmer}
+              style={{}}
+            />
+          </View>
+        ) : null} */}
+          </View>
+
+          <View
+            style={{
+              // width: '30%',
+              // flex: 0.4,
+              width: 90,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingVertical: 3,
+              marginTop: 15,
+              height: 90,
+              position: 'absolute',
+              right: 0,
+              // marginRight:10
+            }}>
+            {/* <Image
                   source={AppImages.placeholder_user}
                   style={{
                     height: 109,
@@ -769,31 +1048,31 @@ export const MemberDetailCell = props => {
                     borderRadius: 10,
                   }}
                 /> */}
-          <TouchableOpacity
-            activeOpacity={1}
-            style={{width: '31%', height: 80, borderRadius: 10}}
-            onPress={() =>
-              props?.item?.images[0]?.image == undefined
-                ? null
-                : props?.imgPress(0)
-            }>
-            <Image
-              source={
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{width: '100%', height: 80, borderRadius: 10}}
+              onPress={() =>
                 props?.item?.images[0]?.image == undefined
-                  ? AppImages.MEMBER_IMAGE
-                  : {uri: props?.item?.images[0]?.image}
-              }
-              style={{
-                height: '100%',
-                width: '100%',
-                // resizeMode: 'contain',
-                borderRadius: 10,
-                backgroundColor: '#F2F2F2',
-              }}
-            />
-          </TouchableOpacity>
+                  ? null
+                  : props?.imgPress(0)
+              }>
+              <Image
+                source={
+                  props?.item?.images[0]?.image == undefined
+                    ? AppImages.MEMBER_IMAGE
+                    : {uri: props?.item?.images[0]?.image}
+                }
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  resizeMode: 'contain',
+                  borderRadius: 10,
+                  backgroundColor: '#F2F2F2',
+                }}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
+            {/* <TouchableOpacity
             activeOpacity={1}
             style={{
               width: '31%',
@@ -820,9 +1099,9 @@ export const MemberDetailCell = props => {
                 backgroundColor: '#F2F2F2',
               }}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity
+            {/* <TouchableOpacity
             activeOpacity={1}
             style={{width: '31%', height: 80, borderRadius: 10}}
             onPress={() =>
@@ -844,274 +1123,24 @@ export const MemberDetailCell = props => {
                 backgroundColor: '#F2F2F2',
               }}
             />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            RootNavigation.navigate(AppScreens.FAMILY_DETAIL_SCREEN, {
-              item: {...props.item, id: props?.item?.user_id},
-            });
-          }}>
-          <Text
-            style={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: 14,
-              color: AppColors.BackgroundSecondColor,
-              marginTop: 10,
-              // marginBottom:5
-            }}>
-            {props?.item?.country_code + ' ' + props?.item?.phone}
-          </Text>
-          {/* <MemberDetail
-                    title={'Family Id :'}
-                    detailText={item?.family_id}
-                    textStyle={{
-                      textDecorationLine: 'underline',
-                      color: 'blue',
-                    }}
-                  /> */}
-        </TouchableOpacity>
-
-        <MemberDetail
-          style={{marginTop: 0}}
-          title={'ગામ :'}
-          detailText={props?.item?.city}
-          textStyle={{color: AppColors.BackgroundSecondColor}}
-        />
-        <MemberDetail
-          style={{}}
-          title={'શાખ :'}
-          detailText={props?.item?.shakh}
-          textStyle={{color: AppColors.BackgroundSecondColor}}
-        />
-
-        <MemberDetail title={'મોસાળ :'} detailText={props?.item?.mosal} />
-        <MemberDetail title={'સાસરું: '} detailText={props?.item?.sasru} />
-
-        <View style={{flexDirection: 'row'}}>
-          <MemberDetail
-            title={'જન્મ તારીખ :'}
-            styles={{flex: 0}}
-            detailText={
-              props?.item?.dob != '' && props?.item?.dob != undefined
-                ? moment(props?.item?.dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
-                : ' '
-            }
-          />
-          <MemberDetail
-            style={{marginLeft: 10}}
-            title={'|  ઉંમર :'}
-            detailText={props?.item?.age}
-            styles={{flex: 0}}
-          />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <MemberDetail
-            style={{}}
-            title={'ઊંચાઈ :'}
-            detailText={props?.item?.height + ' ft.'}
-            styles={{flex: 0}}
-          />
-          <MemberDetail
-            style={{}}
-            title={'  |  વજન :'}
-            detailText={props?.item?.weight + ' Kg'}
-            styles={{flex: 0}}
-          />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <MemberDetail
-            title={'બ્લડ ગ્રુપ :'}
-            detailText={props?.item?.blood_group}
-            styles={{flex: 0}}
-          />
-          <MemberDetail
-            title={'  |  લિંગ :'}
-            detailText={props?.item?.gender}
-            styles={{flex: 0}}
-          />
-        </View>
-        <MemberDetail
-          title={'કુટુંબ ના વડા સાથે નો સંબંધ :'}
-          detailText={props?.item?.family_main_member_with_relation}
-        />
-        <MemberDetail
-          title={'લગ્ન સ્થિતિ :'}
-          detailText={props?.item?.marital_status}
-        />
-        <MemberDetail title={'અભ્યાસ :'} detailText={props?.item?.study} />
-        <MemberDetail title={'વ્યવસાય :'} detailText={props?.item?.business} />
-
-        <MemberDetail
-          title={'વ્યવસાયનું સરનામું :'}
-          detailText={props?.item?.business_address}
-        />
-        {props?.item?.foreign_country_name != undefined && (
-          <MemberDetail
-            title={'ફોરેન Country નામ :'}
-            detailText={props?.item?.foreign_country_name}
-          />
-        )}
-        {/* {props?.item?.foreign_number != undefined && (
-          <MemberDetail
-            title={'ફોરેન Number :'}
-            detailText={
-              props?.item?.foriegn_country_code + props?.item?.foreign_number
-            }
-          />
-        )} */}
-        <MemberDetail
-          title={'હાલ ના રહેઠાણ નુ સરનામું :'}
-          detailText={props?.item?.current_address}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-          }}>
-          <MemberDetail
-            styles={{flex: 0}}
-            title={'મોબાઇલ નંબર :'}
-            detailText={props?.item?.country_code + props?.item?.phone}
-            contact
-          />
-
-          <TouchableOpacity
-            activeOpacity={1}
-            style={{
-              paddingBottom: 2.5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft: 10,
-            }}
-            onPress={() =>
-              Linking.openURL(
-                `tel:${props?.item?.country_code + ' ' + props?.item?.phone}`,
-                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
-              )
-            }>
-            <Image
-              style={{marginHorizontal: 5}}
-              source={AppImages.CIRCLE_CALL_ICON}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={1}
-            style={{
-              height: 15,
-              width: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft: 5,
-              paddingBottom: 2.5,
-            }}
-            onPress={() =>
-              Linking.openURL(
-                `whatsapp://send?phone=${
-                  props?.item?.country_code + ' ' + props?.item?.phone
-                }`,
-                // `tel:${props?.item?.item?.code}${props?.item?.item?.phone}`,
-              )
-            }>
-            <Image style={{}} source={AppImages.WHATSAPP_ICON} />
-          </TouchableOpacity>
-        </View>
-
-        <MemberDetail title={'Email ID :'} detailText={props?.item?.email} />
-        {props?.item?.jeevan_sahay_nubmer != '' ? (
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <MemberDetail
-              styles={{flex: 0}}
-              title={'જીવન સહાય સભાસદ નં :'}
-              detailText={props?.item?.jeevan_sahay_nubmer}
-              style={{}}
-            />
-            <TouchableOpacity
-              activeOpacity={AppConstValue.ButtonOpacity}
-              onPress={() =>
-                RootNavigation.navigate(AppScreens.SOCIAL_SERVICE, {
-                  status: 'main',
-                  item: props?.item,
-                  number: props?.item?.jeevan_sahay_nubmer,
-                  name: props?.item?.name,
-                })
-              }
-              style={{
-                marginLeft: 10,
-                backgroundColor: '#FFFFFF',
-                justifyContent: 'center',
-                borderRadius: 8,
-                alignItems: 'center',
-                paddingBottom: 2.5,
-              }}>
-              <LinearGradient
-                colors={['#FF56AE', '#FF56AE', '#FF56AE']}
-                style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
-                <Text
-                  style={{
-                    fontFamily: AppFonts.bold,
-                    fontSize: 6,
-                    color: 'white',
-                  }}>
-                  ePay Now
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        ) : null}
-        {props?.item?.boomi_nubmer != '' ? (
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <MemberDetail
-              title={'ભુમિ સભાસદ નં:'}
-              detailText={props?.item?.boomi_nubmer}
-              style={{}}
-            />
-            {/* <TouchableOpacity
-            activeOpacity={AppConstValue.ButtonOpacity}
-            onPress={() =>
-              RootNavigation.navigate(AppScreens.ADVICE_MEMBER, {
-                status: 'main',
-              })
-            }
-            style={{
-              marginHorizontal: 15,
-              backgroundColor: '#FFFFFF',
-              justifyContent: 'center',
-              borderRadius: 8,
-              alignItems: 'center',
-            }}>
-            <LinearGradient
-              colors={['#3C5AFF', '#3C5AFF', '#1B74FF']}
-              style={{padding: 3, borderRadius: 8, paddingHorizontal: 10}}>
-              <Text
-                style={{
-                  fontFamily: AppFonts.bold,
-                  fontSize: 6,
-                  color: 'white',
-                }}>
-                Click Here
-              </Text>
-            </LinearGradient>
           </TouchableOpacity> */}
           </View>
-        ) : null}
+        </View>
+        {!props?.notShow && (
+          <TouchableOpacity
+            onPress={props?.saveButton}
+            activeOpacity={1}
+            style={{
+              alignSelf: 'flex-end',
+              marginTop: 10,
+              width: '50%',
+              alignItems: 'flex-end',
+              justifyContent: 'flex-end',
+            }}>
+            <Image source={require('../../../assets/images/save_icon.png')} />
+          </TouchableOpacity>
+        )}
       </View>
-      {!props?.notShow && (
-        <TouchableOpacity
-          onPress={props?.saveButton}
-          activeOpacity={1}
-          style={{
-            alignSelf: 'flex-end',
-            marginTop: 10,
-            width: '50%',
-            alignItems: 'flex-end',
-            justifyContent: 'flex-end',
-          }}>
-          <Image source={require('../../../assets/images/save_icon.png')} />
-        </TouchableOpacity>
-      )}
     </View>
   );
 };

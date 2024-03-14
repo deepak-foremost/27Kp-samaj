@@ -136,6 +136,7 @@ const NewsDetailScreen = ({route}) => {
                       borderRadius: 10,
                       width: '100%',
                       height: 100,
+                      resizeMode:'contain'
                     }}
                     source={{uri: item?.image}}
                   />
@@ -177,7 +178,7 @@ const NewsDetailScreen = ({route}) => {
         </View>
         <BorderView
           backgroundColor={AppColors.BackgroundSecondColor}
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          text={'સમાજ નો કાર્યોમાં સાથ સહકાર આપવો'}
         />
       </View>
     </View>

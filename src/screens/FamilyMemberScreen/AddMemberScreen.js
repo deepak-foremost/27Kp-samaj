@@ -60,6 +60,7 @@ const AddMemberScreen = props => {
   const [cities, setCities] = useState([]);
   const [relationships, setRelations] = useState([]);
   const [city, setCity] = useState(null);
+  const [city_id, setCityId] = useState('');
   const [familyId, setFamilyId] = useState(user?.family_id);
   const [name, setName] = useState('');
   const [familyMember, setFamilyMember] = useState('');
@@ -219,8 +220,19 @@ const AddMemberScreen = props => {
           // setVisiting(response?.assets[0]);
           if (first == 1) {
             setImage(response?.assets[0]);
-            if (imageOne != null) {
-              updateImage(response?.assets[0], imageOne, first);
+            if (
+              city == null &&
+              familyMember?.trim() == '' &&
+              gender == null &&
+              hobby == '' &&
+              mosal == ''
+            ) {
+              // showMessage('Please Select City');
+            } else {
+              if (imageOne != null) {
+                updateImage(response?.assets[0], imageOne, first);
+              }
+              //     setAdding(true);
             }
           } else if (first == 2) {
             setVisitingOne(response?.assets[0]);
@@ -247,6 +259,7 @@ const AddMemberScreen = props => {
       console.log('phone', memberItem?.foreign_number);
       console.log('date', new Date(memberItem?.dob) + new Date());
       setCity(memberItem?.city);
+      setCityId(memberItem?.city_id);
       setFamilyMember(memberItem?.name);
       setGender(memberItem?.gender);
       setHeight(memberItem?.height);
@@ -364,6 +377,7 @@ const AddMemberScreen = props => {
               email: email,
               gender: gender,
               city: city,
+              city_id: city_id,
               height: height,
               weight: weigth,
               age: age,
@@ -396,6 +410,7 @@ const AddMemberScreen = props => {
               email: email,
               gender: gender,
               city: city,
+              city_id: city_id,
               height: height,
               weight: weigth,
               age: age,
@@ -649,6 +664,7 @@ const AddMemberScreen = props => {
                     onItemSelect={item => {
                       // printLog(JSON.stringify(item?.item));
                       setCity(item?.name);
+                      setCityId(item?.id);
                     }}
                   />
                 </View>
@@ -748,6 +764,7 @@ const AddMemberScreen = props => {
                   {name: 'O-'},
                   {name: 'AB+'},
                   {name: 'AB-'},
+                  {name: 'Unknown'},
                 ]}
                 value={blood}
                 onItemSelect={item => {
@@ -916,6 +933,7 @@ const AddMemberScreen = props => {
                 onChangeText={setEmail}
               />
               <HorizontalSelection
+                country={true}
                 label={`ફોરેન Country Name`}
                 placeholder={`ફોરેન Country Name`}
                 defaultText={``}
@@ -973,18 +991,18 @@ const AddMemberScreen = props => {
                 onChangeText={setForeignNumber}
               /> */}
               <HorizontalTextInput
-                label={`જીવન સહાય સભાસદ નં:`}
+                label={`પરિવાર સુરક્ષા સહાય સભ્ય નં:`}
                 defaultText={jeevan_sahay_nubmer}
                 type="numeric"
                 onChangeText={Setjeevan_sahay_nubmer}
               />
 
-              <HorizontalTextInput
+              {/* <HorizontalTextInput
                 label={`ભુમિ સભાસદ નં:`}
                 defaultText={boomi_nubmer}
                 type="numeric"
                 onChangeText={setBoomi_nubmer}
-              />
+              /> */}
 
               {/* <HorizontalTextInput
               label={`Family ID`}
@@ -1077,7 +1095,12 @@ const AddMemberScreen = props => {
             </View> */}
 
               <View style={{flex: 1, flexDirection: 'column'}}>
-                <View style={{flexDirection: 'row', paddingTop: 20}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingTop: 20,
+                    alignItems: 'center',
+                  }}>
                   <Text
                     style={{
                       fontSize: 12,
@@ -1088,16 +1111,18 @@ const AddMemberScreen = props => {
                   </Text>
                   <AppButton
                     buttonPress={() => {
-                      if (image == undefined || image == '') {
-                        getMyImage(1);
-                      } else if (
-                        visitingOne == undefined ||
-                        visitingOne == ''
-                      ) {
-                        getMyImage(2);
-                      } else {
-                        getMyImage(3);
-                      }
+                      getMyImage(1);
+                      // if (image == undefined || image == '') {
+                      //   getMyImage(1);
+                      // }
+                      //  else if (
+                      //   visitingOne == undefined ||
+                      //   visitingOne == ''
+                      // ) {
+                      //   getMyImage(2);
+                      // } else {
+                      //   getMyImage(3);
+                      // }
                     }}
                     text={'Browse'}
                     textStyle={{marginLeft: 0, fontSize: 12}}
@@ -1110,7 +1135,14 @@ const AddMemberScreen = props => {
                           : AppColors.BackgroundSecondColor,
                       borderRadius: 30,
                       marginLeft: 15,
+                      marginRight: 30,
                     }}
+                  />
+
+                  <ImageUpload
+                    image={image}
+                    imgPress={() => getMyImage(1)}
+                    imageLoading={imageLoading == 1 && true}
                   />
                 </View>
 
@@ -1140,7 +1172,7 @@ const AddMemberScreen = props => {
                   />
                 </View> */}
 
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'flex-end',
@@ -1148,204 +1180,26 @@ const AddMemberScreen = props => {
                     paddingHorizontal: 5,
                     height: 90,
                     paddingTop: 15,
-                  }}>
-                  {/* <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      width: '30%',
-                      height: '100%',
-                    }}
-                    onPress={
-                      image != undefined
-                        ? () => {
-                            getMyImage(1);
-                            setOne();
-                          }
-                        : null
-                    }>
-                    {imageLoading ? (
-                      <View>
-                        <LoaderView />
-                      </View>
-                    ) : (
-                      <Image
-                        style={{
-                          width: '100%',
-                          height: 80,
-                          borderRadius: 5,
-                          backgroundColor: '#F2F2F2',
-                        }}
-                        source={
-                          image == undefined || image == ''
-                            ? AppImages.MEMBER_IMAGE
-                            : {
-                                uri:
-                                  image?.uri == undefined ? image : image?.uri,
-                              }
-                        }
-                      />
-                    )}
-                    {image != undefined && (
-                      <Image
-                        style={{position: 'absolute', right: 5, top: 5}}
-                        source={require('../../assets/images/cancel_icon.png')}
-                      />
-                    )}
-                  </TouchableOpacity> */}
-                  <ImageUpload
+                  }}> */}
+                {/* <ImageUpload
                     image={image}
                     imgPress={() => getMyImage(1)}
                     imageLoading={imageLoading == 1 && true}
-                  />
-                  {/* <TouchableOpacity
-                    style={{width: '30%'}}
-                    onPress={() => getMyImage(1)}>
-                    <ImageBackground
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 15,
-                        resizeMode: 'contain',
-                        borderRadius: 10,
-                      }}
-                      source={
-                        image == ''
-                          ? require('../../assets/images/visiting_card.png')
-                          : {
-                              uri: image?.uri == undefined ? image : image?.uri,
-                            }
-                      }>
-                      <TouchableOpacity
-                        activeOpacity={1}
-                        style={{
-                          height: 24,
-                          width: 24,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          position: 'absolute',
-                          right: 0,
-                        }}
-                        onPress={() => getMyImage(1)}>
-                        <Image
-                          source={require('../../assets/images/cancel_icon.png')}
-                        />
-                      </TouchableOpacity>
-                    </ImageBackground>
-                  </TouchableOpacity> */}
-                  <ImageUpload
+                  /> */}
+
+                {/* <ImageUpload
                     image={visitingOne}
                     imgPress={() => getMyImage(2)}
                     imageLoading={imageLoading == 2 && true}
-                  />
-                  {/* <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      width: '30%',
-                      height: '100%',
-                    }}
-                    onPress={() =>
-                      visitingOne != undefined ? getMyImage(2) : null
-                    }>
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: 80,
-                        borderRadius: 5,
-                        backgroundColor: '#F2F2F2',
-                      }}
-                      source={
-                        visitingOne == undefined || visitingOne == ''
-                          ? AppImages.MEMBER_IMAGE
-                          : {
-                              uri:
-                                visitingOne?.uri == undefined
-                                  ? visitingOne
-                                  : visitingOne?.uri,
-                            }
-                      }
-                    />
-                    {visitingOne != undefined && (
-                      <Image
-                        style={{position: 'absolute', right: 5, top: 5}}
-                        source={require('../../assets/images/cancel_icon.png')}
-                      />
-                    )}
-                  </TouchableOpacity> */}
+                  /> */}
 
-                  {/* <TouchableOpacity
-                    style={{width: '30%'}}
-                    onPress={() => getMyImage(2)}>
-                    <ImageBackground
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 5,
-                        marginLeft: 5,
-                        borderRadius: 10,
-                      }}
-                      source={
-                        visitingOne == ''
-                          ? require('../../assets/images/visiting_card.png')
-                          : {uri: visitingOne?.uri}
-                      }>
-                      <TouchableOpacity
-                        style={{
-                          height: 24,
-                          width: 24,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          position: 'absolute',
-                          right: 0,
-                        }}
-                        onPress={() => getMyImage(2)}>
-                        <Image
-                          source={require('../../assets/images/cancel_icon.png')}
-                        />
-                      </TouchableOpacity>
-                    </ImageBackground>
-                  </TouchableOpacity> */}
-
-                  {/* <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      width: '30%',
-                      height: '100%',
-                    }}
-                    onPress={() =>
-                      VisitingTwo != undefined ? getMyImage(3) : null
-                    }>
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: 80,
-                        borderRadius: 5,
-                        backgroundColor: '#F2F2F2',
-                      }}
-                      source={
-                        VisitingTwo == undefined || VisitingTwo == ''
-                          ? AppImages.MEMBER_IMAGE
-                          : {
-                              uri:
-                                VisitingTwo?.uri == undefined
-                                  ? VisitingTwo
-                                  : VisitingTwo?.uri,
-                            }
-                      }
-                    />
-                    {VisitingTwo != undefined && (
-                      <Image
-                        style={{position: 'absolute', right: 5, top: 5}}
-                        source={require('../../assets/images/cancel_icon.png')}
-                      />
-                    )}
-                  </TouchableOpacity> */}
-                  <ImageUpload
+                {/* <ImageUpload
                     image={VisitingTwo}
                     imgPress={() => getMyImage(3)}
                     imageLoading={imageLoading == 3 && true}
-                  />
+                  /> */}
 
-                  {/* <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{
                       width: '30%',
                       borderRadius: 20,
@@ -1374,7 +1228,7 @@ const AddMemberScreen = props => {
                     </ImageBackground>
                    
                   </TouchableOpacity> */}
-                </View>
+                {/* </View> */}
               </View>
 
               <AppButton
@@ -1433,7 +1287,11 @@ const AddMemberScreen = props => {
               />
             </View>
             <BorderView
-              text={'સેવા કરવી તે મારી અમૂલ્યા ભેટ છે'}
+              text={
+                memberItem == undefined
+                  ? 'સમાજ એજ મારો પરિવાર છે'
+                  : 'દરેક માહિતી સાચી લખવી તેજ મારી ફરજ છે'
+              }
               backgroundColor={AppColors.BackgroundSecondColor}
               borderStyle={{position: ''}}
             />

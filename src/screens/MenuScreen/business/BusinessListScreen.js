@@ -264,7 +264,7 @@ const BusinessListScreen = props => {
           )}
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={'સેવા કરવી તે મારી અમુલ્ય ભેટ છે'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

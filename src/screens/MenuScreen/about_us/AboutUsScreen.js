@@ -409,7 +409,7 @@ const AboutUsScreen = props => {
         </View>
 
         <BorderView
-          text={'સૌનો સાથ ..સૌનો વિકાસ અને સમાજ નો વિકાસ'}
+          text={'વાદ નહીં, વિવાદ નહીં... સમાજના વિકાસ સિવાય કોઈ વાત નહીં...'}
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>
@@ -426,7 +426,7 @@ const AboutCell = props => {
       onPress={props?.onClick}
       style={{
         flexDirection: 'row',
-        height: 45,
+        minHeight: 45,
         marginHorizontal: 15,
         backgroundColor: AppColors.BackgroundSecondColor,
         marginTop: 15,

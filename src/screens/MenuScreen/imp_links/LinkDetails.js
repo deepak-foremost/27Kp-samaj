@@ -590,7 +590,14 @@ const LinkDetails = props => {
           )}
         </View>
         <BorderView
-          text={'સેવા કરવી તે મારી અમૂલ્ય ભેટ છે'}
+          text={
+            headerText == 'eBOOK'
+              ? 'પરિવાર ને ભગવાન નું નામ લેવું જોઈએ'
+              : headerText == 'JOB'
+              ? 'સમાજનું કોઈપણ કામ કરવું તે મારી ફરજ છે'
+              : headerText == 'SERVICES' &&
+                'સમાજની દરેક માહિતી મારા ભવિષ્ય માટે ઉપયોગી છે'
+          }
           backgroundColor={AppColors.BackgroundSecondColor}
         />
       </View>

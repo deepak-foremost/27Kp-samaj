@@ -64,7 +64,7 @@ const FirstScreen = () => {
             }}>
             <View style={AppStyles.AppLogoStyle}>
               <Image
-                style={{width: 140, height: 140}}
+                style={{width: 170, height: 170}}
                 source={AppImages.APP_MAIN_ICON}
               />
             </View>
@@ -109,7 +109,7 @@ const FirstScreen = () => {
               imgStyle={{tintColor: 'black'}}
               textStyle={{color: 'black'}}
               src={require('../../assets/images/pay_icon.png')}
-              buttonStyle={{backgroundColor: AppColors.Orange, marginTop: 15}}
+              buttonStyle={{backgroundColor: AppColors.Orange, marginTop: 40}}
             />
           </View>
         </View>
